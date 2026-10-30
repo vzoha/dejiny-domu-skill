@@ -4,7 +4,12 @@ Operating Playbook“, stav 2026-10-09. Autor ve zprávě není uveden. Podle st
 podklad, beze změn obsahu a bez nároku na autorství. Licence MIT repozitáře se na tento soubor nevztahuje.
 Jste-li autor a nesouhlasíte se zařazením, ozvěte se prosím na vzoha@volny.cz – soubor upravím nebo odstraním.
 Pozor: jde o rešerši k datu 2026-10-09 – adresy, lhůty a ceny ověř, než se na ně spolehneš.
-Čti po částech podle potřeby (obsah: §0 opravy, §1 hlavní zjištění, §2 prameny po zemích, §3 časová osa, §4 lhůty, §5 metoda a šablony, §6+ nástroje a ceny). -->
+Čti po částech podle potřeby – najdi nadpis (`grep -n "^## " reference/playbook.md`) a čti jen tu kapitolu. Obsah:
+§0 opravy · §1 12 hlavních zjištění · §2 prameny po zemích (2.1 ČR, 2.2 Slovensko, 2.3 Rakousko, 2.4 Polsko, 2.5 Německo,
+2.6 Maďarsko, 2.7 kde hledat 1650–1950) · §3 časová osa vedení záznamů · §4 zákonné lhůty přístupu · §5 metoda (5.1 postup,
+5.2 šablony výpisů a citací, 5.3 propojování záznamů, 5.4 rozlišení osob, 5.5 25 typických chyb) · §6 paleografie a slovník ·
+§7 profesionální genealogové · §8 nástroje a AI · §9 mrtvý bod – rozhodovací stromy · §10 komunita, ceny, DNA ·
+§11 otevřené otázky · §12 zdroje. -->
 
 # Professional Genealogy in the Czech Lands & Central Europe — Operating Playbook, State of 2026-10-09
 

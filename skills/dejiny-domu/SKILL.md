@@ -1,6 +1,6 @@
 ---
 name: dejiny-domu
-description: Průvodce dějinami domu a vesnice z českých archivů (gruntovní knihy, katastry, sčítání lidu, matriky podle čísla domu, staré mapy, literatura) a stavbou webu s časovou osou, držiteli, obyvateli a starými mapami. Pro lidi bez zkušeností s archivy i programováním. Použij, když chce uživatel zjistit historii domu, chalupy, statku nebo obce, kdo v domě žil a komu patřil, najít staré mapy vsi nebo postavit web o dějinách domu. Spouštěcí fráze: „historie domu“, „dějiny chalupy“, „kdo tu bydlel“, „historie vesnice“, „čp.“, „gruntovní kniha“, „stabilní katastr“.
+description: Průvodce dějinami domu a vesnice z českých archivů (gruntovní knihy, katastry, sčítání lidu, matriky podle čísla domu, staré mapy, literatura) a stavbou webu s časovou osou, držiteli, obyvateli a starými mapami. Pro lidi bez zkušeností s archivy i programováním. Použij, když chce uživatel zjistit historii domu, chalupy, statku nebo obce, kdo v domě žil a komu patřil, najít staré mapy vsi nebo postavit web o dějinách domu. Použij i bez výslovné prosby, když uživatel koupil nebo zdědil starý dům či chalupu a zajímá ho, kdo ji postavil, kdo v ní žil, jak vypadala dřív, nebo když má staré fotky a mapy vsi. Spouštěcí fráze: „historie domu“, „dějiny chalupy“, „kdo tu bydlel“, „kdo dům postavil“, „koupili jsme starý statek“, „historie vesnice“, „čp.“, „gruntovní kniha“, „stabilní katastr“. Rodokmen osob a předků (ne domu) patří skillu rodokmen.
 ---
 
 # Dějiny domu a vesnice z archivů + web
@@ -9,8 +9,7 @@ Vedeš člověka, který **nikdy nebádal v archivu ani neprogramoval**, od toho
 až k webu o dějinách domu a obce. Ty děláš technickou práci (stahování snímků, čtení, zápis dat, web).
 Uživatel dodává znalost místa, rozhoduje sporná místa a schvaluje, co jde ven.
 
-Skill je fork skillu **rodokmen**: nástroje na archivy, čtení snímků, výřezy, rámečky, deník a web fungují stejně.
-Rozdíl je v tom, kolem čeho se data točí: kolem **čísla popisného** a jeho držitelů a obyvatel v čase, ne kolem předků jedné osoby.
+Data se točí kolem **čísla popisného** a jeho držitelů a obyvatel v čase, ne kolem předků jedné osoby (to je skill rodokmen).
 
 **Složka tohoto skillu** (`SKILL_DIR`) je ta, kterou ti systém ukázal při načtení („Base directory“):
 `tools/` nástroje, `template/` šablona projektu a webu, `reference/` podrobné návody (čti je, až je potřebuješ):
@@ -19,7 +18,10 @@ Rozdíl je v tom, kolem čeho se data točí: kolem **čísla popisného** a jeh
 - `reference/portaly.md` – portály archivů a nástroje na stahování snímků
 - `reference/data.md` – formát dat, `reference/web.md` – web, `reference/pribehy.md` – zajímavosti a příběh domu,
   `reference/texty.md` – **jak psát texty na web** (krátce, bez žargonu, pro hosta; platí pro vše, co jde na web),
-  `reference/soukromi.md` – soukromí, `reference/playbook.md` – profesionální genealogická metodika (EN)
+  `reference/soukromi.md` – soukromí
+- `reference/playbook.md` – profesionální genealogická metodika (EN, 700 řádků – čti jen potřebnou kapitolu podle
+  obsahu nahoře): když běžný postup nestačí – zákonné lhůty přístupu k matrikám a sčítání (§4), archivy na Slovensku,
+  v Rakousku, Polsku a Německu (§2), paleografie a slovník starých výrazů (§6), ztotožnění osob a mrtvý bod (§5.3–5.5, §9)
 
 ## Jak mluvit s uživatelem
 - **Česky, stručně, lidsky.** Žádný žargon bez vysvětlení (grunt, vejrunk, emfyteuze, indikační skica). Místo „commitnu“ „uložím“.
@@ -172,6 +174,8 @@ Obecně a stručně, bez osobních údajů. Nic sám neposílej.
 - Archivní servery šetři: stahuj jen snímky, které čteš.
 - Nedávej na web údaje o žijících lidech a dnešních majitelích bez souhlasu.
 - Nepřepisuj data bez zálohy v gitu. Po větším kroku navrhni uložení (`git add -A && git commit -m "…"`).
+- Na jednom projektu ať pracuje jen jedna konverzace s Claudem najednou. Dvě souběžné si navzájem přepisují soubory
+  a `git add -A` jedné uloží i rozpracovanou práci druhé. Vidíš v `git status` změny, které nejsou tvoje, zeptej se.
 
 ## Mapa souborů projektu
 | Cesta | K čemu |
