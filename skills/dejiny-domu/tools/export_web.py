@@ -137,8 +137,8 @@ def login_files(cfg):
         hint = (f'Neznáte odpověď? Napište {html.escape(contact.get("jmeno", ""))} na '
                 f'<a href="mailto:{html.escape(contact["email"])}">{html.escape(contact["email"])}</a>.')
     page = (tpl.replace("{{NAZEV}}", html.escape(cfg.get("nazev", "Dějiny domu")))
-               .replace("{{UVOD}}", html.escape(login.get("uvod", "Tenhle web je jen pro rodinu a příbuzné.")))
-               .replace("{{OTAZKA}}", html.escape(login.get("otazka", "Odpověď na rodinnou otázku")))
+               .replace("{{UVOD}}", html.escape(login.get("uvod", "Tenhle web není veřejný.")))
+               .replace("{{OTAZKA}}", html.escape(login.get("otazka", "Odpověď na otázku")))
                .replace("{{NAPOVEDA}}", hint))
     write(os.path.join(WEB, "public", "prihlaseni.html"), page)
 

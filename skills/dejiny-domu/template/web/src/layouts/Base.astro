@@ -48,7 +48,7 @@ const current = (url) => ((url === '/' ? path === '/' : path.startsWith(url)) ? 
       <slot />
     </main>
     <footer class="site-footer">
-      {config.zapati || 'Dohledáno v digitalizovaných pramenech'} · neveřejný web
+      {config.zapati || 'Dohledáno v digitalizovaných pramenech'}{config.verejny ? '' : ' · neveřejný web'}
     </footer>
   </body>
 </html>

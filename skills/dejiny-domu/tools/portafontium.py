@@ -28,7 +28,7 @@ if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze 
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 CACHE = os.path.join(ROOT, "pracovni", ".cache_pf")
-UA = {"User-Agent": "Mozilla/5.0 (rodokmen)"}   # bez prohlížečového User-Agentu portál vrací 403
+UA = {"User-Agent": "Mozilla/5.0 (dejiny-domu)"}   # bez prohlížečového User-Agentu portál vrací 403
 PAUZA = 0.5   # s před každým požadavkem – ohled na server i při volání ve smyčce
 
 # Server portálu posílá jen svůj certifikát bez mezilehlého (prohlížeče a curl si ho dohledají, Python ne →

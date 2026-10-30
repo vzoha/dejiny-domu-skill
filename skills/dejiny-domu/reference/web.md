@@ -24,16 +24,19 @@ Náhled spouštěj na pozadí a uživateli pošli odkaz. Vzhled si ověř sám (
  "nazev": "Horní Lhota čp. 12",
  "popis": "Popis pro sdílení (web je noindex).",
  "zapati": "Dohledáno v digitalizovaných pramenech SOA Třeboň a ČÚZK",
- "kontakt": {"jmeno": "Novákovi", "email": "…"},
+ "kontakt": {"jmeno": "Novákovým", "email": "…"},
  "prihlaseni": {"uvod": "Tenhle web je zatím jen pro známé.", "otazka": "…", "odpoved": "…"},
  "uvod": {"nadpis": "Lákavý nadpis", "odstavce": ["2–3 věty, které chytí"], "foto": "klic_obrazku_ve_vyrezech", "foto_popis": "…"},
- "hlavni_dum": "30",
+ "hlavni_dum": "12",
  "pribeh": {"menu": "Příběh domu", "tlacitko": "Přečíst příběh čp. 12"},
- "zajimavosti_na_uvodu": [{"nadpis": "Nejstarší zmínka", "text": "1351 – …"}]
+ "zajimavosti_na_uvodu": [{"nadpis": "Nejstarší zmínka", "text": "1351 – …"}],
+ "verejny": false
 }
 ```
 - `kontakt.jmeno` je ve 3. pádě („Napište Petrovi na …“).
-- **Přihlášení:** otázka, na kterou zná odpověď jen rodina (ne snadno dohledatelná na sociálních sítích).
+- `verejny`: `true` až u webu, který je otevřený všem (`prihlaseni.otevreny`) – pak zápatí nepíše „neveřejný web“.
+- **Přihlášení:** otázka, na kterou znají odpověď jen ti, komu je web určený – rodina, sousedé, spolek
+  (ne snadno dohledatelná na sociálních sítích).
   Odpověď se porovnává bez diakritiky a velkých písmen. Na serveru i v cookie prohlížeče je jen její otisk (SHA-256),
   samotná odpověď se nikam neukládá. Krátkou nebo běžnou odpověď (jméno, obec) ale jde z otisku uhádnout zkoušením,
   proto ať ji uživatel nepoužívá jako heslo jinde. Bez odpovědi nasazení (`npm run nasadit`, `deploy-caprover`)

@@ -39,8 +39,8 @@ Rozdíl je v tom, kolem čeho se data točí: kolem **čísla popisného** a jeh
 
 ## Fáze 0 – Příprava (jednou)
 1. Nástroje: `python3` (≥ 3.9), `node` (≥ 20), `magick` (ImageMagick 7; na Linuxu stačí IM6 s `convert` – nástroje
-   ho najdou samy, v ručních příkazech pak piš `convert` místo `magick`), `git`. Instalace a pasti Windows jsou
-   stejné jako ve skillu rodokmen (Fáze 0, `reference/matriky.md` → Technické pasti). Na Windows místo `python3 -I`
+   ho najdou samy, v ručních příkazech pak piš `convert` místo `magick`), `git`. Instalace a pasti macOS a Windows:
+   `reference/matriky.md` → Technické pasti. Na Windows místo `python3 -I`
    vždy `python -I -X utf8`. Pravidla zapiš do `CLAUDE.md` projektu.
 2. Zeptej se, kde má projekt být (navrhni `~/<Obec>-<čp>`), a založ ho: `python3 -I SKILL_DIR/tools/novy_projekt.py <složka>`.
 3. `git init` a první uložení. Doporuč pokračovat v Claude Code **z této složky**.
@@ -109,7 +109,9 @@ Pravidla kvality:
 - **Celé domácnosti:** ze sčítání zapiš všechny obyvatele domu, i čeleď a výměnkáře. Jsou to taky dějiny domu.
 - **Okolní domy jen tolik, kolik je potřeba** (hlavní dům je cíl). Dějiny celé vsi rozšiřuj po domluvě s uživatelem.
 - **Sporné věci** (dvě čtení, dvě možná čísla) ukaž uživateli s výřezem a nech ho rozhodnout. Do té doby `prob`.
-  Mnoho sporných najednou sbírej do `pracovni/sporna_cteni.json` a udělej z nich jednu klikací stránku (jako v rodokmenu).
+  Mnoho sporných najednou (desítky po velkém kole) nedávej do chatu po jednom: sesbírej je do `pracovni/sporna_cteni.json`
+  (klíč zápisu, výřez, otázka, možnosti, tvůj návrh) a udělej z nich jednu stránku, kde uživatel u každého klikne na
+  odpověď (artefakt s ukládáním odpovědí, jinak HTML s tlačítkem „stáhnout odpovědi“). Odpovědi zapiš i do deníku.
 
 ### Webové aplikace bez API – prohlížeč
 Když portál nemá nástroj ani čitelné API (mapové aplikace, prohlížeče snímků, nahlizenidokn, chartae-antiquae),
@@ -122,7 +124,7 @@ Když portál nemá nástroj ani čitelné API (mapové aplikace, prohlížeče 
 - Velké mapy snímkuj po dlaždicích. Nic nekupuj, nezadávej hesla, neřeš CAPTCHA.
 
 ### Pomocníci (subagenti) – šetrně
-Stejně jako v rodokmenu: na velké kolo (projít matriku 1784–1850 a vypsat všechny zápisy z čp. 12, projít sčítání
+Na velké kolo (projít matriku 1784–1850 a vypsat všechny zápisy z čp. 12, projít sčítání
 1857–1921) můžeš pustit 2–4 pomocníky na levnějším modelu (`model: "sonnet"`). Píšou jen do `pracovni/pom_<úkol>/`,
 **do `data/` nikdy** – do zadání napiš i „nespouštěj `trebon.py svazek` ani jiné příkazy, které zapisují do `data/`
 (na kartu svazku je `trebon.py popis`)“. Jejich čtení **vždy ověř sám na snímku** (`tools/overit.py`), než ho zapíšeš jako `doc`.

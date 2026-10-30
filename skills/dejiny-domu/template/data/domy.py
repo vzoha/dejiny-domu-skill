@@ -14,7 +14,7 @@ OBEC = dict(
     farnost="",          # kam patřila farou (matriky!) („Dolní Lhota“)
     panstvi="",          # panství před 1848 („Kamenice / Pacov“)
     popis="",            # 2–4 věty pro úvod stránky obce
-    lat=None, lon=None,  # střed vsi (doplní tools/mista.py obec)
+    lat=None, lon=None,  # střed vsi (tools/mista.py hledej "Horní Lhota, Pelhřimov")
 )
 
 # Časová osa obce: dict(rok="1352", text="…", st="lit", r=[klíče], zdroj="vlastivěda okresu, s. 389")
@@ -22,14 +22,14 @@ OBEC = dict(
 OBEC_UDALOSTI = [
 ]
 
-# Domy podle čísla popisného (klíč = číslo jako text, i „30“, „12a“, „ev. 3“).
+# Domy podle čísla popisného (klíč = číslo jako text, i „12a“, „ev. 3“).
 # Pozor na přečíslování: čísla se zaváděla 1770–71 a obce se často přečíslovaly (hlavně 1805–1830 a po 1900).
 # dict(
 #   nazev="U Nováků",                   # jméno statku / chalupy (po domácku), může být prázdné
 #   druh="selský dvůr",                 # selský dvůr / chalupa / domek / mlýn / hospoda / kovárna / škola…
 #   st="doc",
 #   popis="2–4 věty: co to je za dům dnes a čím je zajímavý",
-#   lat=48.86, lon=14.60,               # poloha domu (doplní tools/mista.py dum <čp> nebo ručně z mapy)
+#   lat=49.431, lon=15.221,             # poloha domu (tools/mista.py ruian "Horní Lhota 12" nebo ručně z mapy)
 #   cisla=[("1771–1830", "čp. 7"), ("od 1830", "čp. 12")],   # starší a pozdější čísla téhož domu
 #   udalosti=[dict(rok="1890", text="Sčítání lidu: v domě 7 osob…", st="doc", r=["lhota_scitani_cp12_1890"])],
 #   drzitele=[dict(od="1786", do="1820", n="Jan Novák", jak="koupě od otce za 300 zl.", st="doc", r=[…], note="")],

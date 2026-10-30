@@ -18,13 +18,13 @@ Položky do JSON souborů přidávej a měň přes `python3 -I tools/zapis.py` (
 ```python
 OBEC = dict(nazev="Horní Lhota", jine_nazvy="Ober-Lhotta", obec="Dolní Lhota, okres Pelhřimov",
             farnost="Dolní Lhota", panstvi="Kamenice (8 domů) a Pacov (10 domů)",
-            popis="…", lat=49.40, lon=15.20)
+            popis="…", lat=…, lon=…)
 OBEC_UDALOSTI = [
  dict(rok="22. 7. 1352", text="Ves poprvé zmíněna v listině…", st="lit",
       zdroj="Vlastivěda okresu (1899), s. 389"),
 ]
 D = {
- "30": dict(nazev="", druh="chalupa", st="doc", popis="…", lat=…, lon=…,
+ "12": dict(nazev="", druh="chalupa", st="doc", popis="…", lat=…, lon=…,
      cisla=[("1771–1827", "čp. 21 (?)"), ("od 1827", "čp. 12")],
      udalosti=[dict(rok="1890", text="Sčítání lidu: 7 osob, hospodář …", st="doc", r=["lhota_scitani_cp12_1890"])],
      drzitele=[dict(od="1786", do="1820", n="Jan Novák", jak="koupě od otce za 300 zl.", st="doc", r=[…], note="")],
@@ -33,11 +33,11 @@ D = {
 }
 ISSUES = [("Kdy dům dostal číslo 12?", "Otevřené: v matrice 1786 je Novák na čp. 4…")]
 ```
-- Klíč domu = číslo popisné **jako text** („30“, „12a“, „ev. 3“). Adresa stránky `/dum/12/`.
+- Klíč domu = číslo popisné **jako text** („12“, „12a“, „ev. 3“). Adresa stránky `/dum/12/`.
 - `rok` / `od` / `do` jako text: „1352“, „22. 7. 1352“, „asi 1600“, „před 1654“. Web řadí podle prvního čtyřčíslí.
 - `udalosti`: stavba, požár, přestavba, dělení gruntu, prodej, sčítání (shrnutí domácnosti), válka, elektrifikace…
 - `drzitele`: jeden řádek = jeden držitel (u manželů „Jan a Marie Novákovi“), `jak` = koupě / dědictví / přiženění / dražba / přídělem.
-- `obyvatele`: lidé, kteří v domě žili (i výměnkáři, čeleď, nájemníci). `f` fakta jako v rodokmenu
+- `obyvatele`: lidé, kteří v domě žili (i výměnkáři, čeleď, nájemníci). `f` krátká fakta
   (`* narození`, `× sňatek`, `† úmrtí`). **Žijící jen jméno** (soukromí).
 - `cisla`: všechna čísla domu v čase, dvojice (období, číslo). Ztotožnění doložit v `udalosti` nebo `note`.
 
@@ -60,7 +60,7 @@ ISSUES = [("Kdy dům dostal číslo 12?", "Otevřené: v matrice 1786 je Novák 
 Gruntovní knihy: „Velkostatek Kamenice, gruntovní kniha Horní Lhota 1650–1780, inv. č. …“.
 
 ## `prepisy.json`, `zvyrazneni.json`
-Jako v rodokmenu: `{"<klic>": {"orig": "[Číslo domu] 30\n[Jméno] …", "cs": "Překlad celou větou…"}}`,
+`{"<klic>": {"orig": "[Číslo domu] 30\n[Jméno] …", "cs": "Překlad celou větou…"}}`,
 `orig` po sloupcích s `[Názvem sloupce]`, nejisté „(?)“, nečitelné „[…]“. U gruntovních knih vysvětli staré pojmy
 (kopa, vejrunk, výminek, závdavek) v `cs`. Rámečky zapisuje `ramecek.py`.
 
@@ -79,7 +79,7 @@ Jako v rodokmenu: `{"<klic>": {"orig": "[Číslo domu] 30\n[Jméno] …", "cs": 
 - `zdroj` povinně (autorská práva).
 
 ## `mista.json` – další body na mapě
-`{"Kaple na návsi": {"dotaz": "…", "lat": 49.40, "lon": 15.20, "popis": "Barokní socha sv. Jana"}}`, spravuje `mista.py`.
+`{"Kaple na návsi": {"dotaz": "…", "lat": 49.432, "lon": 15.219, "popis": "Barokní socha sv. Jana"}}`, spravuje `mista.py`.
 
 ## `dokumenty.json` – fotky a dokumenty
 `[{"img": "foto_cp12_1935", "popis": "Čp. 12 kolem 1935 (fotka od paní X).", "domy": ["12"]}]`

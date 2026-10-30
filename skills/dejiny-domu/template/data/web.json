@@ -16,5 +16,6 @@
  },
  "hlavni_dum": "",
  "pribeh": {"menu": "", "tlacitko": ""},
- "zajimavosti_na_uvodu": []
+ "zajimavosti_na_uvodu": [],
+ "verejny": false
 }

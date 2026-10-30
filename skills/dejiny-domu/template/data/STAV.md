@@ -16,7 +16,7 @@ pak konec `research_log.md` a sekci „Rozpracováno“.
 | `data/svazky.json` | Svazky a fondy (matriky, gruntovní knihy, sčítání, katastry) – archiv, signatura, odkaz. |
 | `data/prepisy.json` | Přepis originálu a český překlad každého zápisu. |
 | `data/zvyrazneni.json` | Rámečky – které místo výřezu čteme. |
-| `data/mapy.json` | Historické mapy a letecké snímky (rok, zdroj) – stránka „Mapy“ s porovnáním. |
+| `data/mapy.json` | Historické mapy a letecké snímky (rok, zdroj) – stránka „Staré mapy“ s porovnáním. |
 | `data/research_log.md` | Deník VŠECH hledání, i neúspěšných. |
 | `data/pametnici.md` | Co řekli majitelé a pamětníci, domovní dokumenty. |
 | `data/zajimavosti.md`, `data/pribeh.md` | Texty na web. |
