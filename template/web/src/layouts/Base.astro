@@ -1,8 +1,10 @@
 ---
+import { Font } from 'astro:assets';
 import '../styles/global.css';
+import '../styles/modern.css';
 import { config } from '../lib/data.js';
 const siteName = config.nazev || 'Dějiny domu';
-const { title, description = config.popis || siteName, wide = false, wider = false, full = false } = Astro.props;
+const { title, description = config.popis || siteName, wide = false, wider = false, full = false, narrow = false } = Astro.props;
 const path = Astro.url.pathname;
 const groups = [
   [['/', 'Úvod'], ...(config.maPribeh ? [['/pribehy/', config.pribeh?.menu || 'Příběh domu']] : []), ['/zajimavosti/', 'Zajímavosti']],
@@ -15,6 +17,8 @@ const current = (url) => ((url === '/' ? path === '/' : path.startsWith(url)) ? 
 <html lang="cs">
   <head>
     <meta charset="utf-8" />
+    <Font cssVariable="--font-serif" preload />
+    <Font cssVariable="--font-sans" preload />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
     <meta name="description" content={description} />
@@ -40,7 +44,7 @@ const current = (url) => ((url === '/' ? path === '/' : path.startsWith(url)) ? 
         btn.setAttribute('aria-expanded', String(open));
       });
     </script>
-    <main class={full ? 'full' : wider ? 'wider' : wide ? 'wide' : ''} data-pagefind-body>
+    <main class={full ? 'full' : wider ? 'wider' : wide ? 'wide' : narrow ? 'narrow' : ''} data-pagefind-body>
       <slot />
     </main>
     {!full && <footer class="site-footer">

@@ -8,10 +8,10 @@ const kinds = [...new Set(list.map((r) => r.kindName))];
 <Base title="Prameny">
   <h1>Prameny</h1>
   <p class="lead">Všech {list.length} zápisů z matrik, gruntovních knih, katastrů, sčítání a literatury – chronologicky. U každého je výřez snímku s vyznačeným místem, plné rozlišení a odkaz do archivu. Co zatím chybí nebo si odporuje, najdete v přehledu <a href="/hledame/">co ještě hledáme</a>.</p>
-  <p class="chips">
-    <button class="chip" data-k="" type="button">vše</button>
-    {kinds.map((k) => <button class="chip" data-k={k} type="button">{k}</button>)}
-  </p>
+  <div class="filters" role="group" aria-label="Filtr podle druhu pramene">
+    <button class="filter" data-k="" type="button" aria-pressed="true">vše <span>{list.length}</span></button>
+    {kinds.map((k) => <button class="filter" data-k={k} type="button" aria-pressed="false">{k} <span>{list.filter((r) => r.kindName === k).length}</span></button>)}
+  </div>
   <div class="table-box"><table>
     <thead><tr><th>Datum</th><th>Druh</th><th>Zápis</th><th>Dům</th></tr></thead>
     <tbody>
@@ -35,6 +35,7 @@ const kinds = [...new Set(list.map((r) => r.kindName))];
   <script>
     document.querySelectorAll<HTMLButtonElement>('button[data-k]').forEach((b) =>
       b.addEventListener('click', () => {
+        document.querySelectorAll('button[data-k]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
         document.querySelectorAll<HTMLTableRowElement>('tr[data-kind]').forEach((tr) => {
           tr.hidden = !!b.dataset.k && tr.dataset.kind !== b.dataset.k;
         });

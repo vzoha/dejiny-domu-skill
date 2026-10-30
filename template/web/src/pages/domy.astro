@@ -1,21 +1,32 @@
 ---
 import Base from '../layouts/Base.astro';
-import { houseList, href, village, statusClass } from '../lib/data.js';
+import { houseList, href, village } from '../lib/data.js';
+// rok převzetí; když chybí (v datech „?“), aspoň „do <rok>“
+const takeoverYear = (o) => (/\d/.test(o.since) ? o.since : /\d/.test(o.until) ? `do ${o.until}` : '?');
 ---
 <Base title="Domy">
   <h1>Domy{village.name && ` v obci ${village.name}`}</h1>
   <p class="lead">Domy podle čísla popisného. Čísla se zaváděla v letech 1770–1771 a během 19. století se často měnila – u domu je uvedeno, pod jakými čísly ho v pramenech najdete.</p>
-  <div class="table-box"><table>
-    <thead><tr><th>Čp.</th><th>Dům</th><th>Držitelé</th><th>Doloženo</th></tr></thead>
-    <tbody>
-      {houseList.map((h) => (
-        <tr>
-          <td><a href={href.house(h.slug)}>{h.cp}</a></td>
-          <td><a href={href.house(h.slug)}>{h.name || h.kind || 'dům'}</a>{h.name && h.kind && <div class="small muted">{h.kind}</div>}</td>
-          <td class="small">{h.owners.map((o) => o.name).join(' → ')}</td>
-          <td><span class={`chip ${statusClass(h.st)}`}>{h.status}</span></td>
-        </tr>
-      ))}
-    </tbody>
-  </table></div>
+  <div class="house-grid">
+    {houseList.map((h) => (
+      <a class="card card-link house-card" href={href.house(h.slug)}>
+        <div class="house-top">
+          <span class="house-cp"><small>čp.</small>{h.cp}</span>
+          <div>
+            <h2>{h.name || h.kind || 'dům'}</h2>
+            {h.name && h.kind && <p class="small muted">{h.kind}</p>}
+          </div>
+        </div>
+        {h.owners.length > 0 && (
+          <>
+            <p class="house-label">Držitelé</p>
+            <ol class="owner-list">
+              {h.owners.map((o) => <li><span class="yrs">{takeoverYear(o)}</span>{o.name}</li>)}
+            </ol>
+          </>
+        )}
+        <span class="more-link">Dějiny domu <span class="arr" aria-hidden="true"></span></span>
+      </a>
+    ))}
+  </div>
 </Base>

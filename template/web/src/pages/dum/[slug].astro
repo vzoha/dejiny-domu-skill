@@ -43,7 +43,7 @@ const recs = h.records.filter((r) => records[r]).sort((a, b) => dateKey(records[
               <td class="small" style="white-space:nowrap">{o.until}</td>
               <td>{o.name}{o.note && <div class="small muted">{o.note}</div>}</td>
               <td class="small">{o.how}</td>
-              <td><span class={`chip ${statusClass(o.st)}`}>{o.status}</span> <RecLinks ids={o.records} /></td>
+              <td><div class="src-line"><span class={`chip ${statusClass(o.st)}`}>{o.status}</span><RecLinks ids={o.records} /></div></td>
             </tr>
           ))}
         </tbody>
@@ -61,7 +61,7 @@ const recs = h.records.filter((r) => records[r]).sort((a, b) => dateKey(records[
             {p.role && <p class="small"><strong>{p.role}</strong></p>}
             {p.facts.length > 0 && <ul class="facts small">{p.facts.map((f) => <li>{f}</li>)}</ul>}
             {p.note && <p class="small muted">{p.note}</p>}
-            <p class="small"><span class={`chip ${statusClass(p.st)}`}>{p.status}</span> <RecLinks ids={p.records} /></p>
+            <p class="small src-line"><span class={`chip ${statusClass(p.st)}`}>{p.status}</span><RecLinks ids={p.records} /></p>
           </div>
         ))}
       </div>

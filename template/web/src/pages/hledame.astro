@@ -10,12 +10,13 @@ import { Content as Dotazy } from '../generated/dotazy.md';
   <div class="grid2">
     {issues.filter((i) => !i.text.startsWith('Vyřešeno')).map((i) => (
       <div class="card">
+        <span class={`chip status-chip ${i.text.startsWith('Vyřešeno') ? 'st-doc' : i.text.startsWith('Hypotéza') ? 'st-prob' : 'st-unk'}`}>{i.text.split(':')[0]}</span>
         <h3>{i.title}</h3>
-        <p class="small"><span class={`chip ${i.text.startsWith('Vyřešeno') ? 'st-doc' : i.text.startsWith('Hypotéza') ? 'st-prob' : 'st-unk'}`}>{i.text.split(':')[0]}</span> {i.text.slice(i.text.indexOf(':') + 1)}</p>
+        <p class="small">{i.text.slice(i.text.indexOf(':') + 1).trim()}</p>
       </div>
     ))}
   </div>
   <h2>Prameny mimo internet</h2>
   <div class="prose small"><Dotazy /></div>
-  <p><a href="/denik/">Výzkumný deník – všechna hledání včetně neúspěšných →</a></p>
+  <p class="more-links"><a href="/denik/">Výzkumný deník – všechna hledání včetně neúspěšných</a></p>
 </Base>

@@ -74,7 +74,11 @@ zkus v `launch.json` `"runtimeExecutable": "node"` a `"runtimeArgs": ["web/node_
 - CapRover: `npm run deploy-caprover` (vyžaduje nainstalovaný a přihlášený `caprover` CLI).
 
 ## Úpravy vzhledu
-Styly `web/src/styles/global.css` (barvy v `:root`), rozložení `web/src/layouts/Base.astro`, stránky `web/src/pages/`.
+Styly: `web/src/styles/global.css` (základ) a nad ním `modern.css` (barvy v `:root`, karty, časová osa, formuláře) –
+vzhled měň v `modern.css`. Písma (Fraunces na nadpisy, Source Sans 3 na text) jsou v projektu z balíčků `@fontsource-variable`
+a načítá je Astro (`astro.config.mjs` → `fonts`, `<Font>` v `Base.astro`) s přednačtením a dorovnaným záložním písmem,
+takže text při načtení neposkočí; nic se nestahuje z Google Fonts. Rozložení `web/src/layouts/Base.astro`, stránky
+`web/src/pages/`. Šířka stránky: `<Base>` bez parametru = 1120 px, `wide` = 1600 px, `narrow` = čtecí sloupec (příběh).
 Upravuj jen na přání uživatele a po úpravě zkontroluj web na mobilu i počítači.
 
 ## Mapové vrstvy

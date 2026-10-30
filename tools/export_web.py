@@ -182,7 +182,7 @@ def main():
         owners = [dict(since=str(o.get("od", "")), until=str(o.get("do", "")), name=o.get("n", ""), how=o.get("jak", ""),
                        st=o.get("st", "unk"), status=STATUS.get(o.get("st"), ""), note=o.get("note", ""),
                        records=[r for r in o.get("r", []) if r in recs]) for o in d.get("drzitele", [])]
-        owners.sort(key=lambda o: year_key(o["since"] or o["until"]))
+        owners.sort(key=lambda o: year_key(o["since"] if any(c.isdigit() for c in o["since"]) else o["until"]))   # „?“ od → řadit podle „do“
         events = sorted((event(e, recs) for e in d.get("udalosti", [])), key=lambda e: year_key(e["year"]))
         refs = [r for x in events + owners + people for r in x["records"]]
         houses[slug] = dict(

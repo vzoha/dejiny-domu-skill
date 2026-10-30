@@ -7,32 +7,28 @@ import { frontmatter as pribeh } from '../generated/pribeh.md';
 const uvod = config.uvod ?? {};
 const cards = config.zajimavosti_na_uvodu ?? [];
 const hasMap = houseList.some((h) => h.lat != null) || village.lat != null;
+const heroTitle = uvod.nadpis || config.nazev || (mainHouse ? `${village.name} ${houseTitle(mainHouse)}` : village.name) || 'Dějiny domu';
+const heroParagraphs = uvod.odstavce ?? (config.maPribeh && pribeh.lead ? [pribeh.lead] : []);
 ---
-<Base title="" wide>
-  <h1>{config.nazev || (mainHouse ? `${village.name} ${houseTitle(mainHouse)}` : village.name) || 'Dějiny domu'}</h1>
-
-  {(uvod.nadpis || uvod.odstavce?.length) && (
-    <section class="teaser">
-      <div>
-        {uvod.nadpis && <h2>{uvod.nadpis}</h2>}
-        {(uvod.odstavce ?? []).map((t) => <p>{t}</p>)}
+<Base title="">
+  <section class="hero">
+    <div class="hero-text">
+      {village.name && <p class="eyebrow">{village.name}{stats.oldest && ` · od roku ${stats.oldest}`}</p>}
+      <h1>{heroTitle}</h1>
+      {heroParagraphs.map((t, i) => <p class={i === 0 ? 'hero-lead' : ''}>{t}</p>)}
+      <div class="hero-actions">
         {config.maPribeh && <a class="btn" href="/pribehy/">{config.pribeh?.tlacitko || `Přečíst: ${pribeh.title}`} →</a>}
+        {mainHouse && <a class={config.maPribeh ? 'btn btn-ghost' : 'btn'} href={href.house(mainHouse.slug)}>Dějiny domu →</a>}
+        <a class="btn btn-ghost" href="/zapisy/">Prameny</a>
       </div>
-      {uvod.foto && (
-        <a href={config.maPribeh ? '/pribehy/' : `/img/${uvod.foto}.jpg`}><img src={`/img/${uvod.foto}.jpg`} alt={uvod.foto_popis || ''} /></a>
-      )}
-    </section>
-  )}
-
-  {config.maPribeh && !(uvod.nadpis || uvod.odstavce?.length) && (
-    <section class="teaser">
-      <div>
-        <h2>{pribeh.title}</h2>
-        {pribeh.lead && <p>{pribeh.lead}</p>}
-        <a class="btn" href="/pribehy/">{config.pribeh?.tlacitko || 'Přečíst příběh'} →</a>
-      </div>
-    </section>
-  )}
+    </div>
+    {uvod.foto && (
+      <figure class="hero-img">
+        <a href={config.maPribeh ? '/pribehy/' : `/zdroje/${uvod.foto}.jpg`}><img src={`/img/${uvod.foto}.jpg`} alt={uvod.foto_popis || ''} /></a>
+        {uvod.foto_popis && <figcaption>{uvod.foto_popis}</figcaption>}
+      </figure>
+    )}
+  </section>
 
   <div class="stats">
     {stats.oldest && <div><strong>{stats.oldest}</strong>nejstarší zmínka</div>}
@@ -44,7 +40,12 @@ const hasMap = houseList.some((h) => h.lat != null) || village.lat != null;
 
   {mainHouse && (
     <>
-      <h2>{houseTitle(mainHouse)}</h2>
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">{mainHouse.name ? `${village.name} čp. ${mainHouse.cp}` : village.name}</p>
+          <h2><a href={href.house(mainHouse.slug)}>{mainHouse.name || `čp. ${mainHouse.cp}`}</a></h2>
+        </div>
+      </div>
       {mainHouse.desc && <p class="lead">{mainHouse.desc}</p>}
       {mainHouse.events.length > 0 && <Timeline events={mainHouse.events.slice(0, 6)} />}
       <p><a class="btn" href={href.house(mainHouse.slug)}>Celé dějiny domu →</a></p>
@@ -53,28 +54,41 @@ const hasMap = houseList.some((h) => h.lat != null) || village.lat != null;
 
   {cards.length > 0 && (
     <>
-      <h2>Zajímavosti</h2>
+      <div class="section-head">
+        <h2>Zajímavosti</h2>
+        <a class="head-link" href="/zajimavosti/">Všechny zajímavosti <span class="arr" aria-hidden="true"></span></a>
+      </div>
       <div class="grid2">
         {cards.map((c) => (
           <a class="card card-link" href="/zajimavosti/"><h3>{c.nadpis}</h3><p class="small muted">{c.text}</p></a>
         ))}
       </div>
-      <p><a href="/zajimavosti/">Všechny zajímavosti →</a></p>
     </>
   )}
 
   {village.name && (
     <>
-      <h2>Obec {village.name}</h2>
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Obec</p>
+          <h2><a href="/obec/">{village.name}</a></h2>
+        </div>
+      </div>
       {village.desc && <p class="lead">{village.desc}</p>}
-      <p><a href="/obec/">Dějiny obce →</a></p>
+      <p><a class="btn" href="/obec/">Dějiny obce →</a></p>
     </>
   )}
 
   {hasMap && (
-    <>
+    <div class="map-card">
       <HouseMap height="420px" compact />
-      <p><a href="/mapa/">Velká mapa →</a> · <a href="/mapy/">staré mapy a letecké snímky →</a></p>
-    </>
+      <div class="map-card-bar">
+        <span class="muted small">Domy a místa z dějin obce</span>
+        <span class="map-card-links">
+          <a href="/mapa/">Velká mapa <span class="arr" aria-hidden="true"></span></a>
+          <a href="/mapy/">Staré mapy a letecké snímky <span class="arr" aria-hidden="true"></span></a>
+        </span>
+      </div>
+    </div>
   )}
 </Base>

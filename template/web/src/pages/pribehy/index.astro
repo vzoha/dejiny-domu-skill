@@ -3,11 +3,11 @@ import Base from '../../layouts/Base.astro';
 import { docs, mainHouse, href, houseTitle } from '../../lib/data.js';
 import { Content, frontmatter } from '../../generated/pribeh.md';
 ---
-<Base title={frontmatter.title}>
+<Base title={frontmatter.title} narrow>
   <p class="crumbs">{mainHouse && <><a href={href.house(mainHouse.slug)}>{houseTitle(mainHouse)}</a> · </>}<a href="/zajimavosti/">další zajímavosti</a></p>
   <h1>{frontmatter.title}</h1>
   {frontmatter.lead && <p class="lead">{frontmatter.lead}</p>}
-  <div class="prose"><Content /></div>
+  <div class="prose prose-story"><Content /></div>
 
   <div class="next-step">
     <p><strong>Chcete víc?</strong> Další objevy najdete v zajímavostech.</p>
