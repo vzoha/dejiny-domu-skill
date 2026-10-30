@@ -1,0 +1,14 @@
+{
+  "name": "dejiny-domu-skill",
+  "description": "Skill pro Claude Code: dějiny domu a vesnice z českých archivů a web s časovou osou.",
+  "owner": {
+    "name": "Vojtěch Žoha"
+  },
+  "plugins": [
+    {
+      "name": "dejiny-domu",
+      "source": "./",
+      "description": "Dějiny domu a vesnice z českých archivů a web s časovou osou – průvodce pro začátečníky (česky)."
+    }
+  ]
+}

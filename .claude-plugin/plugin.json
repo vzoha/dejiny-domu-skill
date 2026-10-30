@@ -1,0 +1,9 @@
+{
+  "name": "dejiny-domu",
+  "version": "0.3.0",
+  "description": "Dějiny domu a vesnice z českých archivů a web s časovou osou – průvodce pro začátečníky (česky).",
+  "author": {
+    "name": "Vojtěch Žoha"
+  },
+  "license": "MIT"
+}
