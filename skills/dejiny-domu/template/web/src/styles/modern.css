@@ -218,13 +218,14 @@ main .lead, main .prose, main .next-step { max-width: none; }
 .src-line .chip { flex: none; white-space: nowrap; padding: 0.1rem 0.6rem; font-size: 0.78rem; }
 .src-line .src-cards { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 
-/* odkazy na doklady: kartičky s ikonou dokumentu (všude stejně) */
+/* odkazy na doklady: kartičky s ikonou dokumentu (všude stejně, i odkazy /zdroj/ v textech příběhů a zajímavostí) */
 .src-cards { display: contents; }
-.src-card { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.12rem 0.55rem; border: 1px solid #d9cdbb; border-radius: 6px; background: transparent;
+.src-card, .prose a[href^="/zdroj/"] { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.12rem 0.55rem; border: 1px solid #d9cdbb; border-radius: 6px; background: transparent;
   color: var(--accent); text-decoration: none; font-size: 0.8rem; line-height: 1.5; white-space: nowrap; transition: border-color 0.15s, background 0.15s; }
-.src-card::before { content: ''; flex: none; width: 0.7rem; height: 0.8rem; background: currentColor; opacity: 0.7;
+.src-card::before, .prose a[href^="/zdroj/"]::before { content: ''; flex: none; width: 0.7rem; height: 0.8rem; background: currentColor; opacity: 0.7;
   -webkit-mask: var(--icon-doc) center / contain no-repeat; mask: var(--icon-doc) center / contain no-repeat; }
-.src-card:hover { border-color: var(--accent); background: var(--accent-soft); color: #6e3f14; }
+.prose a[href^="/zdroj/"] { margin: 0.1rem 0; vertical-align: 0.05em; }
+.src-card:hover, .prose a[href^="/zdroj/"]:hover { border-color: var(--accent); background: var(--accent-soft); color: #6e3f14; }
 
 @media (max-width: 600px) {
   .timeline li { grid-template-columns: 1fr; gap: 0.15rem; padding-left: 1.1rem; }
