@@ -79,7 +79,22 @@ Gruntovní knihy: „Velkostatek Kamenice, gruntovní kniha Horní Lhota 1650–
 - `zdroj` povinně (autorská práva).
 
 ## `mista.json` – další body na mapě
-`{"Kaple na návsi": {"dotaz": "…", "lat": 49.432, "lon": 15.219, "popis": "Barokní socha sv. Jana"}}`, spravuje `mista.py`.
+```json
+{"Kaple na návsi": {"dotaz": "…", "lat": 49.432, "lon": 15.219, "popis": "Barokní socha sv. Jana.",
+  "druh": "vira", "odkaz": "/zajimavosti/#kaple-na-návsi", "odkaz_text": "Celý příběh", "priblizne": false}}
+```
+Bod přidá `mista.py pridej` (poloha z OSM), další pole `zapis.py mista "<název>" <vstup.json> --sloucit`.
+- `druh` – barva a skupina v legendě a v seznamu pod mapou: `vira` (kaple, kostely), `pamatka` (kříže, pomníky), `remeslo`
+  (mlýny, hamry, kovárny), `verejne` (škola, hospoda, obecní místa), `ves` (sousední vsi), jinak `jine`. Názvy a barvy:
+  `web/src/lib/places.js`.
+- `odkaz` + `odkaz_text` – kam vede odkaz z bubliny: zajímavost `/zajimavosti/#<id nadpisu>` (id = nadpis malými písmeny,
+  mezery → `-`, interpunkce pryč, diakritika zůstává; ověř v `web/dist/zajimavosti/index.html`), zápis `/zdroj/<klíč>/`,
+  `/obec/`, `/mapy/`. Krátký text („Celý příběh“, „Zpráva z novin 1889“), dlouhý se v kartě zalomí.
+- `priblizne: true` – poloha jen odvozená (např. „před čp. 24“ z kroniky → dnešní čp. 24 z RÚIAN). Bod je čárkovaný a má štítek
+  „poloha přibližná“; v `popis` napiš, odkud poloha je, ne „bod je přibližný“ (to už říká štítek).
+- `popis` 1–3 věty pro hosta: co to je a proč to patří k dějinám obce. Nejistotu přiznej („Jestli kříž ještě stojí, nevíme.“).
+- Okolní místa (sousední vsi, farní kostel) jen do ~5 km; dál ležící body roztáhnou přepínač „Okolí“ tak, že ves zmizí.
+- Přejmenovat bod `zapis.py` neumí: klíč změň nástrojem pro úpravu souborů (jen ten řádek).
 
 ## `dokumenty.json` – fotky a dokumenty
 `[{"img": "foto_cp12_1935", "popis": "Čp. 12 kolem 1935 (fotka od paní X).", "domy": ["12"]}]`

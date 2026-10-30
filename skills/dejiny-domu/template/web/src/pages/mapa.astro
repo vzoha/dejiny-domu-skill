@@ -1,9 +1,99 @@
 ---
 import Base from '../layouts/Base.astro';
 import HouseMap from '../components/HouseMap.astro';
+import { houseList, places, village, href, houseTitle, mainHouse } from '../lib/data.js';
+import { PLACE_KINDS, distText } from '../lib/places.js';
+// Seznam pod mapou: domy a místa po skupinách (stejné pořadí a barvy jako legenda v mapě).
+const items = [
+  ...houseList.filter((h) => h.lat != null).map((h) => ({
+    kind: h.slug === mainHouse?.slug ? 'main' : 'house', name: houseTitle(h), desc: h.kind, link: href.house(h.slug), linkText: 'Dějiny domu', approx: false,
+  })),
+  ...places.map((p) => ({ kind: PLACE_KINDS[p.kind] ? p.kind : 'jine', name: p.name, desc: p.desc, link: p.link, linkText: p.linkText, approx: p.approx })),
+].map((it, i) => ({ ...it, i }));
+const pts = [...houseList.filter((h) => h.lat != null), ...places];
+for (const it of items) it.dist = distText(village, pts[it.i]);
+// Hlavní dům a ostatní domy jsou v seznamu jedna skupina „Domy“ (barvu má každá položka zvlášť).
+const groups = Object.entries(PLACE_KINDS)
+  .filter(([k]) => k !== 'main')
+  .map(([k, v]) => {
+    const own = k === 'house' ? items.filter((it) => it.kind === 'main' || it.kind === 'house').sort((a, b) => (a.kind === 'main' ? -1 : 0) - (b.kind === 'main' ? -1 : 0))
+      : items.filter((it) => it.kind === k);
+    return { k, name: k === 'house' ? 'Domy' : v.name, color: v.color, items: own.map((it) => ({ ...it, color: PLACE_KINDS[it.kind].color })) };
+  })
+  .filter((g) => g.items.length);
 ---
 <Base title="Mapa" wide>
   <h1>Mapa</h1>
-  <p class="lead">Domy a místa z dějin obce. Vpravo nahoře lze přepnout na letecký snímek a zapnout dnešní katastrální mapu.</p>
-  <HouseMap height="calc(100vh - 230px)" />
+  <p class="lead">Domy a místa z dějin obce. Klikněte na bod a dozvíte se, co se tam stalo. Vlevo nahoře přepnete mezi vsí a okolím, vlevo dole jsou vysvětlivky barev a vpravo nahoře letecký snímek a dnešní katastr.</p>
+  <HouseMap height="calc(100vh - 260px)" />
+
+  <h2 class="places-h">Místa na mapě</h2>
+  <p class="places-intro">Co kde stojí a proč to patří k dějinám obce. Tlačítkem „Na mapě“ místo ukážete nahoře.</p>
+  {groups.map((g) => (
+    <section class="pl-group" style={`--c:${g.color}`}>
+      <h3 class="pl-group-h"><span class="pl-dot"></span>{g.name}<span class="pl-count">{g.items.length}</span></h3>
+      <div class="pl-grid">
+        {g.items.map((it) => (
+          <article class="pl-card" style={`--c:${it.color}`} id={`misto-${it.i}`}>
+            <h4>{it.name}</h4>
+            {(it.approx || it.dist) && (
+              <p class="pl-meta">
+                {it.dist && <span>{it.dist}</span>}
+                {it.approx && <span class="pl-badge">poloha přibližná</span>}
+              </p>
+            )}
+            {it.desc && <p class="pl-desc">{it.desc}</p>}
+            <div class="pl-actions">
+              <button type="button" class="place-show" data-i={it.i}>
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 15s5-4.6 5-8.5A5 5 0 0 0 3 6.5C3 10.4 8 15 8 15z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="6.5" r="1.8" fill="currentColor"/></svg>
+                Na mapě
+              </button>
+              {it.link && <a class="pl-link" href={it.link}>{it.linkText || 'Víc'}</a>}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  ))}
 </Base>
+
+<script>
+  // Klik v seznamu → přiblížit bod na mapě a otevřít jeho bublinu (pořadí bodů je stejné jako v HouseMap).
+  for (const b of document.querySelectorAll<HTMLButtonElement>('.place-show')) {
+    b.addEventListener('click', () => {
+      const el = document.querySelector<HTMLElement>('.fmap') as any;
+      if (!el?.fmap) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.fmap.select(Number(b.dataset.i));
+    });
+  }
+</script>
+
+<style>
+  .places-h { margin-top: 3rem; margin-bottom: 0.3rem; }
+  .places-intro { color: var(--muted); margin: 0 0 1.5rem; }
+  .pl-group { margin: 0 0 2.2rem; }
+  .pl-group-h { display: flex; align-items: center; gap: 0.55rem; font-size: 1.2rem; margin: 0 0 0.9rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--line); }
+  .pl-dot { width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent); }
+  .pl-count { font: 600 0.78rem var(--sans); color: var(--muted); background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 0.05rem 0.55rem; }
+  .pl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1rem; }
+  .pl-card { position: relative; display: flex; flex-direction: column; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 1rem 1.15rem 0.9rem 1.35rem; overflow: hidden; transition: box-shadow 0.15s, transform 0.15s; }
+  .pl-card::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--c); }
+  .pl-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+  .pl-card { scroll-margin-top: 90px; }
+  .pl-card.on { box-shadow: 0 0 0 2px var(--c), var(--shadow-hover); }
+  .pl-card h4 { font: 600 1.12rem/1.25 var(--serif); color: var(--brown); margin: 0 0 0.3rem; }
+  .pl-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.6rem; margin: 0 0 0.45rem; font-size: 0.82rem; color: var(--muted); }
+  .pl-badge { font-weight: 600; font-size: 0.74rem; padding: 0.05rem 0.5rem; border-radius: 999px; border: 1px dashed #9b8c78; color: #6f6457; background: #fbf7f0; }
+  .pl-desc { margin: 0 0 0.9rem; font-size: 0.93rem; line-height: 1.55; color: #3f362d; }
+  .pl-actions { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; padding-top: 0.7rem; border-top: 1px dashed var(--line); }
+  .place-show { display: inline-flex; align-items: center; gap: 0.35rem; font: 600 0.85rem var(--sans); color: var(--brown); background: transparent;
+    border: 1px solid #cbbfae; border-radius: 999px; padding: 0.25rem 0.75rem 0.25rem 0.6rem; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+  .place-show svg { width: 0.95rem; height: 0.95rem; color: var(--c); }
+  .place-show:hover { background: var(--accent-soft); border-color: var(--brown); }
+  .place-show:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .pl-link { font-size: 0.88rem; font-weight: 600; text-decoration: none; }
+  .pl-link::after { content: ' →'; }
+  .pl-link:hover { text-decoration: underline; }
+</style>

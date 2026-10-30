@@ -227,6 +227,27 @@ Nástroje pro ně hotové nejsou. Postupuj takto a výsledek zapiš do `STAV.md`
   Stavbu podle obce a čísla popisného najde i nahlizenidokn.cuzk.gov.cz (ověření adresy z dokladu); vlastník je za
   CAPTCHou a je to údaj o žijícím člověku – nezjišťuj ho.
 
+## Staré mapy a drobné památky (pro mapu na webu)
+- **2. vojenské mapování (1836–52)**: WMS `https://gis.cenia.cz/mapcache/II_vojenske_mapovani/wms` (WMS 1.1.1, vrstva
+  `II_vojenske_mapovani`, jen EPSG:5514). Výřez: střed převeď z lat/lon na S-JTSK přes
+  `https://ags.cuzk.gov.cz/arcgis/rest/services/Utilities/Geometry/GeometryServer/project` (`inSR=4326`, `outSR=5514`,
+  `geometries={"geometryType":"esriGeometryPoint","geometries":[{"x":lon,"y":lat}]}`, `f=json`), pak `GetMap` s `BBOX` ±1300 m,
+  `WIDTH=1800&HEIGHT=1200`, a `vyrez.py <obrázek> mapa_<obec>_1845_2_vojenske_mapovani 0,0,1,1`. Na jednotlivé domy podrobnost
+  nestačí, ale ukáže ves, cesty a mlýny. Starší adresa `geoportal.gov.cz/ArcGIS/services/CENIA/…` hlásí údržbu a oldmaps.geolab.cz
+  místo stránek vrací zdrojový kód – nepoužívat.
+- **Kříže, boží muka, pomníky dnes**: ZABAGED (`https://ags.cuzk.gov.cz/arcgis/rest/services/ZABAGED_POLOHOPIS/MapServer`,
+  vrstva 24 „Kříž, sloup kulturního významu“, 25 „Mohyla, pomník, náhrobek“; `query` s `geometry` = obálka kolem obce,
+  `inSR=outSR=4326`). Názvy nemají, jen polohu. OpenStreetMap (Overpass, `historic=wayside_cross|wayside_shrine|memorial`)
+  bývá podobné; přetížený server zkus znovu za chvíli.
+- **Pomístní jména** (tratě, lesy, rybníky – „U hamru“, „Na tvrzi“, „Hradiště“): GEONAMES
+  `https://ags.cuzk.gov.cz/arcgis/rest/services/GEONAMES/Vyhledavaci_sluzba_nad_daty_GEONAMES/MapServer/0/query` (obálka kolem obce).
+- **Co kde stálo a proč**: obecní kronika (kronikář obvykle vyjmenuje kříže a kaple i s místem a důvodem), opisy kronik na webech
+  obce a místních. Spojení: kronika řekne „kříž před čp. 24“ → RÚIAN dá polohu dnešního čp. 24 → bod `priblizne` s popisem,
+  ze kterého pramene je. Shoda s křížem v ZABAGED/OSM je `prob`, ne jistota.
+- **Tvrze a hrady**: Sedláček, *Hrady, zámky a tvrze království Českého* – původní vydání (1882–1927) je v Krameriovi veřejně
+  (`kramerius.py '(text_ocr:Obec*) AND root_title:"Hrady, zámky a tvrze" AND dostupnost:public'`, text stránky přes
+  `…/item/<uuid>/streams/TEXT_OCR`, kódování UTF-16). Novější regionální soupisy tvrzí bývají jen v knihovně.
+
 ## Oběti 2. světové války
 - **Arolsen Archives** (collections.arolsen-archives.org): dokumenty o vězních, nuceně nasazených a vysídlených. Vyhledávání
   v prohlížeči, vstupní prohlášení musí odsouhlasit uživatel.

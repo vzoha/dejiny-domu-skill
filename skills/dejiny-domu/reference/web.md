@@ -84,9 +84,17 @@ takže text při načtení neposkočí; nic se nestahuje z Google Fonts. Rozlož
 `web/src/pages/`. Šířka stránky: `<Base>` bez parametru = 1120 px, `wide` = 1600 px, `narrow` = čtecí sloupec (příběh).
 Upravuj jen na přání uživatele a po úpravě zkontroluj web na mobilu i počítači.
 
-## Mapové vrstvy
+## Mapa
 Mapa (`components/HouseMap.astro`) má OpenStreetMap, ortofoto ČÚZK (WMS `ags.cuzk.cz/arcgis1/services/ORTOFOTO`) a dnešní
 katastr (WMS `services.cuzk.cz/wms/wms.asp`, vrstva `KN`). Staré mapy jsou obrázky v `mapy.json` (ne georeferencované).
+- Body: domy z `domy.py` (s `lat`/`lon`) a místa z `mista.json` (pole viz `data.md`), barva podle `druh` (`lib/places.js`).
+- Úvodní výřez = domy a místa do 700 m od obce (`OBEC` lat/lon); přepínač **Ves / Okolí** vlevo nahoře (pod +/−) ukáže i vzdálená místa.
+  Na stránce domu se mapa přiblíží na dům a přepínač nemá.
+- **Vysvětlivky** vlevo dole (jen stránka Mapa) – jen barvy a „přibližná poloha“, nic dalšího; na mobilu sbalené.
+- **Bublina** = malá karta: druh, název, vzdálenost od středu obce (`STRED` v `places.js`, výchozí „návsi“), štítek přibližné
+  polohy, popis, odkaz. Vybraný bod se zvětší a dostane klidný prstenec (bez animace).
+- Stránka Mapa má pod mapou **seznam míst** po skupinách jako karty; „Na mapě“ přiblíží bod a otevře bublinu
+  (`el.fmap.select(i)`, pořadí bodů = domy s polohou, pak `mista.json`).
 
 ## Aktualizace staršího projektu
 Znovu spusť `python3 -I SKILL_DIR/tools/novy_projekt.py <složka projektu>`. Data (`data/`, výřezy) zůstanou, `tools/` se přepíše

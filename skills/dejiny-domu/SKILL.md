@@ -140,6 +140,9 @@ zapiš do `archivni_dotazy.md` s fondem a signaturou a nabídni návštěvu bada
 Paralelně s domem sbírej dějiny obce do `OBEC_UDALOSTI`: první zmínka, vrchnosti, války, požáry, počty domů
 a obyvatel (Statistický lexikon obcí), škola, kaple, elektrifikace, 1945, kolektivizace. U literatury vždy `zdroj`
 s číslem strany. Co jde ověřit v prameni, ověř.
+Místa z dějin obce (kaple, kříže, pomník, mlýn, hamr, škola, sousední vsi) dávej na mapu do `data/mista.json` s druhem,
+popisem a odkazem na zajímavost (`reference/data.md`). Kde stála, napoví kronika, RÚIAN, ZABAGED a pomístní jména
+(`reference/portaly.md` → Staré mapy a drobné památky).
 
 ## Fáze 5 – Zajímavosti a Příběh domu
 Podrobně `reference/pribehy.md`. Všechny texty pro web piš podle `reference/texty.md`. Zajímavosti piš **průběžně** do `data/zajimavosti.md` a říkej je uživateli.

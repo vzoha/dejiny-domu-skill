@@ -234,7 +234,8 @@ def main():
             for m in maps_cfg if os.path.exists(os.path.join(VYREZY, m["img"] + ".jpg"))]
     maps.sort(key=lambda m: year_key(m["year"]))
 
-    places = [dict(name=n, lat=e["lat"], lon=e["lon"], desc=e.get("popis", ""))
+    places = [dict(name=n, lat=e["lat"], lon=e["lon"], desc=e.get("popis", ""), kind=e.get("druh", ""),
+                   link=e.get("odkaz", ""), linkText=e.get("odkaz_text", ""), approx=bool(e.get("priblizne")))
               for n, e in jload("mista.json", {}).items() if "lat" in e]
 
     years = [year_key(e["year"]) // 10000 for e in village_events] + \
