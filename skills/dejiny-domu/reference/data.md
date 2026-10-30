@@ -76,12 +76,13 @@ Gruntovní knihy: „Velkostatek Kamenice, gruntovní kniha Horní Lhota 1650–
   **Snímky obrazovky od uživatele (geoportál, Mapy.cz) skupinu nedostávají**: nemají stejný výřez ani měřítko
   a prolínání nesedí (automatické zarovnání přes OpenCV selhává – jiná sezóna, rozlišení). Pro porovnání stáhni
   sérii se stejným bbox (WMS/ArcGIS export, např. ortofota ČÚZK po letech, `cuzk_archiv.py mapa` se stejným poloměrem).
-- `zdroj` povinně (autorská práva).
+- `zdroj` povinně (autorská práva). Je vidět na webu – žádné TODO ani pracovní poznámky; ty patří do `poznamka`
+  (na web nejde). `rok` musí obsahovat čtyřčíslí („1827“, „asi 1840“), jinak se mapa řadí na konec.
 
 ## `mista.json` – další body na mapě
 ```json
 {"Kaple na návsi": {"dotaz": "…", "lat": 49.432, "lon": 15.219, "popis": "Barokní socha sv. Jana.",
-  "druh": "vira", "odkaz": "/zajimavosti/#kaple-na-návsi", "odkaz_text": "Celý příběh", "priblizne": false}}
+  "druh": "vira", "odkaz": "/zajimavosti/#kaple-na-návsi", "odkaz_text": "Zajímavosti", "priblizne": false}}
 ```
 Bod přidá `mista.py pridej` (poloha z OSM), další pole `zapis.py mista "<název>" <vstup.json> --sloucit`.
 - `druh` – barva a skupina v legendě a v seznamu pod mapou: `vira` (kaple, kostely), `pamatka` (kříže, pomníky), `remeslo`
@@ -89,7 +90,8 @@ Bod přidá `mista.py pridej` (poloha z OSM), další pole `zapis.py mista "<ná
   `web/src/lib/places.js`.
 - `odkaz` + `odkaz_text` – kam vede odkaz z bubliny: zajímavost `/zajimavosti/#<id nadpisu>` (id = nadpis malými písmeny,
   mezery → `-`, interpunkce pryč, diakritika zůstává; ověř v `web/dist/zajimavosti/index.html`), zápis `/zdroj/<klíč>/`,
-  `/obec/`, `/mapy/`. Krátký text („Celý příběh“, „Zpráva z novin 1889“), dlouhý se v kartě zalomí.
+  `/obec/`, `/mapy/`, příběh `/pribehy/<slug>/`. Krátký text, dlouhý se v kartě zalomí pod „Na mapě“: „Celý příběh“
+  jen pro `/pribehy/`, na zajímavosti „Zajímavosti“, na zápis např. „Zpráva z novin 1889“.
 - `priblizne: true` – poloha jen odvozená (např. „před čp. 24“ z kroniky → dnešní čp. 24 z RÚIAN). Bod je čárkovaný a má štítek
   „poloha přibližná“; v `popis` napiš, odkud poloha je, ne „bod je přibližný“ (to už říká štítek).
 - `popis` 1–3 věty pro hosta: co to je a proč to patří k dějinám obce. Nejistotu přiznej („Jestli kříž ještě stojí, nevíme.“).
@@ -111,7 +113,8 @@ Viz `web.md`. `hlavni_dum` = čp. domu, o kterém projekt hlavně je (úvodní s
 ## Markdown
 - `research_log.md` – tabulka `| # | datum | zdroj | rozsah | hledáno | výsledek | citace |`, i negativní výsledky.
 - `zajimavosti.md` – `## Nadpis` + text, odkazy `[čp. 12](/dum/12/)`, `[zápis](/zdroj/<klic>/)`. Od ~10 položek
-  seskup: `## Skupina` (dům, ves, rodina) + jedna věta úvodu, položky `###`, ve skupině podle času.
+  seskup: `## Skupina` (dům, ves, rodina) + jedna věta úvodu, položky `###`, ve skupině podle času. Odkaz hned pod
+  `## Skupinou` na samostatném řádku (`[Celý příběh domu →](/pribehy/cp12/)`) web ukáže jako tlačítko na konci skupiny.
 - `pribeh.md` – „Příběh domu“: frontmatter `title`, `lead` + kapitoly `##` (`pribehy.md`).
 - `pribeh_<slug>.md` – další příběhy → `/pribehy/<slug>/`; frontmatter navíc `poradi`, `obdobi`, `obrazek` (`pribehy.md`).
 - `pametnici.md`, `archivni_dotazy.md` – volný text. Poznámky pro Clauda `<!-- … -->` na web nejdou.

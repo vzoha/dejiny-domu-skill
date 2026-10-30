@@ -68,6 +68,17 @@ def strip_comments(md):
     return re.sub(r"<!--.*?-->\n?", "", md, flags=re.S)
 
 
+def group_buttons(md):
+    """Odkaz hned pod nadpisem ## skupiny („Celý příběh … →“) přesune na konec skupiny jako tlačítko."""
+    parts = re.split(r"(?m)^(?=## )", md)
+    for i, part in enumerate(parts):
+        m = re.match(r"(## .*\n)\s*\[([^\]]+)\]\(([^)\s]+)\)[ \t]*\n", part)
+        if m:
+            btn = f'<p class="group-more"><a class="btn btn-ghost" href="{html.escape(m.group(3))}">{html.escape(m.group(2))}</a></p>\n\n'
+            parts[i] = m.group(1) + part[m.end():].rstrip("\n") + "\n\n" + btn
+    return "".join(parts)
+
+
 def slugify(text):
     t = unicodedata.normalize("NFKD", str(text)).encode("ascii", "ignore").decode().lower()
     return re.sub(r"[^a-z0-9]+", "-", t).strip("-")
@@ -277,7 +288,8 @@ def main():
     for src, dst in (("archivni_dotazy.md", "dotazy.md"), ("research_log.md", "denik.md"), ("zajimavosti.md", "zajimavosti.md")):
         path = os.path.join(DATA, src)
         text = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
-        write(os.path.join(gen_dir, dst), strip_comments(re.sub(r"^# .*\n", "", text, count=1)))
+        text = strip_comments(re.sub(r"^# .*\n", "", text, count=1))
+        write(os.path.join(gen_dir, dst), group_buttons(text) if src == "zajimavosti.md" else text)
     story = os.path.join(DATA, "pribeh.md")
     write(os.path.join(gen_dir, "pribeh.md"), strip_comments(open(story, encoding="utf-8").read()) if has_story else "---\ntitle: Příběh\nlead: ''\n---\n")
     stories_dir = os.path.join(gen_dir, "pribehy")

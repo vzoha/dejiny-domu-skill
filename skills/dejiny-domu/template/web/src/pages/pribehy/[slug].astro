@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { config } from '../../lib/data.js';
+import { config, mainHouse, href } from '../../lib/data.js';
 
 // Další příběhy: data/pribeh_<slug>.md (export_web.py je kopíruje do src/generated/pribehy/).
 export function getStaticPaths() {
@@ -15,19 +15,25 @@ const { Content, frontmatter } = mod;
 const { slug } = Astro.params;
 const ostatni = (config.dalsiPribehy ?? []).filter((p) => p.slug !== slug)
   .map((p) => ({ href: `/pribehy/${p.slug}/`, title: p.title, lead: p.lead }));
+// Protějšek tlačítka „Přečíst příběh domu/obce“ na stránce domu a obce.
+const cp = slug === config.pribeh?.hlavni && mainHouse ? mainHouse.cp : slug.match(/^cp(\d+)$/)?.[1];
+const zpet = slug === 'obec' ? { href: '/obec/', text: 'Dějiny obce' } : cp ? { href: `/dum/${cp}/`, text: 'Dějiny domu' } : null;
 ---
 <Base title={frontmatter.title}>
-  <p class="crumbs"><a href="/pribehy/">všechny příběhy</a> · <a href="/zajimavosti/">zajímavosti</a></p>
+  <p class="crumbs"><a href="/pribehy/">Příběhy</a></p>
   <h1>{frontmatter.title}</h1>
   {frontmatter.lead && <p class="lead">{frontmatter.lead}</p>}
   <div class="prose prose-story"><Content /></div>
 
-  {ostatni.length > 0 && (
+  {(ostatni.length > 0 || zpet) && (
     <div class="next-step">
-      <p><strong>Další příběhy</strong></p>
-      <ul class="story-list">
-        {ostatni.map((p) => <li><a href={p.href}>{p.title}</a>{p.lead && <> – {p.lead}</>}</li>)}
-      </ul>
+      {ostatni.length > 0 && <>
+        <p><strong>Další příběhy</strong></p>
+        <ul class="story-list">
+          {ostatni.map((p) => <li><a href={p.href}>{p.title}</a>{p.lead && <> – {p.lead}</>}</li>)}
+        </ul>
+      </>}
+      <p>{zpet && <a class="btn" href={zpet.href}>{zpet.text} →</a>} <a class="btn btn-ghost" href="/zajimavosti/">Zajímavosti →</a></p>
     </div>
   )}
 </Base>

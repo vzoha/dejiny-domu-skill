@@ -19,7 +19,7 @@ const heroParagraphs = uvod.odstavce ?? (config.maPribeh && pribeh.lead ? [pribe
       <div class="hero-actions">
         {config.maPribeh && <a class="btn" href={config.pribeh?.hlavni ? `/pribehy/${config.pribeh.hlavni}/` : '/pribehy/'}>{config.pribeh?.tlacitko || `Přečíst: ${pribeh.title}`} →</a>}
         {mainHouse && <a class={config.maPribeh ? 'btn btn-ghost' : 'btn'} href={href.house(mainHouse.slug)}>Dějiny domu →</a>}
-        <a class="btn btn-ghost" href="/zapisy/">Prameny</a>
+        <a class="btn btn-ghost" href="/zapisy/">Prameny →</a>
       </div>
     </div>
     {uvod.foto && (

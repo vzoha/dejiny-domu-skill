@@ -27,7 +27,7 @@ const kinds = [...new Set(list.map((r) => r.kindName))];
               </details>
             )}
           </td>
-          <td class="small">{r.houses.map((s, i) => <>{i > 0 && ', '}<HouseLink slug={s} /></>)}{r.village && <span class="muted">{r.houses.length ? ', ' : ''}obec</span>}</td>
+          <td class="small">{r.houses.map((s, i) => <>{i > 0 && ', '}<HouseLink slug={s} /></>)}{r.village && <>{r.houses.length ? ', ' : ''}<a href="/obec/">obec</a></>}</td>
         </tr>
       ))}
     </tbody>

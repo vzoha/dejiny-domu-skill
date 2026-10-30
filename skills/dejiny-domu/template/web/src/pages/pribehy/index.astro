@@ -27,7 +27,7 @@ const jenJeden = pribehy.length === 0;
               {p.obdobi && <span class="story-meta">{p.obdobi}</span>}
               <h2>{p.title}</h2>
               {p.lead && <p>{p.lead}</p>}
-              <span class="story-more">Číst příběh →</span>
+              <span class="story-more">Číst příběh <span class="arr" aria-hidden="true"></span></span>
             </div>
           </a>
         ))}
@@ -35,12 +35,12 @@ const jenJeden = pribehy.length === 0;
     </>
   )}
 
+  {docs.length > 0 && <Gallery />}
+
   <div class="next-step">
     <p><strong>Chcete víc?</strong> Další objevy najdete v zajímavostech.</p>
     <a class="btn" href="/zajimavosti/">Zajímavosti →</a>
   </div>
-
-  {docs.length > 0 && <Gallery />}
 </Base>
 
 <style>
@@ -56,5 +56,5 @@ const jenJeden = pribehy.length === 0;
   .story-meta { font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted, #8a7a66); }
   .story-body h2 { margin: 0; font-size: 1.3rem; line-height: 1.25; }
   .story-body p { margin: 0; line-height: 1.5; }
-  .story-more { margin-top: auto; padding-top: .5rem; color: var(--accent, #8a5a2b); font-weight: 600; }
+  .story-more { display: inline-flex; align-items: center; gap: .4rem; margin-top: auto; padding-top: .5rem; color: var(--accent, #8a5a2b); font-weight: 600; }
 </style>
