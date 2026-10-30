@@ -1,12 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
 import Timeline from '../components/Timeline.astro';
-import { village } from '../lib/data.js';
+import { village, config } from '../lib/data.js';
 ---
 <Base title={`Obec ${village.name}`}>
   <h1>{village.name || 'Obec'}</h1>
   {village.otherNames && <p class="muted">Dříve též: {village.otherNames}</p>}
   {village.desc && <p class="lead">{village.desc}</p>}
+  {(config.dalsiPribehy ?? []).some((p) => p.slug === 'obec') && <p><a class="btn" href="/pribehy/obec/">Přečíst příběh obce →</a></p>}
   <div class="table-box"><table><tbody>
     {village.municipality && <tr><th>Dnes</th><td>{village.municipality}</td></tr>}
     {village.parish && <tr><th>Farnost</th><td>{village.parish}</td></tr>}

@@ -1,27 +1,60 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { docs, mainHouse, href, houseTitle } from '../../lib/data.js';
+import Gallery from '../../components/Gallery.astro';
+import { docs, config } from '../../lib/data.js';
 import { Content, frontmatter } from '../../generated/pribeh.md';
+
+// Rozcestník příběhů. Starší projekty mají jen data/pribeh.md – ten se ukáže tady celý.
+const pribehy = config.dalsiPribehy ?? [];
+const jenJeden = pribehy.length === 0;
 ---
-<Base title={frontmatter.title} narrow>
-  <p class="crumbs">{mainHouse && <><a href={href.house(mainHouse.slug)}>{houseTitle(mainHouse)}</a> · </>}<a href="/zajimavosti/">další zajímavosti</a></p>
-  <h1>{frontmatter.title}</h1>
-  {frontmatter.lead && <p class="lead">{frontmatter.lead}</p>}
-  <div class="prose prose-story"><Content /></div>
+<Base title={jenJeden ? frontmatter.title : 'Příběhy'}>
+  {jenJeden ? (
+    <>
+      <h1>{frontmatter.title}</h1>
+      {frontmatter.lead && <p class="lead">{frontmatter.lead}</p>}
+      <div class="prose prose-story"><Content /></div>
+    </>
+  ) : (
+    <>
+      <h1>Příběhy</h1>
+      <p class="lead">Co jsme o domech a vsi vyčetli ze starých map, gruntovních knih, matrik a novin – vyprávěné od začátku do dneška.</p>
+      <div class="story-cards">
+        {pribehy.map((p) => (
+          <a class="story-card" href={`/pribehy/${p.slug}/`}>
+            {p.obrazek && <div class="story-img"><img src={`/img/${p.obrazek}.jpg`} alt="" loading="lazy" /></div>}
+            <div class="story-body">
+              {p.obdobi && <span class="story-meta">{p.obdobi}</span>}
+              <h2>{p.title}</h2>
+              {p.lead && <p>{p.lead}</p>}
+              <span class="story-more">Číst příběh →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </>
+  )}
 
   <div class="next-step">
     <p><strong>Chcete víc?</strong> Další objevy najdete v zajímavostech.</p>
     <a class="btn" href="/zajimavosti/">Zajímavosti →</a>
   </div>
 
-  {docs.length > 0 && (
-    <>
-      <h2>Fotografie a dokumenty</h2>
-      <div class="docs">
-        {docs.map((d) => (
-          <figure><a href={`/img/${d.img}.jpg`} target="_blank" rel="noopener"><img src={`/img/${d.img}.jpg`} alt={d.caption} loading="lazy" /></a><figcaption>{d.caption}</figcaption></figure>
-        ))}
-      </div>
-    </>
-  )}
+  {docs.length > 0 && <Gallery />}
 </Base>
+
+<style>
+  .story-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 1.25rem; margin: 1.75rem 0 2.5rem; }
+  .story-card { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--line, #e3dccf); border-radius: 14px;
+    text-decoration: none; color: inherit; background: var(--card, #fff); box-shadow: 0 1px 2px rgba(60, 40, 20, .06);
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+  .story-card:hover, .story-card:focus-visible { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(60, 40, 20, .12); border-color: var(--accent, #8a5a2b); }
+  .story-img { aspect-ratio: 16 / 10; overflow: hidden; background: #efe8dc; }
+  .story-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s ease; }
+  .story-card:hover .story-img img { transform: scale(1.04); }
+  .story-body { display: flex; flex-direction: column; gap: .4rem; padding: 1rem 1.15rem 1.15rem; flex: 1; }
+  .story-meta { font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted, #8a7a66); }
+  .story-body h2 { margin: 0; font-size: 1.3rem; line-height: 1.25; }
+  .story-body p { margin: 0; line-height: 1.5; }
+  .story-more { margin-top: auto; padding-top: .5rem; color: var(--accent, #8a5a2b); font-weight: 600; }
+</style>

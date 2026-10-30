@@ -4,7 +4,7 @@ import Record from '../../components/Record.astro';
 import Timeline from '../../components/Timeline.astro';
 import RecLinks from '../../components/RecLinks.astro';
 import HouseMap from '../../components/HouseMap.astro';
-import { houses, records, dateKey, village, houseTitle, statusClass } from '../../lib/data.js';
+import { houses, records, dateKey, village, houseTitle, statusClass, config, mainHouse } from '../../lib/data.js';
 
 export function getStaticPaths() {
   return Object.keys(houses).map((slug) => ({ params: { slug } }));
@@ -20,6 +20,11 @@ const recs = h.records.filter((r) => records[r]).sort((a, b) => dateKey(records[
     <span class={`chip ${statusClass(h.st)}`}>{h.status}</span>
   </div>
   {h.desc && <p class="lead">{h.desc}</p>}
+  {(() => {
+    const st = mainHouse && mainHouse.cp === h.cp && config.maPribeh ? (config.pribeh?.hlavni ? `/pribehy/${config.pribeh.hlavni}/` : '/pribehy/')
+      : (config.dalsiPribehy ?? []).some((p) => p.slug === `cp${h.cp}`) ? `/pribehy/cp${h.cp}/` : null;
+    return st && <p><a class="btn" href={st}>Přečíst příběh domu →</a></p>;
+  })()}
   {h.note && <p class="note">{h.note}</p>}
 
   {h.numbers.length > 0 && (

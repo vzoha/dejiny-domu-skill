@@ -1,7 +1,8 @@
 # Web – stavba, nastavení, zveřejnění
 
 Web je statický (Astro + vyhledávání Pagefind), data bere z `data/` přes `tools/export_web.py`.
-Stránky: úvod (lákadlo, hlavní dům s časovou osou, zajímavosti, mapa), příběh domu, zajímavosti, obec (údaje a časová
+Stránky: úvod (lákadlo, hlavní dům s časovou osou, zajímavosti, mapa), příběhy (jeden, nebo rozcestník s kartami
++ galerie fotek po skupinách), zajímavosti, obec (údaje a časová
 osa), domy (seznam), stránka domu (čísla v čase, časová osa, držitelé, obyvatelé, mapa, fotky, prameny), staré mapy
 (galerie + prolínání map stejné `skupiny`), mapa (OpenStreetMap, letecký snímek a katastr ČÚZK), prameny (s výřezem,
 rámečkem, přepisem a překladem), „Co hledáme“, výzkumný deník, hledání.
@@ -28,7 +29,8 @@ Náhled spouštěj na pozadí a uživateli pošli odkaz. Vzhled si ověř sám (
  "prihlaseni": {"uvod": "Tenhle web je zatím jen pro známé.", "otazka": "…", "odpoved": "…"},
  "uvod": {"nadpis": "Lákavý nadpis", "odstavce": ["2–3 věty, které chytí"], "foto": "klic_obrazku_ve_vyrezech", "foto_popis": "…"},
  "hlavni_dum": "12",
- "pribeh": {"menu": "Příběh domu", "tlacitko": "Přečíst příběh čp. 12"},
+ "pribeh": {"menu": "Příběh domu", "tlacitko": "Přečíst příběh čp. 12", "hlavni": "cp12"},
+ "galerie": {"skupiny": [{"id": "tehdy", "nazev": "Tehdy a dnes", "uvod": "Stará fotka a dnešní ze stejného místa."}]},
  "zajimavosti_na_uvodu": [{"nadpis": "Nejstarší zmínka", "text": "1351 – …"}],
  "verejny": false
 }
@@ -43,7 +45,10 @@ Náhled spouštěj na pozadí a uživateli pošli odkaz. Vzhled si ověř sám (
   skončí chybou; otevřený web jen výslovně přes `"otevreny": true` v `prihlaseni`.
   Je to lehká ochrana proti náhodným návštěvníkům, ne bankovní zabezpečení – citlivé věci na web nepatří.
 - `uvod.foto` = klíč obrázku ve `vyrezy/` (ulož přes `vyrez.py`).
-- `hlavni_dum`: čp. hlavního domu (úvodní stránka ho ukáže s časovou osou). `pribeh` viz `pribehy.md`.
+- `hlavni_dum`: čp. hlavního domu (úvodní stránka ho ukáže s časovou osou). `pribeh` viz `pribehy.md`
+  (`pribeh.hlavni` = slug příběhu, kam vede tlačítko na úvodu; bez něj vede na rozcestník `/pribehy/`).
+- `galerie.skupiny`: názvy, úvodní věta a pořadí skupin fotek na stránce příběhů (`skupina` v `dokumenty.json`).
+  Fotky bez skupiny jdou na konec („Další fotografie“).
 - Šablona `web.json` je prázdná – název nastav hned na začátku.
 ## Zveřejnění na Netlify (výchozí, zdarma)
 1. Uživatel si založí účet na netlify.com (stačí přihlášení přes Google/GitHub) – udělá sám.

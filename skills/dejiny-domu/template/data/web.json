@@ -15,7 +15,8 @@
   "foto_popis": ""
  },
  "hlavni_dum": "",
- "pribeh": {"menu": "", "tlacitko": ""},
+ "pribeh": {"menu": "", "tlacitko": "", "hlavni": ""},
+ "galerie": {"skupiny": []},
  "zajimavosti_na_uvodu": [],
  "verejny": false
 }

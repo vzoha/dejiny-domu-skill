@@ -1,0 +1,80 @@
+---
+// Galerie fotek a dokumentů (data/dokumenty.json). Volitelná pole: skupina, poradi, par (img dvojice „tehdy – dnes“),
+// format: "sirka". Názvy, úvody a pořadí skupin: web.json → galerie.skupiny. Fotky bez skupiny jdou na konec.
+import { docs, config } from '../lib/data.js';
+
+const skupiny = config.galerie?.skupiny ?? [];   // [{ "id": "tehdy", "nazev": "Tehdy a dnes", "uvod": "…" }]
+
+const byImg = Object.fromEntries(docs.map((d) => [d.img, d]));
+// Fotka z dvojice se zvlášť ukáže jen tehdy, když má vlastní (jinou) skupinu.
+const paired = new Set(docs.filter((d) => d.pair && byImg[d.pair] && (byImg[d.pair].group || d.group) === d.group).map((d) => d.pair));
+const groups = [];
+for (const d of [...docs].sort((a, b) => (a.order ?? 99) - (b.order ?? 99))) {
+  if (paired.has(d.img)) continue;
+  const key = d.group || 'dalsi';
+  let g = groups.find((x) => x.key === key);
+  if (!g) groups.push((g = { key, items: [] }));
+  g.items.push(d.pair && byImg[d.pair] ? { ...d, pairDoc: byImg[d.pair] } : d);
+}
+const poradi = skupiny.map((s) => s.id);
+groups.sort((a, b) => (poradi.indexOf(a.key) + 1 || 99) - (poradi.indexOf(b.key) + 1 || 99));
+const full = (d) => `/${d.full ? 'zdroje' : 'img'}/${d.img}.jpg`;   // proklik na plné rozlišení, když je
+---
+{groups.map((g) => {
+  const s = skupiny.find((x) => x.id === g.key);
+  const title = s?.nazev || (g.key === 'dalsi' ? (groups.length > 1 ? 'Další fotografie' : 'Fotografie a dokumenty') : g.key);
+  const intro = s?.uvod || '';
+  return (
+    <section class="gal">
+      <h2>{title}</h2>
+      {intro && <p class="muted">{intro}</p>}
+      {g.items.some((d) => d.pairDoc) ? (
+        <div class="gal-pairs">
+          {g.items.map((d) => (
+            <figure class:list={["pair", { wide: d.wide }]}>
+              <div class="pair-imgs">
+                {[d, d.pairDoc].filter(Boolean).map((x, i) => (
+                  <a href={full(x)} target="_blank" rel="noopener" class:list={["ph", { contain: i === 0 }]}>
+                    <img src={`/img/${x.img}.jpg`} alt={x.caption} loading="lazy" />
+                    <span class="tag">{i === 0 ? 'tehdy' : 'dnes'}</span>
+                  </a>
+                ))}
+              </div>
+              <figcaption>{d.caption}{d.pairDoc && <><br /><span class="muted">{d.pairDoc.caption}</span></>}</figcaption>
+            </figure>
+          ))}
+        </div>
+      ) : (
+        <div class="gal-grid">
+          {g.items.map((d) => (
+            <figure>
+              <a href={full(d)} target="_blank" rel="noopener" class="ph"><img src={`/img/${d.img}.jpg`} alt={d.caption} loading="lazy" /></a>
+              <figcaption>{d.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+})}
+
+<style>
+  .gal { margin-top: 2.5rem; }
+  .gal h2 { margin-bottom: .3rem; }
+  .gal > p { margin: 0 0 1rem; }
+  .gal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 1rem; }
+  .gal-pairs { display: grid; grid-template-columns: repeat(auto-fill, minmax(26rem, 1fr)); gap: 1.25rem; align-items: start; }
+  figure { margin: 0; background: var(--paper, #fff); border: 1px solid var(--line, #e3dccf); border-radius: var(--radius, 12px);
+    box-shadow: var(--shadow, none); padding: .6rem; display: flex; flex-direction: column; }
+  .ph { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 8px; background: #efe8dc; }
+  .ph img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s ease; }
+  .ph.contain img { object-fit: contain; }
+  .ph:hover img { transform: scale(1.03); }
+  .pair-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+  .pair-imgs .ph { aspect-ratio: 3 / 4; }
+  .pair.wide .pair-imgs .ph { aspect-ratio: 4 / 3; }
+  .tag { position: absolute; left: .45rem; top: .45rem; background: rgba(40, 28, 18, .72); color: #fff; font-size: .72rem;
+    letter-spacing: .05em; text-transform: uppercase; padding: .15rem .45rem; border-radius: 4px; }
+  figcaption { font-size: .85rem; color: var(--muted, #6b5d4d); margin-top: .55rem; line-height: 1.45; }
+  @media (max-width: 640px) { .gal-pairs { grid-template-columns: 1fr; } }
+</style>

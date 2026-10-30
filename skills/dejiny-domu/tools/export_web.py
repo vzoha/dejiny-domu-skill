@@ -179,7 +179,7 @@ def main():
     if "--nasazeni" in sys.argv and not norm_answer(login.get("odpoved", "")) and not login.get("otevreny"):
         sys.exit("CHYBA: v data/web.json není odpověď na přihlašovací otázku – web by byl otevřený komukoli.\n"
                  "Nastavte prihlaseni.odpoved, nebo (jen když to opravdu chcete) prihlaseni.otevreny: true.")
-    docs_cfg = jload("dokumenty.json", [])
+    docs_cfg = [d for d in jload("dokumenty.json", []) if not d.get("skryt")]   # "skryt": true = na web nedávat
     maps_cfg = jload("mapy.json", [])
     recs = {r["key"]: r for r in record_rows()}
 
@@ -248,12 +248,28 @@ def main():
 
     has_story = os.path.exists(os.path.join(DATA, "pribeh.md"))
     public_cfg = {k: v for k, v in cfg.items() if k != "prihlaseni"}
-    public_cfg["maPribeh"] = has_story
+    # další příběhy: data/pribeh_<slug>.md → /pribehy/<slug>/
+    extra_stories = []
+    for fn in sorted(os.listdir(DATA)):
+        m = re.match(r"pribeh_([a-z0-9-]+)\.md$", fn)
+        if not m:
+            continue
+        text = strip_comments(open(os.path.join(DATA, fn), encoding="utf-8").read())
+        fm = dict(re.findall(r"^(title|lead|poradi|obdobi|obrazek):\s*(.*)$", text.split("---")[1] if text.startswith("---") else "", re.M))
+        extra_stories.append(dict(slug=m.group(1), title=fm.get("title", m.group(1)).strip().strip("'\""),
+                                  lead=fm.get("lead", "").strip().strip("'\""), text=text,
+                                  poradi=int(fm.get("poradi", "99").strip() or 99),
+                                  obdobi=fm.get("obdobi", "").strip(), obrazek=fm.get("obrazek", "").strip()))
+    extra_stories.sort(key=lambda st: (st["poradi"], st["slug"]))
+    public_cfg["maPribeh"] = has_story or bool(extra_stories)
+    public_cfg["dalsiPribehy"] = [{k: v for k, v in st.items() if k != "text"} for st in extra_stories]
     main_house = slugify(cfg.get("hlavni_dum", "")) or next(iter(houses), "")
     site = dict(config=public_cfg, village=village, houses=houses, mainHouse=main_house if main_house in houses else None,
                 records=records, maps=maps, places=places, stats=stats,
                 issues=[dict(title=i, text="") if isinstance(i, str) else dict(title=i[0], text=i[1]) for i in ISSUES],
-                docs=[dict(img=d["img"], caption=d["popis"], houses=[slugify(c) for c in d.get("domy", []) if slugify(c) in houses])
+                docs=[dict(img=d["img"], caption=d["popis"], houses=[slugify(c) for c in d.get("domy", []) if slugify(c) in houses],
+                           group=d.get("skupina", ""), order=d.get("poradi", 99), pair=d.get("par", ""), wide=d.get("format") == "sirka",
+                           full=os.path.exists(os.path.join(ZDROJE, d["img"] + ".jpg")))
                       for d in docs_cfg if os.path.exists(os.path.join(VYREZY, d["img"] + ".jpg"))])
 
     write(os.path.join(WEB, "src", "data", "site.json"), json.dumps(site, ensure_ascii=False, indent=1))
@@ -264,6 +280,13 @@ def main():
         write(os.path.join(gen_dir, dst), strip_comments(re.sub(r"^# .*\n", "", text, count=1)))
     story = os.path.join(DATA, "pribeh.md")
     write(os.path.join(gen_dir, "pribeh.md"), strip_comments(open(story, encoding="utf-8").read()) if has_story else "---\ntitle: Příběh\nlead: ''\n---\n")
+    stories_dir = os.path.join(gen_dir, "pribehy")
+    os.makedirs(stories_dir, exist_ok=True)
+    for old in os.listdir(stories_dir):
+        if old.endswith(".md") and old[:-3] not in {st["slug"] for st in extra_stories}:
+            os.remove(os.path.join(stories_dir, old))
+    for st in extra_stories:
+        write(os.path.join(stories_dir, st["slug"] + ".md"), st["text"])
 
     gated = login_files(cfg)
 
@@ -271,7 +294,8 @@ def main():
     zv = os.path.join(DATA, "zvyrazneni.json")
     hl_mtime = os.path.getmtime(zv) if os.path.exists(zv) else 0
     images = list(recs) + [d["img"] for d in docs_cfg] + [m["img"] for m in maps_cfg] + \
-        ([cfg["uvod"]["foto"]] if cfg.get("uvod", {}).get("foto") else [])
+        ([cfg["uvod"]["foto"]] if cfg.get("uvod", {}).get("foto") else []) + \
+        [st["obrazek"] for st in extra_stories if st.get("obrazek")]
     for sub, src_dir in (("img", VYREZY), ("zdroje", ZDROJE)):
         dst_dir = os.path.join(WEB, "public", sub)
         os.makedirs(dst_dir, exist_ok=True)
@@ -296,6 +320,7 @@ def main():
 
     targets = dict(dum=houses, zdroj=recs)
     texts = {f: open(os.path.join(gen_dir, f), encoding="utf-8").read() for f in ("pribeh.md", "zajimavosti.md")}
+    texts.update({f"pribeh_{st['slug']}.md": st["text"] for st in extra_stories})
     texts["web.json"] = json.dumps(cfg, ensure_ascii=False)
     broken = [(f, m.group(0)) for f, t in texts.items()
               for m in re.finditer(r"/(dum|zdroj)/([^/\s)\"'#?<>\]]+)", t) if m.group(2) not in targets[m.group(1)]]

@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import { config } from '../../lib/data.js';
+
+// Další příběhy: data/pribeh_<slug>.md (export_web.py je kopíruje do src/generated/pribehy/).
+export function getStaticPaths() {
+  const files = import.meta.glob('../../generated/pribehy/*.md', { eager: true });
+  return Object.entries(files).map(([path, mod]) => ({
+    params: { slug: path.split('/').pop().replace(/\.md$/, '') },
+    props: { mod },
+  }));
+}
+const { mod } = Astro.props;
+const { Content, frontmatter } = mod;
+const { slug } = Astro.params;
+const ostatni = (config.dalsiPribehy ?? []).filter((p) => p.slug !== slug)
+  .map((p) => ({ href: `/pribehy/${p.slug}/`, title: p.title, lead: p.lead }));
+---
+<Base title={frontmatter.title}>
+  <p class="crumbs"><a href="/pribehy/">všechny příběhy</a> · <a href="/zajimavosti/">zajímavosti</a></p>
+  <h1>{frontmatter.title}</h1>
+  {frontmatter.lead && <p class="lead">{frontmatter.lead}</p>}
+  <div class="prose prose-story"><Content /></div>
+
+  {ostatni.length > 0 && (
+    <div class="next-step">
+      <p><strong>Další příběhy</strong></p>
+      <ul class="story-list">
+        {ostatni.map((p) => <li><a href={p.href}>{p.title}</a>{p.lead && <> – {p.lead}</>}</li>)}
+      </ul>
+    </div>
+  )}
+</Base>

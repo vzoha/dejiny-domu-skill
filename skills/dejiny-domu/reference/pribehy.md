@@ -40,6 +40,22 @@ Nejlepší 2–4 dej na úvod webu (`web.json` → `zajimavosti_na_uvodu`).
    ```
 4. `web.json` → `"pribeh": {"menu": "Příběh domu", "tlacitko": "Přečíst příběh čp. 12"}` a `uvod`.
 
+**Víc příběhů** (dům, výměnek, ves, rodina): každý do `data/pribeh_<slug>.md` → stránka `/pribehy/<slug>/`.
+Jakmile je aspoň jeden, `/pribehy/` je rozcestník s kartami (obrázek, období, název, lead) a pod nimi galerie fotek
+(`dokumenty.json` → `skupina`, `par`; `web.md` → `galerie`). Frontmatter:
+```markdown
+---
+title: Statek čp. 12
+lead: Jedna věta, která chytí.
+poradi: 1
+obdobi: 1654–dnes
+obrazek: foto_cp12_1935
+---
+```
+`obrazek` = klíč ve `vyrezy/`. Slug `cp<čp>` přidá tlačítko „Přečíst příběh domu“ na stránku domu, slug `obec`
+tlačítko „Přečíst příběh obce“ na stránku obce. Tlačítko na úvodu vede na `web.json` → `pribeh.hlavni` (slug).
+Starý `pribeh.md` pak už nepoužívej (s rozcestníkem se neukáže) – přejmenuj ho na `pribeh_<slug>.md`.
+
 **Tvar** (800–1500 slov): kapitoly po obdobích nebo po rodinách držitelů. Nadpis = rodina nebo období a roky.
 Začni krajinou a vsí (kdy vznikla, komu patřila), pak jednotliví držitelé a obyvatelé: kdo, odkud přišel, za kolik
 koupil, kolik měl dětí, co je potkalo. Konkrétně: roky, ceny, citace z pramenů v uvozovkách, odkazy `[zápis](/zdroj/<klic>/)`.

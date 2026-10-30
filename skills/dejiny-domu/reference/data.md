@@ -99,12 +99,19 @@ Bod přidá `mista.py pridej` (poloha z OSM), další pole `zapis.py mista "<ná
 ## `dokumenty.json` – fotky a dokumenty
 `[{"img": "foto_cp12_1935", "popis": "Čp. 12 kolem 1935 (fotka od paní X).", "domy": ["12"]}]`
 Obrázek přes `vyrez.py dokumenty/<sken>.jpg foto_cp12_1935 0,0,1,1`.
+Volitelně (galerie na stránce příběhů):
+- `skupina` – id skupiny z `web.json` → `galerie.skupiny` (např. `tehdy`, `dnes`, `rekonstrukce`); `poradi` – číslo v rámci galerie.
+- `par` – `img` druhé fotky do dvojice „tehdy – dnes“ (stará kresba/fotka + dnešní foto ze stejného místa); ukáží se
+  vedle sebe. `"format": "sirka"` u dvojice na šířku (jinak na výšku).
+- `skryt: true` – na web nedávat (fotka zůstane v datech).
 
 ## `web.json`
 Viz `web.md`. `hlavni_dum` = čp. domu, o kterém projekt hlavně je (úvodní stránka).
 
 ## Markdown
 - `research_log.md` – tabulka `| # | datum | zdroj | rozsah | hledáno | výsledek | citace |`, i negativní výsledky.
-- `zajimavosti.md` – `## Nadpis` + text, odkazy `[čp. 12](/dum/12/)`, `[zápis](/zdroj/<klic>/)`.
+- `zajimavosti.md` – `## Nadpis` + text, odkazy `[čp. 12](/dum/12/)`, `[zápis](/zdroj/<klic>/)`. Od ~10 položek
+  seskup: `## Skupina` (dům, ves, rodina) + jedna věta úvodu, položky `###`, ve skupině podle času.
 - `pribeh.md` – „Příběh domu“: frontmatter `title`, `lead` + kapitoly `##` (`pribehy.md`).
+- `pribeh_<slug>.md` – další příběhy → `/pribehy/<slug>/`; frontmatter navíc `poradi`, `obdobi`, `obrazek` (`pribehy.md`).
 - `pametnici.md`, `archivni_dotazy.md` – volný text. Poznámky pro Clauda `<!-- … -->` na web nejdou.
