@@ -19,14 +19,14 @@ vyzkoušený jen na něm (Linux). Počítejte s chybami a dejte mi o nich vědě
 **Živá ukázka: [historie.malystatek.cz](https://historie.malystatek.cz/)**. Tento web vznikl se skillem a popisuje
 výměnek čp. 30 a statek čp. 1 v Lništi (obec Slavče, okres České Budějovice).
 
-![Záznam z gruntovní knihy 1770: výřez původního zápisu, přepis a překlad](docs/ukazka_zapis.jpg)
+![Úvodní stránka webu: dům, ves a počty držitelů, obyvatel, zápisů a map](docs/ukazka_uvod.jpg)
 
 <table><tr>
-<td><img src="docs/ukazka_dum.jpg" alt="Stránka domu s časovou osou a odkazy na prameny"></td>
-<td><img src="docs/ukazka_mapy.jpg" alt="Galerie starých map vsi od 1764 po stabilní katastr"></td>
+<td><img src="docs/ukazka_pribehy.jpg" alt="Rozcestník příběhů domu, statku a vsi"></td>
+<td><img src="docs/ukazka_dum.jpg" alt="Stránka domu čp. 30 s časovou osou a odkazy na prameny"></td>
 </tr><tr>
-<td>Časová osa domu, každý údaj má odkaz na pramen</td>
-<td>Staré mapy vsi od 18. století, s posuvníkem pro porovnání</td>
+<td>Příběhy domů a vsi vyprávěné od začátku do dneška</td>
+<td>Stránka domu: časová osa, každý údaj má odkaz na pramen</td>
 </tr></table>
 
 > **Než začnete**
