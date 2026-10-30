@@ -63,15 +63,6 @@ Další aktualizace = jen `npm run nasadit`. Vlastní doménu lze nastavit v adm
 
 **Pozor:** „Netlify Drop“ (přetažení složky v prohlížeči) neumí Edge Functions → web by byl bez přihlášení. Nepoužívat.
 
-## Zveřejnění na sdíleném hostingu (Apache + SSH, např. hukot.net)
-Když má uživatel vlastní hosting (subdoménu s SSH přístupem klíčem), místo Netlify:
-1. Uživatel založí subdoménu a nahraje veřejný SSH klíč (v administraci hostingu) – udělá sám.
-2. `cd web && HUKOT_USER=<subdoména> HUKOT_KEY=~/.ssh/<klíč> npm run nasadit-hukot` (`HUKOT_HOST` výchozí ssh.vix.hukot.net).
-   Skript postaví web, vyrobí `dist/.htaccess` z `htaccess.sablona` a nahraje `dist/` do `~/www` přes scp
-   (lshell na hukotu nepustí rsync ani `ssh host příkaz`; ssh config je vypnutý, aby cizí klíče nevyčerpaly MaxAuthTries).
-3. Brána: s `prihlaseni.odpoved` je v `.htaccess` přihlášení (cookie s otiskem odpovědi, 401 → `prihlaseni.html`),
-   s `"otevreny": true` je web veřejný. Ověř v anonymním okně.
-
 ## Náhled v Claude desktop
 Projekt má `.claude/launch.json` – náhled webu v Claude desktop spustí `npm --prefix web run dev` (port 4321). Data se
 předtím musí vyexportovat (`cd web && npm run data`). Když náhled nenaběhne (třeba na Windows, kde je `npm` jako `npm.cmd`),

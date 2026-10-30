@@ -10,7 +10,6 @@
     "preview": "astro preview",
     "nahled": "npm run data && npm run build && astro preview",
     "nasadit": "npm run data -- --nasazeni && npm run build && npx -y netlify-cli@latest deploy --prod --dir=dist",
-    "nasadit-hukot": "bash scripts/nasadit-hukot.sh",
     "pack": "tar -czf ../dejiny-domu-web.tar.gz --exclude=node_modules --exclude=dist --exclude=.astro .",
     "deploy-caprover": "npm run data -- --nasazeni && npm run pack && caprover deploy -t ../dejiny-domu-web.tar.gz"
   },
