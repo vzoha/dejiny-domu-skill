@@ -23,10 +23,10 @@ výměnek čp. 30 a statek čp. 1 v Lništi (obec Slavče, okres České Budějo
 
 <table><tr>
 <td><img src="docs/ukazka_dum.jpg" alt="Stránka domu s časovou osou a odkazy na prameny"></td>
-<td><img src="docs/ukazka_mapy.jpg" alt="Porovnání leteckých snímků 1950 a dnes posuvníkem"></td>
+<td><img src="docs/ukazka_mapy.jpg" alt="Galerie starých map vsi od 1764 po stabilní katastr"></td>
 </tr><tr>
 <td>Časová osa domu, každý údaj má odkaz na pramen</td>
-<td>Porovnání starých map a leteckých snímků</td>
+<td>Staré mapy vsi od 18. století, s posuvníkem pro porovnání</td>
 </tr></table>
 
 > **Než začnete**
