@@ -33,7 +33,6 @@ img { max-width: 100%; height: auto; }
 
 main { max-width: 1040px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
 main.wide { max-width: 1600px; }
-main.wider { max-width: none; }   /* mapa: přes celou šířku okna (Česko a Slovensko jsou široké); text drží .lead/.prose */
 .site-footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 2rem 1rem; border-top: 1px solid var(--line); }
 
 .lead { font-size: 1.1rem; color: var(--muted); max-width: 46rem; }
@@ -71,34 +70,16 @@ main.wider { max-width: none; }   /* mapa: přes celou šířku okna (Česko a S
 .rec .links { font-size: 0.85rem; display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; }
 .kind { display: inline-block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.05rem 0.45rem; border-radius: 4px; background: #efe7da; color: #5a4632; margin-right: 0.4rem; }
 
-/* pedigree */
-.pedigree { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); grid-template-rows: repeat(8, minmax(44px, auto)); gap: 4px 10px; overflow-x: auto; }
-.pedigree .box { border-radius: 8px; padding: 0.35rem 0.55rem; font-size: 0.85rem; line-height: 1.25; border: 1px solid var(--line); background: var(--paper); align-self: center; text-decoration: none; color: var(--ink); }
-.pedigree a.box:hover { border-color: var(--accent); }
-.pedigree .box .y { display: block; color: var(--muted); font-size: 0.8rem; }
-.pedigree .box.empty { background: #f1ede6; color: var(--unk); border-style: dashed; }
-.pedigree .box.self { font-weight: 600; }
-
 /* tables */
 .table-box { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 0.92rem; background: var(--paper); }
 th, td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
 th { font-weight: 600; color: #5a4632; background: #f6f0e6; }
 
-/* fan */
-.fan-wrap { position: relative; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; overflow: auto; max-height: 92vh; }
-.fan-inner { width: 100%; margin: 0 auto; transition: width 0.2s; }
-.fan-inner svg { display: block; width: 100%; height: auto; }
-.fan-links a path, .fan-links a circle { fill: transparent; cursor: pointer; }
-.fan-links a:hover path, .fan-links a:hover circle { fill: rgba(255, 255, 255, 0.35); stroke: #3b2e22; stroke-width: 3; }
-.fan-tools { position: sticky; top: 0.5rem; left: 0.5rem; z-index: 2; display: inline-flex; gap: 0.3rem; margin: 0.5rem; }
-.fan-tools button { font: inherit; border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 0.2rem 0.65rem; cursor: pointer; }
-
 .stats { display: flex; flex-wrap: wrap; gap: 0.8rem 2rem; margin: 0.5rem 0 1.2rem; }
 .stats div { font-size: 0.9rem; color: var(--muted); }
 .stats strong { display: block; font: 1.8rem var(--serif); color: #3b2e22; }
 
-.line-card { border-top: 6px solid var(--c); }
 .prose { max-width: 46rem; }
 .prose p { margin: 0.6rem 0; }
 .docs { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
@@ -107,31 +88,15 @@ th { font-weight: 600; color: #5a4632; background: #f6f0e6; }
 
 @media (max-width: 640px) {
   main { padding: 1rem 0.8rem 2rem; }
-  .pedigree { grid-template-columns: repeat(4, minmax(120px, 1fr)); }
 }
 
-/* pedigree continuation hint */
-.pedigree .box.has-more { position: relative; border-right: 4px solid #efb45f; box-shadow: 4px 0 0 -1px #f6dcb0, 8px 0 0 -2px #faeed8; }
-.pedigree .box .more { display: block; margin-top: 0.15rem; font-size: 0.75rem; font-weight: 600; color: var(--accent); }
-
-/* mobile navigation and tree */
+/* mobile navigation */
 .menu-btn { display: none; margin-left: auto; font: inherit; color: #fbf3e6; background: transparent; border: 1px solid #8a7660; border-radius: 6px; padding: 0.2rem 0.7rem; }
-.only-mobile { display: none; }
-.mtree section { margin-bottom: 0.8rem; }
-.mtree h3 { margin: 0.6rem 0 0.4rem; font-size: 1rem; color: var(--muted); }
-.mtree-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.mbox { display: block; background: var(--paper); border: 1px solid var(--line); border-left: 5px solid #d8cfc2; border-radius: 8px; padding: 0.4rem 0.55rem; color: var(--ink); text-decoration: none; font-size: 0.9rem; line-height: 1.25; }
-.mbox strong { display: block; font-weight: 600; }
-.mbox span { display: block; color: var(--muted); font-size: 0.8rem; }
-.mbox .more { color: var(--accent); font-weight: 600; }
-.mbox.empty { background: #f1ede6; color: var(--unk); border-style: dashed; text-align: center; }
 @media (max-width: 760px) {
   .menu-btn { display: inline-block; }
   .site-header nav { display: none; width: 100%; flex-direction: column; gap: 0; }
   body.nav-open .site-header nav { display: flex; }
   .site-header nav a { padding: 0.55rem 0; border-bottom: 1px solid #54443a; }
-  .only-mobile { display: block; }
-  .only-desktop { display: none; }
 }
 
 /* highlighted part of a register crop */
@@ -139,31 +104,8 @@ th { font-weight: 600; color: #5a4632; background: #f6f0e6; }
 .hl-wrap img { display: block; width: 100%; }
 .hl { position: absolute; border: 3px solid #d7302a; background: rgba(255, 214, 0, 0.12); border-radius: 4px; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6); pointer-events: none; }
 
-/* full-screen fan page */
-main.full { max-width: none; padding: 0; }
-.fan-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; padding: 0.5rem 1rem; border-bottom: 1px solid var(--line); background: var(--paper); }
-.fan-bar strong { font: 1.15rem var(--serif); color: #3b2e22; }
-.fan-search { display: flex; gap: 0.3rem; }
-.fan-search input { font: inherit; padding: 0.3rem 0.6rem; border: 1px solid #cfc5b6; border-radius: 6px; width: 15rem; max-width: 52vw; }
-.fan-bar button { font: inherit; border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 0.25rem 0.7rem; cursor: pointer; }
-.fan-stage { height: calc(100vh - 110px); overflow: hidden; touch-action: none; cursor: grab; background: var(--bg); }
-.fan-stage:active { cursor: grabbing; }
-.fan-stage svg { width: 100%; height: 100%; display: block; }
-.fan-links a.hit path, .fan-links a.hit circle { fill: rgba(255, 214, 0, 0.5); stroke: #d7302a; stroke-width: 3; vector-effect: non-scaling-stroke; }
-@media (max-width: 760px) { .fan-hint { display: none; } .fan-stage { height: calc(100vh - 150px); } }
-
-/* home teaser */
-.teaser { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 1.5rem; align-items: center; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 1.4rem 1.5rem; margin: 0.6rem 0 1.4rem; }
-.teaser h2 { border: 0; margin: 0 0 0.4rem; font-size: 1.8rem; }
-.teaser p { margin: 0.5rem 0; }
-.teaser img { width: 100%; max-height: 300px; object-fit: cover; object-position: center 22%; border-radius: 10px; }
 .btn { display: inline-block; background: #3b2e22; color: #fbf3e6; text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; margin-top: 0.5rem; }
 .btn:hover { background: #5a4632; color: #fff; }
-.fan-preview { display: block; max-width: 520px; margin: 0 auto; }
-.fan-preview svg { width: 100%; height: auto; pointer-events: none; }
-@media (max-width: 760px) { .teaser { grid-template-columns: 1fr; padding: 1rem; } }
-.fan-preview { position: relative; }
-.fan-preview .cover { position: absolute; inset: 0; z-index: 1; }
 
 /* amber top line separates the header from a dark browser toolbar; header stays visible while scrolling */
 .site-header { border-top: 4px solid #e0952f; position: sticky; top: 0; z-index: 2000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18); }
@@ -201,7 +143,6 @@ main.full { max-width: none; padding: 0; }
 .card-link .more-link { margin-top: auto; padding-top: 0.5rem; font-size: 0.88rem; font-weight: 600; color: var(--accent); }
 .card-link:hover .more-link { text-decoration: underline; }
 .card-link:focus-visible { outline: 3px solid #e0952f; outline-offset: 2px; }
-.line-card.card-link:hover { border-top-color: var(--c); }
 .card-link { position: relative; }
 .card-link::after { content: '→'; position: absolute; top: 0.7rem; right: 0.9rem; font-size: 1.15rem; color: var(--accent); opacity: 0.55; transition: opacity 0.15s, transform 0.15s; }
 .card-link:hover::after { opacity: 1; transform: translateX(3px); }

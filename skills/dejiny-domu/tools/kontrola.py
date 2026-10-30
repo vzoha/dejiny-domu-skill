@@ -11,7 +11,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
         _s.reconfigure(encoding="utf-8", errors="replace")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu → zapisovalo by do skillu
+if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu: data projektu tam nejsou, zápis by šel do skillu
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 DATA = os.path.join(ROOT, "data")
@@ -120,14 +120,14 @@ def main():
     for cp, d in D.items():
         for o in d.get("obyvatele", []):
             roky = [int(y) for y in re.findall(r"\b(1[89]\d\d|20\d\d)\b", o.get("y", "") + " " + " ".join(o.get("f", [])))]
-            if roky and min(roky) >= hranice and len(" ".join(o.get("f", []))) > 0:
+            if roky and min(roky) >= hranice and o.get("f"):
                 warn.append(f"SOUKROMÍ (dům {cp}, {o.get('n')}): narozen(a) po {hranice} a má podrobnosti – "
                             f"žijící lidé jen se souhlasem (reference/soukromi.md)")
 
     if not os.path.exists(os.path.join(DATA, "pribeh.md")):
         hlavni = D.get(str(cfg.get("hlavni_dum", "")), {})
         if len(hlavni.get("drzitele", [])) >= 4:
-            warn.append("hlavní dům má už 4+ doložené držitele – je čas napsat příběh domu "
+            warn.append("hlavní dům má už 4+ držitele – je čas napsat příběh domu "
                         "(data/pribeh.md, reference/pribehy.md); koncept nejdřív ukaž uživateli v chatu")
 
     log = os.path.join(DATA, "research_log.md")

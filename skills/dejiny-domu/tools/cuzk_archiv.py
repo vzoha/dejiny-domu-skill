@@ -29,7 +29,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
         _s.reconfigure(encoding="utf-8", errors="replace")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu → zapisovalo by do skillu
+if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu: data projektu tam nejsou, zápis by šel do skillu
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 REFERER = "https://ags.cuzk.gov.cz/archiv/"
@@ -63,6 +63,8 @@ def token():
         time.sleep(1)
         if get(f"{GEN}/jobs/{job}", {"f": "json"}).get("jobStatus") == "esriJobSucceeded":
             break
+    else:
+        sys.exit("ČÚZK nevydal token do 20 s – zkus to za chvíli znovu")
     t = get(f"{GEN}/jobs/{job}/results/Token", {"f": "json"})["value"]
     os.makedirs(os.path.dirname(TOKEN), exist_ok=True)
     open(TOKEN, "w").write(t)
@@ -74,6 +76,12 @@ def archiv(cesta, params, binary=False):
     if not binary and "error" in d:
         sys.exit(f"ČÚZK: {d['error']}")
     return d
+
+
+def save_jpeg(img, out):
+    if not img.startswith(b"\xff\xd8"):
+        sys.exit("ČÚZK nevrátil obrázek: " + img[:300].decode("utf-8", "replace"))
+    open(out, "wb").write(img)
 
 
 def misto(m):
@@ -108,7 +116,7 @@ def listy(m):
         print(f"  císařský otisk: sign. {a.get('cio_SIGNATURA', '?')}, inv. č. {a.get('cio_INV_CISLO', '?')}, "
               f"{a.get('cio_DAT_OD', '?')}, listů {a.get('cio_LISTU_CELK', '?')} → rastry stable \"{a.get('cio_SIGN_INV', '')}\"")
         s0x = a.get("S0X", "").split("|")[-1]
-        print(f"  indikační skica: " + (f"→ rastry skici \"{s0x}\"" if s0x else "není v kladu"))
+        print("  indikační skica: " + (f"→ rastry skici \"{s0x}\"" if s0x else "není v kladu"))
 
 
 def rastry(sluzba, vzor):
@@ -140,9 +148,7 @@ def export(sluzba, rid, out, vyrez="0,0,1,1", sirka=4000):
         "compressionQuality": 92,
         "mosaicRule": json.dumps({"ascending": True, "lockRasterIds": [int(rid)], "mosaicMethod": "esriMosaicLockRaster"})},
         binary=True)
-    if not img.startswith(b"\xff\xd8"):
-        sys.exit("ČÚZK nevrátil obrázek: " + img[:300].decode("utf-8", "replace"))
-    open(out, "wb").write(img)
+    save_jpeg(img, out)
     print(f"{out} {sirka}×{vyska}")
 
 
@@ -153,9 +159,7 @@ def mapa(vrstva, m, out, polomer=150, px=1500):
     img = archiv(f"archiv_spojene_{vrstva}/MapServer/export", {
         "bbox": f"{lon - dlon},{lat - dlat},{lon + dlon},{lat + dlat}", "bboxSR": 4326, "imageSR": 5514,
         "size": f"{px},{px}", "format": "jpg", "dpi": 96, "f": "image"}, binary=True)
-    if not img.startswith(b"\xff\xd8"):
-        sys.exit("ČÚZK nevrátil obrázek: " + img[:300].decode("utf-8", "replace"))
-    open(out, "wb").write(img)
+    save_jpeg(img, out)
     print(f"{out} – zkontroluj, jestli není bílý (vrstva tu nemusí být)")
 
 

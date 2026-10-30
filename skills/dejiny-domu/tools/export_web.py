@@ -15,7 +15,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
 
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(TOOLS)
-if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu → zapisovalo by do skillu
+if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu: data projektu tam nejsou, zápis by šel do skillu
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 DATA = os.path.join(ROOT, "data")
@@ -156,9 +156,19 @@ def login_files(cfg):
     return bool(answer)
 
 
+def cited(x, recs):
+    """Klíče zápisů z pole „r“, které opravdu existují (neexistující hlásí kontrola.py)."""
+    return [r for r in x.get("r", []) if r in recs]
+
+
+def owner_year(o):
+    """Rok držitele pro řazení: „od“, a když je neznámé („?“), aspoň „do“."""
+    return o["since"] if re.search(r"\d", o["since"]) else o["until"]
+
+
 def event(e, recs):
     return dict(year=str(e.get("rok", "")), text=e.get("text", ""), st=e.get("st", "unk"), status=STATUS.get(e.get("st"), ""),
-                source=e.get("zdroj", ""), records=[r for r in e.get("r", []) if r in recs])
+                source=e.get("zdroj", ""), records=cited(e, recs))
 
 
 def main():
@@ -178,11 +188,11 @@ def main():
         slug = slugify(cp)
         people = [dict(name=o.get("n", ""), years=o.get("y", ""), role=o.get("role", ""), facts=o.get("f", []),
                        st=o.get("st", "unk"), status=STATUS.get(o.get("st"), ""), note=o.get("note", ""),
-                       records=[r for r in o.get("r", []) if r in recs]) for o in d.get("obyvatele", [])]
+                       records=cited(o, recs)) for o in d.get("obyvatele", [])]
         owners = [dict(since=str(o.get("od", "")), until=str(o.get("do", "")), name=o.get("n", ""), how=o.get("jak", ""),
                        st=o.get("st", "unk"), status=STATUS.get(o.get("st"), ""), note=o.get("note", ""),
-                       records=[r for r in o.get("r", []) if r in recs]) for o in d.get("drzitele", [])]
-        owners.sort(key=lambda o: year_key(o["since"] if any(c.isdigit() for c in o["since"]) else o["until"]))   # „?“ od → řadit podle „do“
+                       records=cited(o, recs)) for o in d.get("drzitele", [])]
+        owners.sort(key=lambda o: year_key(owner_year(o)))
         events = sorted((event(e, recs) for e in d.get("udalosti", [])), key=lambda e: year_key(e["year"]))
         refs = [r for x in events + owners + people for r in x["records"]]
         houses[slug] = dict(
@@ -229,7 +239,7 @@ def main():
 
     years = [year_key(e["year"]) // 10000 for e in village_events] + \
             [year_key(e["year"]) // 10000 for h in houses.values() for e in h["events"]] + \
-            [year_key(o["since"] or o["until"]) // 10000 for h in houses.values() for o in h["owners"]]
+            [year_key(owner_year(o)) // 10000 for h in houses.values() for o in h["owners"]]
     years = [y for y in years if y < 9999]
     stats = dict(houses=len(houses), records=len(records), maps=len(maps),
                  people=sum(len(h["people"]) for h in houses.values()),

@@ -4,7 +4,7 @@ import '../styles/global.css';
 import '../styles/modern.css';
 import { config } from '../lib/data.js';
 const siteName = config.nazev || 'Dějiny domu';
-const { title, description = config.popis || siteName, wide = false, wider = false, full = false, narrow = false } = Astro.props;
+const { title, description = config.popis || siteName, wide = false, narrow = false } = Astro.props;
 const path = Astro.url.pathname;
 const groups = [
   [['/', 'Úvod'], ...(config.maPribeh ? [['/pribehy/', config.pribeh?.menu || 'Příběh domu']] : []), ['/zajimavosti/', 'Zajímavosti']],
@@ -44,11 +44,11 @@ const current = (url) => ((url === '/' ? path === '/' : path.startsWith(url)) ? 
         btn.setAttribute('aria-expanded', String(open));
       });
     </script>
-    <main class={full ? 'full' : wider ? 'wider' : wide ? 'wide' : narrow ? 'narrow' : ''} data-pagefind-body>
+    <main class={wide ? 'wide' : narrow ? 'narrow' : ''} data-pagefind-body>
       <slot />
     </main>
-    {!full && <footer class="site-footer">
+    <footer class="site-footer">
       {config.zapati || 'Dohledáno v digitalizovaných pramenech'} · neveřejný web
-    </footer>}
+    </footer>
   </body>
 </html>
