@@ -17,8 +17,8 @@ OBEC = dict(
     lat=None, lon=None,  # střed vsi (doplní tools/mista.py obec)
 )
 
-# Časová osa obce: dict(rok="1351", text="…", st="lit", r=[klíče], zdroj="Vlastivěda okresu, s. 389")
-# rok jako text („1351“, „22. 7. 1351“, „asi 1600“, „1618–1620“) – web podle prvního čtyřčíslí řadí.
+# Časová osa obce: dict(rok="1352", text="…", st="lit", r=[klíče], zdroj="vlastivěda okresu, s. 389")
+# rok jako text („1352“, „22. 7. 1352“, „asi 1600“, „1618–1620“) – web podle prvního čtyřčíslí řadí.
 OBEC_UDALOSTI = [
 ]
 
@@ -30,7 +30,7 @@ OBEC_UDALOSTI = [
 #   st="doc",
 #   popis="2–4 věty: co to je za dům dnes a čím je zajímavý",
 #   lat=48.86, lon=14.60,               # poloha domu (doplní tools/mista.py dum <čp> nebo ručně z mapy)
-#   cisla=[("1771–1830", "čp. 12"), ("od 1830", "čp. 12")],   # starší a pozdější čísla téhož domu
+#   cisla=[("1771–1830", "čp. 7"), ("od 1830", "čp. 12")],   # starší a pozdější čísla téhož domu
 #   udalosti=[dict(rok="1890", text="Sčítání lidu: v domě 7 osob…", st="doc", r=["lhota_scitani_cp12_1890"])],
 #   drzitele=[dict(od="1786", do="1820", n="Jan Novák", jak="koupě od otce za 300 zl.", st="doc", r=[…], note="")],
 #   obyvatele=[dict(n="Jan Novák", y="1790–1850", role="hospodář", f=["* 1790 Horní Lhota 12", "× 1815 Marie …"], st="doc", r=[…])],

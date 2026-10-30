@@ -24,7 +24,7 @@ Náhled spouštěj na pozadí a uživateli pošli odkaz. Vzhled si ověř sám (
  "nazev": "Horní Lhota čp. 12",
  "popis": "Popis pro sdílení (web je noindex).",
  "zapati": "Dohledáno v digitalizovaných pramenech SOA Třeboň a ČÚZK",
- "kontakt": {"jmeno": "Vojtovi", "email": "…"},
+ "kontakt": {"jmeno": "Novákovi", "email": "…"},
  "prihlaseni": {"uvod": "Tenhle web je zatím jen pro známé.", "otazka": "…", "odpoved": "…"},
  "uvod": {"nadpis": "Lákavý nadpis", "odstavce": ["2–3 věty, které chytí"], "foto": "klic_obrazku_ve_vyrezech", "foto_popis": "…"},
  "hlavni_dum": "30",

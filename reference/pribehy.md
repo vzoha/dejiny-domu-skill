@@ -33,7 +33,7 @@ Nejlepší 2–4 dej na úvod webu (`web.json` → `zajimavosti_na_uvodu`).
    title: Příběh čp. 12
    lead: Jedna věta, která chytí.
    ---
-   ## Ves pod Kohoutem (1351–1650)
+   ## Ves pod hradem (1352–1650)
    …
    ## Novákovi (1786–1870)
    …

@@ -20,7 +20,7 @@ OBEC = dict(nazev="Horní Lhota", jine_nazvy="Ober-Lhotta", obec="Dolní Lhota, 
             farnost="Dolní Lhota", panstvi="Kamenice (8 domů) a Pacov (10 domů)",
             popis="…", lat=49.40, lon=15.20)
 OBEC_UDALOSTI = [
- dict(rok="22. 7. 1351", text="Ves poprvé zmíněna v listině…", st="lit",
+ dict(rok="22. 7. 1352", text="Ves poprvé zmíněna v listině…", st="lit",
       zdroj="Vlastivěda okresu (1899), s. 389"),
 ]
 D = {
@@ -31,10 +31,10 @@ D = {
      obyvatele=[dict(n="Anna Nováková", y="1857–?", role="dcera hospodáře", f=["* 1857 Horní Lhota 12"], st="doc", r=[…])],
      note=""),
 }
-ISSUES = [("Kdy dům dostal číslo 12?", "Otevřené: v matrice 1786 je Novák na čp. 1…")]
+ISSUES = [("Kdy dům dostal číslo 12?", "Otevřené: v matrice 1786 je Novák na čp. 4…")]
 ```
 - Klíč domu = číslo popisné **jako text** („30“, „12a“, „ev. 3“). Adresa stránky `/dum/12/`.
-- `rok` / `od` / `do` jako text: „1351“, „22. 7. 1351“, „asi 1600“, „před 1654“. Web řadí podle prvního čtyřčíslí.
+- `rok` / `od` / `do` jako text: „1352“, „22. 7. 1352“, „asi 1600“, „před 1654“. Web řadí podle prvního čtyřčíslí.
 - `udalosti`: stavba, požár, přestavba, dělení gruntu, prodej, sčítání (shrnutí domácnosti), válka, elektrifikace…
 - `drzitele`: jeden řádek = jeden držitel (u manželů „Jan a Marie Novákovi“), `jak` = koupě / dědictví / přiženění / dražba / přídělem.
 - `obyvatele`: lidé, kteří v domě žili (i výměnkáři, čeleď, nájemníci). `f` fakta jako v rodokmenu
