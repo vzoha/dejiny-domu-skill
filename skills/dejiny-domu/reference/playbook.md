@@ -2,7 +2,7 @@
 Operating Playbook“, stav 2026-10-09. Autor ve zprávě není uveden. Podle stylu (štítky [FACT]/[INFERENCE], „this run“,
 „via subagent“) jde nejspíš o výstup výzkumného nástroje s umělou inteligencí. Do skillu je zařazena jako pracovní
 podklad, beze změn obsahu a bez nároku na autorství. Licence MIT repozitáře se na tento soubor nevztahuje.
-Jste-li autor a nesouhlasíte se zařazením, ozvěte se prosím na sarsonj@gmail.com – soubor upravíme nebo odstraníme.
+Jste-li autor a nesouhlasíte se zařazením, ozvěte se prosím na vzoha@volny.cz – soubor upravím nebo odstraním.
 Pozor: jde o rešerši k datu 2026-10-09 – adresy, lhůty a ceny ověř, než se na ně spolehneš.
 Čti po částech podle potřeby (obsah: §0 opravy, §1 hlavní zjištění, §2 prameny po zemích, §3 časová osa, §4 lhůty, §5 metoda a šablony, §6+ nástroje a ceny). -->
 
