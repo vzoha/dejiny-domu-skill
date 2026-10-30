@@ -14,6 +14,21 @@ rodokmenu za skvělý základ.
 **Aktuální verze: 0.3.4 (říjen 2026), rané vydání.** Skill vznikl při zjišťování dějin jednoho domu a zatím byl
 vyzkoušený jen na něm (Linux). Počítejte s chybami a dejte mi o nich vědět.
 
+## Ukázka
+
+**Živá ukázka: [historie.malystatek.cz](https://historie.malystatek.cz/)**. Tento web vznikl se skillem a popisuje
+výměnek čp. 30 a statek čp. 1 v Lništi (obec Slavče, okres České Budějovice).
+
+![Záznam z gruntovní knihy 1770: výřez původního zápisu, přepis a překlad](docs/ukazka_zapis.jpg)
+
+<table><tr>
+<td><img src="docs/ukazka_dum.jpg" alt="Stránka domu s časovou osou a odkazy na prameny"></td>
+<td><img src="docs/ukazka_mapy.jpg" alt="Porovnání leteckých snímků 1950 a dnes posuvníkem"></td>
+</tr><tr>
+<td>Časová osa domu, každý údaj má odkaz na pramen</td>
+<td>Porovnání starých map a leteckých snímků</td>
+</tr></table>
+
 > **Než začnete**
 >
 > Skill **nenahrazuje historika ani zkušeného badatele**. Umělá inteligence dělá chyby: špatně přečte jméno, splete
