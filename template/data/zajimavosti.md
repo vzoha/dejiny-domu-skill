@@ -1,3 +1,3 @@
-# Zajímavosti z rodokmenu
+# Zajímavosti
 
-<!-- Každá zajímavost: ## nadpis, pak pár vět. Odkazy na osoby: [Jan Novák](/osoba/jan-novak-1850/) – adresa je v web/src/data/site.json. -->
+<!-- Každá zajímavost: ## nadpis, pak pár vět. Odkazy na domy: [čp. 12](/dum/12/), na zápisy: [zápis](/zdroj/<klíč>/). -->

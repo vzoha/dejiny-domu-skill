@@ -4,8 +4,8 @@
 
 Použití (z kořene projektu):
   zapis.py <soubor> <klíč> <vstup.json> [--sloucit]
-    soubor     zaznamy | svazky | prepisy | zvyrazneni | mista | dokumenty   (= data/<soubor>.json)
-    klíč       zaznamy: „klic“ zápisu; dokumenty: „img“; ostatní: klíč ve slovníku (id svazku, klíč zápisu, obec)
+    soubor     zaznamy | svazky | prepisy | zvyrazneni | mista | dokumenty | mapy   (= data/<soubor>.json)
+    klíč       zaznamy: „klic“ zápisu; dokumenty, mapy: „img“; ostatní: klíč ve slovníku (id svazku, klíč zápisu, obec)
     vstup.json soubor s jedním objektem JSON (napiš ho nástrojem Write do pracovni/), „-“ = ze vstupu
     --sloucit  jen změní / doplní uvedená pole, ostatní pole položky nechá
 Položka se stejným klíčem se nahradí, jinak se přidá na konec. Python skripty ani `sed -i` na data nepoužívej.
@@ -16,7 +16,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
         _s.reconfigure(encoding="utf-8", errors="replace")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SEZNAMY = {"zaznamy": "klic", "dokumenty": "img"}   # soubory se seznamem: pole, podle kterého se položka pozná
+SEZNAMY = {"zaznamy": "klic", "dokumenty": "img", "mapy": "img"}   # soubory se seznamem: pole, podle kterého se položka pozná
 SLOVNIKY = {"svazky", "prepisy", "zvyrazneni", "mista"}
 WS = re.compile(r"\s*")
 

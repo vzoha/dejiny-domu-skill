@@ -5,7 +5,7 @@ import { Content as Dotazy } from '../generated/dotazy.md';
 ---
 <Base title="Co hledáme">
   <h1>Co ještě hledáme</h1>
-  <p class="lead">Otevřené otázky a hypotézy. Pokud o něčem z toho víte z rodinné paměti nebo dokumentů, ozvěte se{config.kontakt?.email ? <> na <a href={`mailto:${config.kontakt.email}`}>{config.kontakt.email}</a></> : ' autorovi rodokmenu'}.</p>
+  <p class="lead">Otevřené otázky a hypotézy. Pokud o něčem z toho víte z vyprávění nebo dokumentů, ozvěte se{config.kontakt?.email ? <> na <a href={`mailto:${config.kontakt.email}`}>{config.kontakt.email}</a></> : ' autorovi webu'}.</p>
   <h2>Otevřené otázky</h2>
   <div class="grid2">
     {issues.filter((i) => !i.text.startsWith('Vyřešeno')).map((i) => (
@@ -15,7 +15,7 @@ import { Content as Dotazy } from '../generated/dotazy.md';
       </div>
     ))}
   </div>
-  <h2>Prameny mimo online matriky</h2>
+  <h2>Prameny mimo internet</h2>
   <div class="prose small"><Dotazy /></div>
   <p><a href="/denik/">Výzkumný deník – všechna hledání včetně neúspěšných →</a></p>
 </Base>

@@ -1,10 +1,10 @@
 {
  "nazev": "",
  "popis": "",
- "zapati": "Dohledáno v digitalizovaných matrikách státních oblastních archivů",
+ "zapati": "Dohledáno v digitalizovaných pramenech státních oblastních archivů",
  "kontakt": {"jmeno": "", "email": ""},
  "prihlaseni": {
-  "uvod": "Tenhle web je jen pro rodinu a příbuzné.",
+  "uvod": "Tenhle web je zatím jen pro známé.",
   "otazka": "",
   "odpoved": ""
  },
@@ -14,6 +14,7 @@
   "foto": "",
   "foto_popis": ""
  },
- "pribeh": {"menu": "", "rod": 8, "tlacitko": ""},
+ "hlavni_dum": "",
+ "pribeh": {"menu": "", "tlacitko": ""},
  "zajimavosti_na_uvodu": []
 }

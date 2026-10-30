@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Založí nový projekt rodokmenu ze šablony skillu.
+"""Založí nový projekt dějin domu / obce ze šablony skillu.
 
-Použití: python3 <skill>/tools/novy_projekt.py <cílová složka> [--ukazka]
-  --ukazka   nakopíruje i vymyšlená ukázková data (rodina Novákových), aby šel web hned vyzkoušet
+Použití: python3 <skill>/tools/novy_projekt.py <cílová složka>
 
 Vytvoří: data/ (prázdné kostry nebo ukázka), web/ (Astro web), tools/ (kopie nástrojů),
 vyrezy/, zdroje/, dokumenty/, pracovni/, CLAUDE.md, .gitignore, .gitattributes (konce řádků LF i na Windows)
@@ -50,14 +49,8 @@ def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
     dst = os.path.abspath(os.path.expanduser(sys.argv[1]))
-    demo = "--ukazka" in sys.argv
     os.makedirs(dst, exist_ok=True)
-    copy_tree(os.path.join(SKILL, "template", "ukazka" if demo else "data"), os.path.join(dst, "data"))
-    if demo:
-        for sub in ("vyrezy", "zdroje"):
-            src = os.path.join(SKILL, "template", "ukazka_" + sub)
-            if os.path.isdir(src):
-                copy_tree(src, os.path.join(dst, sub))
+    copy_tree(os.path.join(SKILL, "template", "data"), os.path.join(dst, "data"))
     web = os.path.join(dst, "web")
     backup = os.path.join(dst, "pracovni", "zaloha_web_" + time.strftime("%Y%m%d-%H%M%S"))
     changed = copy_tree(os.path.join(SKILL, "template", "web"), web, backup if os.path.isdir(web) else None)

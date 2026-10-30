@@ -1,0 +1,7 @@
+---
+// Odkazy na zápisy, které údaj dokládají (datum · název).
+import { records, href } from '../lib/data.js';
+const { ids = [] } = Astro.props;
+const list = ids.filter((r) => records[r]);
+---
+{list.length > 0 && <span class="small">{list.map((r, i) => <>{i > 0 && ' · '}<a href={href.record(r)} title={records[r].title}>{records[r].kindName} {records[r].date}</a></>)}</span>}

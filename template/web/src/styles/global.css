@@ -206,3 +206,20 @@ main.full { max-width: none; padding: 0; }
 .card-link::after { content: '→'; position: absolute; top: 0.7rem; right: 0.9rem; font-size: 1.15rem; color: var(--accent); opacity: 0.55; transition: opacity 0.15s, transform 0.15s; }
 .card-link:hover::after { opacity: 1; transform: translateX(3px); }
 .card-link h3 { padding-right: 1.4rem; }
+
+/* časová osa (obec, dům) */
+.timeline { list-style: none; margin: 0.5rem 0 1rem; padding: 0; border-left: 3px solid var(--line); }
+.timeline li { position: relative; display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 0.8rem; padding: 0.4rem 0 0.6rem 1rem; }
+.timeline li::before { content: ''; position: absolute; left: -0.5rem; top: 0.75rem; width: 0.7rem; height: 0.7rem; border-radius: 50%; background: #efb45f; border: 1px solid #3b2e22; }
+.timeline li.doc::before { background: #6fa86f; }
+.timeline li.prob::before, .timeline li.unk::before { background: #eeeae3; }
+.timeline .tl-year { font: 1.05rem var(--serif); color: #3b2e22; }
+.timeline .tl-body p { margin: 0 0 0.2rem; }
+@media (max-width: 600px) { .timeline li { grid-template-columns: 1fr; gap: 0.1rem; } }
+
+/* porovnání starých map */
+.cmp-ctl { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; }
+.cmp-ctl input[type=range] { flex: 1 1 12rem; }
+.cmp-box { position: relative; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.cmp-box img { display: block; width: 100%; }
+.cmp-box img + img { position: absolute; inset: 0; height: 100%; object-fit: fill; }

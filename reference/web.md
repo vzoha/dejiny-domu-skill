@@ -1,9 +1,10 @@
-# Rodinný web – stavba, nastavení, zveřejnění
+# Web – stavba, nastavení, zveřejnění
 
 Web je statický (Astro + vyhledávání Pagefind), data bere z `data/` přes `tools/export_web.py`.
-Stránky: úvod (lákadlo, statistiky, zajímavosti, mapa, rody, vějíř), příběh, zajímavosti, rody, stránka rodu,
-mapa (OpenStreetMap), vějíř přes celou obrazovku s hledáním, seznam předků, zápisy (s výřezem, rámečkem, přepisem
-a překladem), stránka osoby, rodiny, „Co hledáme“, výzkumný deník, hledání.
+Stránky: úvod (lákadlo, hlavní dům s časovou osou, zajímavosti, mapa), příběh domu, zajímavosti, obec (údaje a časová
+osa), domy (seznam), stránka domu (čísla v čase, časová osa, držitelé, obyvatelé, mapa, fotky, prameny), staré mapy
+(galerie + prolínání map stejné `skupiny`), mapa (OpenStreetMap, letecký snímek a katastr ČÚZK), prameny (s výřezem,
+rámečkem, přepisem a překladem), „Co hledáme“, výzkumný deník, hledání.
 
 ## Příkazy (ve složce `web/`)
 | příkaz | co dělá |
@@ -20,14 +21,15 @@ Náhled spouštěj na pozadí a uživateli pošli odkaz. Vzhled si ověř sám (
 ## `data/web.json`
 ```json
 {
- "nazev": "Rodokmen Novákových",
- "popis": "Popis pro vyhledávače a sdílení (web je ale noindex).",
- "zapati": "Dohledáno v digitalizovaných matrikách SOA Zámrsk (portál ARON)",
- "kontakt": {"jmeno": "Petrovi", "email": "petr@example.cz"},
- "prihlaseni": {"uvod": "Tenhle web je jen pro rodinu.", "otazka": "Jak se jmenoval pes u babičky v Holicích?", "odpoved": "Alík"},
+ "nazev": "Horní Lhota čp. 12",
+ "popis": "Popis pro sdílení (web je noindex).",
+ "zapati": "Dohledáno v digitalizovaných pramenech SOA Třeboň a ČÚZK",
+ "kontakt": {"jmeno": "Vojtovi", "email": "…"},
+ "prihlaseni": {"uvod": "Tenhle web je zatím jen pro známé.", "otazka": "…", "odpoved": "…"},
  "uvod": {"nadpis": "Lákavý nadpis", "odstavce": ["2–3 věty, které chytí"], "foto": "klic_obrazku_ve_vyrezech", "foto_popis": "…"},
- "pribeh": {"menu": "Příběh Nováků", "rod": 8, "tlacitko": "Přečíst příběh Nováků"},
- "zajimavosti_na_uvodu": [{"nadpis": "Nejstarší předek", "text": "Kovář Jan, asi 1825."}]
+ "hlavni_dum": "30",
+ "pribeh": {"menu": "Příběh domu", "tlacitko": "Přečíst příběh čp. 12"},
+ "zajimavosti_na_uvodu": [{"nadpis": "Nejstarší zmínka", "text": "1351 – …"}]
 }
 ```
 - `kontakt.jmeno` je ve 3. pádě („Napište Petrovi na …“).
@@ -38,16 +40,12 @@ Náhled spouštěj na pozadí a uživateli pošli odkaz. Vzhled si ověř sám (
   skončí chybou; otevřený web jen výslovně přes `"otevreny": true` v `prihlaseni`.
   Je to lehká ochrana proti náhodným návštěvníkům, ne bankovní zabezpečení – citlivé věci na web nepatří.
 - `uvod.foto` = klíč obrázku ve `vyrezy/` (ulož přes `vyrez.py`).
-- `pribeh`: `menu` a `tlacitko` pojmenuj podle hlavního rodu („Příběh Novákových“), `rod` = číslo rodu (8–15).
-  Bez vyplněného `uvod` ukáže úvodní stránka aspoň název a `lead` příběhu. Viz `pribehy.md`.
-- Šablona `web.json` je prázdná – název nastav hned, jak znáš příjmení výchozí osoby (`kontrola.py` hlásí zbytky ukázky).
-- `citlive_schvaleno`: seznam úryvků textu, které uživatel na webu schválil (např. `["oběsil se ve stodole"]`) –
-  `kontrola.py` je pak nehlásí jako `CITLIVÉ`. Úryvek musí obsahovat hlášené slovo; když se text změní, hlásí se znovu.
-
+- `hlavni_dum`: čp. hlavního domu (úvodní stránka ho ukáže s časovou osou). `pribeh` viz `pribehy.md`.
+- Šablona `web.json` je prázdná – název nastav hned na začátku.
 ## Zveřejnění na Netlify (výchozí, zdarma)
 1. Uživatel si založí účet na netlify.com (stačí přihlášení přes Google/GitHub) – udělá sám.
 2. Přihlášení CLI (otevře prohlížeč) – dej uživateli: `! cd web && npx -y netlify-cli@latest login`.
-   Když `!` nejde (cloudové prostředí): `npx -y netlify-cli@latest login --request "Rodokmen"` vypíše odkaz a číslo
+   Když `!` nejde (cloudové prostředí): `npx -y netlify-cli@latest login --request "Dejiny domu"` vypíše odkaz a číslo
    lístku – uživatel odkaz otevře a schválí, pak `npx -y netlify-cli@latest login --check <lístek>`.
 3. Založení webu a propojení složky (interaktivní, jednou) – dej uživateli:
    `! cd web && npx -y netlify-cli@latest sites:create` (zvolí tým a název → adresa `https://<název>.netlify.app`),
@@ -56,10 +54,10 @@ Náhled spouštěj na pozadí a uživateli pošli odkaz. Vzhled si ověř sám (
    **Windows:** když `!` běží ve Windows PowerShellu 5.1 (`&&` tam nefunguje a `npx` blokuje Execution Policy), ať uživatel
    otevře PowerShell 7 nebo Příkazový řádek, přejde do složky `web` a spustí `npx -y netlify-cli@latest login` (a `sites:create`).
 4. Nasazení: `cd web && npm run nasadit` (můžeš spustit sám; vypíše adresu webu).
-5. Ověř: otevři adresu **v anonymním okně** → musí se ukázat rodinná přihlašovací otázka; po správné odpovědi web.
+5. Ověř: otevři adresu **v anonymním okně** → musí se ukázat přihlašovací otázka; po správné odpovědi web.
    Ukáže-li se místo ní přihlášení k Netlify (401, „Login Redirect“), zdědil web ochranu týmu („Team protection“).
    Uživatel ji vypne v administraci webu: Project configuration → Access & security → Visitor access. Web pak chrání
-   rodinná otázka – proto znovu ověř v anonymním okně, že se ukáže.
+   přihlašovací otázka – proto znovu ověř v anonymním okně, že se ukáže.
    Přihlášení zajišťuje Netlify Edge Function `web/netlify/edge-functions/brana.js` (generuje ji export).
 Další aktualizace = jen `npm run nasadit`. Vlastní doménu lze nastavit v administraci Netlify.
 
@@ -77,11 +75,11 @@ zkus v `launch.json` `"runtimeExecutable": "node"` a `"runtimeArgs": ["web/node_
 
 ## Úpravy vzhledu
 Styly `web/src/styles/global.css` (barvy v `:root`), rozložení `web/src/layouts/Base.astro`, stránky `web/src/pages/`.
-Barvy rodů jsou v `tools/export_web.py` (`LINE_COLORS`) a `tools/fan_chart.py` (`BASE`). Upravuj jen na přání uživatele
-a po úpravě zkontroluj web na mobilu i počítači.
+Upravuj jen na přání uživatele a po úpravě zkontroluj web na mobilu i počítači.
 
-## Vějíř jako plakát
-`python3 -I tools/fan_chart.py vystupy/` → SVG a HTML (a PNG, je-li nainstalovaný Google Chrome, na Windows i Microsoft Edge) k tisku.
+## Mapové vrstvy
+Mapa (`components/HouseMap.astro`) má OpenStreetMap, ortofoto ČÚZK (WMS `ags.cuzk.cz/arcgis1/services/ORTOFOTO`) a dnešní
+katastr (WMS `services.cuzk.cz/wms/wms.asp`, vrstva `KN`). Staré mapy jsou obrázky v `mapy.json` (ne georeferencované).
 
 ## Aktualizace staršího projektu
 Znovu spusť `python3 -I SKILL_DIR/tools/novy_projekt.py <složka projektu>`. Data (`data/`, výřezy) zůstanou, `tools/` se přepíše

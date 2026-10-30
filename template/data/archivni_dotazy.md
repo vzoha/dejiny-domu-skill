@@ -1,3 +1,3 @@
-# Prameny mimo online matriky
+# Prameny mimo internet
 
-Co by šlo zjistit jen v badatelně archivu nebo na matričním úřadě (a proč). Doplňujte průběžně.
+Co by šlo zjistit jen v badatelně archivu, na katastrálním úřadě nebo v obecní kronice (a proč). Doplňujte průběžně.

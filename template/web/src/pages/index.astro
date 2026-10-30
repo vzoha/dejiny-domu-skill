@@ -1,17 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
-import { stats, lines, href, config, linesTitle } from '../lib/data.js';
-import fan from '../generated/fan.svg?raw';
-import MobileTree from '../components/MobileTree.astro';
-import FamilyMap from '../components/FamilyMap.astro';
-import site from '../data/site.json';
+import HouseMap from '../components/HouseMap.astro';
+import Timeline from '../components/Timeline.astro';
+import { stats, config, village, mainHouse, houseList, href, houseTitle } from '../lib/data.js';
 import { frontmatter as pribeh } from '../generated/pribeh.md';
-const lineList = Object.values(lines).sort((a, b) => a.k - b.k);
 const uvod = config.uvod ?? {};
 const cards = config.zajimavosti_na_uvodu ?? [];
+const hasMap = houseList.some((h) => h.lat != null) || village.lat != null;
 ---
 <Base title="" wide>
-  <h1>{config.nazev || 'Rodokmen'}</h1>
+  <h1>{config.nazev || (mainHouse ? `${village.name} ${houseTitle(mainHouse)}` : village.name) || 'Dějiny domu'}</h1>
 
   {(uvod.nadpis || uvod.odstavce?.length) && (
     <section class="teaser">
@@ -37,11 +35,21 @@ const cards = config.zajimavosti_na_uvodu ?? [];
   )}
 
   <div class="stats">
-    <div><strong>{stats.ancestors}</strong>známých předků</div>
-    <div><strong>{stats.documented}</strong>doloženo matrikou</div>
-    <div><strong>{stats.generations}</strong>generací</div>
-    <div><strong>{stats.records}</strong>matričních zápisů</div>
+    {stats.oldest && <div><strong>{stats.oldest}</strong>nejstarší zmínka</div>}
+    <div><strong>{stats.owners}</strong>známých držitelů</div>
+    <div><strong>{stats.people}</strong>obyvatel</div>
+    <div><strong>{stats.records}</strong>zápisů z pramenů</div>
+    {stats.maps > 0 && <div><strong>{stats.maps}</strong>starých map</div>}
   </div>
+
+  {mainHouse && (
+    <>
+      <h2>{houseTitle(mainHouse)}</h2>
+      {mainHouse.desc && <p class="lead">{mainHouse.desc}</p>}
+      {mainHouse.events.length > 0 && <Timeline events={mainHouse.events.slice(0, 6)} />}
+      <p><a class="btn" href={href.house(mainHouse.slug)}>Celé dějiny domu →</a></p>
+    </>
+  )}
 
   {cards.length > 0 && (
     <>
@@ -55,32 +63,18 @@ const cards = config.zajimavosti_na_uvodu ?? [];
     </>
   )}
 
-  {site.places.length > 0 && (
+  {village.name && (
     <>
-      <h2>Kde žili naši předci</h2>
-      <FamilyMap height="420px" compact />
-      <p><a href="/mapa/">Celá mapa se jmény a filtrem rodů →</a></p>
+      <h2>Obec {village.name}</h2>
+      {village.desc && <p class="lead">{village.desc}</p>}
+      <p><a href="/obec/">Dějiny obce →</a></p>
     </>
   )}
 
-  {lineList.length > 0 && (
+  {hasMap && (
     <>
-      <h2>{linesTitle(lineList.length)}</h2>
-      <div class="grid2">
-        {lineList.map((l) => (
-          <a class="card line-card card-link" style={`--c:${l.color}`} href={href.line(l.slug)}>
-            <h3>{l.name}</h3>
-            <p class="small muted">{l.desc}</p>
-          </a>
-        ))}
-      </div>
+      <HouseMap height="420px" compact />
+      <p><a href="/mapa/">Velká mapa →</a> · <a href="/mapy/">staré mapy a letecké snímky →</a></p>
     </>
   )}
-
-  <h2>Rodokmen</h2>
-  <div class="only-mobile">
-    <MobileTree k={1} />
-  </div>
-  <div class="fan-preview only-desktop"><a class="cover" href="/vejir/" aria-label="Otevřít vějíř předků přes celou obrazovku"></a><Fragment set:html={fan} /></div>
-  <p><a class="btn" href="/vejir/">Otevřít vějíř předků přes celou obrazovku →</a> <a href="/predci/" style="margin-left:1rem">nebo seznam všech předků</a></p>
 </Base>

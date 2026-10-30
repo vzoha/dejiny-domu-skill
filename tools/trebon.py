@@ -33,7 +33,7 @@ def magick():
     return m
 _cj = http.cookiejar.CookieJar()
 _op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(_cj))
-_op.addheaders = [("User-Agent", "Mozilla/5.0 (rodokmen)")]
+_op.addheaders = [("User-Agent", "Mozilla/5.0 (dejiny-domu)")]
 
 
 def get(path, referer=None, binary=False):

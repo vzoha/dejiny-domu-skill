@@ -1,17 +1,17 @@
 ---
 import { records, href } from '../lib/data.js';
-import PersonLink from './PersonLink.astro';
-const { id, showPeople = false, exclude, open = false } = Astro.props;
+import HouseLink from './HouseLink.astro';
+const { id, showHouses = false, exclude, open = false } = Astro.props;
 const r = records[id];
 ---
 {r && (
   <article class="rec">
     <div>
-      <div class="meta"><span class="kind">{r.kindName}</span>{r.date} · {r.archive && r.volume ? r.volume : r.vdesc} · snímek {r.scan}</div>
+      <div class="meta"><span class="kind">{r.kindName}</span>{r.date} · {r.archive && r.volume ? r.volume : r.vdesc}{r.scan && <> · snímek {r.scan}</>}</div>
       <div class="title"><a href={href.record(r.key)}>{r.title}</a></div>
       <div class="small">{r.summary}</div>
-      {showPeople && r.people.filter((s) => s !== exclude).length > 0 && (
-        <div class="small muted">Týká se: {r.people.filter((s) => s !== exclude).map((s, i) => <>{i > 0 && ', '}<PersonLink slug={s} /></>)}</div>
+      {showHouses && r.houses.filter((s) => s !== exclude).length > 0 && (
+        <div class="small muted">Týká se: {r.houses.filter((s) => s !== exclude).map((s, i) => <>{i > 0 && ', '}<HouseLink slug={s} /></>)}</div>
       )}
     </div>
     {r.img && (
@@ -24,7 +24,7 @@ const r = records[id];
     )}
     {r.orig && (
       <details class="transcript" open={open}>
-        <summary>Text z matriky a překlad</summary>
+        <summary>Text pramene a překlad</summary>
         <div class="tr-grid">
           <div><h4>Přepis originálu</h4><p class="tr-orig">{r.orig}</p></div>
           <div><h4>Překlad</h4><p class="tr-cs">{r.cs}</p></div>

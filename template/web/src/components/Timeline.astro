@@ -1,0 +1,20 @@
+---
+import RecLinks from './RecLinks.astro';
+import { statusClass } from '../lib/data.js';
+const { events = [] } = Astro.props;
+---
+<ol class="timeline">
+  {events.map((e) => (
+    <li class={e.st}>
+      <span class="tl-year">{e.year}</span>
+      <div class="tl-body">
+        <p>{e.text}</p>
+        <p class="small muted">
+          <span class={`chip ${statusClass(e.st)}`}>{e.status}</span>
+          {e.source && <> {e.source} </>}
+          <RecLinks ids={e.records} />
+        </p>
+      </div>
+    </li>
+  ))}
+</ol>

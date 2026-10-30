@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import { houseList, href, village, statusClass } from '../lib/data.js';
+---
+<Base title="Domy">
+  <h1>Domy{village.name && ` v obci ${village.name}`}</h1>
+  <p class="lead">Domy podle čísla popisného. Čísla se zaváděla v letech 1770–1771 a během 19. století se často měnila – u domu je uvedeno, pod jakými čísly ho v pramenech najdete.</p>
+  <div class="table-box"><table>
+    <thead><tr><th>Čp.</th><th>Dům</th><th>Držitelé</th><th>Doloženo</th></tr></thead>
+    <tbody>
+      {houseList.map((h) => (
+        <tr>
+          <td><a href={href.house(h.slug)}>{h.cp}</a></td>
+          <td><a href={href.house(h.slug)}>{h.name || h.kind || 'dům'}</a>{h.name && h.kind && <div class="small muted">{h.kind}</div>}</td>
+          <td class="small">{h.owners.map((o) => o.name).join(' → ')}</td>
+          <td><span class={`chip ${statusClass(h.st)}`}>{h.status}</span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table></div>
+</Base>

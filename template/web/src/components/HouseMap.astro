@@ -1,0 +1,81 @@
+---
+// Mapa domů a okolních míst (Leaflet + OpenStreetMap). Hlavní dům zvýrazněný.
+import 'leaflet/dist/leaflet.css';
+import { houseList, places, village, href, houseTitle, mainHouse } from '../lib/data.js';
+const { height = '70vh', compact = false, focus = null } = Astro.props;
+const points = [
+  ...houseList.filter((h) => h.lat != null).map((h) => ({
+    lat: h.lat, lon: h.lon, label: houseTitle(h), text: h.kind, url: href.house(h.slug),
+    main: h.slug === (focus ?? mainHouse?.slug), house: true,
+  })),
+  ...places.map((p) => ({ lat: p.lat, lon: p.lon, label: p.name, text: p.desc, url: null, main: false, house: false })),
+];
+const center = village.lat != null ? [village.lat, village.lon] : null;
+const payload = JSON.stringify({ points, center, compact, focus: !!focus });
+---
+<div class="fmap" style={`height:${height}`} data-map={payload}></div>
+
+<script>
+  import L from 'leaflet';
+  const esc = (v: unknown) => String(v ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
+  for (const el of document.querySelectorAll<HTMLElement>('.fmap')) {
+    const { points, center, compact, focus } = JSON.parse(el.dataset.map!);
+    // Gesture handling: page scroll stays page scroll. Zoom with Ctrl/⌘ + wheel, on touch move with two fingers.
+    const touch = window.matchMedia('(pointer: coarse)').matches;
+    const map = L.map(el, { scrollWheelZoom: false, dragging: !touch, tap: false });
+    const hint = L.DomUtil.create('div', 'fmap-hint', el);
+    hint.textContent = touch ? 'Mapu posunete dvěma prsty' : `Pro přiblížení mapy držte ${/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘' : 'Ctrl'} a točte kolečkem`;
+    let hintTimer = 0;
+    const showHint = () => { hint.classList.add('on'); clearTimeout(hintTimer); hintTimer = window.setTimeout(() => hint.classList.remove('on'), 1200); };
+    el.addEventListener('wheel', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const p = map.mouseEventToContainerPoint(e as unknown as MouseEvent);
+        map.setZoomAround(p, map.getZoom() + (e.deltaY < 0 ? 1 : -1));
+      } else showHint();
+    }, { passive: false });
+    if (touch) {
+      el.addEventListener('touchstart', (e) => { if (e.touches.length > 1) map.dragging.enable(); else map.dragging.disable(); }, { passive: true });
+      el.addEventListener('touchmove', (e) => { if (e.touches.length === 1) showHint(); }, { passive: true });
+      el.addEventListener('touchend', () => map.dragging.disable(), { passive: true });
+    }
+    const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+    // Ortofoto a stabilní katastr ČÚZK (WMS) – přepínač vrstev vpravo nahoře
+    const orto = L.tileLayer.wms('https://ags.cuzk.cz/arcgis1/services/ORTOFOTO/MapServer/WMSServer', {
+      layers: '0', format: 'image/png', maxZoom: 20, attribution: '&copy; ČÚZK',
+    });
+    const katastr = L.tileLayer.wms('https://services.cuzk.cz/wms/wms.asp', {
+      layers: 'KN', format: 'image/png', transparent: true, maxZoom: 20, attribution: '&copy; ČÚZK',
+    });
+    L.control.layers({ 'Mapa': osm, 'Letecký snímek (ČÚZK)': orto }, { 'Dnešní katastr (parcely)': katastr }, { collapsed: compact }).addTo(map);
+    const bounds: L.LatLngExpression[] = [];
+    for (const p of points) {
+      const m = L.circleMarker([p.lat, p.lon], {
+        radius: p.main ? 10 : p.house ? 7 : 5, color: '#3b2e22', weight: 1,
+        fillColor: p.main ? '#d7302a' : p.house ? '#EFB45F' : '#86B8E8', fillOpacity: 0.9,
+      });
+      const head = p.url ? `<a href="${esc(p.url)}">${esc(p.label)}</a>` : `<strong>${esc(p.label)}</strong>`;
+      m.bindPopup(head + (p.text ? `<br>${esc(p.text)}` : ''));
+      m.bindTooltip(esc(p.label));
+      m.addTo(map);
+      bounds.push([p.lat, p.lon]);
+    }
+    const target = focus ? points.find((p: { main: boolean }) => p.main) : null;
+    if (target) map.setView([target.lat, target.lon], 17);
+    else if (bounds.length > 1) map.fitBounds(L.latLngBounds(bounds), { padding: [30, 30], maxZoom: 17 });
+    else if (bounds.length) map.setView(bounds[0], 16);
+    else if (center) map.setView(center, 15);
+    else map.setView([49.8, 15.5], 7);
+  }
+</script>
+
+<style is:global>
+  .fmap { width: 100%; border: 1px solid var(--line); border-radius: 12px; z-index: 0; }
+  .fmap-hint { position: absolute; inset: 0; z-index: 1001; display: grid; place-items: center; background: rgba(0, 0, 0, 0.45); color: #fff;
+    font: 600 1.05rem system-ui, sans-serif; text-align: center; padding: 1rem; pointer-events: none; opacity: 0; transition: opacity 0.25s; }
+  .fmap-hint.on { opacity: 1; }
+  .leaflet-popup-content { font-size: 0.85rem; line-height: 1.4; }
+</style>
