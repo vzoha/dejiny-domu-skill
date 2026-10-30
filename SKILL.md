@@ -18,6 +18,7 @@ Rozdíl je v tom, kolem čeho se data točí: kolem **čísla popisného** a jeh
 - `reference/matriky.md` – jak číst matriky (písmo, latina/němčina, lhůty, pasti)
 - `reference/portaly.md` – portály archivů a nástroje na stahování snímků
 - `reference/data.md` – formát dat, `reference/web.md` – web, `reference/pribehy.md` – zajímavosti a příběh domu,
+  `reference/texty.md` – **jak psát texty na web** (krátce, bez žargonu, pro hosta; platí pro vše, co jde na web),
   `reference/soukromi.md` – soukromí, `reference/playbook.md` – profesionální genealogická metodika (EN)
 
 ## Jak mluvit s uživatelem
@@ -37,12 +38,15 @@ Rozdíl je v tom, kolem čeho se data točí: kolem **čísla popisného** a jeh
 2. Projekt ještě není → **Fáze 0**.
 
 ## Fáze 0 – Příprava (jednou)
-1. Nástroje: `python3` (≥ 3.9), `node` (≥ 20), `magick` (ImageMagick), `git`. Instalace a pasti Windows jsou
+1. Nástroje: `python3` (≥ 3.9), `node` (≥ 20), `magick` (ImageMagick 7; na Linuxu stačí IM6 s `convert` – nástroje
+   ho najdou samy, v ručních příkazech pak piš `convert` místo `magick`), `git`. Instalace a pasti Windows jsou
    stejné jako ve skillu rodokmen (Fáze 0, `reference/matriky.md` → Technické pasti). Na Windows místo `python3 -I`
    vždy `python -I -X utf8`. Pravidla zapiš do `CLAUDE.md` projektu.
 2. Zeptej se, kde má projekt být (navrhni `~/<Obec>-<čp>`), a založ ho: `python3 -I SKILL_DIR/tools/novy_projekt.py <složka>`.
 3. `git init` a první uložení. Doporuč pokračovat v Claude Code **z této složky**.
-4. Vyplň v `data/STAV.md` „O čem to je“, v `data/domy.py` `OBEC` (název) a hlavní dům v `D`, v `data/web.json`
+4. **Dnešní obec a katastr ověř hned:** `python3 -I tools/mista.py ruian "Osada čp"` → adresa s dnešní obcí, parcela
+   a k. ú. Osada často patří k jiné obci, než uživatel (nebo šablona) čeká, a k. ú. nese jméno sousední vsi.
+5. Vyplň v `data/STAV.md` „O čem to je“, v `data/domy.py` `OBEC` (název) a hlavní dům v `D`, v `data/web.json`
    `nazev` a `hlavni_dum`.
 
 ## Fáze 1 – Co už víme
@@ -54,7 +58,8 @@ Cíl: vytěžit všechno, co uživatel má, než sáhneš do archivů.
 - **Ptej se postupně:** kdo dům vlastní a od kdy, od koho ho koupil, co vyprávěli předchozí majitelé a sousedé, staré
   fotky, kupní smlouvy, stavební plány, kdy byly přestavby, jestli dům někdy vyhořel, jaké má jméno po domácku („U Nováků“).
 - Zapiš: `data/pametnici.md` (kdo co řekl), události do `domy.py` se stavem `fam`, literaturu se stavem `lit` a `zdroj`.
-- **Dnešní stav:** parcela a dnešní katastr (nahlizenidokn.cuzk.cz), poloha domu (`tools/mista.py hledej "Obec čp, okres"`).
+- **Dnešní stav:** parcela a k. ú. (`tools/mista.py ruian "Osada čp"`, nahlizenidokn.cuzk.cz), poloha domu
+  (`ruian` dá i lat/lon; `mista.py hledej` přes OSM malé osady často nezná).
 - Staré mapy a letecké snímky, které uživatel má, zapiš do `data/mapy.json` (viz `reference/data.md`), i s rokem a zdrojem.
 
 ## Fáze 2 – Kostra: obec, farnost, panství, čísla
@@ -62,8 +67,9 @@ Než začneš číst, zjisti a zapiš do `OBEC` a `STAV.md`:
 1. **Farnost** (kam se chodilo do kostela: tam jsou matriky) a **archiv** (podle kraje, `reference/portaly.md`).
 2. **Panství** před 1848, kam ves (nebo jednotlivé domy!) patřila. Tam jsou gruntovní knihy.
    Ves mohla patřit pod dvě vrchnosti.
-3. **Číslo domu v čase**: stabilní katastr 1824–43 (archivnimapy.cuzk.cz) ukáže číslo a půdorys v době katastru,
-   dnešní parcela ho spojí s dneškem. Přečíslování hlídej celou dobu (`reference/prameny.md` → Čísla domů).
+3. **Číslo domu v čase**: stabilní katastr 1824–43 (`tools/cuzk_archiv.py listy`, Archiv ČÚZK) ukáže číslo a půdorys
+   v době katastru, originální mapa i změny do ~1880. Pozemkový katastr (`cuzk_archiv.py mapa pk`) sedí na dnešní
+   mapu a spojí starou parcelu s dnešním domem. Přečíslování hlídej celou dobu (`reference/prameny.md` → Čísla domů).
 4. **Staré názvy** obce (německý, starší český). Hledej podle všech.
 
 ## Fáze 3 – Prameny, od dneška zpátky
@@ -83,7 +89,8 @@ Základní smyčka pro každý pramen:
 4. **Zapiš nález** (vždy všech 6 kroků):
    1. svazek do `data/svazky.json` (`trebon.py svazek <id>`, `aron_img.py <apu> svazek`, jinak `zapis.py svazky …`),
    2. zápis do `data/zaznamy.json` přes `tools/zapis.py` (klíč `obec_druh_cp_kdo_rok`, např. `lhota_scitani_cp12_1890`),
-   3. výřez: `python3 -I tools/vyrez.py pracovni/<stránka>.jpg <klíč> x0,y0,x1,y1` (velkoryse, s hlavičkou sloupců),
+   3. výřez: `python3 -I tools/vyrez.py pracovni/<stránka>.jpg <klíč> x0,y0,x1,y1` (velkoryse, s hlavičkou sloupců;
+      u novin dole až po oddělovací čáru, ať konec článku nevypadá useknutý),
    4. rámeček: `python3 -I tools/ramecek.py <klíč> x0,y0,x1,y1` a **prohlédni si** `pracovni/ramecek_<klíč>.jpg`,
    5. přepis a český překlad do `data/prepisy.json` (nejistá místa „(?)“, nečitelná „[…]“),
    6. do `data/domy.py`: událost domu, držitel nebo obyvatelé (`st="doc"`, `r=[klíč]`), případně událost obce.
@@ -104,10 +111,21 @@ Pravidla kvality:
 - **Sporné věci** (dvě čtení, dvě možná čísla) ukaž uživateli s výřezem a nech ho rozhodnout. Do té doby `prob`.
   Mnoho sporných najednou sbírej do `pracovni/sporna_cteni.json` a udělej z nich jednu klikací stránku (jako v rodokmenu).
 
+### Webové aplikace bez API – prohlížeč
+Když portál nemá nástroj ani čitelné API (mapové aplikace, prohlížeče snímků, nahlizenidokn, chartae-antiquae),
+**použij sám prohlížeč přes skill `agent-browser`**, nenechávej to na uživateli. Pasti:
+- Playwright hlásí „Executable doesn't exist“ → spusť s nainstalovaným chromiem:
+  `agent-browser --executable-path "$(ls -d ~/.cache/ms-playwright/chromium-*/chrome-linux/chrome | tail -1)" open <url>`
+  (když už běží démon, nejdřív `agent-browser close`).
+- Odkud se načítají obrázky a token, zjistíš `agent-browser eval "JSON.stringify(performance.getEntriesByType('resource').map(e=>e.name))"`.
+  Pak stahuj přímo (curl s `Referer`) a postup převeď do nástroje.
+- Velké mapy snímkuj po dlaždicích. Nic nekupuj, nezadávej hesla, neřeš CAPTCHA.
+
 ### Pomocníci (subagenti) – šetrně
 Stejně jako v rodokmenu: na velké kolo (projít matriku 1784–1850 a vypsat všechny zápisy z čp. 12, projít sčítání
 1857–1921) můžeš pustit 2–4 pomocníky na levnějším modelu (`model: "sonnet"`). Píšou jen do `pracovni/pom_<úkol>/`,
-**do `data/` nikdy**. Jejich čtení **vždy ověř sám na snímku** (`tools/overit.py`), než ho zapíšeš jako `doc`.
+**do `data/` nikdy** – do zadání napiš i „nespouštěj `trebon.py svazek` ani jiné příkazy, které zapisují do `data/`
+(na kartu svazku je `trebon.py popis`)“. Jejich čtení **vždy ověř sám na snímku** (`tools/overit.py`), než ho zapíšeš jako `doc`.
 V zadání chtěj u každého prošlého snímku, co na něm skutečně přečetli (rok, číslo domu, první jméno).
 Před velkým kolem řekni uživateli, co plánuješ, a nech si to schválit (kredity).
 
@@ -122,7 +140,7 @@ a obyvatel (Statistický lexikon obcí), škola, kaple, elektrifikace, 1945, kol
 s číslem strany. Co jde ověřit v prameni, ověř.
 
 ## Fáze 5 – Zajímavosti a Příběh domu
-Podrobně `reference/pribehy.md`. Zajímavosti piš **průběžně** do `data/zajimavosti.md` a říkej je uživateli.
+Podrobně `reference/pribehy.md`. Všechny texty pro web piš podle `reference/texty.md`. Zajímavosti piš **průběžně** do `data/zajimavosti.md` a říkej je uživateli.
 Příběh domu nabídni, jakmile je ~4 doložených držitelů nebo ~150 let historie. Koncept dej **do chatu** ke schválení,
 pak `data/pribeh.md` a `web.json` (`pribeh`, `uvod`).
 
@@ -166,9 +184,12 @@ Obecně a stručně, bez osobních údajů. Nic sám neposílej.
 | `tools/`, `web/` | nástroje (kopie ze skillu), web (Astro; data do něj jen přes `npm run data`) |
 
 ## Nástroje (`tools/`, spouštět z kořene projektu `python3 -I tools/<nástroj>`)
+Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do skillu; nástroje to odmítnou).
 | Nástroj | Co dělá |
 |---|---|
-| `trebon.py misto / svazky / rejstrik / snimek / svazek` | SOA Třeboň (jižní Čechy): matriky, **sčítání lidu**, kroniky (`snimek <id> <strana>` funguje pro každý svazek portálu) |
+| `trebon.py misto / svazky / rejstrik / snimek / popis / svazek` | SOA Třeboň (jižní Čechy): matriky, **sčítání lidu**, kroniky (`snimek <id> <strana>` funguje pro každý svazek portálu) |
+| `trebon.py strom [<kód> ["Obec"]]`, `obce <id>` | SOA Třeboň: strom fondů – **gruntovní knihy** (`1q`), urbáře (`1U`), sčítání (`1s`), kroniky (`1k`) |
+| `cuzk_archiv.py listy / rastry / export / mapa` | Archiv ČÚZK: stabilní katastr (originální mapy s reambulací, císařské otisky, indikační skici), pozemkový katastr |
 | `aron_search.py "Obec" ["fond"]`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |
 | `portafontium.py …`, `ebadatelna.py …` (`a-…` archiválie: urbáře, gruntovní knihy) | SOA Plzeň, SOA Praha |
 | `ahmp_search.sh`, `ahmp_scan.py`, `policie_prihlasky.py` | Praha (matriky, policejní přihlášky s adresami) |
@@ -177,7 +198,7 @@ Obecně a stručně, bez osobních údajů. Nic sám neposílej.
 | `overit.py <snímek> x0,y0,x1,y1 <prefix>` | zápis na dvě čitelné poloviny – ověření čtení |
 | `vyrez.py <obrázek> <klíč> x0,y0,x1,y1` | výřez do `zdroje/` a `vyrezy/` (i mapy a fotky, celé = `0,0,1,1`) |
 | `ramecek.py <klíč> x0,y0,x1,y1` | rámeček čteného místa + kontrolní obrázek |
-| `mista.py hledej "dotaz"` / `pridej "Název" …` | souřadnice domu nebo obce / body na mapu |
+| `mista.py ruian "Osada čp"` / `hledej "dotaz"` / `pridej "Název" …` | dům v RÚIAN (obec, parcela, k. ú., poloha) / souřadnice z OSM / body na mapu |
 | `zapis.py <soubor> <klíč> <vstup.json> [--sloucit]` | přidá / změní položku v `zaznamy`, `svazky`, `prepisy`, `mapy`… beze změny formátu |
 | `kontrola.py` | kontrola dat, soukromí, kdy psát příběh |
 | `export_web.py` | data → web (volá ho `npm run data`) |

@@ -24,6 +24,9 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
 BASE = "https://www.portafontium.eu"
 ARCHIV = "soap-pn"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu → zapisovalo by do skillu
+    sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
+             f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 CACHE = os.path.join(ROOT, "pracovni", ".cache_pf")
 UA = {"User-Agent": "Mozilla/5.0 (rodokmen)"}   # bez prohlížečového User-Agentu portál vrací 403
 PAUZA = 0.5   # s před každým požadavkem – ohled na server i při volání ve smyčce

@@ -10,17 +10,28 @@ Použití (z kořene projektu):
                                             (ne každá kniha ho má; prázdný výsledek = rejstřík chybí, ne „osoba tam není“)
   trebon.py snimek <id_knihy> <snímek> <vystup.jpg> [nahled]
                                          -> stáhne snímek v plném rozlišení (slepí dlaždice); "nahled" = 1/4 rozlišení
-  trebon.py svazek <id_knihy>            -> zapíše svazek do data/svazky.json (klíč trebon_<id_knihy>)
+  trebon.py popis <id_knihy>             -> karta svazku z portálu (archiv, fond, inv. č., obsah, roky, obce) – jen čte
+  trebon.py svazek <id_knihy>            -> zapíše svazek do data/svazky.json (klíč trebon_<id_knihy>) podle karty;
+                                            ZAPISUJE do data/ – pomocníci (subagenti) ho nespouštějí, používají `popis`
+  trebon.py strom [<kód> ["Obec"]]       -> strom materiálů portálu (to, co `svazky` neukáže: gruntovní knihy,
+                                            urbáře, kroniky…). Bez kódu kořen. Vypíše podsložky (kód | název) a svazky
+                                            (id | …). S "Obec" projde obce u každého svazku a vypíše jen ty, kde obec je.
+                                            Kódy: 1k kroniky, 1q pozemkové knihy, 1s sčítání lidu, 1t vrchnostenské
+                                            registra, 1U urbáře (pod nimi archivy a fondy, např. 1qano)
+  trebon.py obce <id_knihy>              -> obce, které svazek obsahuje
 Trvalý odkaz na snímek: https://digi.ceskearchivy.cz/<id_knihy>/<snímek>
 Ber ohled na server: stahuj jen snímky, které čteš.
 """
-import glob, html, json, os, re, shutil, subprocess, sys, tempfile, unicodedata, urllib.parse, urllib.request, http.cookiejar
+import glob, html, json, os, re, shutil, subprocess, sys, tempfile, time, unicodedata, urllib.parse, urllib.request, http.cookiejar
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 
 BASE = "https://digi.ceskearchivy.cz"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu → zapisovalo by do skillu
+    sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
+             f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 
 
 def magick():
@@ -137,15 +148,62 @@ def snimek(bid, n, out, nahled=False):
     print(out, r.stdout, "odkaz:", ref)
 
 
+def popis(bid):
+    """Karta svazku: {popisek: hodnota} z /description.php (popisky jsou anglicky)."""
+    page, _ = get(f"/description.php?id={bid}&menu=3")
+    page = re.sub(r"<script.*?</script>", "", page, flags=re.S)
+    k = {}
+    casti = re.split(r"<td[^>]*class='popis3b_nadpis'>", page)[1:]   # hodnota = vše do dalšího popisku (bývají v ní tabulky)
+    for c in casti:
+        a, _, b = c.partition("</td>")
+        k.setdefault(re.sub(r"\s+", " ", text(a)), re.sub(r"\s+", " ", text(re.sub(r"<[^>]+>", " ", b))).strip(" ,"))
+    return k
+
+
+def strom(dt="1", obec=None):
+    page, _ = get(f"/tree.php?doctree={dt}&menu=1")
+    for c, n in re.findall(r"<a[^>]*doctree=(\w+)[^>]*>(.*?)</a>", page, re.S):
+        if c.startswith(dt) and c != dt:
+            print(c, "|", re.sub(r"\s+", " ", text(n)))
+    i = page.find("fixed table header")
+    for bid, row in re.findall(r"id='(\d+)'>(.*?)</tr>", page[i:] if i > 0 else "", re.S):
+        cells = [re.sub(r"\s+", " ", text(c)) for c in re.findall(r"<td[^>]*>(.*?)</td>", row, re.S)]
+        cells = [c for c in cells if c and c != "List of localities"]
+        if obec:
+            o = obce(bid)
+            time.sleep(0.3)   # šetrně k serveru
+            if obec.lower() not in o.lower():
+                continue
+            cells.append("obce: " + o)
+        print(bid, "|", " | ".join(cells))
+
+
+def obce(bid):
+    t, _ = get(f"/pages/ajaxobec4.php?id={bid}")
+    return re.sub(r"\s+", " ", text(t))
+
+
 def svazek(bid):
-    page, _ = get(f"/{bid}/1")
-    t = re.search(r"document\.title=\"([^\"]*)\"", page) or re.search(r"<title>([^<]*)", page)
-    nazev = t.group(1).strip() if t else f"kniha {bid}"
-    if "DigiArchiv" in nazev:
-        nazev = f"kniha {bid} (název doplň ručně)"
+    k = popis(bid)
+    obsah = k.get("Title") or k.get("Content") or ""
+    roky = k.get("Time extent") or k.get("Time extent BMD", "")
+    if "sčítání lidu" in k.get("Access points", "").lower():
+        nazev = f"Sčítání lidu {roky}, {k.get('Locality', obsah).split(' /')[0]}"
+    elif k.get("Capital of parish"):   # matrika: „BMD M 1874-1911“ = N(arození) O(ddaní) Z(emřelí)
+        druh = {"B": "N", "M": "O", "D": "Z"}
+        r = roky.split()
+        if len(r) > 1 and set(r[0]) <= set("BMD"):
+            r[0] = "".join(druh[x] for x in r[0])
+            roky = " ".join(r)
+        nazev = f"Matrika {k['Capital of parish']} {k.get('Ordinal number', '')}, {roky}".replace("  ", " ")
+    else:
+        nazev = f"{obsah}, {roky}".strip(", ") or f"kniha {bid} (název doplň ručně)"
+    fond = k.get("Archives Fond", "").split(",")[0].strip()
+    archiv = "SOA Třeboň" + (f" – {k['Archives'].replace('SDA ', 'SOkA ')}" if k.get("Archives") and "Třeboň" not in k["Archives"] else "")
+    archiv += (f", fond {fond}" if fond else "") + (f", inv. č. {k['Inventory number']}" if k.get("Inventory number") else "")
     path = os.path.join(ROOT, "data", "svazky.json")
     d = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
-    d[f"trebon_{bid}"] = {"archiv": "SOA Třeboň – Sbírka matrik", "portal": "digi.ceskearchivy.cz",
+    d[f"trebon_{bid}"] = {"archiv": archiv, "portal": "digi.ceskearchivy.cz",
                           "svazek": nazev, "popis": "", "url": f"{BASE}/{bid}"}
     json.dump(d, open(path, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
     print(f"trebon_{bid} -> {nazev}")
@@ -167,5 +225,12 @@ if __name__ == "__main__":
         snimek(a[1], a[2], a[3], len(a) > 4)
     elif a[0] == "svazek":
         svazek(a[1])
+    elif a[0] == "popis":
+        for x, y in popis(a[1]).items():
+            print(f"{x}: {y}")
+    elif a[0] == "strom":
+        strom(a[1] if len(a) > 1 else "1", a[2] if len(a) > 2 else None)
+    elif a[0] == "obce":
+        print(obce(a[1]))
     else:
         sys.exit(__doc__)

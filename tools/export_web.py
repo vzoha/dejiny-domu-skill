@@ -15,6 +15,9 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
 
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(TOOLS)
+if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu → zapisovalo by do skillu
+    sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
+             f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 DATA = os.path.join(ROOT, "data")
 WEB = os.path.join(ROOT, "web")
 VYREZY = os.path.join(ROOT, "vyrezy")      # výřezy zápisů, map a dokumentů (asi 1800 px) – zobrazují se na webu

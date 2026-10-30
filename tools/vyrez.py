@@ -7,6 +7,8 @@ Použití:
       Uloží zdroje/<klic>.jpg (plné rozlišení) a vyrezy/<klic>.jpg (zmenšeno na max. 1800 px pro web).
 
 Výřez dělejte velkoryse: celý zápis včetně hlavičky sloupců, okrajových poznámek a podpisů.
+Novinový článek: nahoře s titulkem, dole nechte okraj až po oddělovací čáru nebo začátek dalšího článku –
+výřez těsně pod posledním řádkem vypadá na webu jako useknutý konec. Výsledek si vždy prohlédněte.
 Potřebuje ImageMagick (příkaz `magick`).
 """
 import glob, os, shutil, subprocess, sys
@@ -15,6 +17,9 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
         _s.reconfigure(encoding="utf-8", errors="replace")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu → zapisovalo by do skillu
+    sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
+             f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 
 
 def magick():

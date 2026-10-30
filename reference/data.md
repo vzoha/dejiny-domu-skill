@@ -67,12 +67,15 @@ Jako v rodokmenu: `{"<klic>": {"orig": "[Číslo domu] 30\n[Jméno] …", "cs": 
 ## `mapy.json` – staré mapy a letecké snímky
 ```json
 [{"img": "mapa_lhota_1827_cisarsky_otisk", "rok": "1827", "nazev": "Stabilní katastr – císařský otisk",
-  "zdroj": "ČÚZK, archivnimapy.cuzk.cz", "url": "…", "popis": "Čp. 12 je dřevěný dům (žlutě) u cesty…",
+  "zdroj": "ČÚZK, Archiv ČÚZK, císařský otisk B2/a/6C 570, list 4", "url": "https://ags.cuzk.gov.cz/archiv/", "popis": "Čp. 12 je dřevěný dům (žlutě) u cesty…",
   "skupina": "ves"}]
 ```
 - Obrázek přes `vyrez.py dokumenty/<soubor> <img> 0,0,1,1` (celý) nebo s výřezem (vznikne `vyrezy/` i `zdroje/`).
 - `skupina`: mapy se **stejným výřezem krajiny** (stejná oblast, sever nahoře, stejné měřítko) mají stejnou
   skupinu. Web je umí prolínat posuvníkem. Mapy s jiným výřezem skupinu nemají a jsou jen v galerii.
+  **Snímky obrazovky od uživatele (geoportál, Mapy.cz) skupinu nedostávají**: nemají stejný výřez ani měřítko
+  a prolínání nesedí (automatické zarovnání přes OpenCV selhává – jiná sezóna, rozlišení). Pro porovnání stáhni
+  sérii se stejným bbox (WMS/ArcGIS export, např. ortofota ČÚZK po letech, `cuzk_archiv.py mapa` se stejným poloměrem).
 - `zdroj` povinně (autorská práva).
 
 ## `mista.json` – další body na mapě

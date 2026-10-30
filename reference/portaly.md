@@ -197,7 +197,8 @@ A když osoba „chybí“ v očekávaných matrikách (stěhovala se se službo
 
 ## Ostatní portály – obecný postup
 Nástroje pro ně hotové nejsou. Postupuj takto a výsledek zapiš do `STAV.md`, ať to příště víš:
-1. Otevři portál v prohlížeči (Claude in Chrome / Playwright, pokud jsou k dispozici; jinak požádej uživatele).
+1. Otevři portál v prohlížeči sám (skill `agent-browser`, pasti v `SKILL.md` → Webové aplikace bez API; Claude in Chrome).
+   Uživatele žádej až ve chvíli, kdy je potřeba přihlášení nebo souhlas.
    Najdi fond „Sbírka matrik“ / „Matriky“ a svazek podle obce a let.
 2. **Snímek:** většina prohlížečů má tlačítko ke stažení obrázku – ulož do `pracovni/`. Když ne, podívej se v síťovém
    provozu, odkud se načítají dlaždice/obrázky (IIIF, DeepZoom, Zoomify), a stáhni celý obrázek touto cestou – jednotlivě,
@@ -216,11 +217,12 @@ Nástroje pro ně hotové nejsou. Postupuj takto a výsledek zapiš do `STAV.md`
 - **Berní rula 1654** – jen hospodáři s půdou; edice a rejstříky v knihovnách (Kramerius/DNNT).
 - **Gruntovní (pozemkové) knihy** – převody domů z otce na syna; online jen část (SOA Plzeň téměř vše, SOA Praha část,
   ostatní spíš badatelna). Fond „Velkostatek <panství>“.
-- **Mapy stabilního katastru (1824–43)** – kde stál dům s číslem popisným: archivnimapy.cuzk.cz (Archiv ČÚZK).
+- **Mapy stabilního katastru (1824–43)** – kde stál dům s číslem popisným: Archiv ČÚZK (ags.cuzk.gov.cz/archiv,
+  nástroj `cuzk_archiv.py`, postup v `prameny.md`).
   Na **císařských otiscích** chybí u části listů barvy a čísla domů. Lepší jsou **indikační skici**: mají čísla domů
   a u pozemků jméno majitele („N. 13“ = patří k domu čp. 13). Dům bez pozemků mimo ves = domkář bez polí.
   Jméno majitele samotného domu bývá jen v písemném operátu (archiv, ne online). Výřezy map patří na web k rodině.
-- **Dnešní adresa domu** podle čísla popisného: RÚIAN (ČÚZK, vrstva AdresniMisto). Pozor, staré centrum mívá od 19. století
+- **Dnešní adresa domu** podle čísla popisného: RÚIAN (`mista.py ruian "Osada čp"`: adresa, parcela, k. ú.). Pozor, staré centrum mívá od 19. století
   stejná čp., ale předměstí a vesnice čísla přečíslovávaly. Hodí se na „procházku po stopách předků“.
   Stavbu podle obce a čísla popisného najde i nahlizenidokn.cuzk.gov.cz (ověření adresy z dokladu); vlastník je za
   CAPTCHou a je to údaj o žijícím člověku – nezjišťuj ho.
