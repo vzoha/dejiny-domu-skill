@@ -8,7 +8,7 @@ Conventional Commits, popis česky:
 <typ>(<scope>): <popis>
 ```
 
-- **typ:** `feat`, `fix`, `docs`, `refactor`, `style`, `chore`, `release`
+- **typ:** `feat`, `fix`, `docs`, `refactor`, `style`, `test`, `chore`, `release`
 - **scope** (volitelný): `skill` (SKILL.md), `playbook` (reference/), `nastroje` (tools/), `web` (template/), `readme`, `plugin` (.claude-plugin/)
 - popis malým písmenem, bez tečky na konci, max ~72 znaků; detaily do těla commitu
 - jeden commit = jedna logická změna; nemíchat víc funkcí do jednoho
@@ -26,5 +26,7 @@ release: 0.3.6
 Kontrolu formátu dělá hook `.githooks/commit-msg`; po naklonování ho zapni přes `git config core.hooksPath .githooks`.
 
 ## Před vydáním verze
+
+`python3 -m unittest discover tests` – testy `zapis.py`, `kontrola.py`, `export_web.py` a `novy_projekt.py` (bez sítě, pár sekund). Spouštěj i po každé změně těch nástrojů.
 
 `python3 -I skills/dejiny-domu/tools/zdravi.py` – všechny portály musí projít (výpadek zkus znovu za chvíli).
