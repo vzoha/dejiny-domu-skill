@@ -10,7 +10,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
 if len(sys.argv) < 2:
     sys.exit(__doc__)
 q=sys.argv[1]; rows=sys.argv[2] if len(sys.argv)>2 else '30'
-p={'q':q+' AND fedora.model:page','fl':'PID,root_title,root_pid,datum_str,details,dostupnost,dnnt','rows':rows,'wt':'json','hl':'true','hl.fl':'text_ocr','hl.fragsize':'250'}
+p={'q':q+' AND fedora.model:page','fl':'PID,root_title,root_pid,datum_str,details,dostupnost,dnnt,dnnt-labels','rows':rows,'wt':'json','hl':'true','hl.fl':'text_ocr','hl.fragsize':'250'}
 u='https://kramerius5.nkp.cz/search/api/v5.0/search?'+urllib.parse.urlencode(p)
 d=json.load(urllib.request.urlopen(u,timeout=90))
 print('found',d['response']['numFound'])
@@ -18,7 +18,7 @@ hl=d.get('highlighting',{})
 for x in d['response']['docs']:
     h=' | '.join(hl.get(x['PID'],{}).get('text_ocr',[]))[:400].replace('\n',' ')
     pristup=x.get('dostupnost') or '?'
-    if pristup=='private' and x.get('dnnt'): pristup='private+DNNT'
+    if pristup=='private' and (x.get('dnnt') or 'dnnto' in (x.get('dnnt-labels') or [])): pristup='private+DNNT'
     det=str(x['details'][0]).split()[0] if x.get('details') else ''
     print('-',x.get('datum_str'),'|',str(x.get('root_title'))[:60],'| s.',det,'|',x['PID'],'|',pristup)
     if h: print('   ',h)

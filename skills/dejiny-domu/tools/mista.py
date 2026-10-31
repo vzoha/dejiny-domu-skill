@@ -9,7 +9,11 @@ Použití:
   mista.py ruian "Horní Lhota 12"
       dům podle RÚIAN (ČÚZK, bez klíče; najde i malé osady, které OSM nezná): adresa s dnešní obcí, lat/lon,
       parcela pod domem a katastrální území. Patří do Fáze 0/1 – dnešní obec a k. ú. se často liší od toho,
-      co uživatel čeká (osada patří k jiné obci, k. ú. má jméno sousední vsi). Dotaz = "Osada čp" nebo "Ulice čp".
+      co uživatel čeká (osada patří k jiné obci, k. ú. má jméno sousední vsi). Dotaz = "Osada čp", "Ulice čp",
+      "Ulice čp/čo" nebo ve městě i "Ulice čo" (číslo orientační, jak je na domě).
+  mista.py okoli <"Ulice čp/čo" | lat,lon> [polomer_m=80]
+      všechny dnešní adresy v okolí (RÚIAN) seřazené podle čp. – rohové domy mají dvě adresy; podklad pro tabulku
+      adres domu v čase a pro rozlišení domů se stejnou starou adresou (reference/prameny.md → Čísla domů).
   mista.py pridej "Název" ["dotaz pro vyhledání"] ["popis na mapě"]
       přidá bod do data/mista.json (výchozí dotaz = "Název, Česko")
   mista.py
@@ -48,7 +52,11 @@ def ruian_q(vrstva, where, pole, geo=False):
 
 
 def ruian(dotaz):
-    adr = ruian_q(1, f"adresa LIKE '{dotaz.replace(chr(39), '')},%'", "adresa,stavebniobjekt", True)
+    d = dotaz.replace(chr(39), "")
+    adr = ruian_q(1, f"adresa LIKE '{d},%'", "adresa,stavebniobjekt", True)
+    ulice, _, cislo = d.rpartition(" ")
+    if not adr and ulice and cislo.isdigit():   # „Ulice čo“ – v RÚIAN je „Ulice čp/čo, Část obce, …“
+        adr = ruian_q(1, f"adresa LIKE '{ulice} %/{cislo},%'", "adresa,stavebniobjekt", True)
     if not adr:
         sys.exit(f"RÚIAN „{dotaz}“ nezná – zkus jiný tvar (\"Osada čp\", \"Ulice čp\") nebo jen \"Osada\" v nahlizenidokn.cuzk.cz")
     for a in adr[:5]:
@@ -67,7 +75,42 @@ def ruian(dotaz):
                   f"k. ú. {ku[0]['attributes']['nazev'] if ku else '?'} ({pa['katastralniuzemi']})")
 
 
+def okoli(misto, polomer=80):
+    if "," in misto and all(c in "0123456789., -" for c in misto):
+        lat, lon = (float(v) for v in misto.split(","))
+    else:
+        d = misto.replace(chr(39), "")
+        f = ruian_q(1, f"adresa LIKE '{d},%'", "adresa", True)
+        ulice, _, cislo = d.rpartition(" ")
+        if not f and ulice and cislo.isdigit():
+            f = ruian_q(1, f"adresa LIKE '{ulice} %/{cislo},%'", "adresa", True)
+        if not f:
+            sys.exit(f"RÚIAN „{misto}“ nezná – zadej „Ulice čp/čo“ nebo lat,lon.")
+        lat, lon = f[0]["geometry"]["y"], f[0]["geometry"]["x"]
+        print("střed:", f[0]["attributes"]["adresa"])
+    import math
+    dlat = polomer / 111320
+    dlon = dlat / math.cos(math.radians(lat))
+    q = urllib.parse.urlencode({"geometry": f"{lon - dlon},{lat - dlat},{lon + dlon},{lat + dlat}",
+                                "geometryType": "esriGeometryEnvelope", "inSR": 4326, "spatialRel": "esriSpatialRelIntersects",
+                                "outFields": "adresa", "returnGeometry": "true", "outSR": 4326, "f": "json"})
+    with urllib.request.urlopen(f"{RUIAN}/1/query?{q}", timeout=60) as r:
+        feats = json.load(r).get("features", [])
+    def cp(a):
+        c = a.split(",")[0].rsplit(" ", 1)[-1].split("/")[0]
+        return int(c) if c.isdigit() else 0
+    rows = sorted((cp(f["attributes"]["adresa"]), f["attributes"]["adresa"].split(",")[0],
+                   round(math.hypot((f["geometry"]["y"] - lat) * 111320, (f["geometry"]["x"] - lon) * 111320 * math.cos(math.radians(lat)))))
+                  for f in feats)
+    for c, a, m in rows:
+        print(f"čp. {c:<6} {a:40} {m:>4} m")
+    print(f"{len(rows)} adres do {polomer:g} m. Stejné čp. dvakrát = rohový dům se dvěma adresami.")
+
+
 def main():
+    if len(sys.argv) > 2 and sys.argv[1] == "okoli":
+        okoli(sys.argv[2], float(sys.argv[3]) if len(sys.argv) > 3 else 80)
+        return
     if len(sys.argv) > 2 and sys.argv[1] == "ruian":
         ruian(sys.argv[2])
         return

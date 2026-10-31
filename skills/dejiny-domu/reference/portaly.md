@@ -183,7 +183,10 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
 - Evidence hrobových míst: správa hřbitova (kdo je v hrobě uložen, kdo platí nájem – často žijící potomek);
   řada měst má online vyhledávání hrobů. Mezinárodně BillionGraves a Find a Grave.
 
-## IPR Praha – staré plány a letecké snímky Prahy (gs-pub.praha.eu), bez tokenu
+## IPR Praha – staré plány a letecké snímky Prahy (gs-pub.praha.eu) – `tools/ipr_praha.py`, bez tokenu
+- `python3 -I tools/ipr_praha.py serie "Ulice čp/čo" 300 --zapsat okoli` (okolí) a `… 90 --zapsat dum` (detail domu) → celá
+  série do `pracovni/ipr/`, výřezy a `mapy.json` se skupinou; pak doplň popisy. `ipr_praha.py vrstvy` = seznam.
+- Ruční dotazy (když nástroj nestačí):
 Pro Prahu výrazně lepší než Archiv ČÚZK (jeho spojené vrstvy stabilního katastru Prahu nepokrývají). Vše georeferencované
 v S-JTSK (EPSG 5514) → stejný výřez pro celou sérii = prolínání map na webu (`mapy.json`, stejná `skupina`).
 - Plány: `https://gs-pub.praha.eu/imgs/rest/services/arch/<služba>/ImageServer/exportImage?bbox=x0,y0,x1,y1&bboxSR=5514&imageSR=5514&size=1200,1200&format=jpg&f=image`.
@@ -193,11 +196,15 @@ v S-JTSK (EPSG 5514) → stejný výřez pro celou sérii = prolínání map na 
 - Letecké snímky: `https://gs-pub.praha.eu/arcgis/rest/services/ort/ortofotomapa_archiv/MapServer/export?bbox=…&bboxSR=5514&imageSR=5514&size=…&format=jpg&f=image&layers=show:<id>`
   – id 0 = 1938, 4 = 1945, 8 = 1953, 150 = 1966, 12 = 1975, 16 = 1989, 20 = 1996, 36 = zaplavené území 2002 (seznam: `…/MapServer?f=json`).
 - Střed výřezu = parcela domu v S-JTSK: `https://ags.cuzk.gov.cz/arcgis/rest/services/RUIAN/MapServer/5/query?where=KATASTRALNIUZEMI%3D<kód k. ú.>+AND+KMENOVECISLO%3D<parcela>&returnGeometry=true&outSR=5514&f=json`.
-- **Všechny adresy domu a sousedů** (rohové domy, přečíslování): adresní místa v obálce
+- **Všechny adresy domu a sousedů** (rohové domy, přečíslování): `mista.py okoli "Ulice čp/čo" 80`, ručně adresní místa v obálce
   `…/RUIAN/MapServer/1/query?geometry=x0,y0,x1,y1&geometryType=esriGeometryEnvelope&inSR=5514&outFields=*&f=json`.
 - Zdroj do `mapy.json`: „IPR Praha, Geoportál hl. m. Prahy (geoportalpraha.cz), <služba>“.
 
-## DNNT – díla nedostupná na trhu (ndk.cz): tisk 20. století z domova
+## DNNT – díla nedostupná na trhu (ndk.cz): tisk 20. století z domova – `tools/dnnt.py`
+- Postup s nástrojem: `dnnt.py hledej 'text_ocr:"Průhonu 38"' --ulozit p38` → `dnnt.py kontext <pid> 'slova'` (úryvky bez
+  přihlášení) → `dnnt.py ocr pracovni/dnnt/p38.tsv` (veřejné stránky) → pro DNNT `dnnt.py js pracovni/dnnt/p38.tsv [--obrazky]`,
+  výstup vlož do `evaluate_script` na přihlášené stránce ndk.cz s `filePath` → `dnnt.py rozbal <soubor>` → `dnnt.py adresa
+  pracovni/dnnt/ocr "Na Maninách" 25 27` (najde i „Mani-nách“). Celý adresář (např. obor) nejdřív `hledej` s `--titul`.
 Adresáře, ročenky, odborné časopisy a noviny zhruba 1900–2000 jsou v Krameriu NK „private“. Většina z nich má ale
 `dnnt: true` – kdokoli je přečte z domova po přihlášení na **ndk.cz**. Pro dějiny městských domů je to hlavní zdroj.
 - **Bez přihlášení:** vyhledávání (Solr) je veřejné i pro DNNT stránky. `kramerius.py` vypíše `dostupnost` a `dnnt`.

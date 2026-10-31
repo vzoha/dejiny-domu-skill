@@ -26,9 +26,9 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 ## Městský dům 20. století (činžák, vila, 1890–1990)
 Matriky a sčítání do roku 1921 tu skoro nepomohou (dům často stojí až po 1921, v Praze sčítací archy 1930 nejsou online).
 Osvědčené pořadí:
-1. **Dnešní adresy domu i sousedů** z RÚIAN (adresní místa v okolí, `portaly.md` → Praha). Rohový dům má dvě adresy.
+1. **Dnešní adresy domu i sousedů** z RÚIAN: `mista.py okoli "Ulice čp/čo" 80`. Rohový dům má dvě adresy.
 2. **Staré plány a letecké snímky stejného výřezu** – kdy na parcele poprvé stojí budova. V Praze IPR (plány 1889, 1909,
-   1920, 1938 s čísly popisnými, 1944, ortofota 1938–2006, `portaly.md` → IPR Praha); jinde `cuzk_archiv.py mapa pk`.
+   1920, 1938 s čísly popisnými, 1944, ortofota 1938–2006: `ipr_praha.py serie … --zapsat`); jinde `cuzk_archiv.py mapa pk`.
 3. **Adresní kniha čp. → ulice a č. or.** (Praha: Orientační kniha Velké Prahy 1936/1937) – jaká orientační čísla dům
    tehdy měl. Bez toho nejde hledat v adresářích.
 4. **Adresáře živností** (Adresář Republiky československé 1927–1938, Adresář Prahy 1936, Adressbuch des Protektorates 1939,
@@ -41,7 +41,8 @@ Osvědčené pořadí:
 8. **Archiv:** stavební spis (stavební úřad městské části, AHMP), pozemková kniha (katastrální úřad), archiv družstva →
    `archivni_dotazy.md`.
 Většina tisku 1900–1990 je v Krameriu NK **neveřejná, ale v režimu DNNT** – čitelná z domova po přihlášení
-(`portaly.md` → DNNT). Bez něj vidíš jen úryvky ve vyhledávání.
+(`portaly.md` → DNNT, nástroj `dnnt.py`: hledání, úryvky, hromadné čtení, `adresa` najde i rozdělená slova).
+Bez přihlášení vidíš jen úryvky ve vyhledávání.
 
 ## Čísla domů – největší past
 - Čísla popisná zavedla konskripce 1770–1771. **Ves se pak často přečíslovala** (typicky kolem 1805–1830 a znovu
