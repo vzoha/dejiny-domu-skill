@@ -184,11 +184,11 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
   řada měst má online vyhledávání hrobů. Mezinárodně BillionGraves a Find a Grave.
 
 ## IPR Praha – staré plány a letecké snímky Prahy (gs-pub.praha.eu) – `tools/ipr_praha.py`, bez tokenu
-- `python3 -I tools/ipr_praha.py serie "Ulice čp/čo" 300 --zapsat okoli` (okolí) a `… 90 --zapsat dum` (detail domu) → celá
-  série do `pracovni/ipr/`, výřezy a `mapy.json` se skupinou; pak doplň popisy. `ipr_praha.py vrstvy` = seznam.
-- Ruční dotazy (když nástroj nestačí):
 Pro Prahu výrazně lepší než Archiv ČÚZK (jeho spojené vrstvy stabilního katastru Prahu nepokrývají). Vše georeferencované
 v S-JTSK (EPSG 5514) → stejný výřez pro celou sérii = prolínání map na webu (`mapy.json`, stejná `skupina`).
+- `python3 -I tools/ipr_praha.py serie "Ulice čp/čo" 300 --zapsat okoli` (okolí) a `… 90 --zapsat dum` (detail domu) → celá
+  série do `pracovni/ipr/`, výřezy a `mapy.json` se skupinou; pak doplň popisy. `ipr_praha.py vrstvy` = seznam.
+Ruční dotazy, když nástroj nestačí:
 - Plány: `https://gs-pub.praha.eu/imgs/rest/services/arch/<služba>/ImageServer/exportImage?bbox=x0,y0,x1,y1&bboxSR=5514&imageSR=5514&size=1200,1200&format=jpg&f=image`.
   Služby: `stabilni_katastr_cisarske_otisky_2880`, `stabilni_katastr_originaly_1440`, `plan_pav_1889`, `plan_orient_1909`,
   `plan_vysko_1920`, **`plan_orient_1938` (s čísly popisnými a orientačními)**, `plan_prahy_1944`, `byvaly_pozemkovy_katastr`.
@@ -201,26 +201,23 @@ v S-JTSK (EPSG 5514) → stejný výřez pro celou sérii = prolínání map na 
 - Zdroj do `mapy.json`: „IPR Praha, Geoportál hl. m. Prahy (geoportalpraha.cz), <služba>“.
 
 ## DNNT – díla nedostupná na trhu (ndk.cz): tisk 20. století z domova – `tools/dnnt.py`
-- Postup s nástrojem: `dnnt.py hledej 'text_ocr:"Průhonu 38"' --ulozit p38` → `dnnt.py kontext <pid> 'slova'` (úryvky bez
-  přihlášení) → `dnnt.py ocr pracovni/dnnt/p38.tsv` (veřejné stránky) → pro DNNT `dnnt.py js pracovni/dnnt/p38.tsv [--obrazky]`,
-  výstup vlož do `evaluate_script` na přihlášené stránce ndk.cz s `filePath` → `dnnt.py rozbal <soubor>` → `dnnt.py adresa
-  pracovni/dnnt/ocr "Na Maninách" 25 27` (najde i „Mani-nách“). Celý adresář (např. obor) nejdřív `hledej` s `--titul`.
 Adresáře, ročenky, odborné časopisy a noviny zhruba 1900–2000 jsou v Krameriu NK „private“. Většina z nich má ale
 `dnnt: true` – kdokoli je přečte z domova po přihlášení na **ndk.cz**. Pro dějiny městských domů je to hlavní zdroj.
-- **Bez přihlášení:** vyhledávání (Solr) je veřejné i pro DNNT stránky. `kramerius.py` vypíše `dostupnost` a `dnnt`.
-  Úryvky kolem nálezu: parametry `hl=true&hl.fl=text_ocr&hl.fragsize=300`. Test, jestli je slovo na konkrétní stránce:
-  `PID:"uuid:…" AND text_ocr:(…)`. OCR text neveřejných stran (`/streams/TEXT_OCR`) bez přihlášení vrátí 403.
-  Úryvek z vyhledávání je `lit` (čteno z OCR), ne `doc`.
+- **Postup s nástrojem:** `dnnt.py hledej 'text_ocr:"Dlouhá 14"' --ulozit dl14` → `dnnt.py kontext <pid> 'slova'`
+  (úryvky bez přihlášení) → `dnnt.py ocr pracovni/dnnt/dl14.tsv` (veřejné stránky) → pro DNNT stránky
+  `dnnt.py js pracovni/dnnt/dl14.tsv [--obrazky]`, funkci spusť přes `evaluate_script` s `filePath` na přihlášené stránce
+  ndk.cz (níže) → `dnnt.py rozbal <soubor>` → `dnnt.py adresa pracovni/dnnt/ocr "Dlouhá" 14 16` (najde i „Dlou-há“).
+  Celý adresář nebo obor nejdřív `hledej` s `--titul`.
+- **Bez přihlášení** je vyhledávání veřejné i pro DNNT stránky (úryvky, test výskytu slova na stránce). OCR text
+  neveřejných stran bez přihlášení vrátí 403. Úryvek z vyhledávání je `lit` (čteno z OCR), ne `doc`.
 - **Přístup:** uživatel musí být čtenářem zapojené knihovny. Seznam knihoven a kdo umí registraci na dálku:
   `https://ndk.cz/knihinst.json` (sloupce: knihovna, eduID / identity NDK, odkaz na vzdálenou registraci, kraj).
-  Ověřeno: Městská knihovna v Praze (60 Kč, online přes Bank iD, přihlášení eduID → „Městská knihovna v Praze“).
-  Na dálku dále NK ČR (200 Kč, bankovní identita), MZK Brno (Bank iD / MojeID; i jednorázově na 30 dní), NTK, krajské
-  knihovny Liberec, Ostrava, Ústí, Zlín, Hradec Králové. Ostatní (i všechny jihočeské) chtějí jednu návštěvu.
+  Ověřeno (2026): Městská knihovna v Praze – levná registrace online přes Bank iD, pak přihlášení eduID. Na dálku
+  dále např. NK ČR (bankovní identita), MZK Brno (Bank iD / MojeID, i krátkodobě) a několik krajských knihoven;
+  ostatní chtějí jednu návštěvu. Ceny a možnosti ověř na webu knihovny.
 - **Čtení po přihlášení (bez hesla v rukou Clauda):** otevři ndk.cz v **řízeném prohlížeči** (chrome-devtools MCP:
-  `new_page`), uživatel se v tom okně přihlásí sám. Pak v kontextu stránky (`evaluate_script`):
-  `fetch('/search/api/v5.0/item/<pid>/streams/TEXT_OCR')` a sken `fetch('/search/img?pid=<pid>&stream=IMG_FULL&action=GETRAW')`
-  → `arrayBuffer` → base64 → výstup do souboru (`filePath`) → dekódovat v Pythonu. Session cookie je httpOnly, curl ji
-  nedostane. Víc stránek najednou v jednom skriptu (slovník klíč → pid). Metadata a nadřazené číslo: `/search/api/v5.0/item/<pid>`.
+  `new_page`), uživatel se v tom okně přihlásí sám. Text a skeny pak čti v kontextu stránky funkcí z `dnnt.py js`
+  (session cookie je httpOnly, curl ji nedostane). Metadata a nadřazené číslo: `/search/api/v5.0/item/<pid>`.
 - Trvalý odkaz do `zaznamy.json`: `https://ndk.cz/uuid/<pid>`. Přepis ze skenu = `doc`; jen z OCR textu = `lit`.
 - Užitečné tituly: Adresář Republiky československé pro průmysl, živnosti… (1927–1938, podle oborů), Adresář hl. m. Prahy
   1936, Orientační kniha Velké Prahy 1936/1937 (čp. → adresy), Stavitelské listy (stavební povolení), Právo lidu,

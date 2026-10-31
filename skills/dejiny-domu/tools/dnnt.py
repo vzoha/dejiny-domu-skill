@@ -7,12 +7,12 @@ Vyhledávání a úryvky fungují bez přihlášení; celý text a sken neveřej
 Použití (z kořene projektu):
   dnnt.py hledej '<solr dotaz>' [--od 1925 --do 1940] [--titul 'Adresář*'] [--max 200] [--ulozit nazev]
       stránky s nálezem: rok | titul | strana | přístup (public / DNNT / jen knihovna) | pid | úryvky.
-      Dotaz jako v kramerius.py, např. 'text_ocr:"Průhonu 38"'. --ulozit uloží seznam do pracovni/dnnt/<nazev>.tsv.
+      Dotaz jako v kramerius.py, např. 'text_ocr:"Dlouhá 14"'. --ulozit uloží seznam do pracovni/dnnt/<nazev>.tsv.
       Pozor: --od/--do vyřadí čísla periodik bez data – při malém počtu nálezů zkus i bez nich.
   dnnt.py kontext <pid> '<slova>'
       úryvky ze zadané stránky (i neveřejné) kolem slov – kontext bez přihlášení; 0 úryvků = slova na stránce nejsou.
       Úryvek z OCR je „lit“, ne „doc“ (doc = přečteno na skenu).
-  dnnt.py ocr <seznam.tsv | pid ...> [slozka=pracovni/dnnt/ocr]
+  dnnt.py ocr <seznam.tsv | klic=pid | pid ...> [--slozka pracovni/dnnt/ocr]
       stáhne OCR text veřejných stránek (<klic>.txt); u neveřejných vypíše, ať použiješ „js“.
   dnnt.py js <seznam.tsv | klic=pid ...> [--obrazky]
       vypíše JS funkci pro chrome-devtools evaluate_script na přihlášené stránce ndk.cz (uživatel se přihlásí sám
@@ -24,7 +24,7 @@ Použití (z kořene projektu):
       projde *.txt a najde adresu i rozdělenou na konci řádku („Mani-\\nnách 25“), s variantami „č.“, „čp.“, „čís.“;
       vypíše soubor, hlavičku stránky (obor adresáře) a okolí nálezu.
 """
-import base64, glob, json, os, re, sys, time, unicodedata, urllib.parse, urllib.request
+import base64, glob, json, os, re, sys, time, unicodedata, urllib.error, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -132,8 +132,8 @@ def seznam(args):
 
 
 def ocr(args):
-    slozka = args[-1] if len(args) > 1 and not args[-1].startswith("uuid:") and not args[-1].endswith(".tsv") and "=" not in args[-1] else os.path.join(DIR, "ocr")
-    polozky = seznam(args if slozka not in args else args[:-1])
+    slozka = opt(args, "--slozka", os.path.join(DIR, "ocr"))
+    polozky = seznam(args)
     os.makedirs(slozka, exist_ok=True)
     nejde = []
     for k, pid in polozky:

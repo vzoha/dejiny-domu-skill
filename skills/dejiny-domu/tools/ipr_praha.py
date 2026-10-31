@@ -25,6 +25,7 @@ if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze 
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 B = "https://gs-pub.praha.eu"
+RUIAN = "https://ags.cuzk.cz/arcgis/rest/services/RUIAN/Prohlizeci_sluzba_nad_daty_RUIAN/MapServer"
 UA = {"User-Agent": "Mozilla/5.0 (dejiny-domu skill)"}
 ZDROJ = "IPR Praha, Geoportál hl. m. Prahy (geoportalpraha.cz)"
 # klíč: (rok, název, typ, služba nebo id vrstvy)
@@ -50,7 +51,7 @@ VRSTVY = {
     "letecky_1996": ("1996", "Letecký snímek", "ort", 20),
     "letecky_2002_povoden": ("2002", "Letecký snímek při povodni", "ort", 36),
 }
-PRAZDNY = 30000   # menší JPEG = mimo pokrytí (jednobarevný)
+PRAZDNY_B_NA_PX = 0.05   # jednobarevný JPEG mimo pokrytí má ~0.016 B/px, skutečná mapa 0.15 B/px a víc
 
 
 def get(url, binary=False):
@@ -75,11 +76,17 @@ def bod(m):
     if "," in m and all(c in "0123456789., -" for c in m):
         lat, lon = (float(v) for v in m.split(","))
         return lat, lon
-    q = urllib.parse.urlencode({"where": f"adresa LIKE '{m.replace(chr(39), '')},%'", "outFields": "adresa",
-                                "returnGeometry": "true", "outSR": 4326, "f": "json"})
-    f = get("https://ags.cuzk.cz/arcgis/rest/services/RUIAN/Prohlizeci_sluzba_nad_daty_RUIAN/MapServer/1/query?" + q).get("features")
-    if not f:
-        sys.exit(f"RÚIAN adresu „{m}“ nezná – zadej „Ulice čp/čo“ (např. „Na Maninách 1425/27“) nebo lat,lon.")
+    d = m.replace(chr(39), "")
+    ulice, _, cislo = d.rpartition(" ")
+    vzory = [f"{d},%"] + ([f"{ulice} %/{cislo},%"] if ulice and cislo.isdigit() else [])   # i „Ulice čo“
+    for vzor in vzory:
+        q = urllib.parse.urlencode({"where": f"adresa LIKE '{vzor}'", "outFields": "adresa",
+                                    "returnGeometry": "true", "outSR": 4326, "f": "json"})
+        f = get(f"{RUIAN}/1/query?" + q).get("features")
+        if f:
+            break
+    else:
+        sys.exit(f"RÚIAN adresu „{m}“ nezná – zadej „Ulice čp/čo“ (např. „Dlouhá 712/14“) nebo lat,lon.")
     print("střed:", f[0]["attributes"]["adresa"])
     return f[0]["geometry"]["y"], f[0]["geometry"]["x"]
 
@@ -93,7 +100,7 @@ def stahni(klic, bbox, px, out):
     else:
         url = f"{B}/arcgis/rest/services/ort/ortofotomapa_archiv/MapServer/export?" + urllib.parse.urlencode({**q, "layers": f"show:{sl}", "dpi": 96})
     d = get(url, binary=True)
-    if len(d) < PRAZDNY:
+    if len(d) < PRAZDNY_B_NA_PX * px * px:
         return False
     open(out, "wb").write(d)
     return True

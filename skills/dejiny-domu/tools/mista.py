@@ -20,7 +20,7 @@ Použití:
       dohledá souřadnice u míst, která je ještě nemají (OpenStreetMap Nominatim, 1 dotaz za sekundu),
       a vypíše seznam. Když bod nesedí, opravte lat/lon v data/mista.json ručně.
 """
-import json, os, sys, time, urllib.parse, urllib.request
+import json, math, os, sys, time, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -51,12 +51,18 @@ def ruian_q(vrstva, where, pole, geo=False):
         return json.load(r).get("features", [])
 
 
-def ruian(dotaz):
+def adresni_mista(dotaz, pole):
+    """Adresní místa RÚIAN pro „Osada čp“, „Ulice čp“, „Ulice čp/čo“ i „Ulice čo“."""
     d = dotaz.replace(chr(39), "")
-    adr = ruian_q(1, f"adresa LIKE '{d},%'", "adresa,stavebniobjekt", True)
+    adr = ruian_q(1, f"adresa LIKE '{d},%'", pole, True)
     ulice, _, cislo = d.rpartition(" ")
     if not adr and ulice and cislo.isdigit():   # „Ulice čo“ – v RÚIAN je „Ulice čp/čo, Část obce, …“
-        adr = ruian_q(1, f"adresa LIKE '{ulice} %/{cislo},%'", "adresa,stavebniobjekt", True)
+        adr = ruian_q(1, f"adresa LIKE '{ulice} %/{cislo},%'", pole, True)
+    return adr
+
+
+def ruian(dotaz):
+    adr = adresni_mista(dotaz, "adresa,stavebniobjekt")
     if not adr:
         sys.exit(f"RÚIAN „{dotaz}“ nezná – zkus jiný tvar (\"Osada čp\", \"Ulice čp\") nebo jen \"Osada\" v nahlizenidokn.cuzk.cz")
     for a in adr[:5]:
@@ -79,16 +85,11 @@ def okoli(misto, polomer=80):
     if "," in misto and all(c in "0123456789., -" for c in misto):
         lat, lon = (float(v) for v in misto.split(","))
     else:
-        d = misto.replace(chr(39), "")
-        f = ruian_q(1, f"adresa LIKE '{d},%'", "adresa", True)
-        ulice, _, cislo = d.rpartition(" ")
-        if not f and ulice and cislo.isdigit():
-            f = ruian_q(1, f"adresa LIKE '{ulice} %/{cislo},%'", "adresa", True)
+        f = adresni_mista(misto, "adresa")
         if not f:
             sys.exit(f"RÚIAN „{misto}“ nezná – zadej „Ulice čp/čo“ nebo lat,lon.")
         lat, lon = f[0]["geometry"]["y"], f[0]["geometry"]["x"]
         print("střed:", f[0]["attributes"]["adresa"])
-    import math
     dlat = polomer / 111320
     dlon = dlat / math.cos(math.radians(lat))
     q = urllib.parse.urlencode({"geometry": f"{lon - dlon},{lat - dlat},{lon + dlon},{lat + dlat}",
@@ -96,11 +97,14 @@ def okoli(misto, polomer=80):
                                 "outFields": "adresa", "returnGeometry": "true", "outSR": 4326, "f": "json"})
     with urllib.request.urlopen(f"{RUIAN}/1/query?{q}", timeout=60) as r:
         feats = json.load(r).get("features", [])
-    def cp(a):
-        c = a.split(",")[0].rsplit(" ", 1)[-1].split("/")[0]
+
+    def cislo_popisne(adresa):   # „Ulice 12/3, Obec, …“ → 12
+        c = adresa.split(",")[0].rsplit(" ", 1)[-1].split("/")[0]
         return int(c) if c.isdigit() else 0
-    rows = sorted((cp(f["attributes"]["adresa"]), f["attributes"]["adresa"].split(",")[0],
-                   round(math.hypot((f["geometry"]["y"] - lat) * 111320, (f["geometry"]["x"] - lon) * 111320 * math.cos(math.radians(lat)))))
+
+    def metry(g):
+        return round(math.hypot((g["y"] - lat) * 111320, (g["x"] - lon) * 111320 * math.cos(math.radians(lat))))
+    rows = sorted((cislo_popisne(f["attributes"]["adresa"]), f["attributes"]["adresa"].split(",")[0], metry(f["geometry"]))
                   for f in feats)
     for c, a, m in rows:
         print(f"čp. {c:<6} {a:40} {m:>4} m")

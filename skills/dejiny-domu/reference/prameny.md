@@ -24,7 +24,8 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | 1764–1880 | vojenská mapování (1. 1764–68, 2. 1836–52, 3. 1876–80) | vzhled vsi a okolí, cesty, mlýny | 2. mapování: WMS CENIA (`portaly.md` → Staré mapy a drobné památky); oldmaps.geolab.cz (nespolehlivé), mapire.eu (jen prohlížení) |
 
 ## Městský dům 20. století (činžák, vila, 1890–1990)
-Matriky a sčítání do roku 1921 tu skoro nepomohou (dům často stojí až po 1921, v Praze sčítací archy 1930 nejsou online).
+Matriky a sčítání do roku 1921 tu skoro nepomohou (dům často stojí až po 1921; sčítací archy z roku 1930 a pozdější
+bývají nedostupné – ověř v archivu).
 Osvědčené pořadí:
 1. **Dnešní adresy domu i sousedů** z RÚIAN: `mista.py okoli "Ulice čp/čo" 80`. Rohový dům má dvě adresy.
 2. **Staré plány a letecké snímky stejného výřezu** – kdy na parcele poprvé stojí budova. V Praze IPR (plány 1889, 1909,
@@ -35,7 +36,8 @@ Osvědčené pořadí:
    telefonní seznamy 1950) – obchody v přízemí, řemeslníci, lékaři. Řazené podle oborů – hlavička stránky řekne obor.
 5. **Stavební povolení a soutěže:** Stavitelské listy (rubrika „Kde se bude stavěti?“ – stavebník, pozemek, počet pater),
    inzeráty „zadá práce na stavbu…“ v denících (Právo lidu, Národní listy). Stavebníkem bývá družstvo, stavitel nebo firma.
-6. **Ročenky a seznamy členů spolků** (např. Sirotčí spolek členů Národního divadla) – bydliště konkrétních lidí po letech.
+6. **Ročenky a seznamy členů spolků a zaměstnanců** (s adresami) – bydliště konkrétních lidí po letech; stejná osoba
+   ve dvou ročnících s jinou adresou domu = doklad přečíslování.
 7. **Družstva:** jubilejní sborníky („Dílo družstevní svépomoci“ 1933), výroční brožury – počty domů, sídlo, fotky.
    Nástupce (lidové / stavební bytové družstvo) může mít archiv stavební dokumentace.
 8. **Archiv:** stavební spis (stavební úřad městské části, AHMP), pozemková kniha (katastrální úřad), archiv družstva →
@@ -52,9 +54,9 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
   a **doklad** (klíč zápisu).
 - Nový dům na parcele starého (vyhořel, rozdělení gruntu) dostává často nové číslo. Rozdělený grunt má dvě čísla.
 - Do ztotožnění starého a nového čísla je všechno starší `prob`, s poznámkou proč.
-- **Města: orientační čísla se měnila** (v Praze hromadně ještě kolem 1940/41) a rohové domy mají dvě adresy.
+- **Města: orientační čísla se měnila** (i ve 20. století, celé ulice najednou) a rohové domy mají dvě adresy.
   Nejdřív sestav **tabulku adres domu v čase** (čp., všechna č. or. a ulice, rok změny) a zapiš ji do `cisla` domu
-  i do `STAV.md`. Každý nález s adresou („Na Maninách 38“, 1946) převeď podle **data** přes tuto tabulku: stejná
+  i do `STAV.md`. Každý nález s adresou („Dlouhá 38“, 1946) převeď podle **data** přes tuto tabulku: stejná
   adresa v jiném roce může být jiný dům (sousední nebo naproti přes ulici). Rok přečíslování dolož „kotvou“ – stejnou
   osobou nebo firmou, která má v jednom roce starou a v dalším novou adresu. Údaj s adresou bez čp. a mimo
   ověřené období je `prob`.

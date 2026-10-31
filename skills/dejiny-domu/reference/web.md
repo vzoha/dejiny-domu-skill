@@ -41,7 +41,7 @@ skutečnou adresu vyčti z výstupu (`Preview server running at …`) a před od
 - `verejny`: `true` až u webu, který je otevřený všem (`prihlaseni.otevreny`) – pak zápatí nepíše „neveřejný web“.
 - **Když uživatel nechce vymýšlet otázku** („jen pro rodinu“, „vygeneruj heslo“): otázka „Heslo k rodinnému webu
   (pošle vám ho <jméno>)“ a odpověď jako náhodná heslová fráze ze 3 slov z dějin domu + číslo (`secrets`), např.
-  `drogerie-kulisak-pruhon-42`. Uživateli řekni, ať ji rodině pošle zvlášť od odkazu.
+  `mlyn-kaple-hamr-42`. Uživateli řekni, ať ji rodině pošle zvlášť od odkazu.
 - **Přihlášení:** otázka, na kterou znají odpověď jen ti, komu je web určený – rodina, sousedé, spolek
   (ne snadno dohledatelná na sociálních sítích).
   Odpověď se porovnává bez diakritiky a velkých písmen. Na serveru i v cookie prohlížeče je jen její otisk (SHA-256),
