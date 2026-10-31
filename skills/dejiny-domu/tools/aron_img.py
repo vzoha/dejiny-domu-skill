@@ -153,5 +153,7 @@ if __name__ == "__main__":
     lo = int(sys.argv[3]) if len(sys.argv) > 3 else 1
     out = sys.argv[4] if len(sys.argv) > 4 else f"{apu[:8]}_{n:04d}.jpg"
     crop = tuple(float(v) for v in sys.argv[5].split(",")) if len(sys.argv) > 5 else None
+    if n not in tiles:
+        sys.exit(f"Snímek {n} ve svazku není (snímků: {len(tiles)}" + (", svazek není online)" if not tiles else ")"))
     path, dims = fetch_image(tiles[n], lo, out, crop)
     print(path, "full size", dims)
