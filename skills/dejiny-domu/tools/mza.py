@@ -21,6 +21,8 @@ import html, json, os, re, shutil, subprocess, sys, time, urllib.error, urllib.p
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
+sys.path.insert(0, __import__("os").path.dirname(__import__("os").path.abspath(__file__)))
+import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 
 BASE = "https://www.mza.cz/actapublica/"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,7 +30,6 @@ if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze 
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 UA = "Mozilla/5.0 (dejiny-domu)"   # s výchozím User-Agentem Pythonu portál vrací 403
-PAUZA = 0.5   # s před každým požadavkem – ohled na server i při volání ve smyčce
 
 
 def get(path, ajax=False):
@@ -36,17 +37,16 @@ def get(path, ajax=False):
     hdr = {"User-Agent": UA}
     if ajax:   # našeptávač bez téhle hlavičky vrací 404
         hdr["X-Requested-With"] = "XMLHttpRequest"
-    err, wait = None, 0
-    for attempt in range(4):
-        time.sleep(wait or PAUZA)
-        wait = 3 * (attempt + 1)
+    # Rozestupy a zastavení po 429/503/403 hlídá slusne.py; tady se opakuje jen výpadek spojení a chyba 500/502/504.
+    # MZA banuje IP po sérii rychlých dotazů – nikdy sem nepřidávej smyčku bez slusne.py.
+    err = None
+    for attempt in range(3):
+        if attempt:
+            time.sleep(5 * attempt)
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers=hdr), timeout=90) as r:
                 return r.read().decode("utf-8", "replace")
         except urllib.error.HTTPError as e:
-            if e.code == 403 and attempt == 0:
-                err = e
-                continue
             if e.code < 500:
                 sys.exit(f"MZA odmítla požadavek ({e.code}): {url}"
                          + (" – při „Sorry, you have been blocked“ v prohlížeči vypni VPN nebo zkus jinou síť" if e.code == 403 else ""))
@@ -168,9 +168,8 @@ def snimek(mid, n, out, nahled=False, crop=None):
     if not curl:
         sys.exit("chybí curl – obrázkový server MZA bere jen HTTP/2, které Python neumí (curl je ve Windows 10+, macOS i Linuxu)")
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
-    time.sleep(PAUZA)
-    p = subprocess.run([curl, "-s", "-f", "--http2", "--retry", "3", "-m", "180", "-A", UA, "-o", out,
-                        f"{iiif}/{region}/{size}/0/default.jpg"], capture_output=True, text=True)
+    p = slusne.curl(["-s", "-f", "--http2", "-m", "180", "-A", UA, "-o", out, f"{iiif}/{region}/{size}/0/default.jpg"],
+                    stdout=subprocess.PIPE, text=True)
     ok = p.returncode == 0 and os.path.exists(out)
     if ok:
         with open(out, "rb") as f:

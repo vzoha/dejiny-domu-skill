@@ -9,6 +9,8 @@ import html, os, re, sys, json, time, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
+sys.path.insert(0, __import__("os").path.dirname(__import__("os").path.abspath(__file__)))
+import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 B='https://anno.onb.ac.at/anno-suche/rest/search/'
 def get(path, params):
     u=B+path+'?'+urllib.parse.urlencode(params)
