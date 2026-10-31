@@ -11,7 +11,7 @@ Nástroje na archivy, čtení snímků, výřezy, deník hledání a web jsou sp
 **čísla popisného** a lidí, kteří v domě v čase žili a vlastnili ho, ne kolem předků jedné osoby. Děkuji autorovi
 rodokmenu za skvělý základ.
 
-**Aktuální verze: 0.3.6 (říjen 2026), rané vydání.** Skill vznikl při zjišťování dějin jednoho domu a zatím byl
+**Aktuální verze: 0.3.7 (říjen 2026), rané vydání.** Skill vznikl při zjišťování dějin jednoho domu a zatím byl
 vyzkoušený jen na něm (Linux). Počítejte s chybami a dejte mi o nich vědět.
 
 ## Ukázka
@@ -91,8 +91,10 @@ použijte **soukromý** repozitář.
 ## Bezpečnost
 Skill je text (návod pro Clauda) a skripty v Pythonu, které si můžete před instalací prohlédnout. Plugin nemá hooky ani
 MCP servery; skripty spouští jen Claude, když je potřebuje, a Claude Code se vás na ně zeptá. Zapisují do složky
-projektu. Chodí na archivní portály (SOA Třeboň, ARON, Porta fontium, eBadatelna, AHMP, Národní archiv, SOA Litoměřice,
-Matricula, Archiv ČÚZK), noviny (ANNO, Kramerius), OpenStreetMap a při instalaci webu do registru npm; na Netlify jen
+projektu, jen společný limit rychlosti k archivům si drží stav ve `~/.cache/dejiny-domu/`. Do projektu skill zapíše
+hook (`.claude/settings.json` → `tools/hlidac.py`), který Claudovi nedovolí posílat na weby dotazy mimo ten limit –
+archivy po sérii rychlých dotazů blokují IP adresu. Chodí na archivní portály (SOA Třeboň, ARON, Porta fontium,
+eBadatelna, AHMP, MZA Brno, Národní archiv, SOA Litoměřice, Matricula, Archiv ČÚZK, IPR Praha), noviny (ANNO, Kramerius), OpenStreetMap a při instalaci webu do registru npm; na Netlify jen
 tehdy, když web sami zveřejníte. Instalujte skilly jen od lidí, kterým věříte.
 
 ## Zpětná vazba
