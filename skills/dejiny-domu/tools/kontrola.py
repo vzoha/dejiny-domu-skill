@@ -89,9 +89,9 @@ def main():
             warn.append(f"zápis {k}: chybí odkaz na snímek (pole 'odkaz')")
         if not os.path.exists(os.path.join(ROOT, "vyrezy", k + ".jpg")):
             warn.append(f"zápis {k}: chybí výřez vyrezy/{k}.jpg")
-        elif k not in hl:
+        elif k not in hl and z.get("druh") != "M":   # mapa: čtené místo ukazuje popis, rámeček je volitelný
             warn.append(f"zápis {k}: chybí rámeček (tools/ramecek.py)")
-        if k not in prep:
+        if k not in prep and z.get("druh") != "M":   # mapa: stačí 'shrnuti', přepis a překlad nejsou nutné
             warn.append(f"zápis {k}: chybí přepis a překlad v data/prepisy.json")
         if k not in cited:
             warn.append(f"zápis {k}: necituje ho žádný dům ani událost obce (doplnit do 'r')")

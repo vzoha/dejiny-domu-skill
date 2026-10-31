@@ -23,6 +23,26 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | vše | literatura, vlastivědy, kroniky obce a školy, noviny | události obce (požáry, války, stavby), staré názvy | Kramerius (`kramerius.py`), ANNO (`anno.py`), Google Books, SOkA (kroniky bývají online) |
 | 1764–1880 | vojenská mapování (1. 1764–68, 2. 1836–52, 3. 1876–80) | vzhled vsi a okolí, cesty, mlýny | 2. mapování: WMS CENIA (`portaly.md` → Staré mapy a drobné památky); oldmaps.geolab.cz (nespolehlivé), mapire.eu (jen prohlížení) |
 
+## Městský dům 20. století (činžák, vila, 1890–1990)
+Matriky a sčítání do roku 1921 tu skoro nepomohou (dům často stojí až po 1921, v Praze sčítací archy 1930 nejsou online).
+Osvědčené pořadí:
+1. **Dnešní adresy domu i sousedů** z RÚIAN (adresní místa v okolí, `portaly.md` → Praha). Rohový dům má dvě adresy.
+2. **Staré plány a letecké snímky stejného výřezu** – kdy na parcele poprvé stojí budova. V Praze IPR (plány 1889, 1909,
+   1920, 1938 s čísly popisnými, 1944, ortofota 1938–2006, `portaly.md` → IPR Praha); jinde `cuzk_archiv.py mapa pk`.
+3. **Adresní kniha čp. → ulice a č. or.** (Praha: Orientační kniha Velké Prahy 1936/1937) – jaká orientační čísla dům
+   tehdy měl. Bez toho nejde hledat v adresářích.
+4. **Adresáře živností** (Adresář Republiky československé 1927–1938, Adresář Prahy 1936, Adressbuch des Protektorates 1939,
+   telefonní seznamy 1950) – obchody v přízemí, řemeslníci, lékaři. Řazené podle oborů – hlavička stránky řekne obor.
+5. **Stavební povolení a soutěže:** Stavitelské listy (rubrika „Kde se bude stavěti?“ – stavebník, pozemek, počet pater),
+   inzeráty „zadá práce na stavbu…“ v denících (Právo lidu, Národní listy). Stavebníkem bývá družstvo, stavitel nebo firma.
+6. **Ročenky a seznamy členů spolků** (např. Sirotčí spolek členů Národního divadla) – bydliště konkrétních lidí po letech.
+7. **Družstva:** jubilejní sborníky („Dílo družstevní svépomoci“ 1933), výroční brožury – počty domů, sídlo, fotky.
+   Nástupce (lidové / stavební bytové družstvo) může mít archiv stavební dokumentace.
+8. **Archiv:** stavební spis (stavební úřad městské části, AHMP), pozemková kniha (katastrální úřad), archiv družstva →
+   `archivni_dotazy.md`.
+Většina tisku 1900–1990 je v Krameriu NK **neveřejná, ale v režimu DNNT** – čitelná z domova po přihlášení
+(`portaly.md` → DNNT). Bez něj vidíš jen úryvky ve vyhledávání.
+
 ## Čísla domů – největší past
 - Čísla popisná zavedla konskripce 1770–1771. **Ves se pak často přečíslovala** (typicky kolem 1805–1830 a znovu
   po 1900). Dnešní čp. 12 může být v roce 1800 jiné číslo.
@@ -31,6 +51,12 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
   a **doklad** (klíč zápisu).
 - Nový dům na parcele starého (vyhořel, rozdělení gruntu) dostává často nové číslo. Rozdělený grunt má dvě čísla.
 - Do ztotožnění starého a nového čísla je všechno starší `prob`, s poznámkou proč.
+- **Města: orientační čísla se měnila** (v Praze hromadně ještě kolem 1940/41) a rohové domy mají dvě adresy.
+  Nejdřív sestav **tabulku adres domu v čase** (čp., všechna č. or. a ulice, rok změny) a zapiš ji do `cisla` domu
+  i do `STAV.md`. Každý nález s adresou („Na Maninách 38“, 1946) převeď podle **data** přes tuto tabulku: stejná
+  adresa v jiném roce může být jiný dům (sousední nebo naproti přes ulici). Rok přečíslování dolož „kotvou“ – stejnou
+  osobou nebo firmou, která má v jednom roce starou a v dalším novou adresu. Údaj s adresou bez čp. a mimo
+  ověřené období je `prob`.
 
 ## Gruntovní knihy – jak na ně
 1. Zjisti **panství**, ke kterému ves (nebo dům!) patřila před 1848. Ves mohla patřit pod dvě panství (část domů

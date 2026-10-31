@@ -17,7 +17,9 @@ rámečkem, přepisem a překladem), „Co hledáme“, výzkumný deník, hled�
 | `npm run dev` | vývojový režim při úpravách vzhledu |
 | `npm run nasadit` | data + build + nahrání na Netlify |
 
-Náhled spouštěj na pozadí a uživateli pošli odkaz. Vzhled si ověř sám (snímek obrazovky přes prohlížeč, je-li k dispozici).
+Náhled spouštěj na pozadí a uživateli pošli odkaz. **Port:** když je 4321 obsazený (jiný projekt), Astro tiše přejde na další (4322…) –
+skutečnou adresu vyčti z výstupu (`Preview server running at …`) a před odesláním odkazu ověř, že na ní je tento projekt
+(titulek stránky). Vzhled si ověř sám (snímek obrazovky přes prohlížeč, je-li k dispozici).
 
 ## `data/web.json`
 ```json
@@ -37,6 +39,9 @@ Náhled spouštěj na pozadí a uživateli pošli odkaz. Vzhled si ověř sám (
 ```
 - `kontakt.jmeno` je ve 3. pádě („Napište Petrovi na …“).
 - `verejny`: `true` až u webu, který je otevřený všem (`prihlaseni.otevreny`) – pak zápatí nepíše „neveřejný web“.
+- **Když uživatel nechce vymýšlet otázku** („jen pro rodinu“, „vygeneruj heslo“): otázka „Heslo k rodinnému webu
+  (pošle vám ho <jméno>)“ a odpověď jako náhodná heslová fráze ze 3 slov z dějin domu + číslo (`secrets`), např.
+  `drogerie-kulisak-pruhon-42`. Uživateli řekni, ať ji rodině pošle zvlášť od odkazu.
 - **Přihlášení:** otázka, na kterou znají odpověď jen ti, komu je web určený – rodina, sousedé, spolek
   (ne snadno dohledatelná na sociálních sítích).
   Odpověď se porovnává bez diakritiky a velkých písmen. Na serveru i v cookie prohlížeče je jen její otisk (SHA-256),
@@ -53,6 +58,8 @@ Náhled spouštěj na pozadí a uživateli pošli odkaz. Vzhled si ověř sám (
 ## Zveřejnění na Netlify (výchozí, zdarma)
 1. Uživatel si založí účet na netlify.com (stačí přihlášení přes Google/GitHub) – udělá sám.
 2. Přihlášení CLI (otevře prohlížeč) – dej uživateli: `! cd web && npx -y netlify-cli@latest login`.
+   První stažení netlify-cli je velké a na pomalé síti padá (`ETIMEDOUT`) – předem ho stáhni sám:
+   `cd web && npx -y --fetch-retries=5 --fetch-retry-maxtimeout=120000 netlify-cli@latest --version`.
    Když `!` nejde (cloudové prostředí): `npx -y netlify-cli@latest login --request "Dejiny domu"` vypíše odkaz a číslo
    lístku – uživatel odkaz otevře a schválí, pak `npx -y netlify-cli@latest login --check <lístek>`.
 3. Založení webu a propojení složky (interaktivní, jednou) – dej uživateli:
@@ -64,7 +71,7 @@ Náhled spouštěj na pozadí a uživateli pošli odkaz. Vzhled si ověř sám (
 4. Nasazení: `cd web && npm run nasadit` (můžeš spustit sám; vypíše adresu webu).
 5. Ověř: otevři adresu **v anonymním okně** → musí se ukázat přihlašovací otázka; po správné odpovědi web.
    Ukáže-li se místo ní přihlášení k Netlify (401, „Login Redirect“), zdědil web ochranu týmu („Team protection“).
-   Uživatel ji vypne v administraci webu: Project configuration → Access & security → Visitor access. Web pak chrání
+   Uživatel ji vypne v administraci webu: Project configuration → Access & security → Visitor access. (V novém rozhraní: Project configuration → General → Visitor access → „Customize this project’s visibility“ → **Public** → Save; „Public“ znamená jen bez přihlášení k Netlify, web dál chrání přihlašovací otázka.) Web pak chrání
    přihlašovací otázka – proto znovu ověř v anonymním okně, že se ukáže.
    Přihlášení zajišťuje Netlify Edge Function `web/netlify/edge-functions/brana.js` (generuje ji export).
 Další aktualizace = jen `npm run nasadit`. Vlastní doménu lze nastavit v administraci Netlify.

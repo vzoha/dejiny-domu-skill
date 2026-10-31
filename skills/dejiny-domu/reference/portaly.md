@@ -14,6 +14,9 @@ Matriky jsou online u osmi státních archivů – podle toho, **kde dům stojí
 | ZA Opava | severní Morava a Slezsko, Olomoucko a Litovelsko | Digitální badatelna – digi.archives.cz/da/ | **částečně – `soal_zoomify.py`** (jen s prohlížečem, CAPTCHU řeší uživatel) |
 | Národní archiv | židovské matriky (HBMa), soupisy; pražské policejní přihlášky 1850–1914 | badatelna.eu; digi.nacr.cz/prihlasky2 | přihlášky **ano – `policie_prihlasky.py`** |
 
+Pro **20. století** (městské domy, adresáře, stavební povolení) jsou hlavní **IPR Praha** (staré plány a letecké snímky
+Prahy) a **DNNT na ndk.cz** (neveřejný tisk čitelný po přihlášení) – sekce níže.
+
 Adresy u nevyzkoušených portálů ověř při prvním použití (portály se mění). Pro pohraničí a mimo ČR viz `playbook.md` §2
 (Matricula pro Rakousko/Německo, Geneteka pro Polsko, FamilySearch pro Slovensko) a níže.
 
@@ -180,6 +183,42 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
 - Evidence hrobových míst: správa hřbitova (kdo je v hrobě uložen, kdo platí nájem – často žijící potomek);
   řada měst má online vyhledávání hrobů. Mezinárodně BillionGraves a Find a Grave.
 
+## IPR Praha – staré plány a letecké snímky Prahy (gs-pub.praha.eu), bez tokenu
+Pro Prahu výrazně lepší než Archiv ČÚZK (jeho spojené vrstvy stabilního katastru Prahu nepokrývají). Vše georeferencované
+v S-JTSK (EPSG 5514) → stejný výřez pro celou sérii = prolínání map na webu (`mapy.json`, stejná `skupina`).
+- Plány: `https://gs-pub.praha.eu/imgs/rest/services/arch/<služba>/ImageServer/exportImage?bbox=x0,y0,x1,y1&bboxSR=5514&imageSR=5514&size=1200,1200&format=jpg&f=image`.
+  Služby: `stabilni_katastr_cisarske_otisky_2880`, `stabilni_katastr_originaly_1440`, `plan_pav_1889`, `plan_orient_1909`,
+  `plan_vysko_1920`, **`plan_orient_1938` (s čísly popisnými a orientačními)**, `plan_prahy_1944`, `byvaly_pozemkovy_katastr`.
+  Herget 1791, Jüttner 1816, Mayr 1869, polohopisné 1884 a 1891 pokrývají jen centrum (mimo něj vrátí prázdný obrázek ~23 kB).
+- Letecké snímky: `https://gs-pub.praha.eu/arcgis/rest/services/ort/ortofotomapa_archiv/MapServer/export?bbox=…&bboxSR=5514&imageSR=5514&size=…&format=jpg&f=image&layers=show:<id>`
+  – id 0 = 1938, 4 = 1945, 8 = 1953, 150 = 1966, 12 = 1975, 16 = 1989, 20 = 1996, 36 = zaplavené území 2002 (seznam: `…/MapServer?f=json`).
+- Střed výřezu = parcela domu v S-JTSK: `https://ags.cuzk.gov.cz/arcgis/rest/services/RUIAN/MapServer/5/query?where=KATASTRALNIUZEMI%3D<kód k. ú.>+AND+KMENOVECISLO%3D<parcela>&returnGeometry=true&outSR=5514&f=json`.
+- **Všechny adresy domu a sousedů** (rohové domy, přečíslování): adresní místa v obálce
+  `…/RUIAN/MapServer/1/query?geometry=x0,y0,x1,y1&geometryType=esriGeometryEnvelope&inSR=5514&outFields=*&f=json`.
+- Zdroj do `mapy.json`: „IPR Praha, Geoportál hl. m. Prahy (geoportalpraha.cz), <služba>“.
+
+## DNNT – díla nedostupná na trhu (ndk.cz): tisk 20. století z domova
+Adresáře, ročenky, odborné časopisy a noviny zhruba 1900–2000 jsou v Krameriu NK „private“. Většina z nich má ale
+`dnnt: true` – kdokoli je přečte z domova po přihlášení na **ndk.cz**. Pro dějiny městských domů je to hlavní zdroj.
+- **Bez přihlášení:** vyhledávání (Solr) je veřejné i pro DNNT stránky. `kramerius.py` vypíše `dostupnost` a `dnnt`.
+  Úryvky kolem nálezu: parametry `hl=true&hl.fl=text_ocr&hl.fragsize=300`. Test, jestli je slovo na konkrétní stránce:
+  `PID:"uuid:…" AND text_ocr:(…)`. OCR text neveřejných stran (`/streams/TEXT_OCR`) bez přihlášení vrátí 403.
+  Úryvek z vyhledávání je `lit` (čteno z OCR), ne `doc`.
+- **Přístup:** uživatel musí být čtenářem zapojené knihovny. Seznam knihoven a kdo umí registraci na dálku:
+  `https://ndk.cz/knihinst.json` (sloupce: knihovna, eduID / identity NDK, odkaz na vzdálenou registraci, kraj).
+  Ověřeno: Městská knihovna v Praze (60 Kč, online přes Bank iD, přihlášení eduID → „Městská knihovna v Praze“).
+  Na dálku dále NK ČR (200 Kč, bankovní identita), MZK Brno (Bank iD / MojeID; i jednorázově na 30 dní), NTK, krajské
+  knihovny Liberec, Ostrava, Ústí, Zlín, Hradec Králové. Ostatní (i všechny jihočeské) chtějí jednu návštěvu.
+- **Čtení po přihlášení (bez hesla v rukou Clauda):** otevři ndk.cz v **řízeném prohlížeči** (chrome-devtools MCP:
+  `new_page`), uživatel se v tom okně přihlásí sám. Pak v kontextu stránky (`evaluate_script`):
+  `fetch('/search/api/v5.0/item/<pid>/streams/TEXT_OCR')` a sken `fetch('/search/img?pid=<pid>&stream=IMG_FULL&action=GETRAW')`
+  → `arrayBuffer` → base64 → výstup do souboru (`filePath`) → dekódovat v Pythonu. Session cookie je httpOnly, curl ji
+  nedostane. Víc stránek najednou v jednom skriptu (slovník klíč → pid). Metadata a nadřazené číslo: `/search/api/v5.0/item/<pid>`.
+- Trvalý odkaz do `zaznamy.json`: `https://ndk.cz/uuid/<pid>`. Přepis ze skenu = `doc`; jen z OCR textu = `lit`.
+- Užitečné tituly: Adresář Republiky československé pro průmysl, živnosti… (1927–1938, podle oborů), Adresář hl. m. Prahy
+  1936, Orientační kniha Velké Prahy 1936/1937 (čp. → adresy), Stavitelské listy (stavební povolení), Právo lidu,
+  Národní listy, Lidové noviny, ročenky spolků, Dílo družstevní svépomoci (1933).
+
 ## Noviny a ročenky – `tools/anno.py`, `tools/anno_snap.py`, `tools/kramerius.py`
 **Kdy se vyplatí:** státní a vrchnostenští úředníci, soudci, učitelé, faráři, důstojníci, vojenští lékaři, notáři,
 poštmistři, starostové, podnikatelé – noviny otiskovaly jmenování, přeložení, vyznamenání, penze, konkurzy, oznámení
@@ -189,6 +228,8 @@ A když osoba „chybí“ v očekávaných matrikách (stěhovala se se službo
   – jména **německy** („Johann Nowak“, „Wenzel Dworschak“). Výřez místa: `tools/anno_snap.py <docId> "<dotaz>" pracovni/x.jpg`.
   ALEX a annoshow jsou za Cloudflare – neobcházet.
 - Kramerius NK ČR (české noviny, ročenky, adresáře): `python3 -I tools/kramerius.py 'text_ocr:"Jan Novák" AND datum_begin:[1900 TO 1910]'`.
+  Pozor: filtr `datum_begin` vyřadí část čísel periodik (u některých chybí) – při malém počtu nálezů hledej i bez něj.
+  Neveřejné stránky 20. století čti přes DNNT (výše).
 - Vojenské schematismy: fulltext na archive.org (např. `militrschematis13kriegoog` = 1850).
 - **Rizika:** jména se opakují a fulltext šumí („Winter“ = i zima, „Novák“ = nový obyvatel). Ztotožni jen při shodě víc údajů (bydliště,
   funkce navazující na matriku, časová posloupnost). Zdroj je „J“ (jiný pramen) – vodítko a příběh, ne náhrada matriky.

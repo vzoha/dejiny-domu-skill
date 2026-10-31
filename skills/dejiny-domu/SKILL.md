@@ -75,7 +75,8 @@ Než začneš číst, zjisti a zapiš do `OBEC` a `STAV.md`:
 4. **Staré názvy** obce (německý, starší český). Hledej podle všech.
 
 ## Fáze 3 – Prameny, od dneška zpátky
-Podrobně `reference/prameny.md`. Pořadí, které se osvědčuje:
+Podrobně `reference/prameny.md`. **Městský dům z 20. století (činžák) má vlastní pořadí** – `prameny.md` → Městský dům
+20. století (staré plány, adresní knihy, adresáře, stavební povolení, DNNT). Pro venkovský dům se osvědčuje:
 **sčítání lidu 1921 → 1857** (celé domácnosti po číslech domů) → **matriky podle čísla domu** (1784–1900: kdo se kde
 narodil, oženil a zemřel) → **stabilní katastr** 1827 (číslo, půdorys, držitel na indikační skice) → josefský 1785
 a tereziánský katastr 1748 → **gruntovní knihy** (všichni držitelé gruntu a za kolik) → berní rula 1654,
@@ -93,7 +94,8 @@ Základní smyčka pro každý pramen:
    2. zápis do `data/zaznamy.json` přes `tools/zapis.py` (klíč `obec_druh_cp_kdo_rok`, např. `lhota_scitani_cp12_1890`),
    3. výřez: `python3 -I tools/vyrez.py pracovni/<stránka>.jpg <klíč> x0,y0,x1,y1` (velkoryse, s hlavičkou sloupců;
       u novin dole až po oddělovací čáru, ať konec článku nevypadá useknutý),
-   4. rámeček: `python3 -I tools/ramecek.py <klíč> x0,y0,x1,y1` a **prohlédni si** `pracovni/ramecek_<klíč>.jpg`,
+   4. rámeček: `python3 -I tools/ramecek.py <klíč> x0,y0,x1,y1` (souřadnice **výřezu**, ne stránky; se stránkovými
+      přidej `--vyrez <oblast z kroku 3>`) a **prohlédni si** `pracovni/ramecek_<klíč>.jpg`,
    5. přepis a český překlad do `data/prepisy.json` (nejistá místa „(?)“, nečitelná „[…]“),
    6. do `data/domy.py`: událost domu, držitel nebo obyvatelé (`st="doc"`, `r=[klíč]`), případně událost obce.
 5. **Deník** `data/research_log.md`, i neúspěšné hledání, s rozsahem (které roky a snímky). Narazíš-li na souvislost
@@ -106,6 +108,9 @@ Pravidla kvality:
   ani skript, který přepíše celý soubor.
 - **`doc` jen to, co jsi četl přímo na snímku.** Literatura je `lit` (i dobrá vlastivěda se plete). Shoda bez dokladu je `prob`.
 - **Číslo domu není totožnost domu.** Před ztotožněním čísla přes přečíslování je údaj `prob` s poznámkou.
+- **Adresa není totožnost domu (města).** Ulice a č. orientační se přečíslovávaly a rohový dům má dvě adresy. Nejdřív
+  tabulka adres domu v čase (`reference/prameny.md` → Čísla domů), každý nález s adresou převeď podle data. Shoda
+  „ulice + číslo“ s nálezem z jiného roku je jen stopa, ne doklad.
 - **Čti celý zápis včetně okrajů:** v gruntovních knihách jsou dodatky o splátkách a dalším prodeji, v matrikách
   poznámky o sňatku a úmrtí.
 - **Celé domácnosti:** ze sčítání zapiš všechny obyvatele domu, i čeleď a výměnkáře. Jsou to taky dějiny domu.
@@ -203,10 +208,10 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `portafontium.py …`, `ebadatelna.py …` (`a-…` archiválie: urbáře, gruntovní knihy) | SOA Plzeň, SOA Praha |
 | `ahmp_search.sh`, `ahmp_scan.py`, `policie_prihlasky.py` | Praha (matriky, policejní přihlášky s adresami) |
 | `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, ZA Opava, Matricula |
-| `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly) |
+| `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly; u 20. stol. ukáže DNNT → `portaly.md`) |
 | `overit.py <snímek> x0,y0,x1,y1 <prefix>` | zápis na dvě čitelné poloviny – ověření čtení |
 | `vyrez.py <obrázek> <klíč> x0,y0,x1,y1` | výřez do `zdroje/` a `vyrezy/` (i mapy a fotky, celé = `0,0,1,1`) |
-| `ramecek.py <klíč> x0,y0,x1,y1` | rámeček čteného místa + kontrolní obrázek |
+| `ramecek.py <klíč> x0,y0,x1,y1 [--vyrez a0,b0,a1,b1]` | rámeček čteného místa (souřadnice výřezu; s `--vyrez` stránky) + kontrolní obrázek |
 | `mista.py ruian "Osada čp"` / `hledej "dotaz"` / `pridej "Název" …` | dům v RÚIAN (obec, parcela, k. ú., poloha) / souřadnice z OSM / body na mapu |
 | `zapis.py <soubor> <klíč> <vstup.json> [--sloucit]` | přidá / změní položku v `zaznamy`, `svazky`, `prepisy`, `mapy`… beze změny formátu |
 | `kontrola.py` | kontrola dat, soukromí, kdy psát příběh |

@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 """Kramerius NKP full-text search (API v5). Usage: kramerius.py 'SOLR_QUERY' [rows]
-e.g. kramerius.py 'text_ocr:"Jan Novák" AND datum_begin:[1860 TO 1920]'"""
+e.g. kramerius.py 'text_ocr:"Jan Novák" AND datum_begin:[1860 TO 1920]'
+Sloupec přístupu: public = volně; private+DNNT = čitelné po přihlášení na ndk.cz (reference/portaly.md → DNNT);
+private = jen v knihovně. Filtr datum_begin vyřadí část čísel periodik – při malém počtu nálezů hledej i bez něj."""
 import sys,json,urllib.request,urllib.parse
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
+if len(sys.argv) < 2:
+    sys.exit(__doc__)
 q=sys.argv[1]; rows=sys.argv[2] if len(sys.argv)>2 else '30'
-p={'q':q+' AND fedora.model:page','fl':'PID,root_title,root_pid,datum_str,details,dostupnost','rows':rows,'wt':'json','hl':'true','hl.fl':'text_ocr','hl.fragsize':'250'}
+p={'q':q+' AND fedora.model:page','fl':'PID,root_title,root_pid,datum_str,details,dostupnost,dnnt','rows':rows,'wt':'json','hl':'true','hl.fl':'text_ocr','hl.fragsize':'250'}
 u='https://kramerius5.nkp.cz/search/api/v5.0/search?'+urllib.parse.urlencode(p)
 d=json.load(urllib.request.urlopen(u,timeout=90))
 print('found',d['response']['numFound'])
 hl=d.get('highlighting',{})
 for x in d['response']['docs']:
     h=' | '.join(hl.get(x['PID'],{}).get('text_ocr',[]))[:400].replace('\n',' ')
-    print('-',x.get('datum_str'),'|',str(x.get('root_title'))[:60],'|',x.get('details'),'|',x['PID'],'|',x.get('dostupnost'))
+    pristup=x.get('dostupnost') or '?'
+    if pristup=='private' and x.get('dnnt'): pristup='private+DNNT'
+    det=str(x['details'][0]).split()[0] if x.get('details') else ''
+    print('-',x.get('datum_str'),'|',str(x.get('root_title'))[:60],'| s.',det,'|',x['PID'],'|',pristup)
     if h: print('   ',h)
