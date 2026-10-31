@@ -21,7 +21,7 @@ Použití (z kořene projektu):
   dnnt.py rozbal <vystup.json> [slozka=pracovni/dnnt/ocr]
       z výstupu JS udělá <klic>.txt a <klic>.jpg.
   dnnt.py adresa <slozka> "<Ulice>" <číslo> [číslo ...]
-      projde *.txt a najde adresu i rozdělenou na konci řádku („Mani-\\nnách 25“), s variantami „č.“, „čp.“, „čís.“;
+      projde *.txt a najde adresu i rozdělenou na konci řádku („Dlou-\\nhá 14“), s variantami „č.“, „čp.“, „čís.“;
       vypíše soubor, hlavičku stránky (obor adresáře) a okolí nálezu.
 """
 import base64, glob, json, os, re, sys, time, unicodedata, urllib.error, urllib.parse, urllib.request
@@ -193,7 +193,7 @@ def bez_diakritiky(s):
 
 
 def adresa(slozka, ulice, cisla):
-    # spojit dělená slova („Mani-\nnách“) a sjednotit mezery; porovnávat bez diakritiky (OCR „Maninach“, „Prúhonu“)
+    # spojit dělená slova („Dlou-\nhá“) a sjednotit mezery; porovnávat bez diakritiky (OCR „Dlouha“, „Dlóuhá“)
     vzor_ul = r"\W*".join(re.escape(c) for c in bez_diakritiky(ulice).replace(" ", ""))
     vzor = re.compile(rf"{vzor_ul}\W{{0,3}}(?:c\.?\s*p\.?|cis\.?|c\.)?\s*({'|'.join(map(re.escape, cisla))})(?!\d)")
     n = 0
