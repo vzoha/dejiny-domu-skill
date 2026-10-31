@@ -2,9 +2,9 @@
 # Kontrola Conventional Commits (viz CLAUDE.md)
 first=$(head -n1 "$1")
 case "$first" in Merge*|Revert*|fixup!*|squash!*) exit 0;; esac
-if ! printf '%s' "$first" | grep -Eq '^(feat|fix|docs|refactor|style|chore|release)(\([a-z0-9_-]+\))?!?: .+'; then
+if ! printf '%s' "$first" | grep -Eq '^(feat|fix|docs|refactor|style|test|chore|release)(\([a-z0-9_-]+\))?!?: .+'; then
   echo "Commit neodpovídá formátu <typ>(<scope>): <popis>" >&2
-  echo "Typy: feat fix docs refactor style chore release (viz CLAUDE.md)" >&2
+  echo "Typy: feat fix docs refactor style test chore release (viz CLAUDE.md)" >&2
   echo "Zpráva: $first" >&2
   exit 1
 fi
