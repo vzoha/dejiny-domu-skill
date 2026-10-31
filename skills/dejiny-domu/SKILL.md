@@ -129,6 +129,10 @@ Když portál nemá nástroj ani čitelné API (mapové aplikace, prohlížeče 
 - Odkud se načítají obrázky a token, zjistíš `agent-browser eval "JSON.stringify(performance.getEntriesByType('resource').map(e=>e.name))"`.
   Pak stahuj přímo (curl s `Referer`) a postup převeď do nástroje.
 - Velké mapy snímkuj po dlaždicích. Nic nekupuj, nezadávej hesla, neřeš CAPTCHA.
+- **JavaScript v prohlížeči** (`fetch` ve smyčce přes `evaluate_script`) limit `slusne.py` nevidí: dotazy na stránky
+  a API nejvýš **1 za 2 s** (`await new Promise(r => setTimeout(r, 2000))` mezi nimi), žádné `Promise.all` na dotazy.
+  Odpověď 403, 429 nebo 503 = hned přestaň, zapiš `python3 -I tools/slusne.py zablokuj <web> "HTTP 429 v prohlížeči"`
+  (zastaví i nástroje a pomocníky) a řekni to uživateli.
 
 ### Pomocníci (subagenti) – šetrně
 Na velké kolo (projít matriku 1784–1850 a vypsat všechny zápisy z čp. 12, projít sčítání
@@ -137,6 +141,8 @@ Na velké kolo (projít matriku 1784–1850 a vypsat všechny zápisy z čp. 12,
 (na kartu svazku je `trebon.py popis`)“. Jejich čtení **vždy ověř sám na snímku** (`tools/overit.py`), než ho zapíšeš jako `doc`.
 V zadání chtěj u každého prošlého snímku, co na něm skutečně přečetli (rok, číslo domu, první jméno).
 Před velkým kolem řekni uživateli, co plánuješ, a nech si to schválit (kredity).
+Pomocníci na **stejném portálu** se o limit dělí (1 dotaz za 2 s pro všechny) – víc pomocníků na jednom archivu
+práci nezrychlí. Rozděl je raději po portálech nebo po čtení snímků, které už jsou stažené.
 
 ### Kdy přestat
 U domu: když se dostaneš před založení gruntu nebo před nejstarší gruntovní knihu (obvykle 16.–17. století).
@@ -176,7 +182,12 @@ Obecně a stručně, bez osobních údajů. Nic sám neposílej.
 
 ## Co nikdy
 - Nestahuj hromadně z placených služeb a neobcházej jejich ochranu. Neřeš CAPTCHA, nezadávej hesla, nic nekupuj.
-- Archivní servery šetři: stahuj jen snímky, které čteš.
+- Archivní servery šetři: stahuj jen snímky, které čteš. **Archivy banují IP po sérii rychlých dotazů** (MZA Brno,
+  Litoměřice, Opava) a ban dopadne na uživatele. Všechny nástroje mají společný limit (`tools/slusne.py`: dotazy 1 za 2 s,
+  dlaždice volněji; po 429/503 web na 30 minut zastaví). **Vlastní síťový skript nebo curl spouštěj jen přes
+  `python3 -I tools/slusne.py <skript.py>` / `… slusne.py curl …`** – hook projektu (`tools/hlidac.py`) jiné zamítne.
+  Hláška „STOP: web … je zablokovaný“ = neobcházej ji jiným nástrojem ani prohlížečem, pokračuj jiným pramenem
+  a řekni to uživateli. Stav: `python3 -I tools/slusne.py stav`.
 - Nedávej na web údaje o žijících lidech a dnešních majitelích bez souhlasu.
 - Nepřepisuj data bez zálohy v gitu. Po větším kroku navrhni uložení (`git add -A && git commit -m "…"`).
 - Na jednom projektu ať pracuje jen jedna konverzace s Claudem najednou. Dvě souběžné si navzájem přepisují soubory
@@ -218,5 +229,6 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `dnnt.py hledej / kontext / ocr / js / rozbal / adresa` | tisk 20. století (adresáře, Stavitelské listy, noviny): úryvky z neveřejných stran, hromadné čtení (DNNT přes přihlášený prohlížeč), hledání adresy v textech |
 | `zapis.py <soubor> <klíč> <vstup.json> [--sloucit]` | přidá / změní položku v `zaznamy`, `svazky`, `prepisy`, `mapy`, `web` (pole nastavení webu)… beze změny formátu |
 | `kontrola.py` | kontrola dat, soukromí, kdy psát příběh |
+| `slusne.py <skript.py> …` / `curl …` / `stav` | společný limit rychlosti k archivům; vlastní skripty a curl jen přes něj (hook `hlidac.py` hlídá) |
 | `zdravi.py [--rychle] [--jen trebon,aron]` | funguje každý nástroj proti živému portálu? (pevné svazky, dočasná složka, do dat nesahá) |
 | `export_web.py` | data → web (volá ho `npm run data`) |

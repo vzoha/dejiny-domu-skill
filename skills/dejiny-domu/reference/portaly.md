@@ -38,7 +38,8 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
 - Obec nenalezena? Zkus název **bez přívlastku** („Lhota“ místo „Horní Lhota“) a starý název. Starší matriky
   (před ~1784) bývají ve faře sousedního města; indexy fary mají oddíly po vesnicích
   („Copulati Gross Lhota“).
-- Ber ohled na server: stahuj jen to, co čteš; žádné hromadné stahování celých svazků.
+- Ber ohled na server: stahuj jen to, co čteš; žádné hromadné stahování celých svazků. Limit rychlosti hlídá
+  `tools/slusne.py` (SKILL.md → Co nikdy).
 
 ## SOA Třeboň (digi.ceskearchivy.cz) – `tools/trebon.py`, bez prohlížeče
 - `trebon.py misto "Obec"` → id místa. Diakritiku a mezery nástroj odstraní sám (portál zná jen „RatiborskeHory“).
