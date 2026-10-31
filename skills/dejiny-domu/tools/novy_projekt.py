@@ -5,12 +5,13 @@ Použití: python3 <skill>/tools/novy_projekt.py <cílová složka>
 
 Vytvoří: data/ (prázdné kostry nebo ukázka), web/ (Astro web), tools/ (kopie nástrojů),
 vyrezy/, zdroje/, dokumenty/, pracovni/, CLAUDE.md, .gitignore, .gitattributes (konce řádků LF i na Windows)
-a .claude/launch.json (náhled v Claude desktop).
+a .claude/launch.json (náhled v Claude desktop), v .claude/settings.json hook tools/hlidac.py
+(síť k archivům jen přes slusne.py – existující nastavení zůstane).
 Existující data nepřepisuje.
 Aktualizace staršího projektu (znovu spustit na stejnou složku): tools/ se přepíše vždy a soubory webu,
 které se liší od nové šablony, taky – jejich staré verze se nejdřív uloží do pracovni/zaloha_web_<datum>/.
 """
-import filecmp, os, shutil, sys, time
+import filecmp, json, os, shutil, sys, time
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -45,6 +46,28 @@ def copy_tree(src, dst, backup=None):
     return changed
 
 
+HOOK = ('python3 -I "$CLAUDE_PROJECT_DIR/tools/hlidac.py" 2>/dev/null || '
+        'python -I -X utf8 "$CLAUDE_PROJECT_DIR/tools/hlidac.py"')   # Windows: python3 bývá nefunkční alias
+
+
+def hlidac(dst):
+    """Hook tools/hlidac.py do .claude/settings.json projektu (síť k archivům jen přes slusne.py).
+    Existující nastavení zůstane, hook se přidá jen jednou."""
+    path = os.path.join(dst, ".claude", "settings.json")
+    try:
+        cfg = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
+    except ValueError:
+        print(f"POZOR: {path} není platný JSON – hook hlidac.py nepřidán (oprav soubor a spusť znovu)")
+        return
+    pre = cfg.setdefault("hooks", {}).setdefault("PreToolUse", [])
+    if any("hlidac.py" in h.get("command", "") for m in pre for h in m.get("hooks", [])):
+        return
+    pre.append({"matcher": "Bash|WebFetch", "hooks": [{"type": "command", "command": HOOK, "timeout": 60}]})
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(cfg, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
@@ -71,6 +94,7 @@ def main():
         out = os.path.join(dst, name)
         if not os.path.lexists(out):
             copy(os.path.join(SKILL, "template", name), out)
+    hlidac(dst)
     with open(os.path.join(dst, ".skill_verze"), "w", encoding="utf-8") as f:   # SKILL.md podle něj nabídne aktualizaci
         f.write(open(os.path.join(SKILL, "VERZE"), encoding="utf-8").read())
     print("Projekt připraven:", dst)
