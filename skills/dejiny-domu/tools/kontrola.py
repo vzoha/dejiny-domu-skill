@@ -124,7 +124,9 @@ def main():
                 warn.append(f"SOUKROMÍ (dům {cp}, {o.get('n')}): narozen(a) po {hranice} a má podrobnosti – "
                             f"žijící lidé jen se souhlasem (reference/soukromi.md)")
 
-    if not os.path.exists(os.path.join(DATA, "pribeh.md")):
+    ma_pribeh = os.path.exists(os.path.join(DATA, "pribeh.md")) or any(
+        f.startswith("pribeh_") and f.endswith(".md") for f in os.listdir(DATA))
+    if not ma_pribeh:
         hlavni = D.get(str(cfg.get("hlavni_dum", "")), {})
         if len(hlavni.get("drzitele", [])) >= 4:
             warn.append("hlavní dům má už 4+ držitele – je čas napsat příběh domu "
