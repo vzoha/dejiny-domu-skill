@@ -5,11 +5,11 @@ Použití: aron_search.py "<text v popisu, např. obec>" [filtr názvu fondu] [m
   (stejnojmenných obcí bývá víc – výsledky jsou proto seřazené podle farnosti / první obce v popisu).
 Vypíše: apu_id | signatura, druh a roky | popis (obce, které svazek pokrývá).
 Vypisuje i svazky bez snímků (hlavně 20. století) – jestli je svazek online, ukáže `aron_img.py <apu_id> info` (scans: 0 = není)."""
-import json, re, sys, time, urllib.request
+import os, json, re, sys, time, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
-sys.path.insert(0, __import__("os").path.dirname(__import__("os").path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 
 API = "https://aron.vychodoceskearchivy.cz/api/aron"

@@ -50,7 +50,7 @@ HOOK = ('python3 -I "$CLAUDE_PROJECT_DIR/tools/hlidac.py" 2>/dev/null || '
         'python -I -X utf8 "$CLAUDE_PROJECT_DIR/tools/hlidac.py"')   # Windows: python3 bývá nefunkční alias
 
 
-def hlidac(dst):
+def pridej_hook(dst):
     """Hook tools/hlidac.py do .claude/settings.json projektu (síť k archivům jen přes slusne.py).
     Existující nastavení zůstane, hook se přidá jen jednou."""
     path = os.path.join(dst, ".claude", "settings.json")
@@ -94,7 +94,7 @@ def main():
         out = os.path.join(dst, name)
         if not os.path.lexists(out):
             copy(os.path.join(SKILL, "template", name), out)
-    hlidac(dst)
+    pridej_hook(dst)
     with open(os.path.join(dst, ".skill_verze"), "w", encoding="utf-8") as f:   # SKILL.md podle něj nabídne aktualizaci
         f.write(open(os.path.join(SKILL, "VERZE"), encoding="utf-8").read())
     print("Projekt připraven:", dst)

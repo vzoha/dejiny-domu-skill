@@ -21,7 +21,7 @@ import html, json, os, re, shutil, subprocess, sys, time, urllib.error, urllib.p
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
-sys.path.insert(0, __import__("os").path.dirname(__import__("os").path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 
 BASE = "https://www.mza.cz/actapublica/"
@@ -47,9 +47,8 @@ def get(path, ajax=False):
             with urllib.request.urlopen(urllib.request.Request(url, headers=hdr), timeout=90) as r:
                 return r.read().decode("utf-8", "replace")
         except urllib.error.HTTPError as e:
-            if e.code < 500:
-                sys.exit(f"MZA odmítla požadavek ({e.code}): {url}"
-                         + (" – při „Sorry, you have been blocked“ v prohlížeči vypni VPN nebo zkus jinou síť" if e.code == 403 else ""))
+            if e.code < 500:   # 403 sem nedojde – zastaví ho slusne.py
+                sys.exit(f"MZA odmítla požadavek ({e.code}): {url}")
             err = e
         except OSError as e:
             err = e
@@ -164,8 +163,7 @@ def snimek(mid, n, out, nahled=False, crop=None):
             sys.exit("výřez x0,y0,x1,y1 musí být zlomky 0–1 a x0 < x1, y0 < y1")
         region = "pct:" + ",".join(f"{v * 100:.3f}" for v in (x0, y0, x1 - x0, y1 - y0))
     size = "pct:25" if nahled else "full"
-    curl = shutil.which("curl")
-    if not curl:
+    if not shutil.which("curl"):
         sys.exit("chybí curl – obrázkový server MZA bere jen HTTP/2, které Python neumí (curl je ve Windows 10+, macOS i Linuxu)")
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     p = slusne.curl(["-s", "-f", "--http2", "-m", "180", "-A", UA, "-o", out, f"{iiif}/{region}/{size}/0/default.jpg"],
