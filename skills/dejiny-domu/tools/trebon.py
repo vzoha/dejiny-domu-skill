@@ -168,7 +168,8 @@ def strom(dt="1", obec=None):
         if c.startswith(dt) and c != dt:
             print(c, "|", re.sub(r"\s+", " ", text(n)))
     i = page.find("fixed table header")
-    for bid, row in re.findall(r"id='(\d+)'>(.*?)</tr>", page[i:] if i > 0 else "", re.S):
+    # list stromu (obec ve sčítání) nemá „fixed table header“, řádky mají title='Open' a poslední končí </tbody>
+    for bid, row in re.findall(r"id='(\d+)'[^>]*>(.*?)</t(?:r|body)>", page[i:] if i > 0 else page, re.S):
         cells = [re.sub(r"\s+", " ", text(c)) for c in re.findall(r"<td[^>]*>(.*?)</td>", row, re.S)]
         cells = [c for c in cells if c and c != "List of localities"]
         if obec:
