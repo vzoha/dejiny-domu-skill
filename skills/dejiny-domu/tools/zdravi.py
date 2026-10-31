@@ -35,6 +35,9 @@ KONTROLY = [
     ("ebadatelna", "snímek", ["ebadatelna.py", "snimek", "4293", "5", "{out}", "nahled"], r"soapraha\.cz/d/4293/5", "eb.jpg"),
     ("ahmp", "hledání svazků", ["bash", "ahmp_search.sh", "Smíchov"], r"9A79C81088C94C9DBEA2FC6758FD08E7", None),
     ("ahmp", "snímek", ["ahmp_scan.py", "9A79C81088C94C9DBEA2FC6758FD08E7", "5", "{out}", "1"], r"permalink", "ah.jpg"),
+    ("mza", "knihy obce", ["mza.py", "matriky", "1269"], r"^3090 \| 3212 \|", None),
+    ("mza", "info knihy", ["mza.py", "info", "3090"], r"snímků: 270", None),
+    ("mza", "snímek", ["mza.py", "snimek", "3090", "50", "{out}", "nahled"], r"detail/3090\?image=", "mz.jpg"),
     ("policie", "hledání přihlášek", ["policie_prihlasky.py", "Kolar", "Josef"], r"záznamů", None),
     ("cuzk", "listy stabilního katastru", ["cuzk_archiv.py", "listy", "49.5234,14.4301"], r"TAB082018300", None),
     ("cuzk", "export listu", ["cuzk_archiv.py", "export", "skici", "195567", "{out}", "0,0,1,1", "400"], r"400×", "cz.jpg"),
@@ -51,7 +54,6 @@ DOSTUPNOST = [
     ("soal", "obrázkový server SOA Litoměřice", "https://images.soalitomerice.cz/ximage/matriky/zoomify/"),
     ("opava", "obrázkový server ZA Opava", "https://images.archives.cz/ximage/matriky/zoomify/"),
     ("matricula", "Matricula", "https://data.matricula-online.eu/"),
-    ("mza", "MZA Brno Acta Publica", "https://www.mza.cz/actapublica/"),
 ]
 
 

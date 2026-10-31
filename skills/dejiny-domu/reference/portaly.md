@@ -10,7 +10,7 @@ Matriky jsou online u osmi státních archivů – podle toho, **kde dům stojí
 | SOA Třeboň | jižní Čechy | digi.ceskearchivy.cz | **ano – nástroj `trebon.py`** |
 | SOA Litoměřice | severní Čechy | Digitální badatelna – digi.soalitomerice.cz | **částečně – `soal_zoomify.py`** (knihu najdi v prohlížeči) |
 | AHMP | hl. m. Praha | katalog.ahmp.cz (Pragapublica) | **ano – `ahmp_search.sh`, `ahmp_scan.py`** |
-| MZA Brno | jižní Morava, Vysočina z části | Acta Publica – www.mza.cz/actapublica | částečně – v prohlížeči (postup níže) |
+| MZA Brno | jižní Morava, Vysočina z části | Acta Publica – www.mza.cz/actapublica | **ano – nástroj `mza.py`** |
 | ZA Opava | severní Morava a Slezsko, Olomoucko a Litovelsko | Digitální badatelna – digi.archives.cz/da/ | **částečně – `soal_zoomify.py`** (jen s prohlížečem, CAPTCHU řeší uživatel) |
 | Národní archiv | židovské matriky (HBMa), soupisy; pražské policejní přihlášky 1850–1914 | badatelna.eu; digi.nacr.cz/prihlasky2 | přihlášky **ano – `policie_prihlasky.py`** |
 
@@ -129,12 +129,20 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
   po hledání a stránky výsledků neprocházej za sebou. Delší smyčku pusť v prohlížeči na pozadí, výsledky ukládej do
   `window` nebo `localStorage` a vyzvedávej po částech (nástroj pro JavaScript má limit asi 45 s). Pomocníkům to napiš do zadání.
 
-## MZA Brno (jižní Morava, Acta Publica) – bez nástroje
-- Portál `https://www.mza.cz/actapublica/`, bez přihlášení. Adresa actapublica.eu bývá za Cloudflare zablokovaná
-  („Sorry, you have been blocked“ – podle IP, i v běžném prohlížeči); když blokuje i mza.cz, ať uživatel vypne VPN
-  nebo zkusí jinou síť.
-- Knihu najdi v prohlížeči podle obce nebo fary. Snímky jsou IIIF: adresu obrázku najdi v síťovém provozu a stáhni ji
-  přes `curl` (Python dostane HTTP 426). Dál podle „Ostatní portály“ níže.
+## MZA Brno (jižní Morava, Acta Publica) – `tools/mza.py`, bez prohlížeče
+- `mza.py hledat "Obec"` → obec_id | název s německým názvem a okresem (bez diakritiky i podle začátku názvu).
+  Stejnojmenných obcí bývá víc (Pohořelice u Brna × u Zlína) – vyber podle okresu.
+- `mza.py matriky <obec_id>` → knihy obce: id | číslo knihy | původce (fara, typ) | roky N | O | Z (`i` = index) | obce | snímků.
+  Jsou tam i knihy, které obec jen zmiňují (německé stavovské úřady 1938–45, sousední fary) – podívej se na původce.
+- `mza.py info <id>` → kniha, původce, obce a **části knihy se snímky** („oddaní (1673–1716) 201–250“) – podle nich
+  skoč rovnou na správný snímek, neodhaduj podle roku.
+- `mza.py snimek <id> <snímek> pracovni/x.jpg [nahled] [x0,y0,x1,y1]` → celá stránka v plném rozlišení jedním požadavkem
+  (IIIF); `link <id> <snímek>` → trvalý odkaz; `svazek <id>` → `svazky.json` (klíč `mza_<id>`).
+- `<id>` je číslo z adresy `…/actapublica/matrika/detail/<id>`, ne číslo knihy (to je ve druhém sloupci).
+- Obrázkový server bere jen HTTP/2 – snímky stahuje nástroj přes `curl` (Python sám dostane HTTP 426). Starý curl
+  bez HTTP/2 → nainstaluj novější.
+- Adresa actapublica.eu bývá za Cloudflare zablokovaná („Sorry, you have been blocked“ – podle IP); nástroj jde na
+  www.mza.cz. Když blokuje i ta, ať uživatel vypne VPN nebo zkusí jinou síť.
 
 ## Pražské policejní přihlášky 1850–1914 (Národní archiv) – `tools/policie_prihlasky.py`
 - Karty pražských rodin: hlava rodiny, manželka s rokem a místem narození, děti s roky, adresy, někdy místo sňatku.

@@ -85,7 +85,7 @@ soupis poddaných 1651, urbáře → literatura a listiny (nejstarší zmínky o
 Základní smyčka pro každý pramen:
 1. **Vyber cíl:** nejmladší neznámé období domu, nebo konkrétní otázku („kdo byl držitel před Nováky?“).
 2. **Najdi svazek:** sčítání a matriky jsou na stejných portálech (SOA Třeboň `trebon.py`, ARON `aron_search.py`,
-   Porta fontium `portafontium.py`, eBadatelna `ebadatelna.py`…). Gruntovní knihy hledej ve fondu velkostatku.
+   Porta fontium `portafontium.py`, eBadatelna `ebadatelna.py`, Acta Publica `mza.py`…). Gruntovní knihy hledej ve fondu velkostatku.
    Ověř lhůty (matriky: narození 100 let, sňatky 75, úmrtí 30).
 3. **Stáhni snímek** do `pracovni/<svazek>/` (před stažením se podívej, jestli ho už nemáš) a **přečti ho sám**
    ze snímku v plném rozlišení.
@@ -207,6 +207,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `aron_search.py "Obec" ["fond"]`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |
 | `portafontium.py …`, `ebadatelna.py …` (`a-…` archiválie: urbáře, gruntovní knihy) | SOA Plzeň, SOA Praha |
 | `ahmp_search.sh`, `ahmp_scan.py`, `policie_prihlasky.py` | Praha (matriky, policejní přihlášky s adresami) |
+| `mza.py hledat / matriky / info / snimek / link / svazek` | MZA Brno (jižní Morava, Acta Publica): matriky |
 | `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, ZA Opava, Matricula |
 | `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly; u 20. stol. ukáže DNNT → `portaly.md`) |
 | `overit.py <snímek> x0,y0,x1,y1 <prefix>` | zápis na dvě čitelné poloviny – ověření čtení |
