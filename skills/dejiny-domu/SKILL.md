@@ -217,4 +217,5 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `dnnt.py hledej / kontext / ocr / js / rozbal / adresa` | tisk 20. století (adresáře, Stavitelské listy, noviny): úryvky z neveřejných stran, hromadné čtení (DNNT přes přihlášený prohlížeč), hledání adresy v textech |
 | `zapis.py <soubor> <klíč> <vstup.json> [--sloucit]` | přidá / změní položku v `zaznamy`, `svazky`, `prepisy`, `mapy`, `web` (pole nastavení webu)… beze změny formátu |
 | `kontrola.py` | kontrola dat, soukromí, kdy psát příběh |
+| `zdravi.py [--rychle] [--jen trebon,aron]` | funguje každý nástroj proti živému portálu? (pevné svazky, dočasná složka, do dat nesahá) |
 | `export_web.py` | data → web (volá ho `npm run data`) |

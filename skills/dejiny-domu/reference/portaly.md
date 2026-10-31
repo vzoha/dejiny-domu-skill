@@ -17,6 +17,7 @@ Matriky jsou online u osmi státních archivů – podle toho, **kde dům stojí
 Pro **20. století** (městské domy, adresáře, stavební povolení) jsou hlavní **IPR Praha** (staré plány a letecké snímky
 Prahy) a **DNNT na ndk.cz** (neveřejný tisk čitelný po přihlášení) – sekce níže.
 
+**Nástroj selže nebo vrátí nesmysl?** Nejdřív `python3 -I tools/zdravi.py --jen <portál>`: zkusí pevný známý svazek. Selže-li i ten, změnil se portál (nebo má výpadek) – nehledej chybu v datech, zapiš to do `poznamky_pro_skill.md`.
 Adresy u nevyzkoušených portálů ověř při prvním použití (portály se mění). Pro pohraničí a mimo ČR viz `playbook.md` §2
 (Matricula pro Rakousko/Německo, Geneteka pro Polsko, FamilySearch pro Slovensko) a níže.
 

@@ -24,3 +24,7 @@ release: 0.3.6
 ```
 
 Kontrolu formátu dělá hook `.githooks/commit-msg`; po naklonování ho zapni přes `git config core.hooksPath .githooks`.
+
+## Před vydáním verze
+
+`python3 -I skills/dejiny-domu/tools/zdravi.py` – všechny portály musí projít (výpadek zkus znovu za chvíli).
