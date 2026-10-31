@@ -6,7 +6,7 @@ a archivy pak přitvrzují vůči všem. Proto:
 - limit platí pro každý web zvlášť a je SPOLEČNÝ všem procesům (pomocníci/subagenti, dva nástroje najednou),
 - dotazy (hledání, API, HTML) přísně – výchozí 1 za 2 s; obrázky a dlaždice volněji – 20 za s
   (ban způsobují rychlé dotazy, ne dlaždice jednoho snímku),
-- po HTTP 429 nebo 503 (a po 403 na dotaz) se web zablokuje na 30 minut pro všechny procesy a nástroj hned skončí –
+- po HTTP 429 nebo 503 (a po 403 na dotaz uprostřed práce) se web zablokuje na 30 minut pro všechny procesy a nástroj hned skončí –
   žádné další pokusy.
 
 Nástroje v tools/ to mají zapnuté samy (`slusne.instaluj()` na začátku). Vlastní skript nebo curl spouštěj takhle:
@@ -35,7 +35,7 @@ OBRAZEK = re.compile(r"\.(jpe?g|png|gif|webp|tiff?|jp2|dzi)(\?|$)|_files/|iipsrv
                      r"TileGroup|ImageProperties\.xml|isrv\d*\.cgi|/full/|default\.jpg|/image/|mrimage|/tiles?/", re.I)
 
 
-class Zablokovano(SystemExit):
+class Zablokovano(SystemExit):   # SystemExit: nástroje chytají OSError/Exception – tohle jim neproklouzne do opakování
     pass
 
 
@@ -74,6 +74,11 @@ def _odemkni(f):
         fcntl.flock(f, fcntl.LOCK_UN)
 
 
+def host_z(arg):
+    """„https://www.mza.cz/x“ i „www.mza.cz“ → „www.mza.cz“."""
+    return (urllib.parse.urlsplit(arg).hostname if "://" in arg else arg).lower()
+
+
 def druh(url):
     return "obr" if OBRAZEK.search(url) else "dotaz"
 
@@ -102,12 +107,21 @@ def _hlaska(host, do, proc):
             f"a k tomuhle se vrať po {time.strftime('%H:%M', time.localtime(do))}. Řekni to uživateli.")
 
 
-def pockej(host, co):
-    """Počká, až je na webu volno (společně pro všechny procesy). Zablokovaný web → Zablokovano."""
-    host = (host or "").lower()
+class Fronta(SystemExit):
+    pass
+
+
+def _zkontroluj_blokaci(host):
     b = blokace(host)
     if b:
         raise Zablokovano(_hlaska(host, *b))
+
+
+def pockej(host, co, nejdele=None):
+    """Počká, až je na webu volno (společně pro všechny procesy). Zablokovaný web → Zablokovano.
+    nejdele: kolik s nejvýš čekat (hook má časový limit) – jinak Fronta a termín se nezabere."""
+    host = (host or "").lower()
+    _zkontroluj_blokaci(host)
     rozestup = LIMITY.get(host, VYCHOZI)[0 if co == "dotaz" else 1]
     with open(_soubor(host, co), "a+", encoding="utf-8") as f:
         _zamkni(f)
@@ -119,6 +133,8 @@ def pockej(host, co):
                 posledni = 0.0
             ted = time.time()
             slot = max(ted, posledni + rozestup)   # rezervace termínu – další proces dostane až ten po něm
+            if nejdele is not None and slot - ted > nejdele:
+                raise Fronta(f"{host}: na web čeká fronta dotazů ({slot - ted:.0f} s) – zkus to za chvíli")
             f.seek(0)
             f.truncate()
             f.write(repr(slot))
@@ -127,9 +143,15 @@ def pockej(host, co):
             _odemkni(f)
     if slot > ted:
         time.sleep(slot - ted)
+        _zkontroluj_blokaci(host)   # mezitím mohl jiný proces dostat 429
 
 
-_uspech = set()   # weby, které v tomhle procesu už jednou odpověděly v pořádku
+def _byl_uspech(host):
+    """Odpověděl web v posledních 30 min v pořádku (kterémukoli procesu)? Pak 403 není špatný User-Agent, ale zátěž."""
+    try:
+        return time.time() - os.path.getmtime(_soubor(host, "ok")) < BLOKACE
+    except OSError:
+        return False
 
 
 def posoudit(host, co, kod, retry_after=None):
@@ -137,11 +159,13 @@ def posoudit(host, co, kod, retry_after=None):
     403 hned na první dotaz bývá špatný User-Agent nebo neveřejná stránka, ne zátěž – skončí bez blokace."""
     host = host.lower()
     if kod < 400:
-        _uspech.add(host)
+        with open(_soubor(host, "ok"), "w"):
+            pass
         return
-    if kod == 403 and co == "dotaz" and host not in _uspech:
-        raise SystemExit(f"{host} odmítl dotaz (HTTP 403) – nejspíš chybí prohlížečový User-Agent nebo stránka není "
-                         "veřejná. Web nezablokován; neopakuj dotaz ve smyčce.")
+    if kod == 403 and co == "dotaz" and not _byl_uspech(host):
+        raise SystemExit(f"{host} odmítl dotaz (HTTP 403) – buď chybí prohlížečový User-Agent / stránka není veřejná, "
+                         "nebo web zablokoval IP adresu (v prohlížeči „Sorry, you have been blocked“ → vypni VPN nebo "
+                         "zkus jinou síť). Neopakuj dotaz ve smyčce.")
     if kod in (429, 503) or (kod == 403 and co == "dotaz"):
         sekund = BLOKACE
         if retry_after and str(retry_after).isdigit():
@@ -179,14 +203,21 @@ def instaluj():
     http.client.HTTPConnection.getresponse = getresponse
 
 
+HODNOTOVE = {"-e", "--referer", "-x", "--proxy", "-H", "--header", "-b", "--cookie", "-A", "--user-agent",
+             "-u", "--user", "-d", "--data", "--data-urlencode", "-F", "--form"}   # volby curl, jejichž hodnota může být adresa
+
+
 def curl(args, **kw):
-    """Spustí curl s limitem: počká podle první adresy, po odpovědi posoudí kód. Vrací CompletedProcess."""
-    urls = [a for a in args if re.match(r"https?://", a)]
+    """Spustí curl s limitem: počká podle první adresy, po odpovědi posoudí kód. Vrací CompletedProcess (stderr jako text)."""
+    urls = [a for i, a in enumerate(args) if re.match(r"https?://", a) and (i == 0 or args[i - 1] not in HODNOTOVE)]
     host = urllib.parse.urlsplit(urls[0]).hostname if urls else ""
     co = druh(urls[0]) if urls else "dotaz"
     if host:
         pockej(host, co)
     kw.setdefault("stderr", subprocess.PIPE)
+    kw.setdefault("text", True)
+    kw.setdefault("encoding", "utf-8")
+    kw.setdefault("errors", "replace")
     args, znacka = list(args), "%{stderr}\nSLUSNE %{http_code}\n"
     for i, x in enumerate(args[:-1]):
         if x in ("-w", "--write-out"):   # vlastní -w nechat, značku připojit za něj (curl bere jen poslední -w)
@@ -195,10 +226,8 @@ def curl(args, **kw):
     else:
         args += ["-w", znacka]
     p = subprocess.run(["curl", *args], **kw)
-    err = p.stderr.decode("utf-8", "replace") if isinstance(p.stderr, bytes) else (p.stderr or "")
-    kody = re.findall(r"SLUSNE (\d+)", err)
-    err = re.sub(r"\n?SLUSNE \d+\n", "", err)
-    p.stderr = err.encode() if isinstance(p.stderr, bytes) else err
+    kody = re.findall(r"SLUSNE (\d+)", p.stderr or "")
+    p.stderr = re.sub(r"\n?SLUSNE \d+\n", "", p.stderr or "")
     if host and kody:
         posoudit(host, co, int(kody[-1]))
     return p
@@ -218,21 +247,22 @@ def main(a):
         if nic:
             print("Žádný web není zablokovaný.")
     elif a[0] == "zablokuj" and len(a) > 1:
-        host = (urllib.parse.urlsplit(a[1]).hostname if "://" in a[1] else a[1]).lower()
+        host = host_z(a[1])
         zablokuj(host, " ".join(a[2:]) or "ručně")
         print(f"{host}: zablokováno na {BLOKACE // 60} min")
     elif a[0] == "odblokuj" and len(a) > 1:
-        p = _soubor(a[1], "blok")
+        host = host_z(a[1])
+        p = _soubor(host, "blok")
         if os.path.exists(p):
             os.remove(p)
-        print(f"{a[1]}: odblokováno")
+        print(f"{host}: odblokováno")
     elif a[0] == "curl":
         try:
             p = curl(a[1:])
         except Zablokovano as e:
             print(e, file=sys.stderr)
             sys.exit(22)
-        sys.stderr.write(p.stderr.decode("utf-8", "replace") if isinstance(p.stderr, bytes) else p.stderr)
+        sys.stderr.write(p.stderr)
         sys.exit(p.returncode)
     else:
         import runpy

@@ -40,7 +40,6 @@ class SlusneTest(unittest.TestCase):
         self.tmp = tempfile.mkdtemp(prefix="slusne_test_")
         os.environ["SLUSNE_DIR"] = self.tmp
         slusne.LIMITY["127.0.0.1"] = (0.3, 0.01)
-        slusne._uspech.clear()
         Server.pocet = 0
 
     def tearDown(self):
@@ -101,6 +100,26 @@ class SlusneTest(unittest.TestCase):
         with self.assertRaises(slusne.Zablokovano):
             self.get("/403")
 
+    def test_403_po_uspechu_jineho_procesu_zablokuje(self):
+        subprocess.run([sys.executable, "-c", "import sys; sys.path.insert(0, sys.argv[1]); import slusne, urllib.request;"
+                        "slusne.instaluj(); urllib.request.urlopen(sys.argv[2])", TOOLS, self.url + "/ok"],
+                       check=True, env=dict(os.environ, SLUSNE_DIR=self.tmp))
+        with self.assertRaises(slusne.Zablokovano):   # nový proces, ale web před chvílí odpovídal → ban, ne User-Agent
+            self.get("/403")
+
+    def test_blokace_behem_cekani(self):
+        slusne.LIMITY["127.0.0.1"] = (0.5, 0.01)
+        slusne.pockej("127.0.0.1", "dotaz")
+        threading.Timer(0.2, slusne.zablokuj, ("127.0.0.1", "HTTP 429")).start()
+        with self.assertRaises(slusne.Zablokovano):   # termín zabraný před blokací, po probuzení už nepustí
+            slusne.pockej("127.0.0.1", "dotaz")
+
+    def test_fronta_nad_limit_ceka_nezabere_termin(self):
+        slusne.LIMITY["127.0.0.1"] = (5.0, 0.01)
+        slusne.pockej("127.0.0.1", "dotaz")
+        with self.assertRaises(slusne.Fronta):
+            slusne.pockej("127.0.0.1", "dotaz", nejdele=1)
+
     def test_403_na_obrazek_nezablokuje(self):
         self.get("/ok")
         with self.assertRaises(Exception):
@@ -124,6 +143,15 @@ class SlusneTest(unittest.TestCase):
         self.assertTrue(slusne.blokace("127.0.0.1"))
         p = subprocess.run(cmd + ["-w", "kod=%{http_code}", self.url + "/ok"], env=env, capture_output=True, text=True)
         self.assertIn("STOP", p.stderr)
+
+    @unittest.skipUnless(shutil.which("curl"), "chybí curl")
+    def test_curl_host_podle_cile_ne_refereru(self):
+        env = dict(os.environ, SLUSNE_DIR=self.tmp)
+        p = subprocess.run([sys.executable, "-I", os.path.join(TOOLS, "slusne.py"), "curl", "-s", "-o", os.devnull,
+                            "-e", "https://www.mza.cz/", self.url + "/429"], env=env, capture_output=True, text=True)
+        self.assertIn("127.0.0.1", p.stderr)
+        self.assertTrue(slusne.blokace("127.0.0.1"))
+        self.assertIsNone(slusne.blokace("www.mza.cz"))
 
     def test_skript_pres_slusne(self):
         skript = os.path.join(self.tmp, "s.py")
@@ -170,7 +198,9 @@ class HlidacTest(unittest.TestCase):
                     "python3 -I - <<'E'\nimport requests\nrequests.get('https://www.mza.cz')\nE",
                     "/usr/bin/python3 pracovni/sit.py",
                     "python3 -I tools/trebon.py misto X && curl https://www.mza.cz/",
-                    "bash pracovni/x.sh"):
+                    "bash pracovni/x.sh",
+                    'python3 "pracovni/sit.py"',
+                    'python3 -Ic "import urllib.request"'):
             self.assertEqual(self.rozhodni(cmd), "deny", cmd)
 
     def test_povoli(self):
@@ -183,8 +213,16 @@ class HlidacTest(unittest.TestCase):
                     "bash tools/ahmp_search.sh Smíchov",
                     "python3 -m unittest discover tests",
                     "git status && npm run build",
-                    "python3 - <<'E'\nimport json\nprint(json.dumps({}))\nE"):
+                    "python3 - <<'E'\nimport json\nprint(json.dumps({}))\nE",
+                    'python3 -c "import urllib.parse; print(urllib.parse.quote(\'Smíchov\'))"',
+                    'python3 -I "$CLAUDE_PROJECT_DIR/tools/slusne.py" curl -s https://www.mza.cz/'):
             self.assertEqual(self.rozhodni(cmd), "povoleno", cmd)
+
+    def test_webfetch_dlouha_fronta(self):
+        os.environ["SLUSNE_DIR"] = self.tmp
+        with open(os.path.join(self.tmp, "www.mza.cz.dotaz"), "w") as f:
+            f.write(repr(time.time() + 120))   # pomocníci zabrali termíny na 2 minuty dopředu
+        self.assertEqual(self.rozhodni("https://www.mza.cz/actapublica/", "WebFetch"), "deny")
 
     def test_webfetch_zablokovany_web(self):
         self.assertEqual(self.rozhodni("https://www.mza.cz/actapublica/", "WebFetch"), "povoleno")

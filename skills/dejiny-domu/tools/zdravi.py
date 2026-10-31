@@ -16,7 +16,7 @@ import os, re, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.req
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
-sys.path.insert(0, __import__("os").path.dirname(__import__("os").path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 
 TOOLS = os.path.dirname(os.path.abspath(__file__))
@@ -76,6 +76,8 @@ def server_odpovida(url):
         return e.code < 500, str(e.code)
     except OSError as e:
         return False, str(getattr(e, "reason", e))
+    except SystemExit as e:   # slusne.py: web zablokovaný nebo 403 na první dotaz – kontrola má pokračovat dál
+        return False, str(e)[:80]
 
 
 def main():

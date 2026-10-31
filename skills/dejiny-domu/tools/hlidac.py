@@ -17,7 +17,7 @@ for _s in (sys.stdout, sys.stderr):
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, TOOLS)
 
-SIT = re.compile(r"^\s*(?:import|from)\s+(?:urllib|requests|http\.client|http\b|httpx|aiohttp|socket|urllib3|pycurl)\b"
+SIT = re.compile(r"^\s*(?:import|from)\s+(?:urllib(?!\.parse\b)|requests|http\.client|http\b|httpx|aiohttp|socket|urllib3|pycurl)\b"
                  r"|\b(?:urllib\.request|requests\.(?:get|post|Session)|http\.client)\b", re.M)
 CURL = re.compile(r"(?:^|[\s;&|(`'\"])(curl|wget)(?=\s)")
 URL = re.compile(r"https?://([^/\s'\"]+)")
@@ -59,7 +59,7 @@ def bash(cmd, cwd):
     # curl / wget mimo `slusne.py curl`
     for m in CURL.finditer(cmd):
         pred = cmd[max(0, m.start() - 30):m.start() + 1]
-        if re.search(r"slusne\.py\s*$", pred):
+        if re.search(r"slusne\.py[\"']?\s*$", pred):
             continue
         zbytek = re.split(r"[;&|\n]", cmd[m.end():], maxsplit=1)[0]
         if URL.search(zbytek) and not jen_lokalni(zbytek):
@@ -68,21 +68,17 @@ def bash(cmd, cwd):
             zamitni(f"{m.group(1)} s adresou v proměnné mimo slusne.py")
     # Python
     for m in PYTHON.finditer(cmd):
-        volby, cil = m.group(1) or "", m.group(2)
+        volby, cil = m.group(1) or "", m.group(2).strip("\"'")
         if re.search(r"(?:^|/)slusne\.py$", cil):
             continue
-        if cil == "-c" or re.search(r"\s-c$", volby.rstrip()) or cil.startswith("-c"):
+        if cil.startswith("-c") or re.search(r"\s-[A-Za-z]*c$", volby.rstrip()):
             kod = cmd[m.end():]
         elif cil == "-" or cil.startswith("<<") or "<<" in cmd[m.end():m.end() + 40]:
             kod = cmd[m.end():]   # heredoc / stdin: text za příkazem
-        elif cil.endswith(".py"):
-            if v_tools(cil, cwd):
-                continue
+        elif cil.endswith(".py") and not v_tools(cil, cwd):
             kod = obsah(cil, cwd)
-        elif cil == "-m":
-            continue   # python -m unittest/http.server… – moduly ze standardní knihovny neřešíme
         else:
-            continue
+            continue   # nástroj z tools/ (limit má sám), python -m …, python bez skriptu
         if SIT.search(kod) and not jen_lokalni(kod):
             zamitni("Python se síťovým importem mimo slusne.py")
     # shellové skripty mimo tools/
@@ -97,8 +93,8 @@ def webfetch(url):
     if not host or LOKAL.match(host):
         return
     try:
-        slusne.pockej(host, slusne.druh(url))
-    except slusne.Zablokovano as e:
+        slusne.pockej(host, slusne.druh(url), nejdele=40)   # hook má timeout 60 s – po něm by WebFetch prošel bez limitu
+    except (slusne.Zablokovano, slusne.Fronta) as e:
         zamitni(str(e))
 
 

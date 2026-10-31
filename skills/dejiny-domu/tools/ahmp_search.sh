@@ -18,7 +18,7 @@ for pruchod in 1 2; do
   celkem=$($PY -I -c "import re,sys;m=re.search(r'\(\s*<strong>\s*(\d+)\.0\s*</strong>',open(sys.argv[1],encoding='utf-8').read());print(m.group(1) if m else '')" $D/p0.html)
   $PY -I -X utf8 "$P" $D/p0.html >> $D/vse; cur=$D/p0.html
   for k in $(seq 1 30); do u=$(grep -oE '/pragapublica/PaginatorResult.action[^"]*row=[0-9]+' $cur | sed 's/&amp;/\&/g' | grep -E "row=$((k*51))$" | head -1); [ -z "$u" ] && break; curl -s -b $C -c $C "$B$u" -o $D/p$k.html; $PY -I -X utf8 "$P" $D/p$k.html >> $D/vse; cur=$D/p$k.html; done
-  mame=$(awk '!s[$0]++' $D/vse | grep -vc '| -$')
+  mame=$(awk '!s[$0]++' $D/vse | grep -vc '^? |')   # „? | … | -“ = řádek bez názvu, ne svazek
   [ -n "$celkem" ] && [ "$mame" -ge "$celkem" ] && break
   [ -z "$celkem" ] && break   # bez počtu (nic nenalezeno, nebo jiná stránka) neopakovat
 done
