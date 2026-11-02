@@ -19,6 +19,9 @@ vyzkoušený jen na něm (Linux). Počítejte s chybami a dejte mi o nich vědě
 **Živá ukázka: [historie.malystatek.cz](https://historie.malystatek.cz/)**. Tento web vznikl se skillem a popisuje
 výměnek čp. 30 a statek čp. 1 v Lništi (obec Slavče, okres České Budějovice).
 
+**Nechcete to dělat sami?** Dějiny domu vám můžu zpracovat na zakázku. Teď zkouším několik prvních domů za
+zvýhodněnou cenu. [Napište mi](https://tally.so/r/xVrNVd?zdroj=github).
+
 ![Úvodní stránka webu: dům, ves a počty držitelů, obyvatel, zápisů a map](docs/ukazka_uvod.jpg)
 
 <table><tr>
