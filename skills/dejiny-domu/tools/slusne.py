@@ -5,7 +5,8 @@ Archivy (MZA Brno, SOA Litoměřice, ZA Opava…) banují IP adresu po sérii ry
 a archivy pak přitvrzují vůči všem. Proto:
 - limit platí pro každý web zvlášť a je SPOLEČNÝ všem procesům (pomocníci/subagenti, dva nástroje najednou),
 - dotazy (hledání, API, HTML) přísně – výchozí 1 za 2 s; obrázky a dlaždice volněji – 20 za s
-  (ban způsobují rychlé dotazy, ne dlaždice jednoho snímku),
+  (ban způsobují rychlé dotazy, ne dlaždice jednoho snímku); pauza se počítá od odpovědi, ne od odeslání –
+  pomalý server by jinak dostal další dotaz hned po dokončení předchozího,
 - po HTTP 429 nebo 503 (a po 403 na dotaz uprostřed práce) se web zablokuje na 30 minut pro všechny procesy a nástroj hned skončí –
   žádné další pokusy.
 
@@ -146,6 +147,26 @@ def pockej(host, co, nejdele=None):
         _zkontroluj_blokaci(host)   # mezitím mohl jiný proces dostat 429
 
 
+def odpovedel(host, co):
+    """Server začal odpovídat (u curl dokončil přenos): další dotaz počká celý rozestup až od teď.
+    Termín už zarezervovaný jiným procesem se nezkrátí."""
+    host = (host or "").lower()
+    with open(_soubor(host, co), "a+", encoding="utf-8") as f:
+        _zamkni(f)
+        try:
+            f.seek(0)
+            try:
+                posledni = float(f.read().strip() or 0)
+            except ValueError:
+                posledni = 0.0
+            f.seek(0)
+            f.truncate()
+            f.write(repr(max(posledni, time.time())))
+            f.flush()
+        finally:
+            _odemkni(f)
+
+
 def _byl_uspech(host):
     """Odpověděl web v posledních 30 min v pořádku (kterémukoli procesu)? Pak 403 není špatný User-Agent, ale zátěž."""
     try:
@@ -196,6 +217,7 @@ def instaluj():
     def getresponse(self, *a, **k):
         r = get(self, *a, **k)
         host, co = getattr(_lokalni, "posledni", (self.host, "dotaz"))
+        odpovedel(host, co)
         posoudit(host, co, r.status, r.getheader("Retry-After"))
         return r
 
@@ -226,6 +248,8 @@ def curl(args, **kw):
     else:
         args += ["-w", znacka]
     p = subprocess.run(["curl", *args], **kw)
+    if host:
+        odpovedel(host, co)
     kody = re.findall(r"SLUSNE (\d+)", p.stderr or "")
     p.stderr = re.sub(r"\n?SLUSNE \d+\n", "", p.stderr or "")
     if host and kody:

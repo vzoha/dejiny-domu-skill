@@ -14,6 +14,8 @@ class Server(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
         Server.pocet += 1
+        if "pomalu" in self.path:
+            time.sleep(0.5)
         kod = next((int(k) for k in ("403", "429", "503") if k in self.path), 200)
         self.send_response(kod)
         self.end_headers()
@@ -53,6 +55,20 @@ class SlusneTest(unittest.TestCase):
         for _ in range(3):
             self.get("/hledat")
         self.assertGreaterEqual(time.time() - t, 0.55)
+
+    def test_rozestup_se_pocita_od_odpovedi(self):
+        t = time.time()
+        for _ in range(2):
+            self.get("/pomalu")
+        self.assertGreaterEqual(time.time() - t, 1.25)   # 2× 0,5 s odpověď + 0,3 s rozestup
+
+    def test_odpoved_nezkrati_rezervovany_termin(self):
+        budouci = time.time() + 60
+        with open(slusne._soubor("127.0.0.1", "dotaz"), "w") as f:
+            f.write(repr(budouci))
+        slusne.odpovedel("127.0.0.1", "dotaz")
+        with open(slusne._soubor("127.0.0.1", "dotaz")) as f:
+            self.assertEqual(float(f.read()), budouci)
 
     def test_obrazky_volneji(self):
         t = time.time()
