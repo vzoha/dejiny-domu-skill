@@ -75,15 +75,25 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
 Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz už neexistuje). Nástroj ho čte bez prohlížeče.
 1. `python3 -I tools/cuzk_archiv.py listy "Osada čp"` → katastrální obec v roce 1827 (**malá ves bývá součástí
    katastru sousední obce**) a předpony rastrů originální mapy, otisku a skici.
-2. `cuzk_archiv.py rastry stable <om_SIGN_INV>` → listy; `export stable <id> pracovni/katastr/list.jpg 0,0,1,1 1500`
-   → najdi ves na náhledu, pak výřez ve velkém (`export … x0,y0,x1,y1 5000`, podíly 0–1 jako u `vyrez.py`).
+2. `cuzk_archiv.py prehled stable <om_SIGN_INV> pracovni/katastr/prehled.jpg` → všechny listy v jednom náhledu
+   (pod každým id) → najdi ves, pak výřez ve velkém (`export stable <id> … x0,y0,x1,y1 5000`, podíly 0–1 jako u
+   `vyrez.py`). Jednotlivé listy: `rastry stable <om_SIGN_INV>` a `export stable <id> list.jpg 0,0,1,1 1500`.
 - **Originální mapa** (om) je nejcennější: zeměměřiči do ní **dokreslovali změny až do ~1880 (reambulace, změny
   červeně)**. Nová stavba nebo rozdělení parcely je tam i s číslem. Rok reambulace vypíše `listy`.
+  **Jak číst barvy budov:** růžová = zděná, žlutá = dřevěná (stav při mapování). **Červeně šrafovaná nebo sytě červená
+  budova a červená čísla = dokresleno při reambulaci** – stavba nebo přestavba až po mapování. Nepiš pak „dům tu stál
+  už v roce [mapování]“, ale „budova je do mapy dokreslená při opravě v roce [reambulace]“. Přeškrtnuté číslo = zrušená
+  parcela. Číslo stavební parcely vyšší než ostatní ve vsi = zpravidla pozdější dům (čísla šla od nejstarších).
 - **Císařský otisk** (cio, barevný, 1824–43) = podoba vsi. Domy zděné červeně, dřevěné žlutě, s čísly popisnými
   (u části listů barvy a čísla chybí).
-- **Indikační skica** (služba `skici`, předpona S0X) = pracovní mapa se jmény držitelů a změnami.
+- **Indikační skica** (služba `skici`, předpona S0X) = pracovní mapa se jmény držitelů a změnami. Je v aplikaci ČÚZK,
+  ale **patří Národnímu archivu (Čechy) nebo MZA (Morava) – na snímcích je vodoznak „NA + ZA“**. Čti z ní (čísla domů,
+  držitelé), ale výřez nepřikládej do e-mailu, PDF ani na web bez souhlasu archivu (`podminky.md`). Přikládej originální
+  mapu nebo pozemkový katastr.
 - **Pozemkový katastr** (`mapa pk "Osada čp" výstup.jpg`) je georeferencovaný v S-JTSK: sedí na dnešní mapu, takže
-  přes RÚIAN budovy jde ztotožnit starou parcelu s dnešním domem. Spojené vrstvy `originalni_mapy`
+  přes RÚIAN budovy jde ztotožnit starou parcelu s dnešním domem. Bývá ale posunutý o 60–100 m (často k SV):
+  `mista.py parcely "Osada čp"` vypíše dnešní stavební parcely kolem domu s odstupem v metrech, podle jejich čísel
+  dům na mapě najdeš. Čísla stavebních parcel se často drží od stabilního katastru dodnes. Spojené vrstvy `originalni_mapy`
   a `cisarske_otisky` malé obce často nepokrývají (bílý obrázek) – pak `listy` + `export`.
 - Ulož výřez se vsí a s domem do `dokumenty/`, pak `vyrez.py` a `data/mapy.json` (zdroj „ČÚZK, Archiv ČÚZK,
   <mapa, signatura, list>“, url https://ags.cuzk.gov.cz/archiv/). Na stránce domu se ukáže v galerii, porovnání viz `web.md`.
