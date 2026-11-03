@@ -36,7 +36,8 @@ LIMITY = {
     "gs-pub.praha.eu": (0.5, 0.05),
 }
 BLOKACE = 30 * 60
-OBRAZEK = re.compile(r"\.(jpe?g|png|gif|webp|tiff?|jp2|dzi)(\?|$)|_files/|iipsrv|IIIF=|Deepzoom=|ximage|zoomify|"
+PRIPONA = re.compile(r"\.(jpe?g|png|gif|webp|tiff?|jp2|dzi)$", re.I)   # jen v cestě: MZA má stránku knihy na …?image=…jp2
+OBRAZEK = re.compile(r"_files/|iipsrv|IIIF=|Deepzoom=|ximage|zoomify|"
                      r"TileGroup|ImageProperties\.xml|isrv\d*\.cgi|/full/|default\.jpg|/image/|mrimage|/tiles?/", re.I)
 
 
@@ -85,7 +86,7 @@ def host_z(arg):
 
 
 def druh(url):
-    return "obr" if OBRAZEK.search(url) else "dotaz"
+    return "obr" if PRIPONA.search(url.split("?", 1)[0]) or OBRAZEK.search(url) else "dotaz"
 
 
 def blokace(host):

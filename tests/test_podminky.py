@@ -38,6 +38,11 @@ class PodminkyTest(unittest.TestCase):
         with self.assertRaises(podminky.Zakazano):
             slusne.pockej("www.mza.cz", "obr")
 
+    def test_stranka_knihy_mza_neni_snimek(self):
+        self.assertEqual(slusne.druh("/actapublica/matrika/detail/3090?image=2160-00010.jp2"), "dotaz")
+        self.assertEqual(slusne.druh("/x/snimek.jpg"), "obr")
+        self.assertEqual(slusne.druh("/fcgi-bin/iipsrv.fcgi?IIIF=a.jp2/full/full/0/default.jpg"), "obr")
+
     def test_neznamy_portal_projde(self):
         slusne.pockej("example.org", "dotaz")
 
