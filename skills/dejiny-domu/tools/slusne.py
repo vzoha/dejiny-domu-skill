@@ -16,9 +16,13 @@ Nástroje v tools/ to mají zapnuté samy (`slusne.instaluj()` na začátku). Vl
   python3 -I tools/slusne.py stav                                 -> které weby jsou teď zablokované a do kdy
   python3 -I tools/slusne.py zablokuj <web> [důvod]               -> zablokovat web na 30 min (429/503/403 v prohlížeči)
   python3 -I tools/slusne.py odblokuj <web>                       -> zrušit blokaci (jen když víš, že šlo o omyl)
+Před každým požadavkem se navíc kontrolují podmínky portálu (tools/podminky.json, reference/podminky.md):
+portál, který nástrojům stahování nedovoluje, skončí hláškou „PODMÍNKY: …“ s návodem, jak dál.
 Stav je ve ~/.cache/dejiny-domu/slusne/ (jinde: proměnná SLUSNE_DIR).
 """
 import http.client, json, os, re, subprocess, sys, threading, time, urllib.parse
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import podminky   # co smí nástroje stahovat (tools/podminky.json)
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -122,6 +126,7 @@ def pockej(host, co, nejdele=None):
     """Počká, až je na webu volno (společně pro všechny procesy). Zablokovaný web → Zablokovano.
     nejdele: kolik s nejvýš čekat (hook má časový limit) – jinak Fronta a termín se nezabere."""
     host = (host or "").lower()
+    podminky.zkontroluj_stahovani(host, co)
     _zkontroluj_blokaci(host)
     rozestup = LIMITY.get(host, VYCHOZI)[0 if co == "dotaz" else 1]
     with open(_soubor(host, co), "a+", encoding="utf-8") as f:
@@ -283,7 +288,7 @@ def main(a):
     elif a[0] == "curl":
         try:
             p = curl(a[1:])
-        except Zablokovano as e:
+        except (Zablokovano, podminky.Zakazano) as e:
             print(e, file=sys.stderr)
             sys.exit(22)
         sys.stderr.write(p.stderr)

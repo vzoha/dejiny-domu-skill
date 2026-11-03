@@ -9,6 +9,7 @@ Použití (z kořene projektu i ze složky skillu):
   zdravi.py --rychle        bez stahování snímků
   zdravi.py --jen trebon,aron
                             jen vybrané portály (názvy viz výpis)
+Portály, které nástrojům stahování nedovolují (tools/podminky.json), se vypíšou jako „vynecháno“.
 Návratový kód 1 = aspoň jedna kontrola selhala. Selže-li portál, zkus to za chvíli znovu (výpadky bývají krátké);
 trvá-li chyba, změnilo se API – oprav nástroj a zapiš to do poznamky_pro_skill.md.
 """
@@ -117,6 +118,9 @@ def main():
             except subprocess.TimeoutExpired:
                 ok, vystup = False, "vypršel čas (180 s)"
             radky = [r for r in vystup.strip().splitlines() if r.strip()]
+            if not ok and "PODMÍNKY:" in vystup:   # portál nástrojům stahování nedovoluje (podminky.json) – to není porucha
+                print(f"—     {portal:13} {popis:28} vynecháno (podmínky portálu, reference/podminky.md)")
+                continue
             print(f"{'OK   ' if ok else 'CHYBA'} {portal:13} {popis:28} {time.time() - t:5.1f} s")
             if not ok:
                 selhalo += 1

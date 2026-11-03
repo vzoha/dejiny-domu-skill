@@ -1,0 +1,146 @@
+{
+  "_info": "Podmínky portálů pro nástroje skillu. Zdroj a vysvětlení: reference/podminky.md (stav 3. 11. 2026, jen veřejné zdroje, není to právní rada). dotazy/obrazky = smí nástroj stahovat stránky / snímky z této domény. vyrez = smí jít obrázek do výstupu: ano | neresi (podmínky mlčí) | nekomercne | souhlas | ne. vyjimky = pravidlo podle textu v adrese, zdroji nebo názvu (malá písmena).",
+  "portaly": {
+    "digi.ceskearchivy.cz": {
+      "nazev": "SOA Třeboň (DigiArchiv)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "snímky jen k prohlížení online, kopírování zakázáno; robots.txt zakazuje robotům stránky aplikace",
+      "jinak": "Snímky čte uživatel v prohlížeči a ty radíš (co hledat, jak číst písmo). Snímek si můžete objednat u archivu (25 Kč) nebo požádat o souhlas: digi@ceskearchivy.cz."
+    },
+    "www.portafontium.eu": {
+      "nazev": "SOA Plzeň (Porta fontium)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "firewall blokuje skripty; vše jen „vyjma výdělečných účelů“",
+      "jinak": "Pro soukromé bádání: uživatel snímek uloží v prohlížeči do pracovni/ a ty ho přečteš. Za peníze portál použít nejde – jen badatelna nebo objednané skeny."
+    },
+    "ebadatelna.soapraha.cz": {
+      "nazev": "SOA Praha (eBadatelna)", "dotazy": false, "obrazky": false, "vyrez": "neresi",
+      "proc": "robots.txt zakazuje ClaudeBota a všem robotům stahovat digitalizáty",
+      "jinak": "Uživatel se zaregistruje, na záložce „Popis knihy“ klikne na „Stáhnout knihu jako ZIP“, rozbalí ho do pracovni/ a ty snímky přečteš."
+    },
+    "digi.nacr.cz": {
+      "nazev": "Národní archiv (konskripce, policejní přihlášky)", "dotazy": false, "obrazky": false, "vyrez": "neresi",
+      "proc": "robots.txt zakazuje všechny roboty",
+      "jinak": "Uživatel přihlášku najde a uloží v prohlížeči do pracovni/, ty ji přečteš."
+    },
+    "digitalnibadatelna.nacr.cz": {
+      "nazev": "Národní archiv (Digitální badatelna)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "robots.txt zakazuje všechny roboty, vstupní ověření; zveřejnit jen se souhlasem",
+      "jinak": "Uživatel snímek uloží v prohlížeči do pracovni/, ty ho přečteš."
+    },
+    "digi.soalitomerice.cz": {
+      "nazev": "SOA Litoměřice (Digitální badatelna)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "vstupní ověření, po ~100 rychlých požadavcích blok; zveřejnit jen se souhlasem",
+      "jinak": "Knihu najde uživatel v prohlížeči, snímky pak stáhne soal_zoomify.py z obrázkového serveru (reference/portaly.md)."
+    },
+    "images.soalitomerice.cz": {
+      "nazev": "SOA Litoměřice (obrázkový server)", "dotazy": true, "obrazky": true, "vyrez": "souhlas",
+      "proc": "zveřejnit jen se souhlasem a s citací", "jinak": ""
+    },
+    "digi.archives.cz": {
+      "nazev": "ZA Opava (Digitální badatelna)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "ochrana proti robotům a CAPTCHA; zveřejnit jen se souhlasem",
+      "jinak": "Knihu najde uživatel v prohlížeči (CAPTCHU řeší on), snímky pak stáhne soal_zoomify.py."
+    },
+    "images.archives.cz": {
+      "nazev": "ZA Opava (obrázkový server)", "dotazy": true, "obrazky": true, "vyrez": "souhlas",
+      "proc": "zveřejnit jen se souhlasem a s citací", "jinak": ""
+    },
+    "www.mza.cz": {
+      "nazev": "MZA Brno (Acta publica)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "snímky chrání ověření ALTCHA; zveřejnit a dál využívat jen s písemným souhlasem",
+      "jinak": "Knihu a snímek najdeš nástrojem (mza.py matriky / info / link). Snímek otevře uživatel v prohlížeči, ověření vyřeší sám a uloží ho do pracovni/; ty ho přečteš."
+    },
+    "aron.vychodoceskearchivy.cz": {
+      "nazev": "SOA Hradec Králové (ARON)", "dotazy": true, "obrazky": true, "vyrez": "neresi",
+      "proc": "stahovat se smí; archiv si stěžuje na AI boty – málo a pomalu", "jinak": ""
+    },
+    "katalog.ahmp.cz": {
+      "nazev": "Archiv hl. m. Prahy", "dotazy": true, "obrazky": true, "vyrez": "souhlas",
+      "proc": "obrázky jen na objednávku s účelem, na web nejvýš 500 px s vodoznakem", "jinak": ""
+    },
+    "data.matricula-online.eu": {
+      "nazev": "Matricula", "dotazy": true, "obrazky": true, "vyrez": "nekomercne",
+      "proc": "licence CC BY-NC-ND: jen nevýdělečně, beze změn, se zdrojem", "jinak": ""
+    },
+    "www.familysearch.org": {
+      "nazev": "FamilySearch", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "podmínky zakazují roboty a hromadné stahování",
+      "jinak": "Uživatel snímek stáhne ručně do pracovni/, ty ho přečteš."
+    },
+    "ndk.cz": {
+      "nazev": "Národní digitální knihovna", "dotazy": false, "obrazky": false, "vyrez": "ne",
+      "proc": "díla nedostupná na trhu jen číst, stahovat a ukládat zakázáno",
+      "jinak": "Uživatel čte po přihlášení sám, ty radíš. Hledat a číst úryvky můžeš přes dnnt.py hledej / kontext."
+    },
+    "kramerius5.nkp.cz": {
+      "nazev": "Kramerius NK", "dotazy": true, "obrazky": true, "vyrez": "neresi",
+      "proc": "volná díla; díla nedostupná na trhu (DNNT) jen číst",
+      "jinak": ""
+    },
+    "www.digitalniknihovna.cz": {
+      "nazev": "Kramerius MZK", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "volná díla jako PDF ručně, komerční užití nejasné",
+      "jinak": "Uživatel volné dílo stáhne jako PDF do dokumenty/, ty ho přečteš."
+    },
+    "anno.onb.ac.at": {
+      "nazev": "ANNO (ÖNB)", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""
+    },
+    "www.kohoutikriz.org": {
+      "nazev": "Kohoutí kříž (JVK)", "dotazy": false, "obrazky": false, "vyrez": "nekomercne",
+      "proc": "ochrana proti robotům; licence CC BY-NC-ND",
+      "jinak": "Uživatel stránku otevře v prohlížeči, ty čteš, co pošle."
+    },
+    "ags.cuzk.gov.cz": {
+      "nazev": "Archiv ČÚZK (ÚAZK)", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "zveřejnění reprodukce archiválie ÚAZK bez souhlasu a poplatku, s citací",
+      "jinak": "",
+      "vyjimky": [
+        {"obsahuje": "indikační", "vyrez": "souhlas", "proc": "indikační skici Čech patří Národnímu archivu, Moravy MZA – zveřejnit jen se souhlasem"},
+        {"obsahuje": "letecký měřický", "vyrez": "souhlas", "proc": "archivní letecké snímky ČÚZK jen pro vlastní potřebu"}
+      ]
+    },
+    "ags.cuzk.cz": {
+      "nazev": "Archiv ČÚZK (ÚAZK)", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "zveřejnění reprodukce archiválie ÚAZK bez souhlasu a poplatku, s citací",
+      "jinak": "",
+      "vyjimky": [
+        {"obsahuje": "indikační", "vyrez": "souhlas", "proc": "indikační skici Čech patří Národnímu archivu, Moravy MZA – zveřejnit jen se souhlasem"},
+        {"obsahuje": "letecký měřický", "vyrez": "souhlas", "proc": "archivní letecké snímky ČÚZK jen pro vlastní potřebu"}
+      ]
+    },
+    "gis.cenia.cz": {
+      "nazev": "CENIA", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "letecké snímky 50. let pod CC BY 4.0 s celým zdrojem",
+      "jinak": "",
+      "vyjimky": [
+        {"obsahuje": "vojenske_mapovani", "vyrez": "souhlas", "proc": "u vojenských mapování na geoportálu CENIA si podmínky odporují – stejnou mapu vezmi z Geolabu"}
+      ]
+    },
+    "gs-pub.praha.eu": {
+      "nazev": "IPR Praha", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "mapové služby pod CC BY 4.0, uvést „datový podklad © IPR Praha“; u leteckých snímků 1938–1996 před zveřejněním za peníze ověřit", "jinak": ""
+    },
+    "www.geoportalpraha.cz": {
+      "nazev": "IPR Praha", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "CC BY 4.0, uvést „datový podklad © IPR Praha“", "jinak": ""
+    },
+    "geolab.cz": {
+      "nazev": "Geolab UJEP", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "s citací Rakouského státního archivu (číslo sekce), Geolabu a MŽP", "jinak": ""
+    },
+    "oldmaps.geolab.cz": {
+      "nazev": "Geolab UJEP", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "s citací Rakouského státního archivu (číslo sekce), Geolabu a MŽP", "jinak": ""
+    },
+    "maps.arcanum.com": {
+      "nazev": "Mapire (Arcanum)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "podmínky zakazují roboty, uložená data za peníze jen se smlouvou",
+      "jinak": "Uživatel mapu prohlíží sám a popíše, co na ní je. Stejné mapy bývají v Geolabu nebo ÚAZK."
+    },
+    "mapire.eu": {
+      "nazev": "Mapire (Arcanum)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "podmínky zakazují roboty, uložená data za peníze jen se smlouvou",
+      "jinak": "Uživatel mapu prohlíží sám a popíše, co na ní je. Stejné mapy bývají v Geolabu nebo ÚAZK."
+    }
+  }
+}
