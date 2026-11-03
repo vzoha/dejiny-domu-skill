@@ -16,6 +16,7 @@ Data se točí kolem **čísla popisného** a jeho držitelů a obyvatel v čase
 - `reference/prameny.md` – **jaké prameny k domu a obci existují a v jakém pořadí do nich jít** (začni tady)
 - `reference/matriky.md` – jak číst matriky (písmo, latina/němčina, lhůty, pasti)
 - `reference/portaly.md` – portály archivů a nástroje na stahování snímků
+- `reference/podminky.md` – **co se kde smí** (stahovat nástrojem, za peníze, zveřejnit obrázky); nástroje se tím řídí samy
 - `reference/data.md` – formát dat, `reference/web.md` – web, `reference/pribehy.md` – zajímavosti a příběh domu,
   `reference/texty.md` – **jak psát texty na web** (krátce, bez žargonu, pro hosta; platí pro vše, co jde na web),
   `reference/soukromi.md` – soukromí
@@ -56,7 +57,7 @@ Cíl: vytěžit všechno, co uživatel má, než sáhneš do archivů.
 - **Materiály od uživatele** (složka s PDF, mapami, odkazy, poznámkami) zkopíruj do `dokumenty/` (velké soubory přes
   ~20 MB dej do `.gitignore`). Přečti je celé. Z knih (PDF) najdi strany o obci a domě (hledej i německý název
   a staré tvary). U naskenovaných PDF bez textu stránky převeď na obrázky a přečti je sám.
-  Odkazy z poznámek otevři a vytěž. Odkazy na snímky z archivů jsou zlato – rovnou podle nich stahuj.
+  Odkazy z poznámek otevři a vytěž. Odkazy na snímky z archivů jsou zlato – rovnou podle nich stahuj (kde to `reference/podminky.md` dovoluje).
 - **Ptej se postupně:** kdo dům vlastní a od kdy, od koho ho koupil, co vyprávěli předchozí majitelé a sousedé, staré
   fotky, kupní smlouvy, stavební plány, kdy byly přestavby, jestli dům někdy vyhořel, jaké má jméno po domácku („U Nováků“).
 - Zapiš: `data/pametnici.md` (kdo co řekl), události do `domy.py` se stavem `fam`, literaturu se stavem `lit` a `zdroj`.
@@ -84,16 +85,19 @@ soupis poddaných 1651, urbáře → literatura a listiny (nejstarší zmínky o
 
 Základní smyčka pro každý pramen:
 1. **Vyber cíl:** nejmladší neznámé období domu, nebo konkrétní otázku („kdo byl držitel před Nováky?“).
-2. **Najdi svazek:** sčítání a matriky jsou na stejných portálech (SOA Třeboň `trebon.py`, ARON `aron_search.py`,
-   Porta fontium `portafontium.py`, eBadatelna `ebadatelna.py`, Acta Publica `mza.py`…). Gruntovní knihy hledej ve fondu velkostatku.
+2. **Najdi svazek:** sčítání a matriky jsou na stejných portálech (ARON `aron_search.py`, Acta Publica `mza.py`,
+   AHMP, Litoměřice a Opava přes `soal_zoomify.py`…). Gruntovní knihy hledej ve fondu velkostatku.
+   **Než sáhneš na portál, podívej se do `reference/podminky.md`.** Kde nástroj nesmí (Třeboň, Porta fontium,
+   eBadatelna, Národní archiv, snímky MZA), snímek uloží uživatel do `pracovni/` a ty ho přečteš, nebo čte sám a ty radíš.
    Ověř lhůty (matriky: narození 100 let, sňatky 75, úmrtí 30).
-3. **Stáhni snímek** do `pracovni/<svazek>/` (před stažením se podívej, jestli ho už nemáš) a **přečti ho sám**
-   ze snímku v plném rozlišení.
+3. **Stáhni snímek** do `pracovni/<svazek>/` (před stažením se podívej, jestli ho už nemáš), nebo si ho vyžádej
+   od uživatele, a **přečti ho sám** ze snímku v plném rozlišení.
 4. **Zapiš nález** (vždy všech 6 kroků):
-   1. svazek do `data/svazky.json` (`trebon.py svazek <id>`, `aron_img.py <apu> svazek`, jinak `zapis.py svazky …`),
+   1. svazek do `data/svazky.json` (`aron_img.py <apu> svazek`, `mza.py svazek <id>`, jinak `zapis.py svazky …`),
    2. zápis do `data/zaznamy.json` přes `tools/zapis.py` (klíč `obec_druh_cp_kdo_rok`, např. `lhota_scitani_cp12_1890`),
    3. výřez: `python3 -I tools/vyrez.py pracovni/<stránka>.jpg <klíč> x0,y0,x1,y1` (velkoryse, s hlavičkou sloupců;
-      u novin dole až po oddělovací čáru, ať konec článku nevypadá useknutý),
+      u novin dole až po oddělovací čáru, ať konec článku nevypadá useknutý). Hlášku „PODMÍNKY“ řekni uživateli:
+      takový obrázek smí jen na neveřejný web, dokud archiv nedá souhlas,
    4. rámeček: `python3 -I tools/ramecek.py <klíč> x0,y0,x1,y1` (souřadnice **výřezu**, ne stránky; se stránkovými
       přidej `--vyrez <oblast z kroku 3>`) a **prohlédni si** `pracovni/ramecek_<klíč>.jpg`,
    5. přepis a český překlad do `data/prepisy.json` (nejistá místa „(?)“, nečitelná „[…]“),
@@ -122,7 +126,8 @@ Pravidla kvality:
 
 ### Webové aplikace bez API – prohlížeč
 Když portál nemá nástroj ani čitelné API (mapové aplikace, prohlížeče snímků, nahlizenidokn, chartae-antiquae),
-**použij sám prohlížeč přes skill `agent-browser`**, nenechávej to na uživateli. Pasti:
+**použij sám prohlížeč přes skill `agent-browser`**, nenechávej to na uživateli. **Neplatí** pro portály, které podle
+`reference/podminky.md` nástrojům stahování nedovolují nebo mají ochranu proti robotům: tam kliká uživatel. Pasti:
 - Playwright hlásí „Executable doesn't exist“ → spusť s nainstalovaným chromiem:
   `agent-browser --executable-path "$(ls -d ~/.cache/ms-playwright/chromium-*/chrome-linux/chrome | tail -1)" open <url>`
   (když už běží démon, nejdřív `agent-browser close`).
@@ -137,8 +142,7 @@ Když portál nemá nástroj ani čitelné API (mapové aplikace, prohlížeče 
 ### Pomocníci (subagenti) – šetrně
 Na velké kolo (projít matriku 1784–1850 a vypsat všechny zápisy z čp. 12, projít sčítání
 1857–1921) můžeš pustit 2–4 pomocníky na levnějším modelu (`model: "sonnet"`). Píšou jen do `pracovni/pom_<úkol>/`,
-**do `data/` nikdy** – do zadání napiš i „nespouštěj `trebon.py svazek` ani jiné příkazy, které zapisují do `data/`
-(na kartu svazku je `trebon.py popis`)“. Jejich čtení **vždy ověř sám na snímku** (`tools/overit.py`), než ho zapíšeš jako `doc`.
+**do `data/` nikdy** – do zadání napiš i „nespouštěj příkazy `… svazek` ani jiné, které zapisují do `data/`“. Jejich čtení **vždy ověř sám na snímku** (`tools/overit.py`), než ho zapíšeš jako `doc`.
 V zadání chtěj u každého prošlého snímku, co na něm skutečně přečetli (rok, číslo domu, první jméno).
 Před velkým kolem řekni uživateli, co plánuješ, a nech si to schválit (kredity).
 Pomocníci na **stejném portálu** se o limit dělí (1 dotaz za 2 s pro všechny) – víc pomocníků na jednom archivu
@@ -169,6 +173,8 @@ Před zveřejněním projdi s uživatelem `reference/soukromi.md` (dnešní maji
 
 ## Fáze 7 – Zveřejnění (volitelné, jen se souhlasem)
 Netlify: `npm run nasadit` (přihlášení a první propojení dej uživateli s `!`, postup v `reference/web.md`).
+Otevřený web je zveřejnění: obrázky z archivů, které to dovolují jen se souhlasem, nasazení nepustí
+(`python3 -I tools/podminky.py obrazky` je vypíše). Neveřejný web za heslem takové obrázky mít smí.
 Nic nezveřejňuj bez výslovného souhlasu uživatele.
 
 ## Vazba na rodokmen
@@ -182,6 +188,8 @@ Obecně a stručně, bez osobních údajů. Nic sám neposílej.
 
 ## Co nikdy
 - Nestahuj hromadně z placených služeb a neobcházej jejich ochranu. Neřeš CAPTCHA, nezadávej hesla, nic nekupuj.
+- Dodržuj podmínky portálů (`reference/podminky.md`). Hlášku „PODMÍNKY: …“ neobcházej jiným nástrojem, curl ani
+  prohlížečem řízeným skriptem. Řekni ji uživateli a pokračuj cestou, kterou hláška popisuje.
 - Archivní servery šetři: stahuj jen snímky, které čteš. **Archivy banují IP po sérii rychlých dotazů** (MZA Brno,
   Litoměřice, Opava) a ban dopadne na uživatele. Všechny nástroje mají společný limit (`tools/slusne.py`: dotazy 1 za 2 s,
   dlaždice volněji; po 429/503 web na 30 minut zastaví). **Vlastní síťový skript nebo curl spouštěj jen přes
@@ -212,13 +220,12 @@ Obecně a stručně, bez osobních údajů. Nic sám neposílej.
 Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do skillu; nástroje to odmítnou).
 | Nástroj | Co dělá |
 |---|---|
-| `trebon.py misto / svazky / rejstrik / snimek / popis / svazek` | SOA Třeboň (jižní Čechy): matriky, **sčítání lidu**, kroniky (`snimek <id> <strana>` funguje pro každý svazek portálu) |
-| `trebon.py strom [<kód> ["Obec"]]`, `obce <id>` | SOA Třeboň: strom fondů – **gruntovní knihy** (`1q`), urbáře (`1U`), sčítání (`1s`), kroniky (`1k`) |
+| `trebon.py …` | SOA Třeboň. **Stojí:** podmínky portálu dovolují jen prohlížet (`reference/podminky.md`); jen se souhlasem archivu |
 | `cuzk_archiv.py listy / rastry / export / mapa` | Archiv ČÚZK: stabilní katastr (originální mapy s reambulací, císařské otisky, indikační skici), pozemkový katastr |
 | `aron_search.py "Obec" ["fond"]`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |
-| `portafontium.py …`, `ebadatelna.py …` (`a-…` archiválie: urbáře, gruntovní knihy) | SOA Plzeň, SOA Praha |
-| `ahmp_search.sh`, `ahmp_scan.py`, `policie_prihlasky.py` | Praha (matriky, policejní přihlášky s adresami) |
-| `mza.py hledat / matriky / info / snimek / link / svazek` | MZA Brno (jižní Morava, Acta Publica): matriky |
+| `portafontium.py …`, `ebadatelna.py …` | SOA Plzeň, SOA Praha. **Stojí:** firewall / zákaz robotů; snímky uloží uživatel (eBadatelna: ZIP po registraci) |
+| `ahmp_search.sh`, `ahmp_scan.py` | Praha (matriky). `policie_prihlasky.py` **stojí** (zákaz robotů Národního archivu) |
+| `mza.py hledat / matriky / info / link / svazek` | MZA Brno (jižní Morava, Acta Publica): matriky. Snímky (`snimek`) **ne** – chrání je ALTCHA, uloží uživatel |
 | `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, ZA Opava, Matricula |
 | `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly; u 20. stol. ukáže DNNT → `portaly.md`) |
 | `overit.py <snímek> x0,y0,x1,y1 <prefix>` | zápis na dvě čitelné poloviny – ověření čtení |
@@ -226,9 +233,10 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `ramecek.py <klíč> x0,y0,x1,y1 [--vyrez a0,b0,a1,b1]` | rámeček čteného místa (souřadnice výřezu; s `--vyrez` stránky) + kontrolní obrázek |
 | `mista.py ruian "Osada čp"` / `okoli "Ulice čp/čo"` / `hledej "dotaz"` / `pridej "Název" …` | dům v RÚIAN (obec, parcela, k. ú., poloha; i „Ulice čo“) / všechny dnešní adresy v okolí (rohové domy, přečíslování) / souřadnice z OSM / body na mapu |
 | `ipr_praha.py serie <místo> [polomer] [--zapsat skupina]` | Praha: staré plány 1791–1944 a letecké snímky 1938–2002 se stejným výřezem (rovnou do `mapy.json`) |
-| `dnnt.py hledej / kontext / ocr / js / rozbal / adresa` | tisk 20. století (adresáře, Stavitelské listy, noviny): úryvky z neveřejných stran, hromadné čtení (DNNT přes přihlášený prohlížeč), hledání adresy v textech |
+| `dnnt.py hledej / kontext / ocr / adresa` | tisk 20. století (adresáře, Stavitelské listy, noviny): úryvky z neveřejných stran, OCR veřejných, hledání adresy. Neveřejné (DNNT) čte uživatel sám |
 | `zapis.py <soubor> <klíč> <vstup.json> [--sloucit]` | přidá / změní položku v `zaznamy`, `svazky`, `prepisy`, `mapy`, `web` (pole nastavení webu)… beze změny formátu |
 | `kontrola.py` | kontrola dat, soukromí, kdy psát příběh |
-| `slusne.py <skript.py> …` / `curl …` / `stav` | společný limit rychlosti k archivům; vlastní skripty a curl jen přes něj (hook `hlidac.py` hlídá) |
+| `slusne.py <skript.py> …` / `curl …` / `stav` | společný limit rychlosti k archivům a kontrola podmínek; vlastní skripty a curl jen přes něj (hook `hlidac.py` hlídá) |
+| `podminky.py <adresa>` / `obrazky` | co se na portálu smí / které výřezy potřebují souhlas archivu (`reference/podminky.md`) |
 | `zdravi.py [--rychle] [--jen trebon,aron]` | funguje každý nástroj proti živému portálu? (pevné svazky, dočasná složka, do dat nesahá) |
 | `export_web.py` | data → web (volá ho `npm run data`) |
