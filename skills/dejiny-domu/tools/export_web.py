@@ -156,7 +156,7 @@ def login_files(cfg):
     edge = os.path.join(WEB, "netlify", "edge-functions", "brana.js")
     if answer:
         digest = hashlib.sha256(("rodokmen:" + answer).encode()).hexdigest()
-        nginx_map = f'  "{digest}" 1;'
+        nginx_map = f'  default 0;\n  "{digest}" 1;'
         write(edge, open(os.path.join(WEB, "netlify", "brana.sablona.js"), encoding="utf-8").read().replace("{{HASH}}", digest))
     else:   # bez přihlášení – web je otevřený
         nginx_map = "  default 1;"

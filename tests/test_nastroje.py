@@ -321,11 +321,15 @@ class TestExport(Projekt):
                   ("web", "netlify", "edge-functions", "brana.js")):
             self.assertNotIn("Nováků", self.text(*f), f)   # odpověď jen jako otisk
         self.assertIn("Jak se říká chalupě?", self.text("web", "public", "prihlaseni.html"))
+        nginx = self.text("web", "nginx.conf")
+        self.assertEqual(nginx.count("default 0;"), 1)
+        self.assertIn("map_hash_bucket_size 128;", nginx)   # 64znakový otisk se do výchozí velikosti nevejde
 
     def test_bez_odpovedi_otevreny_web_a_nasazeni_odmitne(self):
         rc, out = self.export()
         self.assertIn("VYPNUTÉ", out)
         self.assertFalse(os.path.exists(self.path("web", "netlify", "edge-functions", "brana.js")))
+        self.assertEqual(self.text("web", "nginx.conf").count("default"), 1)   # dvě default nginx nespustí
         rc, out = self.export("--nasazeni")
         self.assertNotEqual(rc, 0)
         self.assertIn("web by byl otevřený", out)
