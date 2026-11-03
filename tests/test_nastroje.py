@@ -288,6 +288,28 @@ class TestExport(Projekt):
         self.assertTrue(os.path.exists(self.path("web", "public", "img", ZAZNAM["klic"] + ".jpg")))
         self.assertTrue(os.path.exists(self.path("web", "public", "zdroje", ZAZNAM["klic"] + ".jpg")))
 
+    def test_skryty_a_smazany_obrazek_zmizi_z_webu(self):
+        self.napln()
+        with open(self.path("vyrezy", "lhota_foto.jpg"), "wb") as f:
+            f.write(JPEG)
+        p = self.zapis("dokumenty", "lhota_foto", {"img": "lhota_foto", "popis": "Chalupa 1930", "domy": ["12"]})
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        rc, out = self.export()
+        self.assertEqual(rc, 0, out)
+        foto = self.path("web", "public", "img", "lhota_foto.jpg")
+        self.assertTrue(os.path.exists(foto))
+        dok = self.data("dokumenty")
+        dok[0]["skryt"] = True
+        with open(self.path("data", "dokumenty.json"), "w", encoding="utf-8") as f:
+            json.dump(dok, f, ensure_ascii=False)
+        os.remove(self.path("zdroje", ZAZNAM["klic"] + ".jpg"))
+        rc, out = self.export()
+        self.assertEqual(rc, 0, out)
+        self.assertIn("odebráno 2", out)
+        self.assertFalse(os.path.exists(foto))
+        self.assertFalse(os.path.exists(self.path("web", "public", "zdroje", ZAZNAM["klic"] + ".jpg")))
+        self.assertTrue(os.path.exists(self.path("web", "public", "img", ZAZNAM["klic"] + ".jpg")))
+
     def test_odpoved_prihlaseni_neni_na_webu(self):
         self.nastroj("zapis.py", "web", "prihlaseni", "-",
                      vstup='{"uvod": "Jen pro známé.", "otazka": "Jak se říká chalupě?", "odpoved": "U Nováků"}')

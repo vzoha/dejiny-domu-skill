@@ -314,7 +314,7 @@ def main():
 
     gated = login_files(cfg)
 
-    copied = 0
+    copied = removed = 0
     zv = os.path.join(DATA, "zvyrazneni.json")
     hl_mtime = os.path.getmtime(zv) if os.path.exists(zv) else 0
     images = list(recs) + [d["img"] for d in docs_cfg] + [m["img"] for m in maps_cfg] + \
@@ -323,11 +323,13 @@ def main():
     for sub, src_dir in (("img", VYREZY), ("zdroje", ZDROJE)):
         dst_dir = os.path.join(WEB, "public", sub)
         os.makedirs(dst_dir, exist_ok=True)
+        published = set()
         for key in images:
             src = os.path.join(src_dir, key + ".jpg")
             dst = os.path.join(dst_dir, key + ".jpg")
             if not os.path.exists(src):
                 continue
+            published.add(key + ".jpg")
             boxes = hl.get(key, {}).get("boxes", [])
             stale = not os.path.exists(dst) or os.path.getmtime(src) > os.path.getmtime(dst) \
                 or (sub == "zdroje" and boxes and hl_mtime > os.path.getmtime(dst))
@@ -338,8 +340,13 @@ def main():
                 continue
             shutil.copy2(src, dst)
             copied += 1
+        # img/ a zdroje/ plní jen export: co už v datech není (skryté, smazané), z webu zmizí
+        for name in os.listdir(dst_dir):
+            if name.endswith(".jpg") and name not in published:
+                os.remove(os.path.join(dst_dir, name))
+                removed += 1
     print(f"{len(houses)} domů, {stats['owners']} držitelů, {stats['people']} obyvatel, {len(records)} zápisů, "
-          f"{len(maps)} map, {len(village_events)} událostí obce; zkopírováno {copied} obrázků; "
+          f"{len(maps)} map, {len(village_events)} událostí obce; zkopírováno {copied} obrázků, odebráno {removed}; "
           f"přihlášení {'zapnuté' if gated else 'VYPNUTÉ (web je otevřený)'}")
 
     targets = dict(dum=houses, zdroj=recs)

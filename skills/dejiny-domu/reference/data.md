@@ -108,7 +108,8 @@ Volitelně (galerie na stránce příběhů):
 - `skupina` – id skupiny z `web.json` → `galerie.skupiny` (např. `tehdy`, `dnes`, `rekonstrukce`); `poradi` – číslo v rámci galerie.
 - `par` – `img` druhé fotky do dvojice „tehdy – dnes“ (stará kresba/fotka + dnešní foto ze stejného místa); ukáží se
   vedle sebe. `"format": "sirka"` u dvojice na šířku (jinak na výšku).
-- `skryt: true` – na web nedávat (fotka zůstane v datech).
+- `skryt: true` – na web nedávat (fotka zůstane v datech). Export ji smaže i z `web/public/{img,zdroje}`; Netlify a Docker
+  nahrají web celý znovu, na hostingu, kam se jen nahrávají soubory (scp, FTP), ji smaž ručně.
 
 ## `web.json`
 Viz `web.md`. `hlavni_dum` = čp. domu, o kterém projekt hlavně je (úvodní stránka).
