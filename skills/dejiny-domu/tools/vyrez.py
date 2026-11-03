@@ -10,8 +10,12 @@ Výřez dělejte velkoryse: celý zápis včetně hlavičky sloupců, okrajovýc
 Novinový článek: nahoře s titulkem, dole nechte okraj až po oddělovací čáru nebo začátek dalšího článku –
 výřez těsně pod posledním řádkem vypadá na webu jako useknutý konec. Výsledek si vždy prohlédněte.
 Potřebuje ImageMagick (příkaz `magick`).
+Po uložení zkontroluje podmínky zdroje (tools/podminky.py): obrázek z archivu, který zveřejnění dovoluje jen se
+souhlasem, smí jen na neveřejný web, dokud k položce nezapíšeš pole „souhlas“.
 """
 import glob, os, shutil, subprocess, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
+import podminky
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -53,6 +57,11 @@ def main():
     subprocess.run(cmd + ["+profile", "!icc,*", "+set", "comment", "-quality", "90", full], check=True)
     subprocess.run([MAGICK, full, "-resize", "1800x1800>", "-quality", "85", small], check=True)
     print("uloženo:", full, "a", small)
+    stav, zprava = podminky.posoud_obrazek(ROOT, key)
+    if stav == "souhlas":
+        print(f"POZOR – PODMÍNKY: {zprava}\nŘekni to uživateli.")
+    elif stav == "pozor":
+        print(f"upozornění: {zprava}")
 
 
 if __name__ == "__main__":

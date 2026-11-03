@@ -190,6 +190,17 @@ def main():
     if "--nasazeni" in sys.argv and not norm_answer(login.get("odpoved", "")) and not login.get("otevreny"):
         sys.exit("CHYBA: v data/web.json není odpověď na přihlašovací otázku – web by byl otevřený komukoli.\n"
                  "Nastavte prihlaseni.odpoved, nebo (jen když to opravdu chcete) prihlaseni.otevreny: true.")
+    if "--nasazeni" in sys.argv and login.get("otevreny"):   # otevřený web = zveřejnění: podmínky archivů (podminky.py)
+        sys.path.insert(0, TOOLS)
+        import podminky
+        vd = os.path.join(ROOT, "vyrezy")
+        bez = [f"  {fn[:-4]}: {podminky.posoud_obrazek(ROOT, fn[:-4])[1]}"
+               for fn in sorted(os.listdir(vd)) if os.path.isdir(vd) and fn.endswith(".jpg")
+               and podminky.posoud_obrazek(ROOT, fn[:-4])[0] == "souhlas"]
+        if bez:
+            sys.exit("CHYBA: otevřený web by zveřejnil obrázky, které archiv dovoluje zveřejnit jen se souhlasem:\n"
+                     + "\n".join(bez) + "\nZapište k nim souhlas (pole „souhlas“), dejte je pryč z webu, "
+                     "nebo nechte web neveřejný (prihlaseni.odpoved). Viz reference/podminky.md.")
     docs_cfg = [d for d in jload("dokumenty.json", []) if not d.get("skryt")]   # "skryt": true = na web nedávat
     maps_cfg = jload("mapy.json", [])
     recs = {r["key"]: r for r in record_rows()}

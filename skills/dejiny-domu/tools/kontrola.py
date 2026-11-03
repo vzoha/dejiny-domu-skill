@@ -132,6 +132,22 @@ def main():
             warn.append("hlavní dům má už 4+ držitele – je čas napsat příběh domu "
                         "(data/pribeh.md, reference/pribehy.md); koncept nejdřív ukaž uživateli v chatu")
 
+    # podmínky archivů: obrázky, které se bez souhlasu nesmí zveřejnit (tools/podminky.py, reference/podminky.md)
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import podminky
+    root = os.path.dirname(DATA)
+    otevreny = bool((cfg.get("prihlaseni") or {}).get("otevreny"))
+    vd = os.path.join(root, "vyrezy")
+    for fn in sorted(os.listdir(vd)) if os.path.isdir(vd) else []:
+        if not fn.endswith(".jpg"):
+            continue
+        stav, zprava = podminky.posoud_obrazek(root, fn[:-4])
+        if stav == "souhlas":
+            (err if otevreny else warn).append(f"PODMÍNKY ({fn[:-4]}): {zprava}" + ("" if otevreny else
+                                               " Web je teď neveřejný, před otevřením to vyřeš."))
+        elif stav == "pozor" and "nevýdělečně" in zprava:
+            warn.append(f"PODMÍNKY ({fn[:-4]}): {zprava}")
+
     log = os.path.join(DATA, "research_log.md")
     rows = sum(1 for l in open(log, encoding="utf-8") if re.match(r"^\| \d+ \|", l)) if os.path.exists(log) else 0
     print(f"{len(D)} domů, {len(ns.get('OBEC_UDALOSTI', []))} událostí obce, {len(zaz)} zápisů, {len(svazky)} svazků, {rows} řádků deníku")
