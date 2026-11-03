@@ -392,6 +392,14 @@ dnnt.hledej(['text_ocr:"Dlouhá 14"', "--ulozit", "dl14"])
         self.assertNotIn("dnnt-shoda", lst)   # veřejnou kopii přečte nástroj, uživatel ji číst nemusí
         self.assertIn("&lt;script&gt;", lst)
 
+    def test_bez_neverejnych_stranek_smaze_stary_cteci_list(self):
+        os.makedirs(self.path("pracovni", "dnnt"), exist_ok=True)
+        with open(self.path("pracovni", "dnnt", "dl14.html"), "w", encoding="utf-8") as f:
+            f.write("starý list")
+        self.py('dnnt.uloz("dl14", [dict(pid="uuid:a", datum="1930", strana="1", pristup="public", titul="T", '
+                'verejne="", knihovna="", uryvky=[])])')
+        self.assertFalse(os.path.exists(self.path("pracovni", "dnnt", "dl14.html")))
+
     def test_ocr_cte_verejnou_kopii_z_cdk_a_po_chybe_nenecha_prazdny_soubor(self):
         os.makedirs(self.path("pracovni", "dnnt"), exist_ok=True)
         with open(self.path("pracovni", "dnnt", "s.tsv"), "w", encoding="utf-8") as f:

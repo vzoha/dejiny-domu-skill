@@ -51,6 +51,18 @@ def solr(params, api=API):
     return json.loads(get(api + "search?" + urllib.parse.urlencode({"wt": "json", **params})))
 
 
+def po_strankach(params, mx, api=API):
+    """Odpovědi Solru po 100 výsledcích, dokud není mx výsledků nebo konec."""
+    rows, start = min(mx, 100), 0
+    while start < mx:
+        d = solr({**params, "rows": rows, "start": start}, api)
+        yield d
+        start += rows
+        if start >= d["response"]["numFound"]:
+            break
+        time.sleep(0.5)
+
+
 def cdk_dotaz(q):
     """Dotaz pro Kramerius NK přeložený na pole CDK (Kramerius 7)."""
     return re.sub(r"\b(" + "|".join(map(re.escape, CDK_POLE)) + r"):", lambda m: CDK_POLE[m.group(1)] + ":", q)
@@ -58,17 +70,12 @@ def cdk_dotaz(q):
 
 def verejne_jinde(q, mx):
     """Veřejné stránky odpovídající dotazu v jiných knihovnách (CDK): {(titul, rok, strana): (pid, knihovny, titul)}."""
-    rows, start, out = min(mx, 100), 0, {}
-    while start < mx:
-        d = solr({"q": cdk_dotaz(q) + " AND accessibility:public", "rows": rows, "start": start,
-                  "fl": "pid,root.title,date.str,page.number,cdk.collection"}, CDK)
+    out = {}
+    for d in po_strankach({"q": cdk_dotaz(q) + " AND accessibility:public",
+                           "fl": "pid,root.title,date.str,page.number,cdk.collection"}, mx, CDK):
         for x in d["response"]["docs"]:
             out.setdefault(stranka_id(x.get("root.title"), x.get("date.str"), x.get("page.number")),
                            (x["pid"], ",".join(x.get("cdk.collection") or []), str(x.get("root.title"))[:80]))
-        start += rows
-        if start >= d["response"]["numFound"]:
-            break
-        time.sleep(0.5)
     return out
 
 
@@ -107,17 +114,12 @@ def hledej(a):
         q += f" AND datum_begin:[{od or '*'} TO {do or '*'}]"
     if titul:
         q += f' AND root_title:{titul}'
-    rows, start, docs, hl, total = min(mx, 100), 0, [], {}, 0
-    while start < mx:
-        d = solr({"q": q, "rows": rows, "start": start, "fl": "PID,root_title,datum_str,details,dostupnost,dnnt,dnnt-labels",
-                  "hl": "true", "hl.fl": "text_ocr", "hl.fragsize": "200", "hl.snippets": "3"})
+    docs, hl, total = [], {}, 0
+    for d in po_strankach({"q": q, "fl": "PID,root_title,datum_str,details,dostupnost,dnnt,dnnt-labels",
+                           "hl": "true", "hl.fl": "text_ocr", "hl.fragsize": "200", "hl.snippets": "3"}, mx):
         total = d["response"]["numFound"]
         docs += d["response"]["docs"]
         hl.update(d.get("highlighting", {}))
-        start += rows
-        if start >= total:
-            break
-        time.sleep(0.5)
     jinde = verejne_jinde(q, mx)
     print(f"nalezeno {total} stránek, vypisuji {len(docs)}")
     stranky = []
@@ -128,19 +130,28 @@ def hledej(a):
         if st["pristup"] != "public":
             st["verejne"], st["knihovna"], _ = jinde.pop(stranka_id(st["titul"], st["datum"], st["strana"]), ("", "", ""))
         stranky.append(st)
+    v_nk = {st["pid"] for st in stranky}
     navic = [dict(pid=pid, datum=k[1], strana=k[2], pristup="public", titul=titul, verejne=pid, knihovna=kn, uryvky=[])
-             for k, (pid, kn, titul) in jinde.items() if pid not in {st["pid"] for st in stranky}]
-    for st in sorted(stranky + navic, key=lambda st: st["datum"][-4:]):
-        kde = f" → veřejně v {st['knihovna']}: {st['verejne']}" if st["verejne"] and st["verejne"] != st["pid"] else \
-              (f" (jiná knihovna: {st['knihovna']})" if st["knihovna"] else "")
-        print(f"{st['datum']} | {st['titul'][:45]} | s. {st['strana']} | {st['pristup']}{kde} | {st['pid']}\n    "
-              + " || ".join(st["uryvky"])[:300])
+             for k, (pid, kn, titul) in jinde.items() if pid not in v_nk]
+    vypis(stranky + navic)
     prenos = sum(1 for st in stranky if st["verejne"])
     if prenos or navic:
         print(f"Veřejně v jiných knihovnách (Česká digitální knihovna): {prenos} neveřejných stránek NK, {len(navic)} nálezů navíc "
               "– přečte je dnnt.py ocr.")
     if ulozit:
         uloz(ulozit, stranky + navic)
+
+
+def vypis(stranky):
+    for st in sorted(stranky, key=lambda st: st["datum"][-4:]):
+        if st["verejne"] and st["verejne"] != st["pid"]:
+            kde = f" → veřejně v {st['knihovna']}: {st['verejne']}"
+        elif st["knihovna"]:
+            kde = f" (jiná knihovna: {st['knihovna']})"
+        else:
+            kde = ""
+        print(f"{st['datum']} | {st['titul'][:45]} | s. {st['strana']} | {st['pristup']}{kde} | {st['pid']}\n    "
+              + " || ".join(st["uryvky"])[:300])
 
 
 def uloz(nazev, stranky):
@@ -152,11 +163,14 @@ def uloz(nazev, stranky):
         "\t".join(pole) + "\n" + "".join("\t".join(st[k] for k in pole) + "\n" for st in stranky))
     print("uloženo:", os.path.relpath(tsv, ROOT))
     cist = [st for st in stranky if st["pristup"] != "public" and not st["verejne"]]
-    if cist:
-        listek = os.path.join(DIR, nazev + ".html")
-        open(listek, "w", encoding="utf-8").write(cteci_list(nazev, cist))
-        print(f"čtecí list: {os.path.relpath(listek, ROOT)} – {len(cist)} stránek přečte uživatel po přihlášení na ndk.cz; "
-              f"poznámky stáhne tlačítkem jako {nazev}_poznamky.tsv (ulož do pracovni/dnnt/)")
+    listek = os.path.join(DIR, nazev + ".html")
+    if not cist:
+        if os.path.exists(listek):   # starý list z dřívějšího hledání by sliboval stránky, které už v seznamu nejsou
+            os.remove(listek)
+        return
+    open(listek, "w", encoding="utf-8").write(cteci_list(nazev, cist))
+    print(f"čtecí list: {os.path.relpath(listek, ROOT)} – {len(cist)} stránek přečte uživatel po přihlášení na ndk.cz; "
+          f"poznámky stáhne tlačítkem jako {nazev}_poznamky.tsv (ulož do pracovni/dnnt/)")
 
 
 def kontext(pid, slova):
