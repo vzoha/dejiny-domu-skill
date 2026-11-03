@@ -60,6 +60,11 @@ def adresni_mista(dotaz, pole):
     ulice, _, cislo = d.rpartition(" ")
     if not adr and ulice and cislo.isdigit():   # „Ulice čo“ – v RÚIAN je „Ulice čp/čo, Část obce, …“
         adr = ruian_q(1, f"adresa LIKE '{ulice} %/{cislo},%'", pole, True)
+    if not adr and ulice and cislo.isdigit():
+        # obec bez ulic: „č.p. 29, 39301 Pavlov“; osada pod jinou obcí: „Švihov 47, 53825 Miřetice“
+        adr = (ruian_q(1, f"adresa LIKE 'č.p. {cislo}, % {ulice}'", pole, True)
+               or ruian_q(1, f"adresa LIKE 'č.p. {cislo}, % {ulice},%'", pole, True)
+               or ruian_q(1, f"adresa LIKE '%{ulice} {cislo}, %'", pole, True))
     return adr
 
 
