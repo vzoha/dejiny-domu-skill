@@ -31,7 +31,10 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
   Jen část stránky v plném rozlišení: `… <snímek> 0 pracovni/detail.jpg 0.0,0.4,1.0,0.7`.
 - **Odkaz na snímek** (pole `odkaz` v `zaznamy.json`): `python3 -I tools/aron_img.py <apu_id> link <snímek>`.
 - **Svazek do dat:** `python3 -I tools/aron_img.py <apu_id> svazek` (klíč = prvních 8 znaků apu_id → pole `svazek` v zápisu).
-- V ARON jsou i další fondy (sčítání lidu, některé gruntovní knihy, kroniky) – `aron_search.py "Obec" "název fondu"`.
+- **Sčítání lidu:** `aron_search.py scitani "Obec"` – operáty 1857–1921 jsou ve fondech „Okresní úřad …“ (Sčítací operáty › rok
+  › soudní okres › obec) a obec má v popisu jen svůj název, takže je hledání slovem „sčítání“ ani filtrem fondu nenajde.
+  Osada bývá pod tehdejší obcí (Švihov u Nasavrk pod Krupínem). Ověřeno: okres Chrudim 1900, 1910, 1921 se snímky.
+- V ARON jsou i další fondy (některé gruntovní knihy, kroniky) – `aron_search.py "Obec" "název fondu"`.
 - Stejnojmenných obcí bývá víc (Vinice u Hořic × Vinice u Velké Jesenice). Výsledky jsou seřazené podle farnosti;
   zúžit jde víc slovy oddělenými čárkou, která musí být v popisu všechna: `aron_search.py "Vinice,Hořice"`
   (nebo hledej sousední obec či farní obec).
