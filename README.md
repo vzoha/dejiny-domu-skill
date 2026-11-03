@@ -98,9 +98,16 @@ Skill je text (návod pro Clauda) a skripty v Pythonu, které si můžete před 
 MCP servery; skripty spouští jen Claude, když je potřebuje, a Claude Code se vás na ně zeptá. Zapisují do složky
 projektu, jen společný limit rychlosti k archivům si drží stav ve `~/.cache/dejiny-domu/`. Do projektu skill zapíše
 hook (`.claude/settings.json` → `tools/hlidac.py`), který Claudovi nedovolí posílat na weby dotazy mimo ten limit –
-archivy po sérii rychlých dotazů blokují IP adresu. Chodí na archivní portály (SOA Třeboň, ARON, Porta fontium,
-eBadatelna, AHMP, MZA Brno, Národní archiv, SOA Litoměřice, Matricula, Archiv ČÚZK, IPR Praha), noviny (ANNO, Kramerius), OpenStreetMap a při instalaci webu do registru npm; na Netlify jen
+archivy po sérii rychlých dotazů blokují IP adresu. Chodí na archivní portály, které to dovolují (ARON, AHMP, MZA Brno – jen hledání,
+SOA Litoměřice a ZA Opava – obrázkový server, Matricula, Archiv ČÚZK, IPR Praha), noviny (ANNO, Kramerius), OpenStreetMap a při instalaci webu do registru npm; na Netlify jen
 tehdy, když web sami zveřejníte. Instalujte skilly jen od lidí, kterým věříte.
+
+## Podmínky archivů
+Archivy mají pro své portály různé podmínky: některé snímky dovolují jen prohlížet, jiné zakazují roboty nebo
+výdělečné užití, většina chce ke zveřejnění obrázku souhlas. Skill má jejich přehled v
+[`reference/podminky.md`](skills/dejiny-domu/reference/podminky.md) a nástroje se jím řídí: kde stahování není dovolené,
+snímek uložíte vy a Claude ho přečte, a obrázek, ke kterému archiv chce souhlas, nepustí na otevřený web.
+Přehled vychází jen z veřejných zdrojů, není právně závazný a zatím není ověřený u jednotlivých archivů.
 
 ## Zpětná vazba
 Chyby a nápady prosím [zakládejte jako issue](https://github.com/vzoha/dejiny-domu-skill/issues/new). Issues jsou
