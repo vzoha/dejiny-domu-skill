@@ -93,7 +93,7 @@ Základní smyčka pro každý pramen:
 3. **Stáhni snímek** do `pracovni/<svazek>/` (před stažením se podívej, jestli ho už nemáš), nebo si ho vyžádej
    od uživatele, a **přečti ho sám** ze snímku v plném rozlišení.
 4. **Zapiš nález** (vždy všech 6 kroků):
-   1. svazek do `data/svazky.json` (`aron_img.py <apu> svazek`, `mza.py svazek <id>`, jinak `zapis.py svazky …`),
+   1. svazek do `data/svazky.json` (`aron_img.py <apu> svazek`, jinak `zapis.py svazky …`),
    2. zápis do `data/zaznamy.json` přes `tools/zapis.py` (klíč `obec_druh_cp_kdo_rok`, např. `lhota_scitani_cp12_1890`),
    3. výřez: `python3 -I tools/vyrez.py pracovni/<stránka>.jpg <klíč> x0,y0,x1,y1` (velkoryse, s hlavičkou sloupců;
       u novin dole až po oddělovací čáru, ať konec článku nevypadá useknutý). Hlášku „PODMÍNKY“ řekni uživateli:
@@ -225,7 +225,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `aron_search.py "Obec" ["fond"]`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |
 | `portafontium.py …`, `ebadatelna.py …` | SOA Plzeň, SOA Praha. **Stojí:** firewall / zákaz robotů; snímky uloží uživatel (eBadatelna: ZIP po registraci) |
 | `ahmp_search.sh`, `ahmp_scan.py` | Praha (matriky). `policie_prihlasky.py` **stojí** (zákaz robotů Národního archivu) |
-| `mza.py hledat / matriky / info / link / svazek` | MZA Brno (jižní Morava, Acta Publica): matriky. Snímky (`snimek`) **ne** – chrání je ALTCHA, uloží uživatel |
+| `mza.py hledat / matriky` | MZA Brno (jižní Morava, Acta Publica): knihy obce. Stránku knihy a snímky chrání ALTCHA – otevře uživatel (`info`, `link`, `svazek`, `snimek` stojí) |
 | `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, ZA Opava, Matricula |
 | `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly; u 20. stol. ukáže DNNT → `portaly.md`) |
 | `overit.py <snímek> x0,y0,x1,y1 <prefix>` | zápis na dvě čitelné poloviny – ověření čtení |

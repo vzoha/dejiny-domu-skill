@@ -147,11 +147,13 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
   Stejnojmenných obcí bývá víc (Pohořelice u Brna × u Zlína) – vyber podle okresu.
 - `mza.py matriky <obec_id>` → knihy obce: id | číslo knihy | původce (fara, typ) | roky N | O | Z (`i` = index) | obce | snímků.
   Jsou tam i knihy, které obec jen zmiňují (německé stavovské úřady 1938–45, sousední fary) – podívej se na původce.
-- `mza.py info <id>` → kniha, původce, obce a **části knihy se snímky** („oddaní (1673–1716) 201–250“) – podle nich
-  skoč rovnou na správný snímek, neodhaduj podle roku.
-- **Snímky nástroj nestahuje:** chrání je ověření ALTCHA a podmínky chtějí souhlas k dalšímu využití (`podminky.md`).
-  `link <id> <snímek>` → trvalý odkaz; uživatel ho otevře, ověření vyřeší sám a snímek uloží do `pracovni/`.
-  `svazek <id>` → `svazky.json` (klíč `mza_<id>`). (`mza.py snimek` se souhlasem archivu stáhne stránku přes IIIF.)
+- **Stránku knihy a snímky chrání ověření ALTCHA** (od listopadu 2026), nástroj ho neobchází a podmínky chtějí
+  souhlas k dalšímu využití (`podminky.md`). Uživatel otevře `…/actapublica/matrika/detail/<id>` v prohlížeči,
+  ověření vyřeší sám a pošle snímek obrazovky nebo snímek uloží do `pracovni/`. Části knihy („oddaní (1673–1716)
+  201–250“) jsou v levém panelu stránky – podle nich skoč na správný snímek, neodhaduj podle roku. Trvalý odkaz
+  (`…detail/<id>?image=…`) opiš z adresního řádku.
+- `info`, `link`, `svazek` a `snimek` čtou stránku knihy, proto teď skončí hláškou PODMÍNKY; fungují jen bez ALTCHA
+  a se souhlasem archivu. `svazky.json` (klíč `mza_<id>`) zapiš ručně přes `zapis.py`.
 - `<id>` je číslo z adresy `…/actapublica/matrika/detail/<id>`, ne číslo knihy (to je ve druhém sloupci).
 - Obrázkový server bere jen HTTP/2 – snímky stahuje nástroj přes `curl` (Python sám dostane HTTP 426). Starý curl
   bez HTTP/2 → nainstaluj novější.

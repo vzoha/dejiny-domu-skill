@@ -50,7 +50,7 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | Mapire (Arcanum) | Jen číst | ano | prohlížet ano | souhlas | ano | Roboti zakázáni, uložená data za peníze jen se smlouvou. Prohlížet a popsat smíte, snímky obrazovky ne |
 
 ## Jak se tím řídí nástroje skillu
-- `tools/podminky.json` je stejná tabulka pro nástroje. `slusne.py` ji kontroluje před každým požadavkem: portál, který stahování nedovoluje, skončí hláškou „PODMÍNKY: …“ s návodem, jak dál. Takhle stojí `trebon.py`, `portafontium.py`, `ebadatelna.py`, `policie_prihlasky.py` a stahování snímků v `mza.py`. Zůstávají ve skillu pro případ, že archiv dá souhlas.
+- `tools/podminky.json` je stejná tabulka pro nástroje. `slusne.py` ji kontroluje před každým požadavkem: portál, který stahování nedovoluje, skončí hláškou „PODMÍNKY: …“ s návodem, jak dál. Takhle stojí `trebon.py`, `portafontium.py`, `ebadatelna.py`, `policie_prihlasky.py` a v `mza.py` vše kromě hledání knih (stránku knihy chrání ALTCHA). Zůstávají ve skillu pro případ, že archiv dá souhlas.
 - `python3 -I tools/podminky.py <adresa>` vypíše pravidla pro portál.
 - `vyrez.py` po uložení řekne, jestli obrázek smí na veřejný web. `kontrola.py` a nasazení otevřeného webu obrázek bez souhlasu nepustí. Na neveřejný web (za heslem) smí. Souhlas archivu zapište k zápisu nebo mapě do pole `souhlas` (kdo a kdy).
 - Hlášku „PODMÍNKY“ neobcházejte jiným nástrojem, curl ani prohlížečem řízeným skriptem.

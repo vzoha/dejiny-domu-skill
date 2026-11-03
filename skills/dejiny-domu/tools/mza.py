@@ -16,6 +16,8 @@ Použití (z kořene projektu `python3 -I tools/mza.py …`, na Windows `python 
 <id> = číslo z adresy knihy …/actapublica/matrika/detail/<id> (není to číslo knihy). Snímky se číslují od 1
 jako v prohlížeči portálu. Obrázkový server bere jen HTTP/2 – snímky proto stahuje `curl` (Python dostane HTTP 426).
 Ber ohled na server: stahuj jen snímky, které čteš.
+PODMÍNKY (11/2026): stránku knihy chrání ALTCHA – info, link, svazek a snimek skončí hláškou;
+knihu otevře uživatel v prohlížeči (reference/podminky.md, portaly.md).
 """
 import html, json, os, re, shutil, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
@@ -117,6 +119,12 @@ def detail(mid):
         if not str(mid).isdigit():
             sys.exit(f"id knihy „{mid}“ musí být číslo z adresy …/matrika/detail/<id>")
         t = get(f"matrika/detail/{mid}")
+        if "altcha" in t.lower() and "CreateSeadragon" not in t:
+            raise slusne.podminky.Zakazano(
+                f"PODMÍNKY: stránku knihy MZA chrání ověření ALTCHA – nástroj ho neobchází.\n"
+                f"Jak dál: uživatel otevře {BASE}matrika/detail/{mid} v prohlížeči, ověření vyřeší sám a pošle ti "
+                f"snímek obrazovky nebo uloží snímek do pracovni/; ty ho přečteš. Číslo snímku a odkaz opiš z adresy.\n"
+                f"Řekni to uživateli. Podrobnosti: reference/podminky.md")
         m = re.search(r"CreateSeadragon\(\s*(\[.*?\])\s*,\s*(\[.*?\])\s*,\s*(\[.*?\])", t, re.S)
         if not m:
             sys.exit(f"Kniha {mid}: na stránce chybí seznam snímků – kniha neexistuje, není online, "

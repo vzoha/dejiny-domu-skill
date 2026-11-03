@@ -46,8 +46,8 @@
     },
     "www.mza.cz": {
       "nazev": "MZA Brno (Acta publica)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
-      "proc": "snímky chrání ověření ALTCHA; zveřejnit a dál využívat jen s písemným souhlasem",
-      "jinak": "Knihu a snímek najdeš nástrojem (mza.py matriky / info / link). Snímek otevře uživatel v prohlížeči, ověření vyřeší sám a uloží ho do pracovni/; ty ho přečteš."
+      "proc": "stránku knihy a snímky chrání ověření ALTCHA; zveřejnit a dál využívat jen s písemným souhlasem",
+      "jinak": "Knihy obce najdeš nástrojem (mza.py hledat / matriky). Stránku knihy otevře uživatel v prohlížeči, ověření vyřeší sám a snímek uloží do pracovni/ nebo pošle snímek obrazovky; ty ho přečteš."
     },
     "aron.vychodoceskearchivy.cz": {
       "nazev": "SOA Hradec Králové (ARON)", "dotazy": true, "obrazky": true, "vyrez": "neresi",
