@@ -1,18 +1,19 @@
 # Portály archivů a jak z nich dostat snímky
 
-Matriky jsou online u osmi státních archivů – podle toho, **kde dům stojí** (u lidí odjinud: kde žili; dnešní kraje zhruba odpovídají):
+Matriky jsou online u osmi státních archivů – podle toho, **kde dům stojí** (u lidí odjinud: kde žili; dnešní kraje zhruba odpovídají).
+**Co se kde smí** (nástrojem, za peníze, zveřejnit obrázky) je v `podminky.md` – nástroje se tím řídí samy:
 
 | Archiv | Oblast | Portál s matrikami | Vyzkoušeno se skillem |
 |---|---|---|---|
 | SOA Zámrsk | východní Čechy (Hradecký a Pardubický kraj) | ARON – aron.vychodoceskearchivy.cz | **ano – hotové nástroje** |
-| SOA Praha | střední Čechy | eBadatelna – ebadatelna.soapraha.cz | **ano – nástroj `ebadatelna.py`** (i urbáře a gruntovní knihy) |
-| SOA Plzeň | západní Čechy | Porta fontium – portafontium.eu | **ano – nástroj `portafontium.py`** |
-| SOA Třeboň | jižní Čechy | digi.ceskearchivy.cz | **ano – nástroj `trebon.py`** |
+| SOA Praha | střední Čechy | eBadatelna – ebadatelna.soapraha.cz | **ručně** – kniha jako ZIP po registraci (robots.txt zakazuje roboty) |
+| SOA Plzeň | západní Čechy | Porta fontium – portafontium.eu | **ručně** – snímek uloží uživatel (firewall proti skriptům, jen nevýdělečně) |
+| SOA Třeboň | jižní Čechy | digi.ceskearchivy.cz | **jen číst** – snímky jen k prohlížení online, čte uživatel |
 | SOA Litoměřice | severní Čechy | Digitální badatelna – digi.soalitomerice.cz | **částečně – `soal_zoomify.py`** (knihu najdi v prohlížeči) |
 | AHMP | hl. m. Praha | katalog.ahmp.cz (Pragapublica) | **ano – `ahmp_search.sh`, `ahmp_scan.py`** |
-| MZA Brno | jižní Morava, Vysočina z části | Acta Publica – www.mza.cz/actapublica | **ano – nástroj `mza.py`** |
+| MZA Brno | jižní Morava, Vysočina z části | Acta Publica – www.mza.cz/actapublica | **částečně – `mza.py`** hledá knihy, snímek uloží uživatel (ALTCHA) |
 | ZA Opava | severní Morava a Slezsko, Olomoucko a Litovelsko | Digitální badatelna – digi.archives.cz/da/ | **částečně – `soal_zoomify.py`** (jen s prohlížečem, CAPTCHU řeší uživatel) |
-| Národní archiv | židovské matriky (HBMa), soupisy; pražské policejní přihlášky 1850–1914 | badatelna.eu; digi.nacr.cz/prihlasky2 | přihlášky **ano – `policie_prihlasky.py`** |
+| Národní archiv | židovské matriky (HBMa), soupisy; pražské policejní přihlášky 1850–1914 | digitalnibadatelna.nacr.cz; digi.nacr.cz/prihlasky2 | **ručně** – robots.txt zakazuje roboty |
 
 Pro **20. století** (městské domy, adresáře, stavební povolení) jsou hlavní **IPR Praha** (staré plány a letecké snímky
 Prahy) a **DNNT na ndk.cz** (neveřejný tisk čitelný po přihlášení) – sekce níže.
@@ -41,7 +42,11 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
 - Ber ohled na server: stahuj jen to, co čteš; žádné hromadné stahování celých svazků. Limit rychlosti hlídá
   `tools/slusne.py` (SKILL.md → Co nikdy).
 
-## SOA Třeboň (digi.ceskearchivy.cz) – `tools/trebon.py`, bez prohlížeče
+## SOA Třeboň (digi.ceskearchivy.cz) – jen číst
+- **Podmínky:** snímky „pouze za účelem on-line prohlížení“, kopírování zakázáno; robots.txt zakazuje robotům stránky
+  aplikace a archiv `trebon.py` blokuje. Nástroj proto stojí (`podminky.md`). Snímky čte uživatel v prohlížeči, ty radíš:
+  která kniha, který snímek, jak číst písmo. Snímek pro výstup objednat u archivu (25 Kč) nebo požádat o souhlas.
+- Níže je popis nástroje pro případ, že archiv souhlas dá:
 - `trebon.py misto "Obec"` → id místa. Diakritiku a mezery nástroj odstraní sám (portál zná jen „RatiborskeHory“).
   Portál vrátí vždy jen jedno místo – **zkontroluj vypsaný název a okres**: u stejnojmenných obcí jinou (Buk → Bukovka),
   u měst i okres nebo synagogu (Jindřichův Hradec → okres 1949–1960). Správné id pak najdi na portálu a pracuj s ním.
@@ -57,7 +62,10 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
   dobrovolnický rejstřík (`trebon.py rejstrik 12304 N`). Dobrá cesta, když farní matrika mlčí. V `svazky "Obec"`
   se neukážou (patří okresu, ne obci) – id knihy najdi na portálu.
 
-## SOA Plzeň (Porta fontium, portafontium.eu) – `tools/portafontium.py`, bez prohlížeče
+## SOA Plzeň (Porta fontium, portafontium.eu) – ručně
+- **Podmínky:** prohlížení i popisy archiválií jen „vyjma výdělečných účelů“, web blokuje skripty firewallem. `portafontium.py`
+  proto stojí (`podminky.md`). Pro soukromé bádání snímek uloží uživatel v prohlížeči do `pracovni/` a ty ho přečteš.
+- Níže je popis nástroje pro případ, že archiv souhlas dá:
 - `portafontium.py fara <fara>` → knihy fary: kniha | obce | roky a druhy (`*` N, `oo` O, `+` Z, `i` index) | popis.
   `<fara>` je název římskokatolické fary („Dolní Bělá“, „Mýto“ – diakritiku nástroj odstraní) nebo přímo část
   její adresy (`dolni-bela` =
@@ -74,7 +82,11 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
 - Bez prohlížečového User-Agentu portál vrací 403 (nástroj ho posílá). Jmenné hledání portál nemá – indexy jsou jen uvnitř knih
   (`*i`, `ooi`, `+i` v seznamu knih fary).
 
-## SOA Praha (eBadatelna, ebadatelna.soapraha.cz) – `tools/ebadatelna.py`, bez prohlížeče
+## SOA Praha (eBadatelna, ebadatelna.soapraha.cz) – ručně, kniha jako ZIP
+- **Podmínky:** robots.txt zakazuje ClaudeBota a všem robotům stahovat digitalizáty. `ebadatelna.py` proto stojí (`podminky.md`).
+- **Postup:** uživatel se zaregistruje (zdarma), otevře knihu, na záložce „Popis knihy“ vlevo dole klikne
+  „Stáhnout knihu jako ZIP“ a rozbalí ho do `pracovni/<kniha>/`. Ty snímky přečteš. Archiv stažení sám nabízí.
+- Níže je popis nástroje pro případ, že archiv souhlas dá:
 - `ebadatelna.py hledat "Obec"` → celé názvy lokalit („Lhota - obec X - okres Y“); `matriky "Obec"` (nebo celý název)
   → matrikaId | kniha | druh | roky | fara | počet snímků. U stejnojmenných obcí vypíše možnosti.
 - `ebadatelna.py info <matrikaId>` → obsah knihy včetně **rozvržení stran po vesnicích** (např. „1–48 Ves A, 49–82 Ves B,
@@ -137,15 +149,18 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
   Jsou tam i knihy, které obec jen zmiňují (německé stavovské úřady 1938–45, sousední fary) – podívej se na původce.
 - `mza.py info <id>` → kniha, původce, obce a **části knihy se snímky** („oddaní (1673–1716) 201–250“) – podle nich
   skoč rovnou na správný snímek, neodhaduj podle roku.
-- `mza.py snimek <id> <snímek> pracovni/x.jpg [nahled] [x0,y0,x1,y1]` → celá stránka v plném rozlišení jedním požadavkem
-  (IIIF); `link <id> <snímek>` → trvalý odkaz; `svazek <id>` → `svazky.json` (klíč `mza_<id>`).
+- **Snímky nástroj nestahuje:** chrání je ověření ALTCHA a podmínky chtějí souhlas k dalšímu využití (`podminky.md`).
+  `link <id> <snímek>` → trvalý odkaz; uživatel ho otevře, ověření vyřeší sám a snímek uloží do `pracovni/`.
+  `svazek <id>` → `svazky.json` (klíč `mza_<id>`). (`mza.py snimek` se souhlasem archivu stáhne stránku přes IIIF.)
 - `<id>` je číslo z adresy `…/actapublica/matrika/detail/<id>`, ne číslo knihy (to je ve druhém sloupci).
 - Obrázkový server bere jen HTTP/2 – snímky stahuje nástroj přes `curl` (Python sám dostane HTTP 426). Starý curl
   bez HTTP/2 → nainstaluj novější.
 - Adresa actapublica.eu bývá za Cloudflare zablokovaná („Sorry, you have been blocked“ – podle IP); nástroj jde na
   www.mza.cz. Když blokuje i ta, ať uživatel vypne VPN nebo zkusí jinou síť.
 
-## Pražské policejní přihlášky 1850–1914 (Národní archiv) – `tools/policie_prihlasky.py`
+## Pražské policejní přihlášky 1850–1914 (Národní archiv) – ručně
+- **Podmínky:** robots.txt Národního archivu zakazuje všechny roboty, `policie_prihlasky.py` proto stojí. Kartu najde
+  uživatel na digi.nacr.cz/prihlasky2 a uloží ji do `pracovni/`, ty ji přečteš. Popis nástroje níže platí jen se souhlasem.
 - Karty pražských rodin: hlava rodiny, manželka s rokem a místem narození, děti s roky, adresy, někdy místo sňatku.
   Výborné, když rodina žila v Praze a nevíš farnost (pražské matriky nemají rejstříky).
 - `python3 -I tools/policie_prihlasky.py Kolar [Jan] [1850] [1870]` – příjmení bez diakritiky (začátek jména), jméno a roky
@@ -174,18 +189,13 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
   a prázdné `data` – zkus jen jedno příjmení bez křestního jména a užší roky. Stránkování opakuje řádky.
 - Skeny některých polských far jsou i na Matricule (výše) nebo FamilySearch (níže).
 
-## FamilySearch (přes uživatelův přihlášený prohlížeč)
+## FamilySearch (jen ručně, přes uživatele)
+- **Podmínky:** zakazují roboty, hromadné stahování a „scraping“; stahovat smí uživatel ručně pro osobní nekomerční
+  potřebu. Žádné volání API ani stahování snímků z tvé strany.
 - Přihlášení je potřeba i na hledání v indexech. České matriky tam skoro zindexované nejsou (Slovensko ano, hlavně křty).
-- Jen když ho má uživatel otevřený a sám nabídne. Z kontextu stránky lze volat JSON API
-  `https://www.familysearch.org/service/search/hr/v2/personas?q.surname=…&q.givenName=…&q.fatherGivenName=…&count=20`
-  (`fetch(…, {credentials:'include'})`); výsledky v `entries[].content.gedcomx`.
 - Užitečné na indexy matrik a hroby (BillionGraves, Find a Grave). Výsledek je vodítko – ověř v matrice.
-- Neměň uživateli otevřené karty (po hledání vrať původní adresu). Stránky za Cloudflare neobcházej – ať je uživatel
-  otevře sám a pošle snímek obrazovky.
-- Snímky filmu (DGS): seznam přes `POST /search/filmdatainfo/image-data` s `{"type":"film-data","args":{"dgsNum":"00…","state":{"i":"0"},"locale":"cs"}}`
-  (`images[]` = ARK). Snímek: `https://www.familysearch.org/service/records/storage/deepzoomcloud/dz/v1/<ARK 3:1:…>/$dist`
-  (plné rozlišení), malé náhledy `…/image_files/8/0_0.jpg`. **Po ~1000 rychlých požadavcích přijde HTTP 429** a blokace
-  na desítky minut – stahuj jen konkrétní snímky, nanejvýš pár za sekundu, hromadné procházení knih nedělej.
+- Postup: řekni uživateli, co hledat (příjmení, jméno otce, místo, roky). Výsledek nebo snímek pošle jako snímek
+  obrazovky nebo uložený soubor do `pracovni/`, ty ho přečteš.
 
 ## Hroby a hřbitovy
 - Kde jsou předci pohřbeni, víš z rozhovoru s rodinou (Fáze 1). Fotky náhrobků (jména, data, rodná příjmení) jsou
@@ -213,11 +223,12 @@ Ruční dotazy, když nástroj nestačí:
 ## DNNT – díla nedostupná na trhu (ndk.cz): tisk 20. století z domova – `tools/dnnt.py`
 Adresáře, ročenky, odborné časopisy a noviny zhruba 1900–2000 jsou v Krameriu NK „private“. Většina z nich má ale
 `dnnt: true` – kdokoli je přečte z domova po přihlášení na **ndk.cz**. Pro dějiny městských domů je to hlavní zdroj.
+- **Podmínky NDK:** díla nedostupná na trhu jsou jen pro osobní čtení registrovaného čtenáře; stahovat, ukládat
+  a robotizovaně vytěžovat je zakázáno (`podminky.md`). Nástroj proto jen hledá a dává úryvky.
 - **Postup s nástrojem:** `dnnt.py hledej 'text_ocr:"Dlouhá 14"' --ulozit dl14` → `dnnt.py kontext <pid> 'slova'`
-  (úryvky bez přihlášení) → `dnnt.py ocr pracovni/dnnt/dl14.tsv` (veřejné stránky) → pro DNNT stránky
-  `dnnt.py js pracovni/dnnt/dl14.tsv [--obrazky]`, funkci spusť přes `evaluate_script` s `filePath` na přihlášené stránce
-  ndk.cz (níže) → `dnnt.py rozbal <soubor>` → `dnnt.py adresa pracovni/dnnt/ocr "Dlouhá" 14 16` (najde i „Dlou-há“).
-  Celý adresář nebo obor nejdřív `hledej` s `--titul`.
+  (úryvky bez přihlášení) → `dnnt.py ocr pracovni/dnnt/dl14.tsv` (jen veřejné stránky) → `dnnt.py adresa pracovni/dnnt/ocr
+  "Dlouhá" 14 16` (najde i „Dlou-há“). Celý adresář nebo obor nejdřív `hledej` s `--titul`.
+  DNNT stránky s nálezem přečte uživatel po přihlášení sám (pošli mu odkazy `https://ndk.cz/uuid/<pid>`) a řekne ti, co tam je.
 - **Bez přihlášení** je vyhledávání veřejné i pro DNNT stránky (úryvky, test výskytu slova na stránce). OCR text
   neveřejných stran bez přihlášení vrátí 403. Úryvek z vyhledávání je `lit` (čteno z OCR), ne `doc`.
 - **Přístup:** uživatel musí být čtenářem zapojené knihovny. Seznam knihoven a kdo umí registraci na dálku:
@@ -225,9 +236,7 @@ Adresáře, ročenky, odborné časopisy a noviny zhruba 1900–2000 jsou v Kram
   Ověřeno (2026): Městská knihovna v Praze – levná registrace online přes Bank iD, pak přihlášení eduID. Na dálku
   dále např. NK ČR (bankovní identita), MZK Brno (Bank iD / MojeID, i krátkodobě) a několik krajských knihoven;
   ostatní chtějí jednu návštěvu. Ceny a možnosti ověř na webu knihovny.
-- **Čtení po přihlášení (bez hesla v rukou Clauda):** otevři ndk.cz v **řízeném prohlížeči** (chrome-devtools MCP:
-  `new_page`), uživatel se v tom okně přihlásí sám. Text a skeny pak čti v kontextu stránky funkcí z `dnnt.py js`
-  (session cookie je httpOnly, curl ji nedostane). Metadata a nadřazené číslo: `/search/api/v5.0/item/<pid>`.
+- Metadata a nadřazené číslo: `/search/api/v5.0/item/<pid>`.
 - Trvalý odkaz do `zaznamy.json`: `https://ndk.cz/uuid/<pid>`. Přepis ze skenu = `doc`; jen z OCR textu = `lit`.
 - Užitečné tituly: Adresář Republiky československé pro průmysl, živnosti… (1927–1938, podle oborů), Adresář hl. m. Prahy
   1936, Orientační kniha Velké Prahy 1936/1937 (čp. → adresy), Stavitelské listy (stavební povolení), Právo lidu,

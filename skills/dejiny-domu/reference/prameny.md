@@ -11,7 +11,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | 1950–dnes | letecké snímky | jak dům a dvůr vypadaly, kdy přibyly a zmizely stavby | ags.cuzk.gov.cz/archiv (Archiv ČÚZK), kontaminace.cenia.cz (snímky z 50. let), mapy.cz → „Letecká“ s volbou roku |
 | 1880–1950 | pozemkový katastr (mapa ~1900–1950) | parcely a budovy, sedí na dnešní mapu | `cuzk_archiv.py mapa pk` |
 | 1870–1950 | pozemkové knihy (vložky) a sbírka listin | vlastníci, kupní a svatební smlouvy, dluhy, výměnky | katastrální pracoviště (do 1950 často SOA / SOkA) – `archivni_dotazy.md` |
-| 1857–1921 | sčítání lidu (1857, 1869, 1880, 1890, 1900, 1910, 1921) | **celá domácnost po číslech domů**: jména, roky a místa narození, vztahy, řemesla, dobytek | SOkA. Jižní Čechy jsou na digi.ceskearchivy.cz (stejný portál jako matriky, `trebon.py strom 1s`, `snimek`) |
+| 1857–1921 | sčítání lidu (1857, 1869, 1880, 1890, 1900, 1910, 1921) | **celá domácnost po číslech domů**: jména, roky a místa narození, vztahy, řemesla, dobytek | SOkA. Jižní Čechy jsou na digi.ceskearchivy.cz (stejný portál jako matriky; snímky jen prohlížet, `podminky.md`) |
 | 1784–1900 | matriky (od 1784 se v nich uvádí číslo domu) | kdo se v domě narodil, oženil a zemřel. **Čti podle čísla domu, ne podle jména** | `matriky.md`, `portaly.md` |
 | 1824–1843 | stabilní katastr: císařské otisky, indikační skici, písemný operát | půdorys domu a dvora, číslo domu, parcely. **Indikační skica má u parcel i jméno držitele** | `cuzk_archiv.py` (Archiv ČÚZK: originální mapy s reambulací, otisky, skici), písemný operát (parcelní protokoly) v Národním archivu |
 | 1785–1789 | josefský katastr | držitel, výměra pozemků, číslo domu | Národní archiv (fond Josefský katastr). Často jen badatelna |
@@ -65,8 +65,8 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
 1. Zjisti **panství**, ke kterému ves (nebo dům!) patřila před 1848. Ves mohla patřit pod dvě panství (část domů
    jednomu, část druhému). Panství najdeš ve vlastivědě, v Sedláčkově Místopisném slovníku nebo v hlavičce matrik.
 2. Fond „Velkostatek <panství>“ v příslušném SOA → inventář → gruntovní knihy pro danou ves (podle let).
-   SOA Třeboň: `trebon.py strom 1q` (pozemkové knihy) → archiv → fond; `trebon.py strom <kód fondu> "Obec"` vypíše
-   jen svazky, kde obec je (`svazky` je neukáže). Totéž urbáře (`1U`), vrchnostenská registra (`1t`), kroniky (`1k`).
+   SOA Třeboň: na portálu strom fondů „Pozemkové knihy“ → archiv → fond velkostatku; totéž urbáře, vrchnostenská
+   registra, kroniky. Portál smí uživatel jen prohlížet (`podminky.md`), ty radíš, kde hledat.
 3. Zápis o gruntu: „grunt N. N. … prodán … za … kop / zlatých“, splátky (vejrunky), výměnek pro rodiče, podíly
    sourozenců. Postupně ho čti od posledního držitele zpátky. U každé změny držitele vznikne řádek v `drzitele`.
 4. Online nejsou všechny. Co není, zapiš do `archivni_dotazy.md` (fond, signatura, roky) a navrhni návštěvu badatelny.
@@ -87,16 +87,16 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   a `cisarske_otisky` malé obce často nepokrývají (bílý obrázek) – pak `listy` + `export`.
 - Ulož výřez se vsí a s domem do `dokumenty/`, pak `vyrez.py` a `data/mapy.json` (zdroj „ČÚZK, Archiv ČÚZK,
   <mapa, signatura, list>“, url https://ags.cuzk.gov.cz/archiv/). Na stránce domu se ukáže v galerii, porovnání viz `web.md`.
-- Mapy ČÚZK jsou pro nekomerční užití volné s uvedením zdroje. U map z jiných zdrojů (Mapy.cz, oldmaps) vždy uveď zdroj.
+- Mapy ÚAZK (stabilní katastr, císařské otisky) se smí zveřejnit bez souhlasu a poplatku s citací „Ústřední archiv
+  zeměměřictví a katastru“. Indikační skici a archivní letecké snímky ne – viz `podminky.md`. U map z jiných zdrojů vždy uveď zdroj.
   Na neveřejném webu to stačí.
 
 ## Sčítání lidu
 - Archy jsou **po domech**: hlavička s číslem domu, pak všichni obyvatelé (i výměnkáři, čeledíni, podruzi).
 - Na digi.ceskearchivy.cz má každá obec a rok svazek. Číslo snímku domu najdeš listováním (archy jdou podle čp.).
-  Stahuj `python3 -I tools/trebon.py snimek <id_svazku> <snímek> pracovni/scitani_<rok>/<snímek>.jpg`
-  (`id` = parametr `id=` v odkazu `DA?…&id=123456&page=65`).
-- Svazky sčítání najdeš `trebon.py strom 1s` (sčítání lidu po archivech a okresech). Sčítání 1857–1880 nemusí být
-  pro každý soudní okres online, 1890–1921 obvykle ano.
+  Portál snímky jen ukazuje, kopírovat je podmínky nedovolují: čte uživatel, ty radíš (`podminky.md`). Na ostatních
+  portálech stahuj nástrojem nebo snímek uloží uživatel podle `portaly.md`.
+- Sčítání 1857–1880 nemusí být pro každý soudní okres online, 1890–1921 obvykle ano.
 - **Údaje o domě a obyvatelé bývají na různých snímcích.** 1910: titulní list s vlastníkem domu, na dalším snímku
   osoby; 1921: sběrný arch domovní → prázdný list → sčítací arch. **Vždy stáhni i 1–3 následující snímky.**
   Vlastníka domu uvádí až 1910 a 1921; v 1890/1900 je „majitel bytu“ = hlava domácnosti, ne vlastník domu.

@@ -50,13 +50,16 @@ ISSUES = [("Kdy dům dostal číslo 12?", "Otevřené: v matrice 1786 je Novák 
 ```
 - `klic`: malá písmena bez diakritiky, `obec_druh_cp_kdo_rok` (druh: krest, snatek, umrti, scitani, grunt, katastr,
   mapa, kronika, kniha…). Je to i název obrázku.
+- `souhlas` (volitelně): souhlas archivu se zveřejněním obrázku, kdo a kdy („SOA Třeboň, e-mail 5. 11. 2026“).
+  Bez něj obrázek z archivu, který zveřejnění dovoluje jen se souhlasem, nepustí kontrola na otevřený web (`podminky.md`).
+  Stejné pole platí v `mapy.json`.
 - `druh`: N křest, O sňatek, Z úmrtí, I rejstřík, S sčítání, G gruntovní / pozemková kniha, K katastr, M mapa,
   C kronika, L literatura, J jiný.
 - U literatury (`L`) je `snimek` strana a `odkaz` odkaz do Krameria / Google Books, výřez = sken strany.
 
 ## `svazky.json`
 `{"trebon_123456": {"archiv": "SOA Třeboň – SOkA Pelhřimov", "portal": "digi.ceskearchivy.cz",
-"svazek": "Sčítání lidu 1890, Horní Lhota", "popis": "Horní Lhota", "url": "…"}}`. Matriky přes `trebon.py svazek` apod.
+"svazek": "Sčítání lidu 1890, Horní Lhota", "popis": "Horní Lhota", "url": "…"}}`. Matriky přes `aron_img.py … svazek`, `mza.py svazek` apod.
 Gruntovní knihy: „Velkostatek Kamenice, gruntovní kniha Horní Lhota 1650–1780, inv. č. …“.
 
 ## `prepisy.json`, `zvyrazneni.json`
