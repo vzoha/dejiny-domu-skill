@@ -148,6 +148,8 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
 ## MZA Brno (jižní Morava, Acta Publica) – `tools/mza.py`, bez prohlížeče
 - `mza.py hledat "Obec"` → obec_id | název s německým názvem a okresem (bez diakritiky i podle začátku názvu).
   Stejnojmenných obcí bývá víc (Pohořelice u Brna × u Zlína) – vyber podle okresu.
+- **Sčítání lidu (MZA):** `mza.py scitani "Obec"` → roky, rozsah čísel popisných, fond a odkaz na portál sčítacích
+  operátů (www.mza.cz/scitacioperaty, bez ALTCHA). Obec, kterou našeptávač portálu nezná, tam není (Telč ne).
 - `mza.py matriky <obec_id>` → knihy obce: id | číslo knihy | původce (fara, typ) | roky N | O | Z (`i` = index) | obce | snímků.
   Jsou tam i knihy, které obec jen zmiňují (německé stavovské úřady 1938–45, sousední fary) – podívej se na původce.
 - **Stránku knihy a snímky chrání ověření ALTCHA** (od listopadu 2026), nástroj ho neobchází a podmínky chtějí

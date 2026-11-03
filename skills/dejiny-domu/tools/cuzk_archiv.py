@@ -13,6 +13,9 @@ Použití (z kořene projektu):
       rastry (listy) ve službě: stable = originální mapy a císařské otisky (vzor např. B2_a_4C_518),
       skici = indikační skici (vzor = S0X bez „c|“, např. BUD286018270), nonstable = ostatní.
       Vypíše id | název | rozměr listu (v jednotkách listu).
+  cuzk_archiv.py prehled <sluzba> "vzor" <vystup.jpg> [sirka_px=600]
+      všechny listy najednou v malém náhledu (pod každým id a název listu) – najdi ves, pak export výřezu.
+      Potřebuje ImageMagick. Obálku vynechá.
   cuzk_archiv.py export <sluzba> <id> <vystup.jpg> [x0,y0,x1,y1] [sirka_px]
       list v plném rozlišení nebo jeho výřez. Výřez jako u vyrez.py: podíly 0–1 od levého horního rohu
       (celý list = 0,0,1,1; výchozí). Výchozí šířka 4000 px, max. asi 15000. Nejdřív stáhni celý list menší
@@ -23,7 +26,7 @@ Použití (z kořene projektu):
       pak listy + export. Výchozí poloměr 150 m, 1500 px.
 Ber ohled na server: stahuj jen listy a výřezy, které čteš. Výsledek ulož do dokumentů a dál vyrez.py + mapy.json.
 """
-import json, math, os, sys, time, urllib.parse, urllib.request
+import json, math, os, re, sys, time, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -121,12 +124,17 @@ def listy(m):
         print("  indikační skica: " + (f"→ rastry skici \"{s0x}\"" if s0x else "není v kladu"))
 
 
-def rastry(sluzba, vzor):
+def najdi_rastry(sluzba, vzor):
     d = archiv(f"archiv_nespojene_{sluzba}/ImageServer/query", {
         "where": f"Name LIKE '{vzor.replace(chr(39), '')}%'", "outFields": "OBJECTID,Name",
         "returnGeometry": "true", "f": "json"})
     feats = [f for f in d.get("features", []) if f["attributes"]["Name"].startswith(vzor)
              and not f["attributes"]["Name"][len(vzor):len(vzor) + 1].isdigit()]   # 518 ≠ 5180
+    return feats
+
+
+def rastry(sluzba, vzor):
+    feats = najdi_rastry(sluzba, vzor)
     for f in feats:
         r = f["geometry"]["rings"][0]
         xs, ys = [p[0] for p in r], [p[1] for p in r]
@@ -154,6 +162,35 @@ def export(sluzba, rid, out, vyrez="0,0,1,1", sirka=4000):
     print(f"{out} {sirka}×{vyska}")
 
 
+def prehled(sluzba, vzor, out, sirka=600):
+    """Všechny listy (rastry) najednou v malém náhledu s názvem listu – ves najdeš na jednom obrázku."""
+    import glob, shutil, subprocess, tempfile
+    m = shutil.which("magick") or shutil.which("montage") or next(iter(glob.glob(r"C:\Program Files\ImageMagick*\magick.exe")), None)
+    if not m:
+        sys.exit("Chybí ImageMagick (příkaz magick). Nainstaluj ho a spusť znovu, nebo stáhni listy po jednom přes export.")
+    feats = najdi_rastry(sluzba, vzor)
+    if not feats:
+        sys.exit("nic – zkus kratší vzor")
+    tmp = tempfile.mkdtemp(prefix="prehled_")
+    try:
+        soubory = []
+        for f in feats:
+            jmeno = f["attributes"]["Name"]
+            if re.search(r"obalka|obálka", jmeno, re.I):
+                continue
+            cil = os.path.join(tmp, f"{len(soubory) // 3:02d}.jpg")
+            import contextlib, io
+            with contextlib.redirect_stdout(io.StringIO()):
+                export(sluzba, f["attributes"]["OBJECTID"], cil, "0,0,1,1", sirka)
+            soubory += ["-label", f'{f["attributes"]["OBJECTID"]} {jmeno}', cil]
+        cmd = ([m, "montage"] if os.path.basename(m).lower().startswith("magick") else [m]) + soubory + [
+            "-tile", "4x", "-geometry", f"{int(sirka)}x{int(sirka)}+6+6", "-pointsize", "18", out]
+        subprocess.run(cmd, check=True)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    print(f"{out} – {len(soubory) // 3} listů; pod náhledem je id pro export")
+
+
 def mapa(vrstva, m, out, polomer=150, px=1500):
     lat, lon = misto(m)
     dlat = float(polomer) / 111320
@@ -173,6 +210,8 @@ if __name__ == "__main__":
         rastry(a[1], a[2])
     elif len(a) >= 4 and a[0] == "export":
         export(*a[1:6])
+    elif len(a) >= 4 and a[0] == "prehled":
+        prehled(*a[1:5])
     elif len(a) >= 4 and a[0] == "mapa":
         mapa(*a[1:6])
     else:

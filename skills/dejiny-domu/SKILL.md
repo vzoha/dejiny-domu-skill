@@ -221,17 +221,17 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | Nástroj | Co dělá |
 |---|---|
 | `trebon.py …` | SOA Třeboň. **Stojí:** podmínky portálu dovolují jen prohlížet (`reference/podminky.md`); jen se souhlasem archivu |
-| `cuzk_archiv.py listy / rastry / export / mapa` | Archiv ČÚZK: stabilní katastr (originální mapy s reambulací, císařské otisky, indikační skici), pozemkový katastr |
+| `cuzk_archiv.py listy / prehled / rastry / export / mapa` | Archiv ČÚZK: stabilní katastr (originální mapy s reambulací, císařské otisky, indikační skici), pozemkový katastr |
 | `aron_search.py "Obec" ["fond"]`, `aron_search.py scitani "Obec"`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |
 | `portafontium.py …`, `ebadatelna.py …` | SOA Plzeň, SOA Praha. **Stojí:** firewall / zákaz robotů; snímky uloží uživatel (eBadatelna: ZIP po registraci) |
 | `ahmp_search.sh`, `ahmp_scan.py` | Praha (matriky). `policie_prihlasky.py` **stojí** (zákaz robotů Národního archivu) |
-| `mza.py hledat / matriky` | MZA Brno (jižní Morava, Acta Publica): knihy obce. Stránku knihy a snímky chrání ALTCHA – otevře uživatel (`info`, `link`, `svazek`, `snimek` stojí) |
+| `mza.py hledat / matriky / scitani` | MZA Brno (jižní Morava, Acta Publica): knihy obce, sčítací operáty obce. Stránku knihy a snímky chrání ALTCHA – otevře uživatel (`info`, `link`, `svazek`, `snimek` stojí) |
 | `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, ZA Opava, Matricula |
 | `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly; u 20. stol. ukáže DNNT → `portaly.md`) |
 | `overit.py <snímek> x0,y0,x1,y1 <prefix>` | zápis na dvě čitelné poloviny – ověření čtení |
 | `vyrez.py <obrázek> <klíč> x0,y0,x1,y1` | výřez do `zdroje/` a `vyrezy/` (i mapy a fotky, celé = `0,0,1,1`) |
 | `ramecek.py <klíč> x0,y0,x1,y1 [--vyrez a0,b0,a1,b1]` | rámeček čteného místa (souřadnice výřezu; s `--vyrez` stránky) + kontrolní obrázek |
-| `mista.py ruian "Osada čp"` / `okoli "Ulice čp/čo"` / `hledej "dotaz"` / `pridej "Název" …` | dům v RÚIAN (obec, parcela, k. ú., poloha; i „Ulice čo“) / všechny dnešní adresy v okolí (rohové domy, přečíslování) / souřadnice z OSM / body na mapu |
+| `mista.py ruian "Osada čp"` / `okoli "Ulice čp/čo"` / `parcely "Osada čp"` / `hledej "dotaz"` / `pridej "Název" …` | dům v RÚIAN (obec, parcela, k. ú., poloha; i „Ulice čo“) / všechny dnešní adresy v okolí (rohové domy, přečíslování) / sousední stavební parcely s odstupem (dorovnání posunu staré mapy) / souřadnice z OSM / body na mapu |
 | `ipr_praha.py serie <místo> [polomer] [--zapsat skupina]` | Praha: staré plány 1791–1944 a letecké snímky 1938–2002 se stejným výřezem (rovnou do `mapy.json`) |
 | `dnnt.py hledej / kontext / ocr / adresa` | tisk 20. století (adresáře, Stavitelské listy, noviny): úryvky z neveřejných stran, OCR veřejných, hledání adresy. Neveřejné (DNNT) čte uživatel sám |
 | `zapis.py <soubor> <klíč> <vstup.json> [--sloucit]` | přidá / změní položku v `zaznamy`, `svazky`, `prepisy`, `mapy`, `web` (pole nastavení webu)… beze změny formátu |

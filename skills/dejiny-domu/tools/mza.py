@@ -13,6 +13,9 @@ Použití (z kořene projektu `python3 -I tools/mza.py …`, na Windows `python 
                                           x0,y0,x1,y1 = jen výřez (zlomky 0..1)
   mza.py link <id> <snímek>            -> trvalý odkaz na snímek (pole „odkaz“ v zaznamy.json)
   mza.py svazek <id>                   -> zapíše svazek do data/svazky.json (klíč mza_<id>)
+  mza.py scitani "Obec"                -> sčítací operáty obce z portálu www.mza.cz/scitacioperaty: rok | čp. od–do |
+                                          archiv | fond | kód sady | odkaz. Portál zná jen obce, které nabídne našeptávač
+                                          (začátek českého nebo německého názvu); „nic“ = obec tam není.
 <id> = číslo z adresy knihy …/actapublica/matrika/detail/<id> (není to číslo knihy). Snímky se číslují od 1
 jako v prohlížeči portálu. Obrázkový server bere jen HTTP/2 – snímky proto stahuje `curl` (Python dostane HTTP 426).
 Ber ohled na server: stahuj jen snímky, které čteš.
@@ -212,8 +215,49 @@ def svazek(mid):
     print(f"mza_{mid} ->", sv[f"mza_{mid}"]["svazek"])
 
 
+SCITANI = "https://www.mza.cz/scitacioperaty/digisada/"
+
+
+def scitani(obec):
+    import http.cookiejar
+    op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+
+    def g(url, data=None, ajax=False):
+        hdr = {"User-Agent": UA, "Referer": SCITANI + "search"}
+        if ajax:   # našeptávač bez téhle hlavičky odpoví „Na tuto stránku nelze přistupovat přímo“
+            hdr["X-Requested-With"] = "XMLHttpRequest"
+        body = urllib.parse.urlencode(data).encode() if data else None
+        with op.open(urllib.request.Request(url, data=body, headers=hdr), timeout=90) as r:
+            return r.read().decode("utf-8", "replace")
+
+    g(SCITANI + "search")
+    navrhy = json.loads(g(SCITANI + "autocomplete/?" + urllib.parse.urlencode({"field": "search", "term": obec}), ajax=True) or "[]")
+    if not navrhy:
+        sys.exit(f"Obec „{obec}“ portál sčítacích operátů nezná – sčítání tu pro ni není (zkus německý název nebo začátek).")
+    vysl = []
+    for n in navrhy[:5]:
+        print("#", n["label"])
+        stranka = g(SCITANI + "do_search", {"search": n["value"], "submit": "Vyhledat"})
+        for cislo in range(2, 30):
+            for li in re.findall(r'<li class="list-group-item">(.*?)</li>', stranka, re.S):
+                pole = dict(zip([text(x) for x in re.findall(r'<span class="small text-muted ">(.*?)</span>', li)],
+                                [text(x) for x in re.findall(r"<p>(.*?)</p>", li, re.S)]))
+                odkaz = (re.search(r'href="([^"]*digisada/detail/\d+)"', li) or [None, ""])[1]
+                vysl.append((pole.get("Rok sčítání", ""), pole.get("Město/obec", ""), pole.get("Část obce/osada", ""),
+                             pole.get("Číslo popisné od-do", ""), pole.get("Archiv", ""), pole.get("Název fondu", ""),
+                             pole.get("Kód sady", ""), odkaz))
+            if f"digisada/search/{cislo}" not in stranka:
+                break
+            stranka = g(SCITANI + f"search/{cislo}")
+    for r in sorted(set(vysl)):
+        rok, obec_, cast, cp, archiv, fond, kod, odkaz = r
+        print(" | ".join(x for x in (rok, obec_ + (f" – {cast}" if cast else ""), f"čp. {cp}", archiv, fond, kod, odkaz) if x))
+
+
 def main(a):
-    if a[:1] == ["hledat"] and len(a) > 1:
+    if a[:1] == ["scitani"] and len(a) > 1:
+        scitani(a[1])
+    elif a[:1] == ["hledat"] and len(a) > 1:
         obce = hledat(a[1])
         if not obce:
             sys.exit(f"Obec „{a[1]}“ portál nezná – zkus starý nebo německý název nebo začátek názvu.")
