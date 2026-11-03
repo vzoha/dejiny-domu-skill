@@ -233,9 +233,14 @@ Adresáře, ročenky, odborné časopisy a noviny zhruba 1900–2000 jsou v Kram
 - **Podmínky NDK:** díla nedostupná na trhu jsou jen pro osobní čtení registrovaného čtenáře; stahovat, ukládat
   a robotizovaně vytěžovat je zakázáno (`podminky.md`). Nástroj proto jen hledá a dává úryvky.
 - **Postup s nástrojem:** `dnnt.py hledej 'text_ocr:"Dlouhá 14"' --ulozit dl14` → `dnnt.py kontext <pid> 'slova'`
-  (úryvky bez přihlášení) → `dnnt.py ocr pracovni/dnnt/dl14.tsv` (jen veřejné stránky) → `dnnt.py adresa pracovni/dnnt/ocr
+  (úryvky bez přihlášení) → `dnnt.py ocr pracovni/dnnt/dl14.tsv` (veřejné stránky) → `dnnt.py adresa pracovni/dnnt/ocr
   "Dlouhá" 14 16` (najde i „Dlou-há“). Celý adresář nebo obor nejdřív `hledej` s `--titul`.
-  DNNT stránky s nálezem přečte uživatel po přihlášení sám (pošli mu odkazy `https://ndk.cz/uuid/<pid>`) a řekne ti, co tam je.
+- **Veřejně jinde:** `hledej` zkusí neveřejné stránky NK najít v České digitální knihovně (Krameria ostatních knihoven).
+  Kde je stejný titul, rok a strana veřejně (třeba v MZK nebo VKOL), přečte ji `ocr` sám; přidá i veřejné nálezy, které NK nemá.
+- **Čtecí list:** zbylé neveřejné stránky dá `hledej --ulozit dl14` do `pracovni/dnnt/dl14.html`. Pošli ho uživateli:
+  u každé stránky odkaz na ndk.cz, úryvek a políčko, kam vlastními slovy zapíše fakta. Tlačítkem stáhne `dl14_poznamky.tsv`,
+  uloží ho do `pracovni/dnnt/` a ty ho přečteš. Poznámka uživatele je `lit` s citací stránky, ne `doc`. Snímky obrazovky
+  ani zkopírovaný text z DNNT nechtěj, podmínky kopírování zakazují.
 - **Bez přihlášení** je vyhledávání veřejné i pro DNNT stránky (úryvky, test výskytu slova na stránce). OCR text
   neveřejných stran bez přihlášení vrátí 403. Úryvek z vyhledávání je `lit` (čteno z OCR), ne `doc`.
 - **Přístup:** uživatel musí být čtenářem zapojené knihovny. Seznam knihoven a kdo umí registraci na dálku:

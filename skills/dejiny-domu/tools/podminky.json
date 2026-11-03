@@ -81,6 +81,10 @@
       "proc": "volná díla jako PDF ručně, komerční užití nejasné",
       "jinak": "Uživatel volné dílo stáhne jako PDF do dokumenty/, ty ho přečteš."
     },
+    "api.ceskadigitalniknihovna.cz": {
+      "nazev": "Česká digitální knihovna (Krameria knihoven)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "hledání a OCR text veřejných děl; podmínky CDK nenalezeny, za peníze jako MZK (souhlas)", "jinak": ""
+    },
     "anno.onb.ac.at": {
       "nazev": "ANNO (ÖNB)", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""

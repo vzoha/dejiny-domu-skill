@@ -233,7 +233,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `ramecek.py <klíč> x0,y0,x1,y1 [--vyrez a0,b0,a1,b1]` | rámeček čteného místa (souřadnice výřezu; s `--vyrez` stránky) + kontrolní obrázek |
 | `mista.py ruian "Osada čp"` / `okoli "Ulice čp/čo"` / `parcely "Osada čp"` / `hledej "dotaz"` / `pridej "Název" …` | dům v RÚIAN (obec, parcela, k. ú., poloha; i „Ulice čo“) / všechny dnešní adresy v okolí (rohové domy, přečíslování) / sousední stavební parcely s odstupem (dorovnání posunu staré mapy) / souřadnice z OSM / body na mapu |
 | `ipr_praha.py serie <místo> [polomer] [--zapsat skupina]` | Praha: staré plány 1791–1944 a letecké snímky 1938–2002 se stejným výřezem (rovnou do `mapy.json`) |
-| `dnnt.py hledej / kontext / ocr / adresa` | tisk 20. století (adresáře, Stavitelské listy, noviny): úryvky z neveřejných stran, OCR veřejných, hledání adresy. Neveřejné (DNNT) čte uživatel sám |
+| `dnnt.py hledej / kontext / ocr / adresa` | tisk 20. století (adresáře, Stavitelské listy, noviny): úryvky z neveřejných stran, OCR veřejných (i veřejných jen v jiné knihovně), hledání adresy. Neveřejné (DNNT) čte uživatel sám podle čtecího listu |
 | `zapis.py <soubor> <klíč> <vstup.json> [--sloucit]` | přidá / změní položku v `zaznamy`, `svazky`, `prepisy`, `mapy`, `web` (pole nastavení webu)… beze změny formátu |
 | `kontrola.py` | kontrola dat, soukromí, kdy psát příběh |
 | `slusne.py <skript.py> …` / `curl …` / `stav` | společný limit rychlosti k archivům a kontrola podmínek; vlastní skripty a curl jen přes něj (hook `hlidac.py` hlídá) |

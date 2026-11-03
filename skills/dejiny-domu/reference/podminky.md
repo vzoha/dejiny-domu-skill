@@ -31,6 +31,7 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | Matricula | Ručně | ano | ne | nevýdělečně, beze změn | ano | České matriky tam nejsou |
 | Kramerius NDK (knihy nedostupné na trhu) | Jen číst | ano | **ne**, ani číst | ne | ano | Jen pro osobní potřebu registrovaných čtenářů z ČR. Za peníze si knihu půjčte v knihovně, fakta s citací pak smíte |
 | Kramerius MZK | Ručně | ano | souhlas | souhlas | ano | Volná díla stáhnete jako PDF, chráněná jen číst. Komerční užití nejasné |
+| Česká digitální knihovna (Krameria knihoven) | Nástroj | ano | souhlas | souhlas | ano | Hledá ve všech knihovnách najednou. Nástroj čte jen text veřejných děl; kniha neveřejná v NK bývá veřejná jinde. Podmínky nenalezeny |
 | ANNO (staré noviny, ÖNB) | Nástroj | ano | ano | ano | ano | Kromě skenů od Googlu |
 | Kohoutí kříž (kohoutikriz.org) | Ručně | ano | číst ano, texty a mapy ne | nevýdělečně, beze změn | ano | Šumavská německá literatura a mapy Šumavy. Licence CC BY-NC-ND: fakta s citací ano, jejich texty a překlady nepřebírat |
 

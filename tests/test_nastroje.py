@@ -354,6 +354,66 @@ class TestExport(Projekt):
         self.assertNotIn("jen pro Clauda", pribeh)
 
 
+class TestDnnt(Projekt):
+    """dnnt.py bez sítě: Kramerius NK i Česká digitální knihovna (CDK) jsou nahrazené."""
+
+    NK = [dict(PID="uuid:dnnt-shoda", root_title="Adresář Brna", datum_str="1932", details=["48 ##NormalPage"],
+               dostupnost="private", dnnt=True),
+          dict(PID="uuid:dnnt-jen-nk", root_title="Adresář Brna", datum_str="1933", details=["50 ##NormalPage"],
+               dostupnost="private", dnnt=True)]
+    CDK = [{"pid": "uuid:mzk-kopie", "root.title": "Adresář Brna", "date.str": "1932", "page.number": "48",
+            "cdk.collection": ["mzk"]},
+           {"pid": "uuid:vkol-navic", "root.title": "Svoboda", "date.str": "1936", "page.number": "7",
+            "cdk.collection": ["vkol"]}]
+
+    def py(self, kod):
+        p = subprocess.run([sys.executable, "-I", "-X", "utf8", "-c", "import sys; sys.path.insert(0, 'tools'); import dnnt\n" + kod],
+                           cwd=self.root, capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        return p.stdout
+
+    def test_hledej_najde_verejnou_kopii_a_zbytek_da_do_cteciho_listu(self):
+        out = self.py(f"""
+def solr(params, api=dnnt.API):
+    if api == dnnt.CDK:
+        assert "accessibility:public" in params["q"] and "model:page" in params["q"], params["q"]
+        return {{"response": {{"numFound": 2, "docs": {self.CDK!r}}}}}
+    return {{"response": {{"numFound": 2, "docs": {self.NK!r}}},
+            "highlighting": {{"uuid:dnnt-jen-nk": {{"text_ocr": ["<script>x</script> <em>Dlouhá</em> 14"]}}}}}}
+dnnt.solr = solr
+dnnt.hledej(['text_ocr:"Dlouhá 14"', "--ulozit", "dl14"])
+""")
+        self.assertIn("1 neveřejných stránek NK, 1 nálezů navíc", out)
+        tsv = self.text("pracovni", "dnnt", "dl14.tsv")
+        self.assertIn("uuid:dnnt-shoda\t1932\t48\tDNNT\tAdresář Brna\tuuid:mzk-kopie\tmzk", tsv)
+        self.assertIn("uuid:vkol-navic\t1936\t7\tpublic\tSvoboda\tuuid:vkol-navic\tvkol", tsv)
+        lst = self.text("pracovni", "dnnt", "dl14.html")
+        self.assertIn('href="https://ndk.cz/uuid/uuid:dnnt-jen-nk"', lst)
+        self.assertNotIn("dnnt-shoda", lst)   # veřejnou kopii přečte nástroj, uživatel ji číst nemusí
+        self.assertIn("&lt;script&gt;", lst)
+
+    def test_ocr_cte_verejnou_kopii_z_cdk_a_po_chybe_nenecha_prazdny_soubor(self):
+        os.makedirs(self.path("pracovni", "dnnt"), exist_ok=True)
+        with open(self.path("pracovni", "dnnt", "s.tsv"), "w", encoding="utf-8") as f:
+            f.write("pid\tdatum\tstrana\tpristup\ttitul\tverejne\tknihovna\n"
+                    "uuid:dnnt-shoda\t1932\t48\tDNNT\tAdresář Brna\tuuid:mzk-kopie\tmzk\n"
+                    "uuid:dnnt-jen-nk\t1933\t50\tDNNT\tAdresář Brna\t\t\n")
+        kod = """
+import urllib.error
+def get(url):
+    if "dnnt-jen-nk" in url:
+        raise urllib.error.HTTPError(url, 403, "zakázáno", {}, None)
+    print("URL", url)
+    return b"text"
+dnnt.get = get
+dnnt.ocr(["pracovni/dnnt/s.tsv"])
+"""
+        out = self.py(kod)
+        self.assertIn("URL " + "https://api.ceskadigitalniknihovna.cz/search/api/client/v7.0/items/uuid:mzk-kopie/ocr/text", out)
+        self.assertIn("neveřejných 1", out)
+        self.assertEqual(sorted(os.listdir(self.path("pracovni", "dnnt", "ocr"))), ["1932_48_dnnt_sho.txt"])
+
+
 class TestNovyProjekt(Projekt):
 
     def test_aktualizace_neprepise_data(self):
