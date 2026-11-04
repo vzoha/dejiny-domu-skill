@@ -462,6 +462,56 @@ mza.snimek(1, 1, "pracovni/x.jpg")
         self.assertEqual(os.listdir(self.path("pracovni")), ["x.jpg"])
 
 
+@unittest.skipUnless(shutil.which("bash"), "chybí bash")
+class TestMatricula(Projekt):
+    """matricula_dl.sh a matricula_batch.sh bez sítě: curl v PATH je podvržený a vrací obsah souboru VRAT."""
+    URL = "https://img.data.matricula-online.eu/x.jpg?csrf=abc&ctrl=1"
+
+    def setUp(self):
+        super().setUp()
+        self.bin = self.path("bin")
+        os.makedirs(self.bin)
+        with open(os.path.join(self.bin, "curl"), "w") as f:
+            f.write('#!/bin/bash\nwhile [ "$1" ]; do [ "$1" = -o ] && cp "$VRAT" "$2"; shift; done\nexit $KOD\n')
+        os.chmod(os.path.join(self.bin, "curl"), 0o755)
+        os.makedirs(self.path("pracovni"), exist_ok=True)
+
+    def spust(self, data, kod, *args):
+        with open(self.path("vrat"), "wb") as f:
+            f.write(data)
+        env = dict(os.environ, PATH=self.bin + os.pathsep + os.environ["PATH"], VRAT=self.path("vrat"), KOD=str(kod),
+                   SLUSNE_DIR=self.path("slusne"))
+        return subprocess.run(["bash", *args], cwd=self.root, env=env, capture_output=True, text=True, encoding="utf-8")
+
+    def test_chyba_curl_vrati_chybu_a_necha_stary_snimek(self):
+        with open(self.path("pracovni", "x.jpg"), "wb") as f:
+            f.write(b"stary snimek")
+        p = self.spust(b"", 22, "tools/matricula_dl.sh", self.URL, "pracovni/x.jpg")
+        self.assertEqual(p.returncode, 1, p.stderr)
+        with open(self.path("pracovni", "x.jpg"), "rb") as f:
+            self.assertEqual(f.read(), b"stary snimek")
+        self.assertEqual(os.listdir(self.path("pracovni")), ["x.jpg"])
+
+    def test_html_misto_obrazku_se_neulozi(self):
+        p = self.spust(b"<html>Forbidden</html>", 0, "tools/matricula_dl.sh", self.URL, "pracovni/x.jpg")
+        self.assertEqual(p.returncode, 1, p.stderr)
+        self.assertEqual(os.listdir(self.path("pracovni")), [])
+
+    def test_obrazek_se_ulozi(self):
+        p = self.spust(JPEG, 0, "tools/matricula_dl.sh", self.URL, "pracovni/x.jpg")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        with open(self.path("pracovni", "x.jpg"), "rb") as f:
+            self.assertEqual(f.read(), JPEG)
+
+    def test_davka_skonci_chybou_u_prvniho_nestazeneho_snimku(self):
+        with open(self.path("urls.txt"), "w") as f:
+            f.write(f"1 {self.URL}\n2 {self.URL}\n")
+        p = self.spust(b"", 22, "tools/matricula_batch.sh", "urls.txt", "pracovni/kniha")
+        self.assertEqual(p.returncode, 1, p.stderr)
+        self.assertEqual(p.stderr.count("nevrátila obrázek"), 1, p.stderr)
+        self.assertEqual(os.listdir(self.path("pracovni")), [])
+
+
 class TestNovyProjekt(Projekt):
 
     def test_aktualizace_neprepise_data(self):
