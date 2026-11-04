@@ -422,6 +422,46 @@ dnnt.ocr(["pracovni/dnnt/s.tsv"])
         self.assertEqual(sorted(os.listdir(self.path("pracovni", "dnnt", "ocr"))), ["1932_48_dnnt_sho.txt"])
 
 
+class TestMza(Projekt):
+    """mza.py snimek bez sítě: curl i stránka knihy jsou nahrazené."""
+
+    def snimek(self, data, kod=0):
+        """Stáhne snímek do pracovni/x.jpg; podvržený curl zapíše `data` a vrátí `kod`."""
+        p = subprocess.run([sys.executable, "-I", "-X", "utf8", "-c", f"""
+import subprocess, sys; sys.path.insert(0, 'tools'); import mza
+mza.scan = lambda mid, n: ({{"stavy": ["0"], "dzi": ["https://x/Deepzoom=a.dzi"], "jmena": ["a"]}}, 1)
+def curl(args, **kw):
+    open(args[args.index("-o") + 1], "wb").write({data!r})
+    return subprocess.CompletedProcess(args, {kod}, "", "")
+mza.slusne.curl = curl
+mza.snimek(1, 1, "pracovni/x.jpg")
+"""], cwd=self.root, capture_output=True, text=True, encoding="utf-8")
+        return p.returncode
+
+    def setUp(self):
+        super().setUp()
+        os.makedirs(self.path("pracovni"), exist_ok=True)
+        with open(self.path("pracovni", "x.jpg"), "wb") as f:
+            f.write(b"stary snimek")
+
+    def obsah(self):
+        with open(self.path("pracovni", "x.jpg"), "rb") as f:
+            return f.read()
+
+    def test_chyba_curl_necha_stary_snimek(self):
+        self.assertNotEqual(self.snimek(b"", 22), 0)
+        self.assertEqual(self.obsah(), b"stary snimek")
+
+    def test_html_misto_obrazku_necha_stary_snimek(self):
+        self.assertNotEqual(self.snimek(b"<html>chyba</html>"), 0)
+        self.assertEqual(self.obsah(), b"stary snimek")
+
+    def test_uspech_prepise_snimek_a_neuklada_docasny_soubor(self):
+        self.assertEqual(self.snimek(JPEG), 0)
+        self.assertEqual(self.obsah(), JPEG)
+        self.assertEqual(os.listdir(self.path("pracovni")), ["x.jpg"])
+
+
 class TestNovyProjekt(Projekt):
 
     def test_aktualizace_neprepise_data(self):

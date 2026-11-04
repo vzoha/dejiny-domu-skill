@@ -22,7 +22,7 @@ Ber ohled na server: stahuj jen snímky, které čteš.
 PODMÍNKY (11/2026): stránku knihy chrání ALTCHA – info, link, svazek a snimek skončí hláškou;
 knihu otevře uživatel v prohlížeči (reference/podminky.md, portaly.md).
 """
-import html, json, os, re, shutil, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
+import html, json, os, re, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -176,16 +176,21 @@ def snimek(mid, n, out, nahled=False, crop=None):
     size = "pct:25" if nahled else "full"
     if not shutil.which("curl"):
         sys.exit("chybí curl – obrázkový server MZA bere jen HTTP/2, které Python neumí (curl je ve Windows 10+, macOS i Linuxu)")
-    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
-    p = slusne.curl(["-s", "-f", "--http2", "-m", "180", "-A", UA, "-o", out, f"{iiif}/{region}/{size}/0/default.jpg"],
-                    stdout=subprocess.PIPE, text=True)
-    ok = p.returncode == 0 and os.path.exists(out)
-    if ok:
-        with open(out, "rb") as f:
-            ok = f.read(2) == b"\xff\xd8"
+    slozka = os.path.dirname(os.path.abspath(out))
+    os.makedirs(slozka, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(prefix=".mza_", suffix=".part", dir=slozka)  # starý snímek přežije neúspěšné stažení
+    os.close(fd)
+    try:
+        p = slusne.curl(["-s", "-f", "--http2", "-m", "180", "-A", UA, "-o", tmp, f"{iiif}/{region}/{size}/0/default.jpg"],
+                        stdout=subprocess.PIPE, text=True)
+        with open(tmp, "rb") as f:
+            ok = p.returncode == 0 and f.read(2) == b"\xff\xd8"
+        if ok:
+            os.replace(tmp, out)
+    finally:
+        if os.path.exists(tmp):
+            os.remove(tmp)
     if not ok:
-        if os.path.exists(out):
-            os.remove(out)
         sys.exit(f"MZA nevrátila obrázek (curl {p.returncode}{', ' + p.stderr.strip() if p.stderr.strip() else ''}). "
                  "Kód 1 nebo 16 = curl neumí HTTP/2 (starý curl) – nainstaluj novější; jinak zkus později.")
     print(out, f"{os.path.getsize(out) // 1024} kB", "odkaz:", odkaz(mid, n))
