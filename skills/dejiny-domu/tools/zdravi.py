@@ -13,7 +13,7 @@ Portály, které nástrojům stahování nedovolují (tools/podminky.json), se v
 Návratový kód 1 = aspoň jedna kontrola selhala. Selže-li portál, zkus to za chvíli znovu (výpadky bývají krátké);
 trvá-li chyba, změnilo se API – oprav nástroj a zapiš to do poznamky_pro_skill.md.
 """
-import os, re, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
+import glob, os, re, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -47,7 +47,7 @@ KONTROLY = [
     ("ruian", "adresa v RÚIAN", ["mista.py", "ruian", "Karlova 190/1"], r"k\. ú\. Staré Město", None),
     ("osm", "hledání v OpenStreetMap", ["mista.py", "hledej", "Chyšky, Písek"], r"lat=49\.5", None),
     ("ipr", "starý plán Prahy", ["ipr_praha.py", "serie", "50.0870,14.4207", "80", "300", "--jen", "herget_1791"],
-     r"OK\s+herget_1791", "pracovni/ipr/herget_1791_r80.jpg"),
+     r"OK\s+herget_1791", "pracovni/ipr/herget_1791_r80_300px_*.jpg"),
     ("kramerius", "fulltext", ["kramerius.py", 'text_ocr:"Chyšky"', "1"], r"^found [1-9]", None),
     ("dnnt", "hledání v tisku", ["dnnt.py", "hledej", 'text_ocr:"Chyšky"', "--max", "1"], r"nalezeno [1-9]", None),
     ("anno", "rakouské noviny", ["anno.py", "Chischka", "1880", "1890", "1"], r"ANNOP_", None),
@@ -61,6 +61,8 @@ DOSTUPNOST = [
 
 
 def je_jpeg(path):
+    """path smí obsahovat * (jméno souboru závisí na výstupu nástroje, např. ipr_praha.py)."""
+    path = next(iter(glob.glob(path)), path)
     try:
         with open(path, "rb") as f:
             return f.read(3) == b"\xff\xd8\xff" and os.path.getsize(path) > 5000

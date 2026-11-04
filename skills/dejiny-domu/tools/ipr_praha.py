@@ -8,11 +8,13 @@ Použití (z kořene projektu):
   ipr_praha.py vrstvy
       vypíše plány a letecké snímky, které nástroj zná (klíč, rok, název)
   ipr_praha.py serie <lat,lon | "Ulice čp/čo"> [polomer_m=300] [px=1200] [--jen klic1,klic2] [--zapsat skupina]
-      stáhne všechny vrstvy do pracovni/ipr/<klic>_r<polomer>.jpg (prázdné – mimo pokrytí – smaže a vypíše).
+      stáhne všechny vrstvy do pracovni/ipr/<klic>_r<polomer>_<px>px_<X>_<Y>.jpg (X, Y = střed v S-JTSK bez znaménka);
+      prázdné (mimo pokrytí) jen vypíše. Když služba místo obrázku vrátí chybu, vypíše CHYBA a skončí s kódem 1.
       Střed = bod (dům); „Ulice čp/čo“ se dohledá v RÚIAN. Výřez je čtverec 2×polomer metrů, sever nahoře
       (osy S-JTSK jsou proti severu pootočené jen o pár stupňů).
-      --zapsat skupina   rovnou vytvoří výřezy (vyrezy/, zdroje/) mapa_<skupina>_<rok>_<klic> a položky v data/mapy.json
-                         se zdrojem, rokem a skupinou; popis doplň potom (zapis.py mapy <img> … --sloucit).
+      --zapsat skupina   rovnou vytvoří výřezy (vyrezy/, zdroje/) mapa_<skupina>_<klic> a položky v data/mapy.json
+                         se zdrojem, rokem, skupinou a výřezem S-JTSK v „poznamka“; popis doplň potom
+                         (zapis.py mapy <img> … --sloucit).
 Šetři server: jedna série = ~20 požadavků. Výřez kolem domu: polomer 80–100 m, okolí: 300 m.
 """
 import json, os, subprocess, sys, urllib.parse, urllib.request
@@ -94,7 +96,25 @@ def bod(m):
     return f[0]["geometry"]["y"], f[0]["geometry"]["x"]
 
 
+class ChybaSluzby(Exception):
+    """Služba místo mapy vrátila chybu nebo obrázek jiné velikosti."""
+
+
+def jpeg_rozmery(d):
+    """(šířka, výška) z hlavičky JPEG, None když to JPEG není."""
+    if d[:3] != b"\xff\xd8\xff":
+        return None
+    i = 2
+    while i + 9 <= len(d) and d[i] == 0xFF:
+        znacka, delka = d[i + 1], int.from_bytes(d[i + 2:i + 4], "big")
+        if 0xC0 <= znacka <= 0xCF and znacka not in (0xC4, 0xC8, 0xCC):   # SOF: rozměry obrázku
+            return int.from_bytes(d[i + 7:i + 9], "big"), int.from_bytes(d[i + 5:i + 7], "big")
+        i += 2 + delka
+    return None
+
+
 def stahni(klic, bbox, px, out):
+    """Uloží vrstvu do out; False = prázdný obrázek (mimo pokrytí), chyba služby → ChybaSluzby."""
     _, _, typ, sl = VRSTVY[klic]
     q = {"bbox": ",".join(f"{v:.1f}" for v in bbox), "bboxSR": 5514, "imageSR": 5514, "size": f"{px},{px}",
          "format": "jpg", "f": "image"}
@@ -103,9 +123,16 @@ def stahni(klic, bbox, px, out):
     else:
         url = f"{B}/arcgis/rest/services/ort/ortofotomapa_archiv/MapServer/export?" + urllib.parse.urlencode({**q, "layers": f"show:{sl}", "dpi": 96})
     d = get(url, binary=True)
+    rozmery = jpeg_rozmery(d)
+    if rozmery is None:   # ArcGIS hlásí chybu jako JSON nebo HTML s kódem 200
+        raise ChybaSluzby("služba nevrátila obrázek: " + d[:120].decode("utf-8", "replace").replace("\n", " "))
+    if rozmery != (px, px):
+        raise ChybaSluzby(f"obrázek má {rozmery[0]}×{rozmery[1]} px místo {px}×{px} (zkus menší px)")
     if len(d) < PRAZDNY_B_NA_PX * px * px:
         return False
-    open(out, "wb").write(d)
+    with open(out + ".part", "wb") as f:
+        f.write(d)
+    os.replace(out + ".part", out)
     return True
 
 
@@ -133,13 +160,22 @@ def main():
     if neznam:
         sys.exit(f"Neznámé vrstvy {neznam} – seznam: ipr_praha.py vrstvy")
     os.makedirs(os.path.join(ROOT, "pracovni", "ipr"), exist_ok=True)
-    hotove = []
+    vyrez = f"r{polomer:g}_{px}px_{abs(x):.0f}_{abs(y):.0f}"   # různé domy a velikosti se nepřepíšou
+    georef = f"S-JTSK (EPSG:5514) {', '.join(f'{v:.1f}' for v in bbox)}, {px}×{px} px"
+    hotove, chyby = [], 0
     for k in klice:
-        out = os.path.join(ROOT, "pracovni", "ipr", f"{k}_r{polomer:g}.jpg")
-        ok = stahni(k, bbox, px, out)
-        print(f"{'OK    ' if ok else 'prázdné'} {k:22} {VRSTVY[k][0]}" + (f"  → {os.path.relpath(out, ROOT)}" if ok else "  (mimo pokrytí)"))
-        if ok:
+        out = os.path.join(ROOT, "pracovni", "ipr", f"{k}_{vyrez}.jpg")
+        try:
+            ulozeno = stahni(k, bbox, px, out)
+        except ChybaSluzby as e:
+            print(f"CHYBA   {k:22} {VRSTVY[k][0]}  {e}")
+            chyby += 1
+            continue
+        if ulozeno:
+            print(f"OK      {k:22} {VRSTVY[k][0]}  → {os.path.relpath(out, ROOT)}")
             hotove.append((k, out))
+        else:
+            print(f"prázdné {k:22} {VRSTVY[k][0]}  (mimo pokrytí)")
     if "--zapsat" in opt:
         sk = opt["--zapsat"]
         tools = os.path.dirname(os.path.abspath(__file__))
@@ -150,12 +186,16 @@ def main():
                            stdout=subprocess.DEVNULL)
             polozka = {"img": img, "rok": rok, "nazev": nazev, "url": "https://www.geoportalpraha.cz",
                        "zdroj": f"{ZDROJ}, {'archivní ortofotomapa' if typ == 'ort' else 'služba arch/' + sl}",
-                       "popis": "", "skupina": sk}
+                       "popis": "", "skupina": sk, "poznamka": f"výřez {georef}"}
             p = subprocess.run([sys.executable, "-I", os.path.join(tools, "zapis.py"), "mapy", img, "-"],
                                input=json.dumps(polozka, ensure_ascii=False), text=True, capture_output=True)
             print(p.stdout.strip() or p.stderr.strip())
+            if p.returncode:
+                sys.exit(f"Zápis {img} do data/mapy.json selhal – oprav chybu výše a pusť --zapsat znovu.")
         print("Doplň popisy (co je na mapě vidět u domu): zapis.py mapy <img> vstup.json --sloucit")
-    print(f"Výřez S-JTSK {', '.join(f'{v:.0f}' for v in bbox)} – stejný pro všechny obrázky série.")
+    print(f"Výřez {georef} – stejný pro všechny obrázky série.")
+    if chyby:
+        sys.exit(f"Nestažené vrstvy: {chyby} (CHYBA výše) – zkus to později.")
 
 
 if __name__ == "__main__":

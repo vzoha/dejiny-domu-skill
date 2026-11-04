@@ -512,6 +512,47 @@ class TestMatricula(Projekt):
         self.assertEqual(os.listdir(self.path("pracovni")), [])
 
 
+class TestIpr(Projekt):
+    """ipr_praha.py serie bez sítě: služba IPR, převod souřadnic i volání vyrez.py a zapis.py jsou nahrazené."""
+
+    def serie(self, odpoved, *args, zapis_kod=0):
+        """Pustí `serie` s podvrženou odpovědí služby; vrací (kód, výstup)."""
+        p = subprocess.run([sys.executable, "-I", "-X", "utf8", "-c", f"""
+import subprocess, sys; sys.path.insert(0, 'tools'); import ipr_praha
+ipr_praha.get = lambda url, binary=False: {odpoved!r}
+ipr_praha.sjtsk = lambda lat, lon: (-740000 - lat, -1040000 - lon)
+ipr_praha.subprocess.run = lambda cmd, **kw: subprocess.CompletedProcess(cmd, {zapis_kod} if "zapis.py" in cmd[2] else 0, "", "chyba zápisu")
+sys.argv = ["ipr_praha.py", "serie", *{list(args)!r}, "--jen", "herget_1791"]
+ipr_praha.main()
+"""], cwd=self.root, capture_output=True, text=True, encoding="utf-8")
+        return p.returncode, p.stdout + p.stderr
+
+    def soubory(self):
+        return sorted(os.listdir(self.path("pracovni", "ipr")))
+
+    def test_ruzne_stredy_se_neprepisi(self):
+        self.assertEqual(self.serie(JPEG, "1,1", "80", "1")[0], 0)
+        self.assertEqual(self.serie(JPEG, "2,2", "80", "1")[0], 0)
+        self.assertEqual(self.soubory(), ["herget_1791_r80_1px_740001_1040001.jpg", "herget_1791_r80_1px_740002_1040002.jpg"])
+
+    def test_chybova_odpoved_neni_obrazek(self):
+        kod, out = self.serie(b'{"error": {"code": 500, "message": "' + b"x" * 500 + b'"}}', "1,1", "80", "1")
+        self.assertEqual(kod, 1, out)
+        self.assertIn("CHYBA", out)
+        self.assertEqual(self.soubory(), [])
+
+    def test_obrazek_jine_velikosti_je_chyba(self):
+        kod, out = self.serie(JPEG, "1,1", "80", "2")
+        self.assertEqual(kod, 1, out)
+        self.assertIn("1×1 px místo 2×2", out)
+        self.assertEqual(self.soubory(), [])
+
+    def test_selhany_zapis_do_map_vrati_chybu(self):
+        kod, out = self.serie(JPEG, "1,1", "80", "1", "--zapsat", "dum", zapis_kod=1)
+        self.assertEqual(kod, 1, out)
+        self.assertIn("mapy.json selhal", out)
+
+
 class TestNovyProjekt(Projekt):
 
     def test_aktualizace_neprepise_data(self):
