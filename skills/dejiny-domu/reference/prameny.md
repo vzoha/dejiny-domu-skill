@@ -89,13 +89,17 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
 - **Císařský otisk** (cio, barevný, 1824–43) = podoba vsi. Domy zděné červeně, dřevěné žlutě, s čísly popisnými
   (u části listů barvy a čísla chybí).
 - **Indikační skica** (služba `skici`, předpona S0X) = pracovní mapa se jmény držitelů a změnami. Je v aplikaci ČÚZK,
-  ale **patří Národnímu archivu (Čechy) nebo MZA (Morava) – na snímcích je vodoznak „NA + ZA“**. Čti z ní (čísla domů,
-  držitelé), ale výřez nepřikládej do e-mailu, PDF ani na web bez souhlasu archivu (`podminky.md`). Přikládej originální
+  ale **patří Národnímu archivu (Čechy) nebo MZA (Morava) – na snímcích je vodoznak „NA + ZA“**. **Barvy čísel jsou
+  tu jinak než na originální mapě: v budově je červeně číslo popisné a černě číslo stavební parcely** (originální mapa
+  má u budovy jen černé číslo parcely, červená čísla tam znamenají reambulaci). Záměna = celý den čtení obráceně;
+  ověř přes `mapa pk` s adresními body (níže). Čti z ní (čísla domů, držitelé), ale výřez nepřikládej do e-mailu, PDF ani na web bez souhlasu archivu (`podminky.md`). Přikládej originální
   mapu nebo pozemkový katastr.
 - **Pozemkový katastr** (`mapa pk "Osada čp" výstup.jpg`) je georeferencovaný v S-JTSK: sedí na dnešní mapu, takže
   přes RÚIAN budovy jde ztotožnit starou parcelu s dnešním domem. Bývá ale posunutý o 60–100 m (často k SV):
   `mista.py parcely "Osada čp"` vypíše dnešní stavební parcely kolem domu s odstupem v metrech, podle jejich čísel
-  dům na mapě najdeš. Čísla stavebních parcel se často drží od stabilního katastru dodnes. Spojené vrstvy `originalni_mapy`
+  dům na mapě najdeš. `mapa pk` navíc vypíše a zakreslí dnešní adresní body RÚIAN (`…_adresy.jpg`): na které
+  staré stavební parcele dnešní čp. stojí. **Dům na staré mapě takhle vždy ztotožni, než napíšeš, kde stojí** – ne podle
+  čísla parcely nalezeného na skice nebo otisku (stejné číslo může mít pozemková parcela jinde ve vsi). Čísla stavebních parcel se často drží od stabilního katastru dodnes. Spojené vrstvy `originalni_mapy`
   a `cisarske_otisky` malé obce často nepokrývají (bílý obrázek) – pak `listy` + `export`.
 - Ulož výřez se vsí a s domem do `dokumenty/`, pak `vyrez.py` a `data/mapy.json` (zdroj „ČÚZK, Archiv ČÚZK,
   <mapa, signatura, list>“, url https://ags.cuzk.gov.cz/archiv/). Na stránce domu se ukáže v galerii, porovnání viz `web.md`.
