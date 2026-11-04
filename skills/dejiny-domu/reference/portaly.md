@@ -335,6 +335,9 @@ Nástroje pro ně hotové nejsou. Postupuj takto a výsledek zapiš do `STAV.md`
   CAPTCHou a je to údaj o žijícím člověku – nezjišťuj ho.
 
 ## Staré mapy a drobné památky (pro mapu na webu)
+- **Ortofoto z 50. let** (CENIA): `cuzk_archiv.py mapa cenia50 …` (WMS `https://gis.cenia.cz/mapcache/ortofotomapa_historicka/wms`,
+  vrstva `orto`, EPSG:5514; rok snímku `…/geoserver/ortofotomapa_historicka_roky/wms` GetFeatureInfo). Stará
+  kontaminace.cenia.cz je vypnutá.
 - **2. vojenské mapování (1836–52)**: WMS `https://gis.cenia.cz/mapcache/II_vojenske_mapovani/wms` (WMS 1.1.1, vrstva
   `II_vojenske_mapovani`, jen EPSG:5514). Výřez: střed převeď z lat/lon na S-JTSK přes
   `https://ags.cuzk.gov.cz/arcgis/rest/services/Utilities/Geometry/GeometryServer/project` (`inSR=4326`, `outSR=5514`, `transformation=1623`, `transformForward=false` – bez ní ujede o ~10 m,

@@ -8,7 +8,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | Doba | Pramen | Co dá k domu | Kde |
 |---|---|---|---|
 | dnes | katastr nemovitostí, RÚIAN | parcela, k. ú., dnešní obec | `mista.py ruian "Osada čp"` (hned ve Fázi 0 – dnešní obec a k. ú. bývají jiné, než se čeká), nahlizenidokn.cuzk.cz |
-| 1938–dnes | letecké snímky | jak dům a dvůr vypadaly, kdy přibyly a zmizely stavby | ags.cuzk.gov.cz/archiv (Archiv ČÚZK, ročníky vypíše `cuzk_archiv.py lms`), kontaminace.cenia.cz (snímky z 50. let), mapy.cz → „Letecká“ s volbou roku |
+| 1938–dnes | letecké snímky | jak dům a dvůr vypadaly, kdy přibyly a zmizely stavby | ags.cuzk.gov.cz/archiv (Archiv ČÚZK, ročníky vypíše `cuzk_archiv.py lms`), ortofoto CENIA z 50. let (`cuzk_archiv.py mapa cenia50`, smí do PDF), mapy.cz → „Letecká“ s volbou roku |
 | 1880–1950 | pozemkový katastr (mapa ~1900–1950) | parcely a budovy, sedí na dnešní mapu | `cuzk_archiv.py mapa pk` |
 | 1870–1950 | pozemkové knihy (vložky) a sbírka listin | vlastníci, kupní a svatební smlouvy, dluhy, výměnky | katastrální pracoviště (do 1950 často SOA / SOkA) – `archivni_dotazy.md` |
 | 1857–1921 | sčítání lidu (1857, 1869, 1880, 1890, 1900, 1910, 1921) | **celá domácnost po číslech domů**: jména, roky a místa narození, vztahy, řemesla, dobytek | SOkA. Jižní Čechy jsou na digi.ceskearchivy.cz (stejný portál jako matriky; snímky jen prohlížet, `podminky.md`) |
@@ -107,13 +107,16 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   vždy ztotožni, než napíšeš, kde stojí** – ne podle čísla parcely nalezeného na skice nebo otisku (stejné číslo může
   mít pozemková parcela jinde ve vsi). Čísla stavebních parcel se často drží od stabilního katastru dodnes. Spojené
   vrstvy `originalni_mapy` a `cisarske_otisky` malé obce často nepokrývají (bílý obrázek) – pak `listy` + `export`.
+- **Ortofoto z 50. let** (CENIA, většinou 1952–54): `mapa cenia50 "Osada čp" výstup.jpg` – stejný výřez a čísla domů
+  jako u PK, rok snímku a citaci vypíše. Pod CC BY, **smí do PDF i na web** s celou citací. Porovnání PK × ortofoto
+  ukáže, co z dvora stálo po válce.
 - **Letecké měřické snímky** (armáda, 30.–60. léta): `cuzk_archiv.py lms "Osada čp"` vypíše ročníky nad domem
   (třeba 1949, 1952, 1957, 1961). Snímky si uživatel prohlédne v aplikaci Archiv ČÚZK (`?start=lms`). Co hledat:
   kdy přibyla nebo zmizela stavba ve dvoře, sady, a hlavně **kolektivizaci** – úzké pásy polí soukromníků proti
   velkým lánům JZD o pár let později. Ročníky jsou usazené jen přibližně, proti sobě se posouvají o desítky až stovky
   metrů: porovnávej podle návsi a cest, ne podle souřadnic. Do textu napiš, co je na snímku vidět, s citací
   „Letecký měřický snímek <rok>, VGHMÚř Dobruška © MO ČR, Archiv ČÚZK“. **Výřez nepřikládej** (soubor je placený
-  a jen pro vlastní potřebu, `podminky.md`).
+  a jen pro vlastní potřebu, `podminky.md`). Obrázek z 50. let do výstupu vezmi z ortofota CENIA (výše).
 - Ulož výřez se vsí a s domem do `dokumenty/`, pak `vyrez.py` a `data/mapy.json` (zdroj „ČÚZK, Archiv ČÚZK,
   <mapa, signatura, list>“, url https://ags.cuzk.gov.cz/archiv/). Na stránce domu se ukáže v galerii, porovnání viz `web.md`.
 - Mapy ÚAZK (stabilní katastr, císařské otisky) se smí zveřejnit bez souhlasu a poplatku s citací „Ústřední archiv

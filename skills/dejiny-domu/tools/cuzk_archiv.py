@@ -25,7 +25,8 @@ Použití (z kořene projektu):
       (sirka 1500), najdi ves, pak výřez ve velkém.
   cuzk_archiv.py mapa <vrstva> "Horní Lhota 12" | lat,lon <vystup.jpg> [polomer_m] [px]
       georeferencovaná (spojená) vrstva kolem místa: pk = pozemkový katastr (~1900–1950, v S-JTSK, sedí na dnešní
-      domy), originalni_mapy, cisarske_otisky. Malé obce spojené vrstvy často nepokrývají (bílý obrázek) –
+      domy), originalni_mapy, cisarske_otisky, cenia50 = ortofoto CENIA z 50. let (většinou 1952–54, vypíše rok
+      a citaci; CC BY, smí i do PDF). Malé obce spojené vrstvy ČÚZK často nepokrývají (bílý obrázek) –
       pak listy + export. Výchozí poloměr 150 m, 1500 px. Vypíše i dnešní adresní body RÚIAN (čísla domů)
       v pixelech obrázku a s ImageMagickem je zakreslí do <vystup>_adresy.jpg: na které staré stavební parcele
       dnešní číslo stojí (ztotožnění domu, přečíslování).
@@ -47,6 +48,9 @@ if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze 
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 REFERER = "https://ags.cuzk.gov.cz/archiv/"
 ARCHIV = "https://ags.cuzk.gov.cz/arcgis4/rest/services/Archiv"
+CENIA = "https://gis.cenia.cz"
+CENIA_CITACE = ("Historická ortofotomapa © CENIA 2010 a © GEODIS BRNO, spol. s r.o. 2010, Podkladové letecké snímky "
+                "poskytl VGHMÚř Dobruška, © MO ČR 2009")
 GEN = "https://ags.cuzk.gov.cz/arcgis2/rest/services/GenerateToken/Token/GPServer/GenerateToken"
 RUIAN = "https://ags.cuzk.cz/arcgis/rest/services/RUIAN/Prohlizeci_sluzba_nad_daty_RUIAN/MapServer"
 TOKEN = os.path.join(ROOT, "pracovni", ".cuzk_token")
@@ -219,12 +223,29 @@ def mapa(vrstva, m, out, polomer=150, px=1500):
     px, r = int(px), float(polomer)
     x, y = sjtsk(*misto(m))
     bbox = (x - r, y - r, x + r, y + r)   # v S-JTSK (ne WGS 84: server by ho převedl bez datumu, ~110 m vedle)
-    img = archiv(f"archiv_spojene_{vrstva}/MapServer/export", {
-        "bbox": obalka(bbox), "bboxSR": 5514, "imageSR": 5514,
-        "size": f"{px},{px}", "format": "jpg", "dpi": 96, "f": "image"}, binary=True)
-    save_jpeg(img, out)
-    print(f"{out} – zkontroluj, jestli není bílý (vrstva tu nemusí být)")
+    if vrstva == "cenia50":
+        img = get(f"{CENIA}/mapcache/ortofotomapa_historicka/wms", {
+            "SERVICE": "WMS", "VERSION": "1.1.1", "REQUEST": "GetMap", "LAYERS": "orto", "STYLES": "", "SRS": "EPSG:5514",
+            "BBOX": obalka(bbox), "WIDTH": px, "HEIGHT": px, "FORMAT": "image/jpeg"}, binary=True)
+        save_jpeg(img, out)
+        print(f"{out} – snímek z roku {cenia_rok(x, y)}. Citace: {CENIA_CITACE}")
+    else:
+        img = archiv(f"archiv_spojene_{vrstva}/MapServer/export", {
+            "bbox": obalka(bbox), "bboxSR": 5514, "imageSR": 5514,
+            "size": f"{px},{px}", "format": "jpg", "dpi": 96, "f": "image"}, binary=True)
+        save_jpeg(img, out)
+        print(f"{out} – zkontroluj, jestli není bílý (vrstva tu nemusí být)")
     adresy(bbox, px, out)
+
+
+def cenia_rok(x, y):
+    """Rok snímku ortofota 50. let v bodě (S-JTSK) – mozaika je z různých let."""
+    v = "ortofotomapa_historicka_roky"
+    d = get(f"{CENIA}/geoserver/{v}/wms", {
+        "SERVICE": "WMS", "VERSION": "1.1.1", "REQUEST": "GetFeatureInfo", "LAYERS": v, "QUERY_LAYERS": v, "STYLES": "",
+        "SRS": "EPSG:5514", "BBOX": obalka((x - 1, y - 1, x + 1, y + 1)), "WIDTH": 3, "HEIGHT": 3, "X": 1, "Y": 1,
+        "INFO_FORMAT": "application/json"})
+    return next((f["properties"]["rok"] for f in d.get("features", [])), "?")
 
 
 def adresy(bbox, px, out):
@@ -253,7 +274,7 @@ def adresy(bbox, px, out):
     cil = os.path.splitext(out)[0] + "_adresy.jpg"
     if subprocess.run([mg, out, "-pointsize", "22"] + kresba + [cil]).returncode:
         return print("(ImageMagick body nezakreslil, polohy výše)")
-    print(f"{cil} – modře dnešní čísla domů (pracovní obrázek; PK sedí na dnešní mapu zpravidla do pár metrů)")
+    print(f"{cil} – modře dnešní čísla domů (pracovní obrázek; vrstva sedí na dnešní mapu zpravidla do pár metrů)")
 
 
 def lms(m):
