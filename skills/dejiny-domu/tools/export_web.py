@@ -38,6 +38,17 @@ def jload(name, default):
         return json.load(f)
 
 
+JMENO_OBRAZKU = re.compile(r"\w[\w.-]*")   # klíč = jméno souboru ve vyrezy/ a zdroje/; žádné lomítko ani ../
+
+
+def over_jmena_obrazku(odkud, jmena):
+    """Skončí, když by klíč vedl mimo vyrezy/ a zdroje/ (a tím soukromý soubor na web). Nic tiše neopravuje."""
+    spatne = [str(k) for k in jmena if not JMENO_OBRAZKU.fullmatch(str(k)) or ".." in str(k)]
+    if spatne:
+        sys.exit(f"CHYBA: {odkud}: klíč obrázku smí mít jen písmena, číslice, _ - . (bez lomítek a ..): "
+                 + ", ".join(spatne) + "\nOprav ho a export pusť znovu.")
+
+
 def load_houses():
     ns = {}
     exec(open(os.path.join(DATA, "domy.py"), encoding="utf-8").read(), ns)
@@ -203,6 +214,10 @@ def main():
                      "nebo nechte web neveřejný (prihlaseni.odpoved). Viz reference/podminky.md.")
     docs_cfg = [d for d in jload("dokumenty.json", []) if not d.get("skryt")]   # "skryt": true = na web nedávat
     maps_cfg = jload("mapy.json", [])
+    over_jmena_obrazku("data/zaznamy.json", [z.get("klic", "") for z in jload("zaznamy.json", [])])
+    over_jmena_obrazku("data/dokumenty.json", [d.get("img", "") for d in docs_cfg])
+    over_jmena_obrazku("data/mapy.json", [m.get("img", "") for m in maps_cfg])
+    over_jmena_obrazku("data/web.json uvod.foto", [cfg["uvod"]["foto"]] if cfg.get("uvod", {}).get("foto") else [])
     recs = {r["key"]: r for r in record_rows()}
 
     houses = {}
@@ -283,6 +298,7 @@ def main():
                                   lead=fm.get("lead", "").strip().strip("'\""), text=text,
                                   poradi=int(fm.get("poradi", "99").strip() or 99),
                                   obdobi=fm.get("obdobi", "").strip(), obrazek=fm.get("obrazek", "").strip()))
+    over_jmena_obrazku("data/pribeh_*.md obrazek", [st["obrazek"] for st in extra_stories if st["obrazek"]])
     extra_stories.sort(key=lambda st: (st["poradi"], st["slug"]))
     public_cfg["maPribeh"] = has_story or bool(extra_stories)
     public_cfg["dalsiPribehy"] = [{k: v for k, v in st.items() if k != "text"} for st in extra_stories]

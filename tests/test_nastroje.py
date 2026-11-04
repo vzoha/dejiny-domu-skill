@@ -322,6 +322,24 @@ class TestExport(Projekt):
         self.assertEqual(s["houses"], {})
         self.assertIsNone(s["mainHouse"])
 
+    def test_klic_mimo_vyrezy_export_odmitne_a_nic_nezverejni(self):
+        with open(self.path("soukromy.jpg"), "wb") as f:   # vedle vyrezy/: ../soukromy by vedl sem
+            f.write(JPEG)
+        with open(self.path("data", "zaznamy.json"), "w", encoding="utf-8") as f:
+            json.dump([{"klic": "../soukromy", "nazev": "podvržený"}], f)
+        rc, out = self.export()
+        self.assertNotEqual(rc, 0)
+        self.assertIn("data/zaznamy.json", out)
+        verejne = [f for _, _, soubory in os.walk(self.path("web", "public")) for f in soubory]
+        self.assertNotIn("soukromy.jpg", verejne)
+
+    def test_obrazek_pribehu_mimo_vyrezy_export_odmitne(self):
+        with open(self.path("data", "pribeh_mlyn.md"), "w", encoding="utf-8") as f:
+            f.write("---\ntitle: Mlýn\nobrazek: ../../soukromy\n---\nText.\n")
+        rc, out = self.export()
+        self.assertNotEqual(rc, 0)
+        self.assertIn("pribeh_*.md obrazek", out)
+
     def test_uplny_projekt(self):
         self.napln()
         rc, out = self.export()
