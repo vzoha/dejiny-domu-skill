@@ -473,6 +473,23 @@ dnnt.ocr(["pracovni/dnnt/s.tsv"])
         self.assertIn("neveřejných 1", out)
         self.assertEqual(sorted(os.listdir(self.path("pracovni", "dnnt", "ocr"))), ["1932_48_dnnt_sho.txt"])
 
+    def test_ocr_nezapise_mimo_slozku_ani_nepouzije_divny_pid(self):
+        os.makedirs(self.path("pracovni", "dnnt"), exist_ok=True)
+        with open(self.path("pracovni", "dnnt", "s.tsv"), "w", encoding="utf-8") as f:
+            f.write("pid\tdatum\tstrana\tpristup\ttitul\tverejne\tknihovna\n"
+                    "uuid:../../item/x\t1932\t48\tpublic\tAdresář\t\t\n"
+                    "uuid:dobry\t1932\t49\tDNNT\tAdresář\tuuid:a/../b\tmzk\n")
+        out = self.py("""
+def get(url):
+    print("URL", url)
+    return b"text"
+dnnt.get = get
+dnnt.ocr(["pracovni/dnnt/s.tsv", "../../venku=uuid:abc"])
+""")
+        self.assertNotIn("..", "".join(r for r in out.splitlines() if r.startswith("URL")))
+        self.assertEqual(os.listdir(self.path("pracovni", "dnnt", "ocr")), ["venku.txt"])
+        self.assertFalse(os.path.exists(self.path("venku.txt")))
+
 
 class TestMza(Projekt):
     """mza.py snimek bez sítě: curl i stránka knihy jsou nahrazené."""

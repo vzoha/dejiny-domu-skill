@@ -39,6 +39,7 @@ CDK = "https://api.ceskadigitalniknihovna.cz/search/api/client/v7.0/"   # Česk�
 CDK_POLE = {"fedora.model": "model", "root_title": "root.title", "datum_begin": "date_range_start.year",
             "datum_str": "date.str", "dostupnost": "accessibility", "PID": "pid"}
 DIR = os.path.join(ROOT, "pracovni", "dnnt")
+PID = re.compile(r"uuid:[\w-]+")   # pid jde do adresy API: žádná lomítka ani tečky
 UA = {"User-Agent": "Mozilla/5.0 (dejiny-domu skill)"}
 
 
@@ -185,24 +186,33 @@ def kontext(pid, slova):
         print("  …", cisty(h))
 
 
+def jmeno_souboru(s):
+    """Jen písmena, číslice a _ – klíč z dat nesmí vést mimo složku (../, /)."""
+    return re.sub(r"\W+", "_", s).strip("_")
+
+
 def seznam(args):
     """[(klic, pid, adresa OCR)] ze souboru .tsv, z „klic=pid“ nebo z holých pid. Stránka veřejná jinde se čte z CDK."""
     out = []
+
+    def pridej(klic, pid, verejne=""):
+        if not PID.fullmatch(pid) or (verejne and not PID.fullmatch(verejne)) or not jmeno_souboru(klic):
+            print(f"přeskočeno – divný pid nebo klíč: {klic}={pid} {verejne}".rstrip(), file=sys.stderr)
+            return
+        out.append((jmeno_souboru(klic), pid, ocr_adresa(verejne or pid, bool(verejne))))
+
     for a in args:
         if a.endswith(".tsv") and os.path.exists(a):
             radky = open(a, encoding="utf-8").read().splitlines()
             hlava = radky[0].split("\t")
             for r in radky[1:]:
                 st = dict(zip(hlava, r.split("\t")))
-                if not st.get("pid", "").startswith("uuid:"):
-                    continue
-                klic = re.sub(r"\W+", "_", f"{st['datum'][-4:]}_{st['strana']}_{st['pid'][5:13]}").strip("_")
-                out.append((klic, st["pid"], ocr_adresa(st.get("verejne") or st["pid"], bool(st.get("verejne")))))
+                if st.get("pid", "").startswith("uuid:"):
+                    pridej(f"{st['datum'][-4:]}_{st['strana']}_{st['pid'][5:13]}", st["pid"], st.get("verejne", ""))
         elif "=" in a:
-            k, p = a.split("=", 1)
-            out.append((k, p, ocr_adresa(p)))
+            pridej(*a.split("=", 1))
         elif a.startswith("uuid:"):
-            out.append((a[5:13], a, ocr_adresa(a)))
+            pridej(a[5:13], a)
     return out
 
 
