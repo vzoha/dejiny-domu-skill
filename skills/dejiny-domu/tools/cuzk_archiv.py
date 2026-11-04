@@ -23,10 +23,12 @@ Použití (z kořene projektu):
   cuzk_archiv.py mapa <vrstva> "Horní Lhota 12" | lat,lon <vystup.jpg> [polomer_m] [px]
       georeferencovaná (spojená) vrstva kolem místa: pk = pozemkový katastr (~1900–1950, v S-JTSK, sedí na dnešní
       domy), originalni_mapy, cisarske_otisky. Malé obce spojené vrstvy často nepokrývají (bílý obrázek) –
-      pak listy + export. Výchozí poloměr 150 m, 1500 px.
+      pak listy + export. Výchozí poloměr 150 m, 1500 px. Vypíše i dnešní adresní body RÚIAN (čísla domů)
+      v pixelech obrázku a s ImageMagickem je zakreslí do <vystup>_adresy.jpg: na které staré stavební parcele
+      dnešní číslo stojí (ztotožnění domu, přečíslování).
 Ber ohled na server: stahuj jen listy a výřezy, které čteš. Výsledek ulož do dokumentů a dál vyrez.py + mapy.json.
 """
-import json, math, os, re, sys, time, urllib.parse, urllib.request
+import glob, json, math, os, re, shutil, subprocess, sys, time, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -193,13 +195,45 @@ def prehled(sluzba, vzor, out, sirka=600):
 
 def mapa(vrstva, m, out, polomer=150, px=1500):
     lat, lon = misto(m)
-    dlat = float(polomer) / 111320
-    dlon = dlat / math.cos(math.radians(lat))
+    px, r = int(px), float(polomer)
+    g = json.dumps({"geometryType": "esriGeometryPoint", "geometries": [{"x": lon, "y": lat}]})
+    p = get("https://ags.cuzk.gov.cz/arcgis/rest/services/Utilities/Geometry/GeometryServer/project",
+            {"inSR": 4326, "outSR": 5514, "geometries": g, "f": "json"})["geometries"][0]
+    bbox = (p["x"] - r, p["y"] - r, p["x"] + r, p["y"] + r)   # v S-JTSK, aby šly do obrázku zakreslit adresní body
     img = archiv(f"archiv_spojene_{vrstva}/MapServer/export", {
-        "bbox": f"{lon - dlon},{lat - dlat},{lon + dlon},{lat + dlat}", "bboxSR": 4326, "imageSR": 5514,
+        "bbox": ",".join(f"{v:.1f}" for v in bbox), "bboxSR": 5514, "imageSR": 5514,
         "size": f"{px},{px}", "format": "jpg", "dpi": 96, "f": "image"}, binary=True)
     save_jpeg(img, out)
     print(f"{out} – zkontroluj, jestli není bílý (vrstva tu nemusí být)")
+    adresy(bbox, px, out)
+
+
+def adresy(bbox, px, out):
+    """Dnešní adresní body RÚIAN (číslo domovní) v pixelech obrázku: na které staré parcele dnešní číslo stojí."""
+    f = get(f"{RUIAN}/1/query", {"geometry": ",".join(f"{v:.1f}" for v in bbox), "geometryType": "esriGeometryEnvelope",
+                                 "inSR": 5514, "outSR": 5514, "outFields": "cislodomovni,adresa", "f": "json"}).get("features", [])
+    body = []
+    for a in f:
+        x = round((a["geometry"]["x"] - bbox[0]) / (bbox[2] - bbox[0]) * px)
+        y = round((bbox[3] - a["geometry"]["y"]) / (bbox[3] - bbox[1]) * px)
+        ev = "ev." if a["attributes"].get("adresa", "").startswith("č.ev.") else ""   # evidenční číslo (chata)
+        body.append((ev + str(a["attributes"].get("cislodomovni")), x, y))
+    if not body:
+        return print("adresní body RÚIAN: žádné v obrázku")
+    print("adresní body RÚIAN (dnešní čp., pixel x,y v obrázku):",
+          ", ".join(f"{c} {x},{y}" for c, x, y in sorted(body, key=lambda b: (b[0].startswith("ev"), int(b[0].removeprefix("ev.") or 0)))))
+    mg = (shutil.which("magick") or next(iter(glob.glob(r"C:\Program Files\ImageMagick*\magick.exe")), None)
+          or (os.name != "nt" and shutil.which("convert")))   # ImageMagick 6 bez magick; na Windows je convert.exe jiný program
+    if not mg:
+        return print("(bez ImageMagicku body nezakreslím, polohy výše)")
+    kresba = []
+    for c, x, y in body:
+        kresba += ["-fill", "blue", "-draw", f"circle {x},{y} {x + 5},{y}",
+                   "-stroke", "white", "-strokewidth", "4", "-annotate", f"+{x + 8}+{y - 6}", c,
+                   "-stroke", "none", "-annotate", f"+{x + 8}+{y - 6}", c]
+    cil = os.path.splitext(out)[0] + "_adresy.jpg"
+    subprocess.run([mg, out, "-pointsize", "22"] + kresba + [cil], check=False)
+    print(f"{cil} – modře dnešní čísla domů (pracovní obrázek, posun PK bývá 0–100 m, porovnej s cestami)")
 
 
 if __name__ == "__main__":
