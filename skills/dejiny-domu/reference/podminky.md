@@ -38,7 +38,7 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 ## Mapy
 | Zdroj | Čtení | Pro sebe | Za peníze | Obrázky | Výsledky | Poznámka |
 |---|---|---|---|---|---|---|
-| ÚAZK (stabilní katastr, mapy kolem 1830) | Nástroj | ano | neřeší | ano | ano | Zveřejnit lze bez souhlasu i poplatku. Uveďte „Ústřední archiv zeměměřictví a katastru“ a signaturu |
+| ÚAZK (stabilní katastr, mapy kolem 1830) | Nástroj | ano | ano | ano | ano | Zveřejnit lze bez souhlasu i poplatku (ceník ÚAZK). Badatelský řád sice komerční využití obecně zpoplatňuje, státní sazebník ale takový poplatek nemá. Uveďte „Ústřední archiv zeměměřictví a katastru“ a signaturu |
 | ČÚZK, dnešní letecké snímky | Nástroj | ano | ano | ano | ano | Uveďte „ČÚZK, rok“ |
 | ČÚZK, archivní letecké snímky | Ručně, soubor objednat | ano | prohlížet ano, soubor souhlas | souhlas | ano | Prohlížení v aplikaci zdarma, popsat, co vidíte, smíte. Soubor 500 Kč a jen pro vlastní potřebu |
 | Letecké snímky 50. let (CENIA) | Nástroj | ano | ano | ano | ano | Uveďte celý zdroj: „Historická ortofotomapa ©CENIA 2010 a ©GEODIS BRNO, spol. s r.o. 2010, Podkladové letecké snímky poskytl VGHMÚř Dobruška, ©MO ČR 2009“ |
