@@ -12,11 +12,12 @@ Použití:
       co uživatel čeká (osada patří k jiné obci, k. ú. má jméno sousední vsi). Dotaz = "Osada čp", "Ulice čp",
       "Ulice čp/čo" nebo ve městě i "Ulice čo" (číslo orientační, jak je na domě).
   mista.py okoli <"Ulice čp/čo" | lat,lon> [polomer_m=80]
-  mista.py parcely <"Osada čp" | lat,lon> [polomer_m=60] [vse]
-      dnešní stavební parcely kolem domu s odstupem v metrech (E/N = na východ/sever). Podle nich najdeš dům
-      na staré mapě (stejná čísla stavebních parcel). „vse“ = i pozemkové parcely.
       všechny dnešní adresy v okolí (RÚIAN) seřazené podle čp. – rohové domy mají dvě adresy; podklad pro tabulku
       adres domu v čase a pro rozlišení domů se stejnou starou adresou (reference/prameny.md → Čísla domů).
+  mista.py parcely <"Osada čp" | lat,lon> [polomer_m=60] [vse]
+      dnešní stavební parcely kolem domu s odstupem v metrech (E/N = na východ/sever). Podle nich najdeš dům
+      na staré mapě (stejná čísla stavebních parcel). V k. ú. s jednou číselnou řadou (bez „st.“) vypíše parcely
+      se zastavěnou plochou. „vse“ = i ostatní pozemkové parcely.
   mista.py pridej "Název" ["dotaz pro vyhledání"] ["popis na mapě"]
       přidá bod do data/mista.json (výchozí dotaz = "Název, Česko")
   mista.py
@@ -47,6 +48,14 @@ def geocode(q):
 
 
 RUIAN = "https://ags.cuzk.cz/arcgis/rest/services/RUIAN/Prohlizeci_sluzba_nad_daty_RUIAN/MapServer"
+STAVEBNI = 1            # druhcislovanikod: 1 stavební, 2 pozemková parcela
+ZASTAVENA_PLOCHA = 13   # druhpozemkukod „zastavěná plocha a nádvoří“
+
+
+def cislo_parcely(a):
+    """„st. 12/3“; k. ú. s jednou číselnou řadou stavební parcely nemá, „st.“ tam správně chybí."""
+    cislo = f"{a['kmenovecislo']}" + (f"/{a['poddelenicisla']}" if a.get("poddelenicisla") else "")
+    return ("st. " if a.get("druhcislovanikod") == STAVEBNI else "") + cislo
 
 
 def ruian_q(vrstva, where, pole, geo=False):
@@ -92,9 +101,8 @@ def ruian(dotaz):
                       "kmenovecislo,poddelenicisla,druhcislovanikod,katastralniuzemi")
         if par:
             pa = par[0]["attributes"]
-            cislo = f"{pa['kmenovecislo']}" + (f"/{pa['poddelenicisla']}" if pa.get("poddelenicisla") else "")
             ku = ruian_q(7, f"kod={pa['katastralniuzemi']}", "nazev")
-            print(f"   parcela {'st. ' if pa.get('druhcislovanikod') == 1 else ''}{cislo}, "
+            print(f"   parcela {cislo_parcely(pa)}, "
                   f"k. ú. {ku[0]['attributes']['nazev'] if ku else '?'} ({pa['katastralniuzemi']})")
 
 
@@ -145,15 +153,15 @@ def parcely(misto, polomer=60, vse=False):
          "inSR": 4326, "spatialRel": "esriSpatialRelIntersects", "outFields": "kmenovecislo,poddelenicisla,druhcislovanikod,vymeraparcely",
          "returnGeometry": "true", "outSR": 4326, "f": "json"}
     if not vse:
-        q["where"] = "druhcislovanikod=1"
+        # v k. ú. s jednou číselnou řadou jsou všechny parcely pozemkové, dům poznáš jen podle druhu pozemku
+        q["where"] = f"druhcislovanikod={STAVEBNI} OR druhpozemkukod={ZASTAVENA_PLOCHA}"
     with urllib.request.urlopen(f"{RUIAN}/5/query?{urllib.parse.urlencode(q)}", timeout=60) as r:
         feats = json.load(r).get("features", [])
     rows = []
     for f in feats:
         a, ring = f["attributes"], f["geometry"]["rings"][0]
         cy, cx = sum(p[1] for p in ring) / len(ring), sum(p[0] for p in ring) / len(ring)
-        cislo = f"{a['kmenovecislo']}" + (f"/{a['poddelenicisla']}" if a.get("poddelenicisla") else "")
-        rows.append((a["druhcislovanikod"] != 1, a["kmenovecislo"], ("st. " if a["druhcislovanikod"] == 1 else "") + cislo,
+        rows.append((a["druhcislovanikod"] != STAVEBNI, a["kmenovecislo"], cislo_parcely(a),
                      a.get("vymeraparcely"), round((cx - lon) * 111320 * math.cos(math.radians(lat))), round((cy - lat) * 111320)))
     for _, _, c, v, e, n in sorted(rows):
         print(f"{c:12} {v or 0:>7.0f} m²   E {e:>4} m  N {n:>4} m")
