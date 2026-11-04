@@ -8,7 +8,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | Doba | Pramen | Co dá k domu | Kde |
 |---|---|---|---|
 | dnes | katastr nemovitostí, RÚIAN | parcela, k. ú., dnešní obec | `mista.py ruian "Osada čp"` (hned ve Fázi 0 – dnešní obec a k. ú. bývají jiné, než se čeká), nahlizenidokn.cuzk.cz |
-| 1950–dnes | letecké snímky | jak dům a dvůr vypadaly, kdy přibyly a zmizely stavby | ags.cuzk.gov.cz/archiv (Archiv ČÚZK), kontaminace.cenia.cz (snímky z 50. let), mapy.cz → „Letecká“ s volbou roku |
+| 1938–dnes | letecké snímky | jak dům a dvůr vypadaly, kdy přibyly a zmizely stavby | ags.cuzk.gov.cz/archiv (Archiv ČÚZK, ročníky vypíše `cuzk_archiv.py lms`), kontaminace.cenia.cz (snímky z 50. let), mapy.cz → „Letecká“ s volbou roku |
 | 1880–1950 | pozemkový katastr (mapa ~1900–1950) | parcely a budovy, sedí na dnešní mapu | `cuzk_archiv.py mapa pk` |
 | 1870–1950 | pozemkové knihy (vložky) a sbírka listin | vlastníci, kupní a svatební smlouvy, dluhy, výměnky | katastrální pracoviště (do 1950 často SOA / SOkA) – `archivni_dotazy.md` |
 | 1857–1921 | sčítání lidu (1857, 1869, 1880, 1890, 1900, 1910, 1921) | **celá domácnost po číslech domů**: jména, roky a místa narození, vztahy, řemesla, dobytek | SOkA. Jižní Čechy jsou na digi.ceskearchivy.cz (stejný portál jako matriky; snímky jen prohlížet, `podminky.md`) |
@@ -76,11 +76,11 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
 ## Stabilní katastr (Archiv ČÚZK, `cuzk_archiv.py`)
 Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz už neexistuje). Nástroj ho čte bez prohlížeče.
 1. `python3 -I tools/cuzk_archiv.py listy "Osada čp"` → katastrální obec v roce 1827 (**malá ves bývá součástí
-   katastru sousední obce**) a předpony rastrů originální mapy, otisku a skici.
+   katastru sousední obce**) a předpony rastrů originální mapy, otisku, evidenční mapy a skici.
 2. `cuzk_archiv.py prehled stable <om_SIGN_INV> pracovni/katastr/prehled.jpg` → všechny listy v jednom náhledu
    (pod každým id) → najdi ves, pak výřez ve velkém (`export stable <id> … x0,y0,x1,y1 5000`, podíly 0–1 jako u
    `vyrez.py`). Jednotlivé listy: `rastry stable <om_SIGN_INV>` a `export stable <id> list.jpg 0,0,1,1 1500`.
-- **Originální mapa** (om) je nejcennější: zeměměřiči do ní **dokreslovali změny až do ~1880 (reambulace, změny
+- **Originální mapa** (om) je nejcennější: zeměměřiči do ní **dokreslovali změny při reambulaci 1869–1882 (změny
   červeně)**. Nová stavba nebo rozdělení parcely je tam i s číslem. Rok reambulace vypíše `listy`.
   **Jak číst barvy budov:** růžová = zděná, žlutá = dřevěná (stav při mapování). **Červeně šrafovaná nebo sytě červená
   budova a červená čísla = dokresleno při reambulaci** – stavba nebo přestavba až po mapování. Nepiš pak „dům tu stál
@@ -88,25 +88,37 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   parcela. Číslo stavební parcely vyšší než ostatní ve vsi = zpravidla pozdější dům (čísla šla od nejstarších).
 - **Císařský otisk** (cio, barevný, 1824–43) = podoba vsi. Domy zděné červeně, dřevěné žlutě, s čísly popisnými
   (u části listů barvy a čísla chybí).
+- **Evidenční mapa** (sign. B2/a/14C, služba `nonstable`, vzor vypíše `listy`, když je naskenovaná) = pokračování
+  originálu: od roku 1883 se změny kreslily sem, často až do 20.–30. let 20. století. Ukáže ves i za prvorepublikových
+  majitelů (nové domy, dělení parcel). Doplňky mají data přímo na listu, poslední datum ověř tam. V některých
+  k. ú. se pozdější změny kreslily i do originální mapy – i tam rozhoduje datum na listu, ne rok reambulace.
 - **Indikační skica** (služba `skici`, předpona S0X) = pracovní mapa se jmény držitelů a změnami. Je v aplikaci ČÚZK,
-  ale **patří Národnímu archivu (Čechy) nebo MZA (Morava) – na snímcích je vodoznak „NA + ZA“**. **Barvy čísel jsou
-  tu jinak než na originální mapě: v budově je červeně číslo popisné a černě číslo stavební parcely** (originální mapa
-  má u budovy jen černé číslo parcely, červená čísla tam znamenají reambulaci). Záměna = celý den čtení obráceně;
-  ověř přes `mapa pk` s adresními body (níže). Čti z ní (čísla domů, držitelé), ale výřez nepřikládej do e-mailu, PDF ani na web bez souhlasu archivu (`podminky.md`). Přikládej originální
-  mapu nebo pozemkový katastr.
+  ale **patří Národnímu archivu (Čechy) nebo MZA (Morava) – na snímcích je vodoznak „NA + ZA“**. **Barvy čísel jsou tu
+  jinak než na originální mapě: v budově je červeně číslo popisné a černě číslo stavební parcely** (originální mapa má
+  u budovy jen černé číslo parcely, červená čísla tam znamenají reambulaci). Při záměně čteš celou ves obráceně; ověř
+  přes `mapa pk` s adresními body (níže). Čti z ní (čísla domů, držitelé), ale výřez nepřikládej do e-mailu, PDF ani
+  na web bez souhlasu archivu (`podminky.md`). Přikládej originální mapu nebo pozemkový katastr.
 - **Pozemkový katastr** (`mapa pk "Osada čp" výstup.jpg`) je georeferencovaný v S-JTSK: sedí na dnešní mapu, takže
   přes RÚIAN budovy jde ztotožnit starou parcelu s dnešním domem, zpravidla do pár metrů. (Posun 60–100 m k SV, který
   tu dřív stál, byl chybou nástroje: výřez se zadával ve WGS 84 a server ho do S-JTSK převedl bez transformace datumu.
-  Výřezy z verzí do 0.4.0 proto nemají dům uprostřed.) `mista.py parcely "Osada čp"` vypíše dnešní stavební parcely kolem domu s odstupem v metrech, podle jejich čísel
-  dům na mapě najdeš. `mapa pk` navíc vypíše a zakreslí dnešní adresní body RÚIAN (`…_adresy.jpg`): na které
-  staré stavební parcele dnešní čp. stojí. **Dům na staré mapě takhle vždy ztotožni, než napíšeš, kde stojí** – ne podle
-  čísla parcely nalezeného na skice nebo otisku (stejné číslo může mít pozemková parcela jinde ve vsi). Čísla stavebních parcel se často drží od stabilního katastru dodnes. Spojené vrstvy `originalni_mapy`
-  a `cisarske_otisky` malé obce často nepokrývají (bílý obrázek) – pak `listy` + `export`.
+  Výřezy z verzí do 0.4.0 proto nemají dům uprostřed.) `mista.py parcely "Osada čp"` vypíše dnešní stavební parcely
+  kolem domu s odstupem v metrech, podle jejich čísel dům na mapě najdeš. `mapa pk` navíc vypíše a zakreslí dnešní
+  adresní body RÚIAN (`…_adresy.jpg`): na které staré stavební parcele dnešní čp. stojí. **Dům na staré mapě takhle
+  vždy ztotožni, než napíšeš, kde stojí** – ne podle čísla parcely nalezeného na skice nebo otisku (stejné číslo může
+  mít pozemková parcela jinde ve vsi). Čísla stavebních parcel se často drží od stabilního katastru dodnes. Spojené
+  vrstvy `originalni_mapy` a `cisarske_otisky` malé obce často nepokrývají (bílý obrázek) – pak `listy` + `export`.
+- **Letecké měřické snímky** (armáda, 30.–60. léta): `cuzk_archiv.py lms "Osada čp"` vypíše ročníky nad domem
+  (třeba 1949, 1952, 1957, 1961). Snímky si uživatel prohlédne v aplikaci Archiv ČÚZK (`?start=lms`). Co hledat:
+  kdy přibyla nebo zmizela stavba ve dvoře, sady, a hlavně **kolektivizaci** – úzké pásy polí soukromníků proti
+  velkým lánům JZD o pár let později. Ročníky jsou usazené jen přibližně, proti sobě se posouvají o desítky až stovky
+  metrů: porovnávej podle návsi a cest, ne podle souřadnic. Do textu napiš, co je na snímku vidět, s citací
+  „Letecký měřický snímek <rok>, VGHMÚř Dobruška © MO ČR, Archiv ČÚZK“. **Výřez nepřikládej** (soubor je placený
+  a jen pro vlastní potřebu, `podminky.md`).
 - Ulož výřez se vsí a s domem do `dokumenty/`, pak `vyrez.py` a `data/mapy.json` (zdroj „ČÚZK, Archiv ČÚZK,
   <mapa, signatura, list>“, url https://ags.cuzk.gov.cz/archiv/). Na stránce domu se ukáže v galerii, porovnání viz `web.md`.
 - Mapy ÚAZK (stabilní katastr, císařské otisky) se smí zveřejnit bez souhlasu a poplatku s citací „Ústřední archiv
-  zeměměřictví a katastru“. Indikační skici a archivní letecké snímky ne – viz `podminky.md`. U map z jiných zdrojů vždy uveď zdroj.
-  Na neveřejném webu to stačí.
+  zeměměřictví a katastru“. Indikační skici a archivní letecké snímky ne – viz `podminky.md`. U map z jiných zdrojů
+  vždy uveď zdroj. Na neveřejném webu to stačí.
 
 ## Sčítání lidu
 - Archy jsou **po domech**: hlavička s číslem domu, pak všichni obyvatelé (i výměnkáři, čeledíni, podruzi).

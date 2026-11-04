@@ -221,7 +221,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | Nástroj | Co dělá |
 |---|---|
 | `trebon.py …` | SOA Třeboň. **Stojí:** podmínky portálu dovolují jen prohlížet (`reference/podminky.md`); jen se souhlasem archivu |
-| `cuzk_archiv.py listy / prehled / rastry / export / mapa` | Archiv ČÚZK: stabilní katastr (originální mapy s reambulací, císařské otisky, indikační skici), pozemkový katastr |
+| `cuzk_archiv.py listy / prehled / rastry / export / mapa / lms` | Archiv ČÚZK: stabilní katastr (originální mapy s reambulací, císařské otisky, indikační skici), evidenční mapy (změny do 20. stol.), pozemkový katastr, ročníky leteckých snímků 30.–60. let (jen seznam) |
 | `aron_search.py "Obec" ["fond"]`, `aron_search.py scitani "Obec"`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |
 | `portafontium.py …`, `ebadatelna.py …` | SOA Plzeň, SOA Praha. **Stojí:** firewall / zákaz robotů; snímky uloží uživatel (eBadatelna: ZIP po registraci) |
 | `ahmp_search.sh`, `ahmp_scan.py` | Praha (matriky). `policie_prihlasky.py` **stojí** (zákaz robotů Národního archivu) |

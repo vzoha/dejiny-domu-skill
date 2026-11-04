@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Staré mapy z Archivu ČÚZK (ags.cuzk.gov.cz/archiv) bez prohlížeče: stabilní katastr, indikační skici, pozemkový katastr.
+"""Staré mapy z Archivu ČÚZK (ags.cuzk.gov.cz/archiv) bez prohlížeče: stabilní katastr, indikační skici, pozemkový katastr,
+seznam leteckých měřických snímků.
 
 Archiv ČÚZK je webová aplikace nad službami ArcGIS. Token pro ně vydává veřejná služba ČÚZK (stejně jako v aplikaci),
 nástroj si ho obstará sám a uloží na hodinu do pracovni/.cuzk_token.
@@ -8,10 +9,12 @@ Použití (z kořene projektu):
   cuzk_archiv.py listy "Horní Lhota 12" | lat,lon
       které listy stabilního katastru pokrývají místo: katastrální obec v roce 1827 (často jiná než dnes – malá ves
       bývala součástí sousední), originální mapa (om_SIGN_INV, rok reambulace, listy om_SOUB), císařský otisk
-      (cio_SIGN_INV) a indikační skica (S0X = předpona rastrů ve službě skici).
+      (cio_SIGN_INV), evidenční mapa (změny 1883–1956, je-li naskenovaná) a indikační skica (S0X = předpona
+      rastrů ve službě skici).
   cuzk_archiv.py rastry <sluzba> "vzor"
       rastry (listy) ve službě: stable = originální mapy a císařské otisky (vzor např. B2_a_4C_518),
-      skici = indikační skici (vzor = S0X bez „c|“, např. BUD286018270), nonstable = ostatní.
+      skici = indikační skici (vzor = S0X bez „c|“, např. BUD286018270), nonstable = ostatní
+      (mj. evidenční mapy, vzor např. B2_a_14C_1223-1).
       Vypíše id | název | rozměr listu (v jednotkách listu).
   cuzk_archiv.py prehled <sluzba> "vzor" <vystup.jpg> [sirka_px=600]
       všechny listy najednou v malém náhledu (pod každým id a název listu) – najdi ves, pak export výřezu.
@@ -26,6 +29,9 @@ Použití (z kořene projektu):
       pak listy + export. Výchozí poloměr 150 m, 1500 px. Vypíše i dnešní adresní body RÚIAN (čísla domů)
       v pixelech obrázku a s ImageMagickem je zakreslí do <vystup>_adresy.jpg: na které staré stavební parcele
       dnešní číslo stojí (ztotožnění domu, přečíslování).
+  cuzk_archiv.py lms "Horní Lhota 12" | lat,lon
+      které ročníky leteckých měřických snímků z 30.–60. let (armáda, © MO ČR) místo pokrývají – jen seznam.
+      Snímky si uživatel prohlédne v aplikaci Archiv ČÚZK; soubor je placený a jen pro vlastní potřebu (podminky.md).
 Ber ohled na server: stahuj jen listy a výřezy, které čteš. Výsledek ulož do dokumentů a dál vyrez.py + mapy.json.
 """
 import glob, json, math, os, re, shutil, subprocess, sys, time, urllib.parse, urllib.request
@@ -122,6 +128,9 @@ def listy(m):
         print(f"     → rastry stable \"{a.get('om_SIGN_INV', '')}\", listy {a.get('om_SOUB', '?')}")
         print(f"  císařský otisk: sign. {a.get('cio_SIGNATURA', '?')}, inv. č. {a.get('cio_INV_CISLO', '?')}, "
               f"{a.get('cio_DAT_OD', '?')}, listů {a.get('cio_LISTU_CELK', '?')} → rastry stable \"{a.get('cio_SIGN_INV', '')}\"")
+        if a.get("kme_SIGN_NOMEN"):
+            print(f"  evidenční mapa (změny do 20. stol.): sign. {a.get('kme_SIGNATURA', '?')}, inv. č. {a.get('kme_INV_CISLO', '?')}, "
+                  f"{a.get('kme_DAT_OD', '?')}–{a.get('kme_DAT_DO', '?')} → rastry nonstable \"{a['kme_SIGN_NOMEN']}\"")
         s0x = a.get("S0X", "").split("|")[-1]
         print("  indikační skica: " + (f"→ rastry skici \"{s0x}\"" if s0x else "není v kladu"))
 
@@ -193,16 +202,25 @@ def prehled(sluzba, vzor, out, sirka=600):
     print(f"{out} – {len(soubory) // 3} listů; pod náhledem je id pro export")
 
 
-def mapa(vrstva, m, out, polomer=150, px=1500):
-    lat, lon = misto(m)
-    px, r = int(px), float(polomer)
+def sjtsk(lat, lon):
+    """WGS 84 → S-JTSK (m). Bez transformace datumu 1623 by střed ujel o ~10 m."""
     g = json.dumps({"geometryType": "esriGeometryPoint", "geometries": [{"x": lon, "y": lat}]})
     p = get("https://ags.cuzk.gov.cz/arcgis/rest/services/Utilities/Geometry/GeometryServer/project",
-            {"inSR": 4326, "outSR": 5514, "geometries": g, "f": "json",   # 1623 = WGS 84 ↔ S-JTSK; bez ní střed ujede
-             "transformation": 1623, "transformForward": "false"})["geometries"][0]   # ~10 m, s bbox v 4326 i ~110 m
-    bbox = (p["x"] - r, p["y"] - r, p["x"] + r, p["y"] + r)   # v S-JTSK, aby šly do obrázku zakreslit adresní body
+            {"inSR": 4326, "outSR": 5514, "geometries": g, "f": "json",
+             "transformation": 1623, "transformForward": "false"})["geometries"][0]
+    return p["x"], p["y"]
+
+
+def obalka(bbox):
+    return ",".join(f"{v:.1f}" for v in bbox)
+
+
+def mapa(vrstva, m, out, polomer=150, px=1500):
+    px, r = int(px), float(polomer)
+    x, y = sjtsk(*misto(m))
+    bbox = (x - r, y - r, x + r, y + r)   # v S-JTSK (ne WGS 84: server by ho převedl bez datumu, ~110 m vedle)
     img = archiv(f"archiv_spojene_{vrstva}/MapServer/export", {
-        "bbox": ",".join(f"{v:.1f}" for v in bbox), "bboxSR": 5514, "imageSR": 5514,
+        "bbox": obalka(bbox), "bboxSR": 5514, "imageSR": 5514,
         "size": f"{px},{px}", "format": "jpg", "dpi": 96, "f": "image"}, binary=True)
     save_jpeg(img, out)
     print(f"{out} – zkontroluj, jestli není bílý (vrstva tu nemusí být)")
@@ -211,18 +229,18 @@ def mapa(vrstva, m, out, polomer=150, px=1500):
 
 def adresy(bbox, px, out):
     """Dnešní adresní body RÚIAN (číslo domovní) v pixelech obrázku: na které staré parcele dnešní číslo stojí."""
-    f = get(f"{RUIAN}/1/query", {"geometry": ",".join(f"{v:.1f}" for v in bbox), "geometryType": "esriGeometryEnvelope",
+    f = get(f"{RUIAN}/1/query", {"geometry": obalka(bbox), "geometryType": "esriGeometryEnvelope",
                                  "inSR": 5514, "outSR": 5514, "outFields": "cislodomovni,adresa", "f": "json"}).get("features", [])
     body = []
     for a in f:
         x = round((a["geometry"]["x"] - bbox[0]) / (bbox[2] - bbox[0]) * px)
         y = round((bbox[3] - a["geometry"]["y"]) / (bbox[3] - bbox[1]) * px)
-        ev = "ev." if a["attributes"].get("adresa", "").startswith("č.ev.") else ""   # evidenční číslo (chata)
-        body.append((ev + str(a["attributes"].get("cislodomovni")), x, y))
+        evidencni = a["attributes"].get("adresa", "").startswith("č.ev.")   # chaty: číslo evidenční místo popisného
+        body.append((evidencni, a["attributes"]["cislodomovni"], x, y))
     if not body:
         return print("adresní body RÚIAN: žádné v obrázku")
-    print("adresní body RÚIAN (dnešní čp., pixel x,y v obrázku):",
-          ", ".join(f"{c} {x},{y}" for c, x, y in sorted(body, key=lambda b: (b[0].startswith("ev"), int(b[0].removeprefix("ev.") or 0)))))
+    body = [(("ev." if ev else "") + str(c), x, y) for ev, c, x, y in sorted(body)]   # nejdřív čp., pak č. ev.
+    print("adresní body RÚIAN (dnešní čp., pixel x,y v obrázku):", ", ".join(f"{c} {x},{y}" for c, x, y in body))
     mg = (shutil.which("magick") or next(iter(glob.glob(r"C:\Program Files\ImageMagick*\magick.exe")), None)
           or (os.name != "nt" and shutil.which("convert")))   # ImageMagick 6 bez magick; na Windows je convert.exe jiný program
     if not mg:
@@ -233,8 +251,25 @@ def adresy(bbox, px, out):
                    "-stroke", "white", "-strokewidth", "4", "-annotate", f"+{x + 8}+{y - 6}", c,
                    "-stroke", "none", "-annotate", f"+{x + 8}+{y - 6}", c]
     cil = os.path.splitext(out)[0] + "_adresy.jpg"
-    subprocess.run([mg, out, "-pointsize", "22"] + kresba + [cil], check=False)
+    if subprocess.run([mg, out, "-pointsize", "22"] + kresba + [cil]).returncode:
+        return print("(ImageMagick body nezakreslil, polohy výše)")
     print(f"{cil} – modře dnešní čísla domů (pracovní obrázek; PK sedí na dnešní mapu zpravidla do pár metrů)")
+
+
+def lms(m):
+    """Ročníky leteckých měřických snímků nad místem (katalog, žádné obrázky)."""
+    x, y = sjtsk(*misto(m))
+    d = archiv("LMS_1930_40_50_60s/ImageServer/query", {
+        "geometry": json.dumps({"x": x, "y": y, "spatialReference": {"wkid": 5514}}), "geometryType": "esriGeometryPoint",
+        "spatialRel": "esriSpatialRelIntersects", "outFields": "Name", "returnGeometry": "false", "f": "json"})
+    rocniky = {}
+    for f in d.get("features", []):   # Name = mise.rok.řada.snímek, např. WMSA08.1949.TSVI81.04066
+        rocniky.setdefault(f["attributes"]["Name"].split(".")[1], []).append(f["attributes"]["Name"])
+    if not rocniky:
+        return print("letecké měřické snímky: místo nepokrývají")
+    for rok, snimky in sorted(rocniky.items()):
+        print(f"{rok}: {len(snimky)}× ({', '.join(sorted(snimky)[:3])}{', …' if len(snimky) > 3 else ''})")
+    print(f"Prohlédni v aplikaci: {REFERER}?start=lms (snímky jen prohlížet a popsat, výřez do výstupu ne)")
 
 
 if __name__ == "__main__":
@@ -249,5 +284,7 @@ if __name__ == "__main__":
         prehled(*a[1:5])
     elif len(a) >= 4 and a[0] == "mapa":
         mapa(*a[1:6])
+    elif len(a) >= 2 and a[0] == "lms":
+        lms(a[1])
     else:
         sys.exit(__doc__)
