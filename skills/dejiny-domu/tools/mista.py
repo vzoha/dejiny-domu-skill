@@ -59,15 +59,20 @@ def ruian_q(vrstva, where, pole, geo=False):
 def adresni_mista(dotaz, pole):
     """Adresní místa RÚIAN pro „Osada čp“, „Ulice čp“, „Ulice čp/čo“ i „Ulice čo“."""
     d = dotaz.replace(chr(39), "")
-    adr = ruian_q(1, f"adresa LIKE '{d},%'", pole, True)
     ulice, _, cislo = d.rpartition(" ")
-    if not adr and ulice and cislo.isdigit():   # „Ulice čo“ – v RÚIAN je „Ulice čp/čo, Část obce, …“
-        adr = ruian_q(1, f"adresa LIKE '{ulice} %/{cislo},%'", pole, True)
+    dotazy = [f"adresa LIKE '{d},%'"]
+    if ulice and cislo.isdigit():
+        dotazy += [f"adresa LIKE '{ulice} %/{cislo},%'",   # „Ulice čo“ – v RÚIAN je „Ulice čp/čo, Část obce, …“
+                   # obec bez ulic: „č.p. 29, 39301 Pavlov“; osada pod jinou obcí: „Švihov 47, 53825 Miřetice“
+                   f"adresa LIKE 'č.p. {cislo}, % {ulice}'", f"adresa LIKE 'č.p. {cislo}, % {ulice},%'"]
+    adr, videno = [], set()
+    for q in dotazy:   # všechny tvary, ne jen první: „Hlína 1, Horka“ i „č.p. 1, 66491 Hlína“ jsou různé vsi
+        for a in ruian_q(1, q, pole, True):
+            if a["attributes"].get("adresa", id(a)) not in videno:
+                videno.add(a["attributes"].get("adresa", id(a)))
+                adr.append(a)
     if not adr and ulice and cislo.isdigit():
-        # obec bez ulic: „č.p. 29, 39301 Pavlov“; osada pod jinou obcí: „Švihov 47, 53825 Miřetice“
-        adr = (ruian_q(1, f"adresa LIKE 'č.p. {cislo}, % {ulice}'", pole, True)
-               or ruian_q(1, f"adresa LIKE 'č.p. {cislo}, % {ulice},%'", pole, True)
-               or ruian_q(1, f"adresa LIKE '%{ulice} {cislo}, %'", pole, True))
+        adr = ruian_q(1, f"adresa LIKE '%{ulice} {cislo}, %'", pole, True)
     return adr
 
 
@@ -75,7 +80,9 @@ def ruian(dotaz):
     adr = adresni_mista(dotaz, "adresa,stavebniobjekt")
     if not adr:
         sys.exit(f"RÚIAN „{dotaz}“ nezná – zkus jiný tvar (\"Osada čp\", \"Ulice čp\") nebo jen \"Osada\" v nahlizenidokn.cuzk.cz")
-    for a in adr[:5]:
+    if len(adr) > 1:
+        print(f"POZOR: {len(adr)} míst se stejnou adresou – vyber podle PSČ a okresu ze zadání (fara, panství, archiv)")
+    for a in adr[:8]:
         at, g = a["attributes"], a["geometry"]
         print(f"{at['adresa']}   lat={g['y']:.5f}, lon={g['x']:.5f}")
         so = ruian_q(3, f"kod={at['stavebniobjekt']}", "identifikacniparcela")
@@ -99,7 +106,8 @@ def okoli(misto, polomer=80):
         if not f:
             sys.exit(f"RÚIAN „{misto}“ nezná – zadej „Ulice čp/čo“ nebo lat,lon.")
         lat, lon = f[0]["geometry"]["y"], f[0]["geometry"]["x"]
-        print("střed:", f[0]["attributes"]["adresa"])
+        print("střed:", f[0]["attributes"]["adresa"]
+              + (f"  (POZOR: {len(f)} míst se stejnou adresou, jiné zadej jako lat,lon z mista.py ruian)" if len(f) > 1 else ""))
     dlat = polomer / 111320
     dlon = dlat / math.cos(math.radians(lat))
     q = urllib.parse.urlencode({"geometry": f"{lon - dlon},{lat - dlat},{lon + dlon},{lat + dlat}",
@@ -129,7 +137,8 @@ def parcely(misto, polomer=60, vse=False):
         if not f:
             sys.exit(f"RÚIAN „{misto}“ nezná – zadej lat,lon.")
         lat, lon = f[0]["geometry"]["y"], f[0]["geometry"]["x"]
-        print("střed:", f[0]["attributes"]["adresa"])
+        print("střed:", f[0]["attributes"]["adresa"]
+              + (f"  (POZOR: {len(f)} míst se stejnou adresou, jiné zadej jako lat,lon z mista.py ruian)" if len(f) > 1 else ""))
     dlat = polomer / 111320
     dlon = dlat / math.cos(math.radians(lat))
     q = {"geometry": f"{lon - dlon},{lat - dlat},{lon + dlon},{lat + dlat}", "geometryType": "esriGeometryEnvelope",
