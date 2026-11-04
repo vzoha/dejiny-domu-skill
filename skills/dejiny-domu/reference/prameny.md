@@ -95,8 +95,9 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   ověř přes `mapa pk` s adresními body (níže). Čti z ní (čísla domů, držitelé), ale výřez nepřikládej do e-mailu, PDF ani na web bez souhlasu archivu (`podminky.md`). Přikládej originální
   mapu nebo pozemkový katastr.
 - **Pozemkový katastr** (`mapa pk "Osada čp" výstup.jpg`) je georeferencovaný v S-JTSK: sedí na dnešní mapu, takže
-  přes RÚIAN budovy jde ztotožnit starou parcelu s dnešním domem. Bývá ale posunutý o 60–100 m (často k SV):
-  `mista.py parcely "Osada čp"` vypíše dnešní stavební parcely kolem domu s odstupem v metrech, podle jejich čísel
+  přes RÚIAN budovy jde ztotožnit starou parcelu s dnešním domem, zpravidla do pár metrů. (Posun 60–100 m k SV, který
+  tu dřív stál, byl chybou nástroje: výřez se zadával ve WGS 84 a server ho do S-JTSK převedl bez transformace datumu.
+  Výřezy z verzí do 0.4.0 proto nemají dům uprostřed.) `mista.py parcely "Osada čp"` vypíše dnešní stavební parcely kolem domu s odstupem v metrech, podle jejich čísel
   dům na mapě najdeš. `mapa pk` navíc vypíše a zakreslí dnešní adresní body RÚIAN (`…_adresy.jpg`): na které
   staré stavební parcele dnešní čp. stojí. **Dům na staré mapě takhle vždy ztotožni, než napíšeš, kde stojí** – ne podle
   čísla parcely nalezeného na skice nebo otisku (stejné číslo může mít pozemková parcela jinde ve vsi). Čísla stavebních parcel se často drží od stabilního katastru dodnes. Spojené vrstvy `originalni_mapy`

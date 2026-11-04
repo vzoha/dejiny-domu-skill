@@ -14,7 +14,7 @@ Použití:
   mista.py okoli <"Ulice čp/čo" | lat,lon> [polomer_m=80]
   mista.py parcely <"Osada čp" | lat,lon> [polomer_m=60] [vse]
       dnešní stavební parcely kolem domu s odstupem v metrech (E/N = na východ/sever). Podle nich najdeš dům
-      na staré mapě a dorovnáš posun pozemkového katastru (bývá 60–100 m k SV). „vse“ = i pozemkové parcely.
+      na staré mapě (stejná čísla stavebních parcel). „vse“ = i pozemkové parcely.
       všechny dnešní adresy v okolí (RÚIAN) seřazené podle čp. – rohové domy mají dvě adresy; podklad pro tabulku
       adres domu v čase a pro rozlišení domů se stejnou starou adresou (reference/prameny.md → Čísla domů).
   mista.py pridej "Název" ["dotaz pro vyhledání"] ["popis na mapě"]

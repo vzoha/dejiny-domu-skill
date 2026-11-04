@@ -67,7 +67,8 @@ def sjtsk(lat, lon):
     for srv in (B + "/arcgis", "https://ags.cuzk.gov.cz/arcgis"):
         try:
             p = get(f"{srv}/rest/services/Utilities/Geometry/GeometryServer/project?"
-                    + urllib.parse.urlencode({"inSR": 4326, "outSR": 5514, "geometries": g, "f": "json"}))["geometries"][0]
+                    + urllib.parse.urlencode({"inSR": 4326, "outSR": 5514, "geometries": g, "f": "json",
+                                                     "transformation": 1623, "transformForward": "false"}))["geometries"][0]
             return p["x"], p["y"]
         except Exception:
             continue

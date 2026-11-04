@@ -324,7 +324,7 @@ Nástroje pro ně hotové nejsou. Postupuj takto a výsledek zapiš do `STAV.md`
 ## Staré mapy a drobné památky (pro mapu na webu)
 - **2. vojenské mapování (1836–52)**: WMS `https://gis.cenia.cz/mapcache/II_vojenske_mapovani/wms` (WMS 1.1.1, vrstva
   `II_vojenske_mapovani`, jen EPSG:5514). Výřez: střed převeď z lat/lon na S-JTSK přes
-  `https://ags.cuzk.gov.cz/arcgis/rest/services/Utilities/Geometry/GeometryServer/project` (`inSR=4326`, `outSR=5514`,
+  `https://ags.cuzk.gov.cz/arcgis/rest/services/Utilities/Geometry/GeometryServer/project` (`inSR=4326`, `outSR=5514`, `transformation=1623`, `transformForward=false` – bez ní ujede o ~10 m,
   `geometries={"geometryType":"esriGeometryPoint","geometries":[{"x":lon,"y":lat}]}`, `f=json`), pak `GetMap` s `BBOX` ±1300 m,
   `WIDTH=1800&HEIGHT=1200`, a `vyrez.py <obrázek> mapa_<obec>_1845_2_vojenske_mapovani 0,0,1,1`. Na jednotlivé domy podrobnost
   nestačí, ale ukáže ves, cesty a mlýny. Starší adresa `geoportal.gov.cz/ArcGIS/services/CENIA/…` hlásí údržbu a oldmaps.geolab.cz

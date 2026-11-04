@@ -198,7 +198,8 @@ def mapa(vrstva, m, out, polomer=150, px=1500):
     px, r = int(px), float(polomer)
     g = json.dumps({"geometryType": "esriGeometryPoint", "geometries": [{"x": lon, "y": lat}]})
     p = get("https://ags.cuzk.gov.cz/arcgis/rest/services/Utilities/Geometry/GeometryServer/project",
-            {"inSR": 4326, "outSR": 5514, "geometries": g, "f": "json"})["geometries"][0]
+            {"inSR": 4326, "outSR": 5514, "geometries": g, "f": "json",   # 1623 = WGS 84 ↔ S-JTSK; bez ní střed ujede
+             "transformation": 1623, "transformForward": "false"})["geometries"][0]   # ~10 m, s bbox v 4326 i ~110 m
     bbox = (p["x"] - r, p["y"] - r, p["x"] + r, p["y"] + r)   # v S-JTSK, aby šly do obrázku zakreslit adresní body
     img = archiv(f"archiv_spojene_{vrstva}/MapServer/export", {
         "bbox": ",".join(f"{v:.1f}" for v in bbox), "bboxSR": 5514, "imageSR": 5514,
@@ -233,7 +234,7 @@ def adresy(bbox, px, out):
                    "-stroke", "none", "-annotate", f"+{x + 8}+{y - 6}", c]
     cil = os.path.splitext(out)[0] + "_adresy.jpg"
     subprocess.run([mg, out, "-pointsize", "22"] + kresba + [cil], check=False)
-    print(f"{cil} – modře dnešní čísla domů (pracovní obrázek, posun PK bývá 0–100 m, porovnej s cestami)")
+    print(f"{cil} – modře dnešní čísla domů (pracovní obrázek; PK sedí na dnešní mapu zpravidla do pár metrů)")
 
 
 if __name__ == "__main__":
