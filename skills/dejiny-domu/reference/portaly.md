@@ -12,7 +12,7 @@ Matriky jsou online u osmi státních archivů – podle toho, **kde dům stojí
 | SOA Litoměřice | severní Čechy | Digitální badatelna – digi.soalitomerice.cz | **částečně – `soal_zoomify.py`** (knihu najdi v prohlížeči) |
 | AHMP | hl. m. Praha | katalog.ahmp.cz (Pragapublica) | **ano – `ahmp_search.sh`, `ahmp_scan.py`** |
 | MZA Brno | jižní Morava, Vysočina z části | Acta Publica – www.mza.cz/actapublica | **částečně – `mza.py`** hledá knihy, snímek uloží uživatel (ALTCHA) |
-| MZA Brno – gruntovní a pozemkové knihy | totéž | ARON MZA – www.mza.cz/aron | **ručně** – hledá a čte uživatel v prohlížeči (skriptu API vrací 403) |
+| MZA Brno – gruntovní a pozemkové knihy | totéž | ARON MZA – www.mza.cz/aron | **prohlížeč** – katalog v `agent-browser --headed` tempem člověka nebo uživatel ručně; skriptu API vrací 403 |
 | ZA Opava | severní Morava a Slezsko, Olomoucko a Litovelsko | Digitální badatelna – digi.archives.cz/da/ | **částečně – `soal_zoomify.py`** (jen s prohlížečem, CAPTCHU řeší uživatel) |
 | Národní archiv | židovské matriky (HBMa), soupisy; pražské policejní přihlášky 1850–1914 | digitalnibadatelna.nacr.cz; digi.nacr.cz/prihlasky2 | **ručně** – robots.txt zakazuje roboty |
 
@@ -169,11 +169,17 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
 ## MZA Brno – gruntovní a pozemkové knihy (ARON MZA) – ručně
 - Gruntovní knihy, knihy listin (smluv) statků, pozemkové knihy obcí, josefinský katastr, vceňovací operáty stabilního
   katastru a fondy velkostatků jsou na **www.mza.cz/aron**, ne v Acta Publica. Stejný software jako ARON SOA Zámrsk.
-- Skriptu (`aron_search.py` s adresou MZA) vrátilo API HTTP 403 (11/2026), proto hledá uživatel v prohlížeči,
-  ty radíš a čteš snímky obrazovky. Neobcházej to jiným nástrojem.
+- Skriptu (`aron_search.py` s adresou MZA) vrátilo API HTTP 403 (11/2026), skripty a API proto ne. Katalog jde
+  procházet v prohlížeči: `agent-browser --headed`, tempem člověka (pauzy mezi kroky), jen hledání a knihy k domu,
+  nic hromadně. Nebo hledá uživatel sám a posílá snímky obrazovky. Objeví-li se ALTCHA nebo blok, přestaň.
+- Přímá adresa hledání s filtrem jen digitalizáty: `https://www.mza.cz/aron/arch-desc?p=1&s=50&q=<obec>&f=%5B%7B%22source%22%3A%22DIGITAL%22%2C%22value%22%3A%5B%22Ano%22%5D%7D%5D`.
+  Hledá se celými slovy v popisu: „Staré Město Telč“ najde gruntovní knihy předměstí, „gruntovní Telč“ nic.
+  Výpis přečteš přes `agent-browser get text body`.
 - Postup: záložka **Archiválie** → hledat název obce → vlevo filtr **Digitální podoba: Ano** → **Druh archiválie:
   pozemková kniha** (příp. úřední kniha, mapa). Typický výsledek: pozemková kniha obce (fond Pozemkové knihy,
   „Jednotlivé obce“, ~1818–1885) a **Kniha listin** celého statku (fond Pozemkové knihy, „Celý statek“, od pol. 18. stol.).
+  Města a obce mají knihy i ve fondech SOkA („Archiv města Telč“: kniha trhová 1606–1753, gruntovní 1758–1887;
+  „Archiv obce …“: knihy pozemkové držby 1787–1879).
   Celé hledání bez filtru ukáže i nedigitalizované archiválie (karton jen v badatelně) a panství obce v popisu map.
 - Podmínky jako u Acta Publica: snímky dál využít jen se souhlasem MZA (`podminky.md`), do výstupu přepis a odkaz.
 
