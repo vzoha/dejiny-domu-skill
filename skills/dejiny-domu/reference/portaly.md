@@ -289,6 +289,19 @@ A když osoba „chybí“ v očekávaných matrikách (stěhovala se se službo
 - Výstřižky jsou skvělé na web: ulož do `dokumenty/noviny/`, přes `vyrez.py` a do `dokumenty.json`.
 - Pořadí: nejdřív matriky; noviny, když chybí stopa kvůli stěhování, nebo když jde o úředníka/vojáka a chceme příběh.
 
+## Dějiny obce v Krameriovi (staré knihy volně) – `tools/kramerius.py`
+`python3 -I tools/kramerius.py 'text_ocr:Obec AND dostupnost:public' 50` – jen volně čitelná díla. Pro ves vypadnou:
+- **edice listin a urbářů** (Archiv český aj.) – nejstarší zmínky, vrchnosti, poddaní;
+- **topografie**: Sommer, *Das Königreich Böhmen* (1833–49, po krajích; počet domů a obyvatel, fara, škola, mlýn,
+  vrchnost), Palacký, *Popis království českého* (1848); **Seznamy míst** (1878–1913: obec, fara, pošta, škola);
+- okresní vlastivědy a čítanky.
+
+Hledej **všechny podoby názvu**: česky i německy, staré pravopisy, a přes sousední nebo katastrální obec – prameny
+se liší (Lniště: mapa 1827 „Ellnischen“, Sommer „Elnischt“; našel se až přes sousední Březí, „Pürchen“). V jedné knize:
+`AND root_title:"Das Königreich Böhmen"`. Šum: obecná slova („lniště“ = lněné pole) a stejnojmenné vsi jinde –
+kontroluj okres a sousední obce v úryvku. **OCR v edicích plete římské číslice** (roky, výměry, peníze): čísla ověř
+na obrázku stránky. Zápis do `OBEC_UDALOSTI` se `zdroj` a stranou.
+
 ## Ostatní portály – obecný postup
 Nástroje pro ně hotové nejsou. Postupuj takto a výsledek zapiš do `STAV.md`, ať to příště víš:
 1. Otevři portál v prohlížeči sám (skill `agent-browser`, pasti v `SKILL.md` → Webové aplikace bez API; Claude in Chrome).
