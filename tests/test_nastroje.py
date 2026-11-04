@@ -4,7 +4,7 @@ Spuštění z kořene repa:  python3 -m unittest discover tests
 Bez sítě a bez závislostí (jen standardní knihovna). Každý test si založí projekt ze šablony skillu v dočasné
 složce a pracuje se smyšlenými daty (Horní Lhota).
 """
-import json, os, shutil, subprocess, sys, tempfile, unittest
+import json, os, shutil, subprocess, sys, tempfile, time, unittest
 
 SKILL = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "skills", "dejiny-domu")
 # nejmenší platný JPEG (1×1 px) – export ho jen kopíruje, rozměry nezjišťuje
@@ -172,6 +172,58 @@ class TestZapis(Projekt):
         self.assertNotEqual(p.returncode, 0)
         self.assertIn("není složka projektu", p.stdout + p.stderr)
         self.assertFalse(os.path.exists(os.path.join(SKILL, "data")))
+
+
+class TestSoubeh(Projekt):
+    """Souběžní pomocníci: zámek v zapis.py a nástroje, které do data/ zapisují přes něj."""
+
+    def py(self, kod, cekat=True):
+        cmd = [sys.executable, "-I", "-X", "utf8", "-c", "import sys; sys.path.insert(0, 'tools')\n" + kod]
+        if not cekat:
+            return subprocess.Popen(cmd, cwd=self.root, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        return subprocess.run(cmd, cwd=self.root, capture_output=True, text=True, encoding="utf-8")
+
+    def test_zapis_pocka_na_zamek_a_cizi_zmenu_neprepise(self):
+        drzi = self.py("import zapis, time\nwith zapis.zamek('svazky'):\n    print('mam', flush=True)\n    time.sleep(1)\n"
+                       "    zapis.zamek = lambda n: __import__('contextlib').nullcontext()\n"
+                       "    zapis.zapis('svazky', 'prvni', {'svazek': 'A'})", cekat=False)
+        self.assertEqual(drzi.stdout.readline().strip(), "mam")
+        druhy = subprocess.Popen([sys.executable, "-I", self.path("tools", "zapis.py"), "svazky", "druhy", "-"], cwd=self.root,
+                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        druhy.stdin.write(b'{"svazek": "B"}')
+        druhy.stdin.close()
+        time.sleep(0.4)
+        self.assertIsNone(druhy.poll(), "zapis.py nečekal na zámek")
+        self.assertEqual(drzi.wait(), 0, drzi.stderr.read())
+        self.assertEqual(druhy.wait(), 0, druhy.stderr.read())
+        self.assertEqual(sorted(self.data("svazky")), ["druhy", "prvni"])
+
+    def test_drzeny_zamek_skonci_hlaskou(self):
+        drzi = self.py("import zapis, time\nwith zapis.zamek('svazky'):\n    print('mam', flush=True)\n    time.sleep(5)",
+                       cekat=False)
+        self.assertEqual(drzi.stdout.readline().strip(), "mam")
+        p = self.py("import zapis; zapis.CEKANI_NA_ZAMEK = 0.3; zapis.zapis('svazky', 's1', {})")
+        drzi.kill()
+        drzi.communicate()
+        self.assertNotEqual(p.returncode, 0)
+        self.assertIn("zapisuje jiný proces", p.stderr)
+
+    def test_svazek_z_nastroje_necha_ostatni_svazky_doslova(self):
+        with open(self.path("data", "svazky.json"), "w", encoding="utf-8") as f:
+            f.write('{"rucni": {"svazek": "Gruntovní kniha", "popis": "zapsal uživatel"}}\n')
+        p = self.py("import ebadatelna; ebadatelna.zapis_svazek('ebad_1', {'svazek': 'Matrika N 1800–1850'})")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertTrue(self.text("data", "svazky.json").startswith('{"rucni": {"svazek": "Gruntovní kniha", "popis": "zapsal uživatel"}'))
+        self.assertEqual(self.data("svazky")["ebad_1"], {"svazek": "Matrika N 1800–1850"})
+
+    def test_mista_zapise_jen_zmenene_misto(self):
+        self.zapis("mista", "Kaple", {"lat": 49.1, "lon": 15.1, "popis": "barokní"})
+        p = self.py("import mista; mista.geocode = lambda q: (49.2, 15.2, 'osm/1')\n"
+                    "sys.argv = ['mista.py', 'pridej', 'Mlýn']; mista.main()")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        d = self.data("mista")
+        self.assertEqual(d["Kaple"], {"lat": 49.1, "lon": 15.1, "popis": "barokní"})
+        self.assertEqual((d["Mlýn"]["lat"], d["Mlýn"]["osm"]), (49.2, "osm/1"))
 
 
 class TestKontrola(Projekt):

@@ -134,16 +134,13 @@ if __name__ == "__main__":
         print("scans:", len(tiles))
         sys.exit(0)
     if sys.argv[2] == "svazek":
-        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        path = os.path.join(root, "data", "svazky.json")
-        sv = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
+        import zapis   # až tady: zapis.py mimo projekt skončí, stahování snímků má jít i bez projektu
         fond, _, rest = vol["name"].partition(": ")
-        sv[apu[:8]] = dict(archiv=fond if rest else "", portal="ARON", svazek=rest or vol["name"],
-                           popis=(vol.get("description") or "")[:300], snimku=len(tiles),
-                           url=f"https://aron.vychodoceskearchivy.cz/apu/{vol['id']}")
-        with open(path, "w", encoding="utf-8", newline="\n") as f:
-            json.dump(sv, f, ensure_ascii=False, indent=1)
-        print(apu[:8], "->", sv[apu[:8]]["svazek"])
+        nazev = rest or vol["name"]
+        zapis.zapis("svazky", apu[:8], dict(archiv=fond if rest else "", portal="ARON", svazek=nazev,
+                                            popis=(vol.get("description") or "")[:300], snimku=len(tiles),
+                                            url=f"https://aron.vychodoceskearchivy.cz/apu/{vol['id']}"))
+        print(apu[:8], "->", nazev)
         sys.exit(0)
     if sys.argv[2] == "link":
         n = int(sys.argv[3])

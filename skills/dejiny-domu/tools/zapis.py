@@ -10,8 +10,10 @@ Použití (z kořene projektu):
     vstup.json soubor s jedním objektem JSON (napiš ho nástrojem Write do pracovni/), „-“ = ze vstupu
     --sloucit  jen změní / doplní uvedená pole, ostatní pole položky nechá
 Položka se stejným klíčem se nahradí, jinak se přidá na konec. Python skripty ani `sed -i` na data nepoužívej.
+Souběžní pomocníci se střídají přes zámek (pracovni/.zamky/), žádný zápis se neztratí. Ostatní nástroje zapisují
+do data/ přes funkci zapis() odsud.
 """
-import json, os, re, sys
+import contextlib, json, os, re, sys, tempfile, time
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -24,6 +26,7 @@ SEZNAMY = {"zaznamy": "klic", "dokumenty": "img", "mapy": "img"}   # soubory se 
 SLOVNIKY = {"svazky", "prepisy", "zvyrazneni", "mista", "web"}
 LIBOVOLNE = {"web"}   # hodnota nemusí být objekt (web.json: „nazev“ je text, „zajimavosti_na_uvodu“ seznam)
 WS = re.compile(r"\s*")
+CEKANI_NA_ZAMEK = 60   # s; zámek drží jen pár milisekund, déle = zaseknutý proces
 
 
 def polozky(text):
@@ -54,17 +57,40 @@ def jako(text, s, e, v):
     return json.dumps(v, ensure_ascii=False, indent=1).replace("\n", "\n" + odsazeni)
 
 
-def main():
-    args = [a for a in sys.argv[1:] if a != "--sloucit"]
-    sloucit = "--sloucit" in sys.argv
-    if len(args) != 3 or args[0] not in {*SEZNAMY, *SLOVNIKY}:
-        sys.exit(__doc__)
-    nazev, klic, vstup = args
-    path = os.path.join(ROOT, "data", nazev + ".json")
-    try:
-        obj = json.load(sys.stdin if vstup == "-" else open(vstup, encoding="utf-8-sig"))
-    except (OSError, ValueError) as e:
-        sys.exit(f"Vstup {vstup} není platný JSON: {e}")
+@contextlib.contextmanager
+def zamek(nazev):
+    """Výhradní přístup k data/<nazev>.json napříč procesy; systém zámek uvolní i po pádu procesu."""
+    slozka = os.path.join(ROOT, "pracovni", ".zamky")
+    os.makedirs(slozka, exist_ok=True)
+    with open(os.path.join(slozka, nazev + ".lock"), "a+b") as f:
+        if os.name == "nt":
+            import msvcrt
+            zamkni = lambda: msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
+            odemkni = lambda: msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+            zamkni = lambda: fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            odemkni = lambda: fcntl.flock(f, fcntl.LOCK_UN)
+        f.seek(0)   # msvcrt zamyká bajty od aktuální pozice – zamknout i odemknout musí stejný bajt
+        konec = time.time() + CEKANI_NA_ZAMEK
+        while True:
+            try:
+                zamkni()
+                break
+            except OSError:
+                if time.time() > konec:
+                    sys.exit(f"data/{nazev}.json zapisuje jiný proces déle než {CEKANI_NA_ZAMEK} s – "
+                             "zkontroluj, jestli nějaký nevisí, a zkus to znovu.")
+                time.sleep(0.05)
+        try:
+            yield
+        finally:
+            f.seek(0)
+            odemkni()
+
+
+def zapis(nazev, klic, obj, sloucit=False):
+    """Přidá nebo nahradí položku `klic` v data/<nazev>.json; vrací True, když ji přidal."""
     if not isinstance(obj, dict) and nazev not in LIBOVOLNE:
         sys.exit("Vstup musí být jeden objekt JSON ({…}).")
     if sloucit and not isinstance(obj, dict):
@@ -72,39 +98,58 @@ def main():
     seznam = nazev in SEZNAMY
     if seznam and obj.setdefault(SEZNAMY[nazev], klic) != klic:
         sys.exit(f"Klíč „{klic}“ nesedí s „{SEZNAMY[nazev]}“ ve vstupu („{obj[SEZNAMY[nazev]]}“).")
-    text = open(path, encoding="utf-8-sig").read() if os.path.exists(path) else ""
+    path = os.path.join(ROOT, "data", nazev + ".json")
+    with zamek(nazev):   # čtení i zápis pod jedním zámkem, jinak by souběžný zápis přepsal cizí změnu
+        text = open(path, encoding="utf-8-sig").read() if os.path.exists(path) else ""
+        try:
+            data = json.loads(text) if text.strip() else ([] if seznam else {})
+            if not isinstance(data, list if seznam else dict):
+                raise ValueError("čekal jsem " + ("seznam [ … ]" if seznam else "slovník { … }"))
+        except ValueError as e:
+            sys.exit(f"data/{nazev}.json nejde přečíst ({e}) – oprav ho nejdřív (git diff ukáže poslední změnu).")
+
+        poz = polozky(text) if data else []
+        if seznam:
+            idx = next((n for n, x in enumerate(data) if isinstance(x, dict) and x.get(SEZNAMY[nazev]) == klic), None)
+        else:
+            idx = next((n for n, (k, _, _) in enumerate(poz) if k == klic), None)
+        stare = None if idx is None else (data[idx] if seznam else data[klic])
+        nove = {**stare, **obj} if sloucit and isinstance(stare, dict) else obj
+        if not poz:   # prázdný nebo nový soubor
+            text = json.dumps([nove] if seznam else {klic: nove}, ensure_ascii=False, indent=1) + "\n"
+        elif idx is not None:   # nahradit jen text té jedné položky, zbytek souboru zůstane doslova
+            _, s, e = poz[idx]
+            text = text[:s] + jako(text, s, e, nove) + text[e:]
+        else:   # přidat za poslední položku ve stejném stylu
+            _, s, e = poz[-1]
+            radek = text[text.rfind("\n", 0, s) + 1:s]
+            odsazeni = radek[:len(radek) - len(radek.lstrip())]
+            text = (text[:e] + ",\n" + odsazeni + ("" if seznam else json.dumps(klic, ensure_ascii=False) + ": ")
+                    + jako(text, s, e, nove) + text[e:])
+        json.loads(text)   # pojistka: výsledek musí být platný JSON
+
+        fd, tmp = tempfile.mkstemp(prefix=f".{nazev}_", suffix=".tmp", dir=os.path.dirname(path))
+        try:
+            with open(fd, "w", encoding="utf-8", newline="\n") as f:
+                f.write(text)
+            os.replace(tmp, path)   # celý soubor naráz – při chybě nezůstane rozepsaný
+        finally:
+            if os.path.exists(tmp):
+                os.remove(tmp)
+        return idx is None
+
+
+def main():
+    args = [a for a in sys.argv[1:] if a != "--sloucit"]
+    if len(args) != 3 or args[0] not in {*SEZNAMY, *SLOVNIKY}:
+        sys.exit(__doc__)
+    nazev, klic, vstup = args
     try:
-        data = json.loads(text) if text.strip() else ([] if seznam else {})
-        if not isinstance(data, list if seznam else dict):
-            raise ValueError("čekal jsem " + ("seznam [ … ]" if seznam else "slovník { … }"))
-    except ValueError as e:
-        sys.exit(f"data/{nazev}.json nejde přečíst ({e}) – oprav ho nejdřív (git diff ukáže poslední změnu).")
-
-    poz = polozky(text) if data else []
-    if seznam:
-        idx = next((n for n, x in enumerate(data) if isinstance(x, dict) and x.get(SEZNAMY[nazev]) == klic), None)
-    else:
-        idx = next((n for n, (k, _, _) in enumerate(poz) if k == klic), None)
-    stare = None if idx is None else (data[idx] if seznam else data[klic])
-    nove = {**stare, **obj} if sloucit and isinstance(stare, dict) else obj
-    if not poz:   # prázdný nebo nový soubor
-        text = json.dumps([nove] if seznam else {klic: nove}, ensure_ascii=False, indent=1) + "\n"
-    elif idx is not None:   # nahradit jen text té jedné položky, zbytek souboru zůstane doslova
-        _, s, e = poz[idx]
-        text = text[:s] + jako(text, s, e, nove) + text[e:]
-    else:   # přidat za poslední položku ve stejném stylu
-        _, s, e = poz[-1]
-        radek = text[text.rfind("\n", 0, s) + 1:s]
-        odsazeni = radek[:len(radek) - len(radek.lstrip())]
-        text = (text[:e] + ",\n" + odsazeni + ("" if seznam else json.dumps(klic, ensure_ascii=False) + ": ")
-                + jako(text, s, e, nove) + text[e:])
-    json.loads(text)   # pojistka: výsledek musí být platný JSON
-
-    tmp = path + ".tmp"
-    with open(tmp, "w", encoding="utf-8", newline="\n") as f:
-        f.write(text)
-    os.replace(tmp, path)   # celý soubor naráz – při chybě nezůstane rozepsaný
-    print(f"data/{nazev}.json: {'přidáno' if idx is None else 'změněno'} „{klic}“")
+        obj = json.load(sys.stdin if vstup == "-" else open(vstup, encoding="utf-8-sig"))
+    except (OSError, ValueError) as e:
+        sys.exit(f"Vstup {vstup} není platný JSON: {e}")
+    pridano = zapis(nazev, klic, obj, sloucit="--sloucit" in sys.argv)
+    print(f"data/{nazev}.json: {'přidáno' if pridano else 'změněno'} „{klic}“")
 
 
 if __name__ == "__main__":

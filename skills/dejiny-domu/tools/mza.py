@@ -210,14 +210,12 @@ def nazev_svazku(p):
 
 def svazek(mid):
     d = detail(mid)
-    path = os.path.join(ROOT, "data", "svazky.json")
-    sv = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
-    sv[f"mza_{mid}"] = {"archiv": "Moravský zemský archiv v Brně – Sbírka matrik", "portal": "Acta Publica",
-                        "svazek": nazev_svazku(d["pole"]), "popis": zkrat("; ".join(d["obce"])),
-                        "snimku": len(d["dzi"]), "url": f"{BASE}matrika/detail/{mid}"}
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        json.dump(sv, f, ensure_ascii=False, indent=1)
-    print(f"mza_{mid} ->", sv[f"mza_{mid}"]["svazek"])
+    import zapis
+    nazev = nazev_svazku(d["pole"])
+    zapis.zapis("svazky", f"mza_{mid}", {"archiv": "Moravský zemský archiv v Brně – Sbírka matrik", "portal": "Acta Publica",
+                                          "svazek": nazev, "popis": zkrat("; ".join(d["obce"])),
+                                          "snimku": len(d["dzi"]), "url": f"{BASE}matrika/detail/{mid}"})
+    print(f"mza_{mid} ->", nazev)
 
 
 SCITANI = "https://www.mza.cz/scitacioperaty/digisada/"

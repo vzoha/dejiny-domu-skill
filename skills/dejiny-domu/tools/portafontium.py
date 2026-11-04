@@ -16,7 +16,7 @@ Použití (z kořene projektu `python3 -I tools/portafontium.py …`, na Windows
 Snímek = pořadové číslo náhledu v prohlížeči portálu (1, 2, 3…). Stránky knih se ukládají do pracovni/.cache_pf/.
 Ber ohled na server: stahuj jen snímky, které čteš.
 """
-import html, http.client, json, os, re, ssl, sys, time, unicodedata, urllib.error, urllib.parse, urllib.request
+import html, http.client, os, re, ssl, sys, time, unicodedata, urllib.error, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -197,16 +197,14 @@ def zkrat(s, n=300):
 
 def svazek(kniha):
     kniha, fields, scans, _ = info(kniha)
-    path = os.path.join(ROOT, "data", "svazky.json")
-    d = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
+    import zapis
     sig = fields.get("Signatura", kniha)
     popis = "; ".join(x for x in (fields.get("Místo", ""), fields.get("Text desky", "")) if x)
-    d[f"pf_{kniha}"] = {"archiv": "SOA Plzeň – Sbírka matrik západních Čech", "portal": "Porta fontium",
-                        "svazek": f"{sig}, {fields.get('Typ', '')}".strip(", "), "popis": popis[:300],
-                        "snimku": len(scans), "url": f"{BASE}/register/{ARCHIV}/{kniha}"}
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        json.dump(d, f, ensure_ascii=False, indent=1)
-    print(f"pf_{kniha} ->", d[f"pf_{kniha}"]["svazek"])
+    nazev = f"{sig}, {fields.get('Typ', '')}".strip(", ")
+    zapis.zapis("svazky", f"pf_{kniha}", {"archiv": "SOA Plzeň – Sbírka matrik západních Čech", "portal": "Porta fontium",
+                                           "svazek": nazev, "popis": popis[:300],
+                                           "snimku": len(scans), "url": f"{BASE}/register/{ARCHIV}/{kniha}"})
+    print(f"pf_{kniha} ->", nazev)
 
 
 if __name__ == "__main__":

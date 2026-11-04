@@ -182,20 +182,25 @@ def main():
         g = geocode(sys.argv[2])
         print(f"lat={g[0]}, lon={g[1]}   {g[2]}" if g else "NENALEZENO – zkus jiný dotaz nebo polohu z mapy")
         return
+    import zapis
     cache = json.load(open(OUT, encoding="utf-8")) if os.path.exists(OUT) else {}
+    zmenena = set()
     if len(sys.argv) > 2 and sys.argv[1] == "pridej":
         name = sys.argv[2]
         cache[name] = dict(cache.get(name, {}), dotaz=sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] else f"{name}, Česko")
         if len(sys.argv) > 4:
             cache[name]["popis"] = sys.argv[4]
+        zmenena.add(name)
     for name, e in cache.items():
         if "lat" not in e:
             g = geocode(e.get("dotaz") or f"{name}, Česko")
             if g:
                 e["lat"], e["lon"], e["osm"] = g
+                zmenena.add(name)
             else:
                 print("NENALEZENO:", name, "– upravte 'dotaz' nebo doplňte lat/lon ručně")
-    json.dump(cache, open(OUT, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
+    for name in zmenena:   # sloučit pole: změny jiných míst mezitím (souběžní pomocníci) zůstanou
+        zapis.zapis("mista", name, cache[name], sloucit=True)
     for n, e in cache.items():
         print(f"{n:28} {e.get('lat', '?'):>8} {e.get('lon', '?'):>8}  {e.get('osm', '')[:70]}")
 

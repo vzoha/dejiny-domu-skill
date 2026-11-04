@@ -22,7 +22,7 @@ Použití (z kořene projektu):
 Trvalý odkaz na snímek: https://digi.ceskearchivy.cz/<id_knihy>/<snímek>
 Ber ohled na server: stahuj jen snímky, které čteš.
 """
-import glob, html, json, os, re, shutil, subprocess, sys, tempfile, time, unicodedata, urllib.parse, urllib.request, http.cookiejar
+import glob, html, os, re, shutil, subprocess, sys, tempfile, time, unicodedata, urllib.parse, urllib.request, http.cookiejar
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -204,11 +204,9 @@ def svazek(bid):
     fond = k.get("Archives Fond", "").split(",")[0].strip()
     archiv = "SOA Třeboň" + (f" – {k['Archives'].replace('SDA ', 'SOkA ')}" if k.get("Archives") and "Třeboň" not in k["Archives"] else "")
     archiv += (f", fond {fond}" if fond else "") + (f", inv. č. {k['Inventory number']}" if k.get("Inventory number") else "")
-    path = os.path.join(ROOT, "data", "svazky.json")
-    d = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
-    d[f"trebon_{bid}"] = {"archiv": archiv, "portal": "digi.ceskearchivy.cz",
-                          "svazek": nazev, "popis": "", "url": f"{BASE}/{bid}"}
-    json.dump(d, open(path, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
+    import zapis
+    zapis.zapis("svazky", f"trebon_{bid}", {"archiv": archiv, "portal": "digi.ceskearchivy.cz",
+                                            "svazek": nazev, "popis": "", "url": f"{BASE}/{bid}"})
     print(f"trebon_{bid} -> {nazev}")
 
 
