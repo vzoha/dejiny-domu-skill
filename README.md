@@ -16,8 +16,8 @@ vyzkoušený jen na něm (Linux). Počítejte s chybami a dejte mi o nich vědě
 
 ## Dějiny domu na zakázku
 
-Nechcete to dělat sami? Dějiny domu vám můžu zpracovat na zakázku. Teď zkouším několik prvních domů za zvýhodněnou
-cenu. [Napište mi](https://tally.so/r/xVrNVd?zdroj=github).
+Nechcete to dělat sami? Dějiny domu vám můžu zpracovat na zakázku jako PDF, od 1 900 Kč. Nejdřív zdarma ověřím, co se
+k vašemu domu dochovalo. [Napište mi](https://tally.so/r/xVrNVd?zdroj=github).
 
 ## Ukázka
 
