@@ -650,6 +650,60 @@ class TestNovyProjekt(Projekt):
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
         self.assertEqual((self.text("data", "domy.py"), self.text("data", "zaznamy.json")), pred)
 
+    def aktualizuj(self, cil=None):
+        return subprocess.run([sys.executable, "-I", os.path.join(SKILL, "tools", "novy_projekt.py"), cil or self.root],
+                              capture_output=True, text=True, encoding="utf-8")
+
+    def venku(self):
+        """Složka mimo projekt, kam by zápis přes odkaz utekl."""
+        d = os.path.join(self.tmp, "venku")
+        os.makedirs(d, exist_ok=True)
+        return d
+
+    @unittest.skipIf(os.name == "nt", "symlinky na Windows chtějí práva správce")
+    def test_slozka_data_jako_odkaz_projekt_nezmeni(self):
+        novy = os.path.join(self.tmp, "Novy")
+        os.makedirs(novy)
+        os.symlink(self.venku(), os.path.join(novy, "data"))
+        p = self.aktualizuj(novy)
+        self.assertNotEqual(p.returncode, 0)
+        self.assertIn("data → ", p.stderr)
+        self.assertEqual(os.listdir(self.venku()), [])
+        self.assertEqual(os.listdir(novy), ["data"])
+
+    @unittest.skipIf(os.name == "nt", "symlinky na Windows chtějí práva správce")
+    def test_skill_verze_jako_odkaz_se_nahradi_souborem(self):
+        cizi = os.path.join(self.venku(), "cizi.txt")
+        with open(cizi, "w") as f:
+            f.write("nedotknutelné")
+        os.remove(self.path(".skill_verze"))
+        os.symlink(cizi, self.path(".skill_verze"))
+        self.assertEqual(self.aktualizuj().returncode, 0)
+        self.assertFalse(os.path.islink(self.path(".skill_verze")))
+        with open(cizi) as f:
+            self.assertEqual(f.read(), "nedotknutelné")
+
+    @unittest.skipIf(os.name == "nt", "symlinky na Windows chtějí práva správce")
+    def test_odkazy_v_pracovni_a_skills_jsou_v_poradku(self):
+        os.symlink(self.venku(), self.path("pracovni", "dum_sousedu"))
+        os.makedirs(self.path(".claude", "skills"), exist_ok=True)
+        os.symlink(SKILL, self.path(".claude", "skills", "dejiny-domu"))
+        p = self.aktualizuj()
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertEqual(os.listdir(self.venku()), [])
+
+    @unittest.skipIf(os.name == "nt", "symlinky na Windows chtějí práva správce")
+    def test_settings_jako_odkaz_se_neprepise(self):
+        cizi = os.path.join(self.venku(), "settings.json")
+        with open(cizi, "w") as f:
+            f.write("{}")
+        os.remove(self.path(".claude", "settings.json"))
+        os.symlink(cizi, self.path(".claude", "settings.json"))
+        p = self.aktualizuj()
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertIn("hook hlidac.py nepřidán", p.stdout)
+        self.assertEqual(open(cizi).read(), "{}")
+
     def test_nastroje_zkopirovane(self):
         for f in ("zapis.py", "kontrola.py", "export_web.py", "mza.py", "zdravi.py"):
             self.assertTrue(os.path.exists(self.path("tools", f)), f)

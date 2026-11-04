@@ -8,6 +8,8 @@ vyrezy/, zdroje/, dokumenty/, pracovni/, CLAUDE.md, .gitignore, .gitattributes (
 a .claude/launch.json (náhled v Claude desktop), v .claude/settings.json hook tools/hlidac.py
 (síť k archivům jen přes slusne.py – existující nastavení zůstane).
 Existující data nepřepisuje.
+Odkazy (symlinky): složky, do kterých nástroj zapisuje (data/, web/ a podsložky šablony, tools/, .claude/), odkazem
+být nesmí – nástroj pak skončí dřív, než cokoli změní. Odkazy jinde (pracovni/…, .claude/skills/…) jsou v pořádku.
 Aktualizace staršího projektu (znovu spustit na stejnou složku): tools/ se přepíše vždy a soubory webu,
 které se liší od nové šablony, taky – jejich staré verze se nejdřív uloží do pracovni/zaloha_web_<datum>/.
 """
@@ -17,6 +19,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
         _s.reconfigure(encoding="utf-8", errors="replace")
 
 SKILL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+VYNECHAT = ("node_modules", "dist", ".astro", "__pycache__")   # složky šablony, které se nekopírují
 
 
 def copy(src, out):
@@ -25,11 +28,22 @@ def copy(src, out):
     shutil.copy2(src, out)
 
 
+def odkazy_v_cilech(dst):
+    """Složky projektu, do kterých se bude zapisovat a které jsou odkazem jinam (zápis by šel mimo projekt)."""
+    cile = [os.path.join(dst, d) for d in ("tools", ".claude")]
+    for sub in ("data", "web"):
+        src = os.path.join(SKILL, "template", sub)
+        for base, dirs, _ in os.walk(src):
+            dirs[:] = [d for d in dirs if d not in VYNECHAT]
+            cile.append(os.path.normpath(os.path.join(dst, sub, os.path.relpath(base, src))))
+    return [c for c in cile if os.path.islink(c)]
+
+
 def copy_tree(src, dst, backup=None):
     """Zkopíruje chybějící soubory. S backup= přepíše i ty, které se liší, a starou verzi uloží do backup/."""
     changed = []
     for base, dirs, files in os.walk(src):
-        dirs[:] = [d for d in dirs if d not in ("node_modules", "dist", ".astro", "__pycache__")]
+        dirs[:] = [d for d in dirs if d not in VYNECHAT]
         rel = os.path.relpath(base, src)
         os.makedirs(os.path.join(dst, rel), exist_ok=True)
         for f in files:
@@ -54,6 +68,9 @@ def pridej_hook(dst):
     """Hook tools/hlidac.py do .claude/settings.json projektu (síť k archivům jen přes slusne.py).
     Existující nastavení zůstane, hook se přidá jen jednou."""
     path = os.path.join(dst, ".claude", "settings.json")
+    if os.path.islink(path):   # sdílené nastavení jinde – nepřepisovat
+        print(f"POZOR: {path} je odkaz jinam – hook hlidac.py nepřidán (přidej ho tam ručně)")
+        return
     try:
         cfg = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
     except ValueError:
@@ -72,6 +89,11 @@ def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
     dst = os.path.abspath(os.path.expanduser(sys.argv[1]))
+    odkazy = odkazy_v_cilech(dst)
+    if odkazy:
+        sys.exit("Projekt nezměněn: tyhle složky jsou odkazem jinam a zápis by šel mimo projekt:\n"
+                 + "\n".join(f"  {os.path.relpath(c, dst)} → {os.path.realpath(c)}" for c in odkazy)
+                 + "\nNahraď je skutečnými složkami (obsah zkopíruj) a spusť znovu.")
     os.makedirs(dst, exist_ok=True)
     copy_tree(os.path.join(SKILL, "template", "data"), os.path.join(dst, "data"))
     web = os.path.join(dst, "web")
@@ -95,8 +117,7 @@ def main():
         if not os.path.lexists(out):
             copy(os.path.join(SKILL, "template", name), out)
     pridej_hook(dst)
-    with open(os.path.join(dst, ".skill_verze"), "w", encoding="utf-8") as f:   # SKILL.md podle něj nabídne aktualizaci
-        f.write(open(os.path.join(SKILL, "VERZE"), encoding="utf-8").read())
+    copy(os.path.join(SKILL, "VERZE"), os.path.join(dst, ".skill_verze"))   # SKILL.md podle něj nabídne aktualizaci
     print("Projekt připraven:", dst)
     if changed:
         print(f"Web aktualizován na novou šablonu ({len(changed)} souborů). Původní verze jsou v {backup}:")
