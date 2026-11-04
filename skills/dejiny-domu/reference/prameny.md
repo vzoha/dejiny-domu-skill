@@ -67,6 +67,8 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
 2. Fond „Velkostatek <panství>“ v příslušném SOA → inventář → gruntovní knihy pro danou ves (podle let).
    SOA Třeboň: na portálu strom fondů „Pozemkové knihy“ → archiv → fond velkostatku; totéž urbáře, vrchnostenská
    registra, kroniky. Portál smí uživatel jen prohlížet (`podminky.md`), ty radíš, kde hledat.
+   MZA Brno (jižní Morava, Vysočina): gruntovní a pozemkové knihy jsou v **ARON MZA** (www.mza.cz/aron), ne v Acta
+   Publica (ta má jen matriky). Postup v `portaly.md`, oddíl MZA.
 3. Zápis o gruntu: „grunt N. N. … prodán … za … kop / zlatých“, splátky (vejrunky), výměnek pro rodiče, podíly
    sourozenců. Postupně ho čti od posledního držitele zpátky. U každé změny držitele vznikne řádek v `drzitele`.
 4. Online nejsou všechny. Co není, zapiš do `archivni_dotazy.md` (fond, signatura, roky) a navrhni návštěvu badatelny.
