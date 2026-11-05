@@ -133,6 +133,9 @@ Když portál nemá nástroj ani čitelné API (mapové aplikace, prohlížeče 
   (když už běží démon, nejdřív `agent-browser close`).
 - Odkud se načítají obrázky a token, zjistíš `agent-browser eval "JSON.stringify(performance.getEntriesByType('resource').map(e=>e.name))"`.
   Pak stahuj přímo (curl s `Referer`) a postup převeď do nástroje.
+- Snímky a mapy čti ve velkém okně: hned po otevření `agent-browser set viewport 3840 2160` (běžný 4K monitor).
+  Snímek se pak ukáže skoro v plném rozlišení bez přibližování (zoom i posun se při dalším snímku resetují).
+  Screenshot ukládej vždy na absolutní cestu, relativní skončí v adresáři démona.
 - Velké mapy snímkuj po dlaždicích. Nic nekupuj, nezadávej hesla, neřeš CAPTCHA.
 - **JavaScript v prohlížeči** (`fetch` ve smyčce přes `evaluate_script`) limit `slusne.py` nevidí: dotazy na stránky
   a API nejvýš **1 za 2 s** (`await new Promise(r => setTimeout(r, 2000))` mezi nimi), žádné `Promise.all` na dotazy.
