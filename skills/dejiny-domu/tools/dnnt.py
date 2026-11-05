@@ -72,11 +72,14 @@ def cdk_dotaz(q):
 def verejne_jinde(q, mx):
     """Veřejné stránky odpovídající dotazu v jiných knihovnách (CDK): {(titul, rok, strana): (pid, knihovny, titul)}."""
     out = {}
-    for d in po_strankach({"q": cdk_dotaz(q) + " AND accessibility:public",
-                           "fl": "pid,root.title,date.str,page.number,cdk.collection"}, mx, CDK):
-        for x in d["response"]["docs"]:
-            out.setdefault(stranka_id(x.get("root.title"), x.get("date.str"), x.get("page.number")),
-                           (x["pid"], ",".join(x.get("cdk.collection") or []), str(x.get("root.title"))[:80]))
+    try:
+        for d in po_strankach({"q": cdk_dotaz(q) + " AND accessibility:public",
+                               "fl": "pid,root.title,date.str,page.number,cdk.collection"}, mx, CDK):
+            for x in d["response"]["docs"]:
+                out.setdefault(stranka_id(x.get("root.title"), x.get("date.str"), x.get("page.number")),
+                               (x["pid"], ",".join(x.get("cdk.collection") or []), str(x.get("root.title"))[:80]))
+    except urllib.error.HTTPError as e:   # dotaz, který NK zvládne, CDK někdy odmítne – výsledky NK nezahazovat
+        print(f"POZOR: ostatní knihovny (CDK) dotaz odmítly (HTTP {e.code}), veřejné kopie jinde neověřeny", file=sys.stderr)
     return out
 
 
@@ -113,8 +116,9 @@ def hledej(a):
     q = f"({a[0]}) AND fedora.model:page"
     if od or do:
         q += f" AND datum_begin:[{od or '*'} TO {do or '*'}]"
-    if titul:
-        q += f' AND root_title:{titul}'
+    if titul:   # víc slov = fráze v uvozovkách (bez nich Solr vrátí HTTP 500); hvězdička ve frázi nefunguje
+        holy = titul.strip('"').rstrip("*")
+        q += f' AND root_title:"{holy}"' if " " in holy else f" AND root_title:{titul}"
     docs, hl, total = [], {}, 0
     for d in po_strankach({"q": q, "fl": "PID,root_title,datum_str,details,dostupnost,dnnt,dnnt-labels",
                            "hl": "true", "hl.fl": "text_ocr", "hl.fragsize": "200", "hl.snippets": "3"}, mx):
@@ -224,7 +228,7 @@ def ocr(args):
     slozka = opt(args, "--slozka", os.path.join(DIR, "ocr"))
     polozky = seznam(args)
     os.makedirs(slozka, exist_ok=True)
-    nejde = []
+    nejde, chybi = [], []
     for k, pid, url in polozky:
         out = os.path.join(slozka, k + ".txt")
         if os.path.exists(out):
@@ -235,10 +239,14 @@ def ocr(args):
             if e.code == 403:
                 nejde.append(f"{k}={pid}")
                 continue
+            if e.code == 404:   # stránka v jiné knihovně zmizela – pokračovat dalšími
+                chybi.append(f"{k}={pid}")
+                continue
             raise
         open(out, "wb").write(text)
         time.sleep(0.3)
-    print(f"staženo do {os.path.relpath(slozka, ROOT)}; neveřejných {len(nejde)}")
+    print(f"staženo do {os.path.relpath(slozka, ROOT)}; neveřejných {len(nejde)}, nenalezených {len(chybi)}"
+          + (f" ({' '.join(chybi)})" if chybi else ""))
     if nejde:
         print("Neveřejné stránky (DNNT) čte uživatel po přihlášení na ndk.cz sám – stahovat a ukládat je podmínky zakazují. "
               "Čtecí list s odkazy a poznámkami dá dnnt.py hledej … --ulozit. Stránky: " + " ".join(nejde[:40]) + (" …" if len(nejde) > 40 else ""))

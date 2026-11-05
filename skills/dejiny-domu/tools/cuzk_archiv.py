@@ -30,6 +30,11 @@ Použití (z kořene projektu):
       pak listy + export. Výchozí poloměr 150 m, 1500 px. Vypíše i dnešní adresní body RÚIAN (čísla domů)
       v pixelech obrázku a s ImageMagickem je zakreslí do <vystup>_adresy.jpg: na které staré stavební parcele
       dnešní číslo stojí (ztotožnění domu, přečíslování).
+  cuzk_archiv.py rady "Horní Lhota 12" | lat,lon
+      všechny mapové řady Archivu ČÚZK k místu (jako panel „Archivní mapy“ v aplikaci), nejen stabilní katastr:
+      otisky katastrálních map (města často 1 : 1000, stav 1. pol. 20. stol.), mapa evidence nemovitostí, mapa
+      kultur, Státní mapa 1 : 5000 (víc vydání), Základní a vojenské mapy. U podrobných map najde id rastrů
+      ve službě nonstable pro export (rastry se jmenují jinak než klad, proto hledání podle části názvu).
   cuzk_archiv.py lms "Horní Lhota 12" | lat,lon
       které ročníky leteckých měřických snímků z 30.–60. let (armáda, © MO ČR) místo pokrývají – jen seznam.
       Snímky si uživatel prohlédne v aplikaci Archiv ČÚZK; soubor je placený a jen pro vlastní potřebu (podminky.md).
@@ -115,12 +120,16 @@ def misto(m):
         return f[0]["geometry"]["y"], f[0]["geometry"]["x"]
 
 
-def listy(m):
-    lat, lon = misto(m)
-    d = archiv("klady/MapServer/identify", {
-        "geometry": f"{lon},{lat}", "geometryType": "esriGeometryPoint", "sr": 4326, "layers": "all:3",
+def klady(lat, lon, vrstvy="all"):
+    """Klady mapových listů Archivu ČÚZK, které pokrývají bod (vrstva 3 = stabilní katastr)."""
+    return archiv("klady/MapServer/identify", {
+        "geometry": f"{lon},{lat}", "geometryType": "esriGeometryPoint", "sr": 4326, "layers": vrstvy,
         "tolerance": 0, "mapExtent": f"{lon - .01},{lat - .01},{lon + .01},{lat + .01}",
         "imageDisplay": "1000,1000,96", "returnGeometry": "false", "f": "json"})
+
+
+def listy(m):
+    d = klady(*misto(m), "all:3")
     if not d.get("results"):
         print("stabilní katastr: žádný list (zkus jiné místo)")
     for r in d.get("results", []):
@@ -298,6 +307,42 @@ def lms(m):
     print(f"Prohlédni v aplikaci: {REFERER}?start=lms (snímky jen prohlížet a popsat, výřez do výstupu ne)")
 
 
+# vrstva kladu → (popis, jak z atributů poskládat část názvu rastru ve službě nonstable)
+RADY = {
+    16: ("otisk katastrální mapy",   # klad „c0131-1“, rastr „B3_3C_131-1__2_25“
+         lambda a: f"{a['SIGN']}_{re.sub(r'^c0*', '', a['AEC_CM'])}__{a['cislo_sloz']}_{a['list']}"),
+    7: ("mapa evidence nemovitostí", lambda a: a["SIGN_NOMEN"]),   # Čechy
+    8: ("mapa evidence nemovitostí", lambda a: a["SIGN_NOMEN"]),   # Morava
+    9: ("mapa kultur", lambda a: a["SKENY"].split("|")[0]),
+    10: ("Státní mapa 1 : 5000", lambda a: a["NOMEN"]),
+}
+BEZ_RASTRU = {0, 3, 11}   # letecké snímky (lms), stabilní katastr (listy), sbírka map celých zemí
+
+
+def rady(m):
+    d = klady(*misto(m))
+    drobne = set()   # malá měřítka (ZM, vojenské, generální) – k domu nic, jen zmínit
+    for r in d.get("results", []):
+        lid, a = r["layerId"], {k: v for k, v in r["attributes"].items() if v and str(v).strip() not in ("", "Null")}
+        if lid in BEZ_RASTRU:
+            continue
+        if lid not in RADY:
+            drobne.add(r["layerName"].replace("archiv_nespojene_", "").replace("_klady", ""))
+            continue
+        nazev = a.get("NAZEV_JEDNOTKY") or a.get("NML") or a.get("MAPNAME") or ""
+        roky = a.get("ROKY") or a.get("ROZP_DAT") or a.get("DAT_OD") or a.get("meritko") or ""
+        print(f"{RADY[lid][0]}: {nazev} {roky}".rstrip())
+        vzor = RADY[lid][1](a)
+        q = archiv("archiv_nespojene_nonstable/ImageServer/query", {
+            "where": f"Name LIKE '%{vzor.replace(chr(39), '')}%'", "outFields": "OBJECTID,Name",
+            "returnGeometry": "false", "f": "json"})
+        nalez = [f"{f['attributes']['OBJECTID']} {f['attributes']['Name']}" for f in q.get("features", [])]
+        print("   → export nonstable " + (" | ".join(nalez[:8]) if nalez else f"rastr „{vzor}“ nenalezen"))
+    if drobne:
+        print("malá měřítka (rastry hledej v aplikaci): " + ", ".join(sorted(drobne)))
+    print("Stabilní katastr: listy; letecké snímky: lms.")
+
+
 if __name__ == "__main__":
     a = sys.argv[1:]
     if len(a) >= 2 and a[0] == "listy":
@@ -310,6 +355,8 @@ if __name__ == "__main__":
         prehled(*a[1:5])
     elif len(a) >= 4 and a[0] == "mapa":
         mapa(*a[1:6])
+    elif len(a) >= 2 and a[0] == "rady":
+        rady(a[1])
     elif len(a) >= 2 and a[0] == "lms":
         lms(a[1])
     else:

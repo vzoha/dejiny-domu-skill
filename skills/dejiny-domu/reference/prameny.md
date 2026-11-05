@@ -84,6 +84,9 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
 2. `cuzk_archiv.py prehled stable <om_SIGN_INV> pracovni/katastr/prehled.jpg` → všechny listy v jednom náhledu
    (pod každým id) → najdi ves, pak výřez ve velkém (`export stable <id> … x0,y0,x1,y1 5000`, podíly 0–1 jako u
    `vyrez.py`). Jednotlivé listy: `rastry stable <om_SIGN_INV>` a `export stable <id> list.jpg 0,0,1,1 1500`.
+3. Mladší mapy k místu: `cuzk_archiv.py rady "Osada čp"` – otisky katastrálních map (města 1 : 1000, 1. pol.
+   20. stol.: dům i číslo parcely v době, kdy stál), mapa evidence nemovitostí, Státní mapa 1 : 5000 ve více vydáních.
+   Vypíše id rastrů pro `export nonstable <id>`. Čísla popisná v nich zpravidla nejsou, jen parcely.
 - **Originální mapa** (om) je nejcennější: zeměměřiči do ní **dokreslovali změny při reambulaci 1869–1882 (změny
   červeně)**. Nová stavba nebo rozdělení parcely je tam i s číslem. Rok reambulace vypíše `listy`.
   **Jak číst barvy budov:** růžová = zděná, žlutá = dřevěná (stav při mapování). **Červeně šrafovaná nebo sytě červená
