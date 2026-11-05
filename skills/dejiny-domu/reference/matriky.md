@@ -110,6 +110,14 @@ Mladší knihy jsou na matričním úřadě obce s rozšířenou působností / 
 - Stejný předek dvakrát v rodokmenu (vzdálení příbuzní se vzali) – v datech `SAME`.
 - Index nenašel ≠ zápis neexistuje. Zapiš, co přesně jsi prošel.
 - Pomocníci (subagenti) a OCR/AI čtou historické písmo chybně – vždy ověř sám (viz `playbook.md` §1 bod 10).
+- **Nenačtený snímek není „nenalezeno“.** Když konverzace narazí na limit obrázků, snímky se tiše zahodí („media removed“)
+  a pomocník vrátí prázdný výsledek. Dej pomocníkovi nejvýš asi 10 snímků, ať je čte po jednom, průběžně si zapisuje
+  poznámky do souboru a na konci vypíše snímky, které neviděl. Ty přečti znovu, jinak je nepočítej jako prošlé.
+- **Stejné číslo domu v jiné obci.** Kniha farnosti má čísla domů všech obcí. Název obce bývá jen v nadpisu oddílu,
+  třeba o pár stran dřív, a v jednom oddílu se objeví i cizí obce. U každého nálezu ověř obec. Pomocníkům napiš,
+  ať u čísla vždy uvedou i obec. „Z Horní Lhoty č. 7“ u otce nebo matky je jejich původ, ne dům, kde se dítě narodilo.
+- **Obec stejného jména.** Katalog (FamilySearch, ARON) může nabídnout jinou obec téhož jména. Než začneš číst,
+  ověř na prvním snímku politický a soudní okres a rozsah čísel domů.
 
 ## Technické pasti (macOS, zsh) – napiš je i pomocníkům do zadání
 - Shell je zsh: `for a in "x y z"; do set -- $a` slova nerozdělí (v zsh `${=a}`); `ls F*` bez shody = chyba

@@ -1,5 +1,8 @@
 # pracovní soubory a stažené stránky (nejdou na web ani do historie)
 pracovni/
+# screenshoty uložené omylem do kořene projektu (relativní cesta)
+/*.png
+/*.jpg
 __pycache__/
 .DS_Store
 Thumbs.db

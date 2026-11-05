@@ -140,6 +140,9 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   Tak poznáš, které rodiny v domě žily a kdy se střídaly (přiženění, prodej).
 - Rejstříky jsou podle jmen. U domu proto nejdřív získej jména ze sčítání nebo z gruntovní knihy, pak teprve rejstřík.
 - Pomocníkům dej konkrétní knihu, rozsah snímků a číslo domu: „vypiš všechny zápisy z Horní Lhoty čp. 12“.
+- Malý domek (domkář, bez polí) v gruntovních knihách panství často není. Začni matrikami podle čísla domu.
+  Pak rejstřík knih smluv: některé jsou řazené podle čísla domu, jinak podle jmen. Jména z matrik můžou patřit
+  nájemníkům, ne majitelům.
 
 ## Obec
 - Literatura: vlastivědy okresu, dějiny panství (např. „Geschichte der Herrschaft …“), Sedláček (Hrady, zámky a tvrze;
