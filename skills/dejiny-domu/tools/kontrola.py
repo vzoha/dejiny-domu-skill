@@ -38,6 +38,9 @@ def main():
     dup = {k for k in keys if keys.count(k) > 1}
     if dup:
         err.append(f"zápisy se stejným klíčem: {sorted(dup)}")
+    for k, p in prep.items():
+        if not isinstance(p, dict) or set(p) - {"orig", "cs"}:
+            err.append(f"přepis {k}: povolené klíče jsou jen 'orig' a 'cs' (reference/data.md), je tam {sorted(p) if isinstance(p, dict) else p!r}")
     keys = set(keys)
     cited = set()
 

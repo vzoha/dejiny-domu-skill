@@ -136,7 +136,12 @@ def listy(m):
             print(f"  evidenční mapa (změny do 20. stol.): sign. {a.get('kme_SIGNATURA', '?')}, inv. č. {a.get('kme_INV_CISLO', '?')}, "
                   f"{a.get('kme_DAT_OD', '?')}–{a.get('kme_DAT_DO', '?')} → rastry nonstable \"{a['kme_SIGN_NOMEN']}\"")
         s0x = a.get("S0X", "").split("|")[-1]
-        print("  indikační skica: " + (f"→ rastry skici \"{s0x}\"" if s0x else "není v kladu"))
+        if not s0x:
+            print("  indikační skica: není v kladu")
+        elif s0x.startswith("MOR"):   # služba skici moravské skici nemá (Hlína MOR067318731, 5. 11. 2026)
+            print(f"  indikační skica: {s0x} – ve službě skici Morava není, najít ručně v aplikaci Archiv ČÚZK")
+        else:
+            print(f"  indikační skica: → rastry skici \"{s0x}\"")
 
 
 def najdi_rastry(sluzba, vzor):

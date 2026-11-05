@@ -89,6 +89,10 @@
       "nazev": "ANNO (ÖNB)", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""
     },
+    "data.onb.ac.at": {
+      "nazev": "ANNO (ÖNB), obrázky stran (anno_snap.py)", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""
+    },
     "www.kohoutikriz.org": {
       "nazev": "Kohoutí kříž (JVK)", "dotazy": false, "obrazky": false, "vyrez": "nekomercne",
       "proc": "ochrana proti robotům; licence CC BY-NC-ND",

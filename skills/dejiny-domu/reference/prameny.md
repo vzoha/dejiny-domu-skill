@@ -71,7 +71,11 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
    Publica (ta má jen matriky). Postup v `portaly.md`, oddíl MZA.
 3. Zápis o gruntu: „grunt N. N. … prodán … za … kop / zlatých“, splátky (vejrunky), výměnek pro rodiče, podíly
    sourozenců. Postupně ho čti od posledního držitele zpátky. U každé změny držitele vznikne řádek v `drzitele`.
-4. Online nejsou všechny. Co není, zapiš do `archivni_dotazy.md` (fond, signatura, roky) a navrhni návštěvu badatelny.
+4. **Vrchnostenský dům** (myslivna, fara, dvůr, mlýn, hospoda, zámek) v poddanské gruntovní knize často není (kniha
+   začne až čp. 2) a v tereziánském katastru chybí v rustikálu. Hledej ho pod vrchností: dominikál, fase vrchnosti
+   a farářů, josefinský katastr „Der Obrigkeit“ (bez čísla domu), urbáře, účty velkostatku. Chybějící dům v poddanské
+   knize ještě neznamená, že nestál.
+5. Online nejsou všechny. Co není, zapiš do `archivni_dotazy.md` (fond, signatura, roky) a navrhni návštěvu badatelny.
 
 ## Stabilní katastr (Archiv ČÚZK, `cuzk_archiv.py`)
 Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz už neexistuje). Nástroj ho čte bez prohlížeče.
@@ -131,6 +135,8 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
 - Sčítání 1857–1880 nemusí být pro každý soudní okres online, 1890–1921 obvykle ano.
 - **Údaje o domě a obyvatelé bývají na různých snímcích.** 1910: titulní list s vlastníkem domu, na dalším snímku
   osoby; 1921: sběrný arch domovní → prázdný list → sčítací arch. **Vždy stáhni i 1–3 následující snímky.**
+  1857: cizí (čeleď, učni, tovaryši z jiných obcí) bývají jen v souhrnné tabulce cizích (Fremden-Tabelle) za souhrny
+  obce, ne na archu domu.
   Vlastníka domu uvádí až 1910 a 1921; v 1890/1900 je „majitel bytu“ = hlava domácnosti, ne vlastník domu.
 - Ze sčítání vznikne: událost domu („1890: v domě 9 osob, hospodář Jan Novák, rolník…“), obyvatelé s `r` a podklad
   pro hledání v matrikách (roky narození).

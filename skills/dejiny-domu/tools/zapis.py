@@ -148,6 +148,8 @@ def main():
         obj = json.load(sys.stdin if vstup == "-" else open(vstup, encoding="utf-8-sig"))
     except (OSError, ValueError) as e:
         sys.exit(f"Vstup {vstup} není platný JSON: {e}")
+    if nazev == "prepisy" and (not isinstance(obj, dict) or set(obj) - {"orig", "cs"}):
+        sys.exit("prepisy: povolené klíče jsou jen 'orig' (přepis) a 'cs' (překlad), viz reference/data.md")
     pridano = zapis(nazev, klic, obj, sloucit="--sloucit" in sys.argv)
     print(f"data/{nazev}.json: {'přidáno' if pridano else 'změněno'} „{klic}“")
 
