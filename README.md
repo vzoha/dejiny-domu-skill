@@ -16,8 +16,11 @@ vyzkoušený jen na něm (Linux). Počítejte s chybami a dejte mi o nich vědě
 
 ## Dějiny domu na zakázku
 
-Nechcete to dělat sami? Dějiny domu vám můžu zpracovat na zakázku jako PDF, od 1 900 Kč. Nejdřív zdarma ověřím, co se
-k vašemu domu dochovalo. [Napište mi](https://tally.so/r/xVrNVd?zdroj=github).
+Nechcete to dělat sami? Dějiny vašeho domu zpracuji na zakázku. Bádám s tímto skillem a nejdůležitější zápisy ověřím
+v originále. Dostanete PDF s odkazy na prameny, od 1 900 Kč. Nejdřív zdarma ověřím, co se k vašemu domu dochovalo.
+
+Ukázky PDF, ceny a jak to probíhá najdete na **[www.historiedomu.cz](https://www.historiedomu.cz/)**. Rovnou se můžete
+[zeptat na svůj dům](https://www.historiedomu.cz/poptavka/?zdroj=github).
 
 ## Ukázka
 
