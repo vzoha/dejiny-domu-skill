@@ -41,6 +41,19 @@ Kulturní památky a objekty, které památkáři jen evidují (návesní kaple,
   („veškerá literatura a dokumentace“). Průzkum (SHP) domu je nejlepší popis, co je z které doby – kopii objedná
   uživatel u NPÚ (gnr.sbirkaplanu@npu.cz, k neveřejnému užití; badatelna byla 8. 11. 2026 dočasně zavřená).
 
+## Industriální topografie VCPD FA ČVUT (industrialnitopografie.cz) – `tools/industrial.py`
+Průmyslové a technické stavby celé ČR (~4 800): mlýny, pivovary, cihelny, sklárny, továrny, doly, mosty, nádraží,
+vodárny. Hodí se, když byl dům mlýnem, hospodou s pivovarem, továrnou nebo stál u nich.
+- `python3 -I tools/industrial.py "Beroun"` → objekty v obci: id | název | obec – část | druh | datace. Část obce
+  (Holešovice) najde fulltext; objekty, kde se slovo objeví jen v textu (řeka Berounka), vypíše zvlášť a nejvýš 20.
+  Druhý argument zúží: `industrial.py "Beroun" mlýn`.
+- `python3 -I tools/industrial.py detail <id>` → adresa, poloha, datace s událostmi (založen, přestavěn, zbořen), stav,
+  památková ochrana, dějiny objektu, **literatura**, osoby a firmy, odkaz a citace podle vzoru VCPD.
+- Údaje jsou `lit` (zpracování z literatury a terénu), ne doklad z pramene. Obsah „všechna práva vyhrazena“: do výstupu
+  jen zjištění vlastními slovy s citací a odkaz, texty a fotky nepřebírat (`podminky.md`).
+- API webu (`api.databaze.fa.cvut.cz`) jen čte přes `…/filter` a `…/detail`. Holá cesta kolekce (`POST structureMap`)
+  bez přihlášení záznam založí – nezkoušet (8. 11. 2026). Chybu nebo chybějící objekt hlásí VCPD: jan.zikmund@fa.cvut.cz.
+
 ## NTM – Archiv architektury a stavitelství (Praha), badatelna
 Pozůstalosti architektů a stavitelů (asi 200 000 plánů), výkresy, skici, fotky, korespondence.
 - Fond najdi v NARP: `narp.py "<příjmení architekta>"` (archiv „Národní technické muzea – Archiv architektury

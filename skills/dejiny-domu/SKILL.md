@@ -147,6 +147,11 @@ netýká. V prohlížeči platí totéž: robots.txt s Claude-User respektuj. Pa
   a API nejvýš **1 za 2 s** (`await new Promise(r => setTimeout(r, 2000))` mezi nimi), žádné `Promise.all` na dotazy.
   Odpověď 403, 429 nebo 503 = hned přestaň, zapiš `python3 -I tools/slusne.py zablokuj <web> "HTTP 429 v prohlížeči"`
   (zastaví i nástroje a pomocníky) a řekni to uživateli.
+- **Cizí API jen čti.** Zjištěné API zkoušej jen přes `GET` a cesty, které web sám volá ke čtení (v síťových
+  požadavcích stránky nebo v kódu u `filter`, `search`, `detail`). `POST`, `PUT`, `DELETE` na cestu bez ověřeného čtení
+  nikdy, ani na zkoušku: holá cesta kolekce může záznam založit (Industriální topografie ČVUT 8. 11. 2026: `POST
+  structureMap` bez přihlášení vrátil nové prázdné id, správná je `structureMap/filter`). Odpověď s novým `id` nebo
+  `201` = přestaň a řekni uživateli, co a kam se zapsalo, ať může správci napsat.
 
 ### Pomocníci (subagenti) – šetrně
 Na velké kolo (projít matriku 1784–1850 a vypsat všechny zápisy z čp. 12, projít sčítání
@@ -234,6 +239,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `cuzk_archiv.py listy / rady / prehled / rastry / export / mapa / lms` | Archiv ČÚZK: stabilní katastr (originální mapy s reambulací, císařské otisky, indikační skici), evidenční mapy (změny do 20. stol.), pozemkový katastr, ročníky leteckých snímků 30.–60. let (jen seznam); `rady` = všechny další řady k místu s id rastrů (otisky katastrálních map měst 1 : 1000, mapa evidence nemovitostí, SM5); `mapa cenia50` ortofoto CENIA z 50. let (smí do PDF) |
 | `pamatky.py "Obec" [číslo]`, `pamatky.py detail <id>` | Památkový katalog NPÚ: památky i evidované objekty obce (kaple, mlýny, domy), vznik, stavební vývoj, literatura, odkazy na fotky MIS |
 | `mis.py hledej "Text"`, `mis.py detail <id>` | MIS NPÚ: fotky, plány a mapy obce s datem vzniku a autorem, jen popis a odkaz (soubory ne) |
+| `industrial.py "Obec" [výraz]`, `industrial.py detail <id>` | Industriální topografie VCPD FA ČVUT: mlýny, pivovary, cihelny, továrny, doly, mosty obce s datací, dějinami, literaturou a citací; jen zjištění a odkaz |
 | `narp.py "Obec"`, `narp.py detail <id>` | Národní archivní portál: fondy obce ve všech archivech ČR (archiv obce, MNV, škola, JZD, velkostatek, firmy) s číslem NAD a přístupností, bez snímků – podklad pro dotaz archivu |
 | `aron_search.py "Obec" ["fond"]`, `aron_search.py scitani "Obec"`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |
 | `ebadatelna.py …` | SOA Praha: matriky a archiválie, snímky jen ty, které čteš (celá kniha: ZIP po registraci) |

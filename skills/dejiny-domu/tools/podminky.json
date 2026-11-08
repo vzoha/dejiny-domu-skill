@@ -56,6 +56,16 @@
       "nazev": "Archeologická mapa ČR (Digitální archiv AMČR)", "dotazy": true, "obrazky": true, "vyrez": "nekomercne",
       "proc": "data CC BY-NC 4.0 – jen nevýdělečně a s autorem; API komerčně jen s písemnou smlouvou (8. 11. 2026)", "jinak": ""
     },
+    "industrialnitopografie.cz": {
+      "nazev": "Industriální topografie VCPD FA ČVUT", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "web a robots.txt (Allow: /) bez ochrany, obsah „všechna práva vyhrazena“, doporučená citace autor záznamu, název, Industriální topografie VCPD FA ČVUT, datum, číslo položky (/cs/about-project, 8. 11. 2026)",
+      "jinak": "Popis a odkaz vypíše industrial.py, fotku si uživatel prohlédne přes odkaz. Do PDF nebo na web jen zjištění vlastními slovy s citací a odkaz; fotku nebo text jen se souhlasem VCPD (jan.zikmund@fa.cvut.cz)."
+    },
+    "api.databaze.fa.cvut.cz": {
+      "nazev": "Industriální topografie VCPD FA ČVUT – API webu", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "veřejné API webu industrialnitopografie.cz bez přihlášení a ochrany (8. 11. 2026); jen čtení (GET, POST na …/filter), holá cesta kolekce záznam založí",
+      "jinak": "Viz industrialnitopografie.cz: jen zjištění s citací a odkaz."
+    },
     "pamatkovykatalog.cz": {
       "nazev": "Památkový katalog NPÚ", "dotazy": true, "obrazky": false, "vyrez": "neresi",
       "proc": "seznam památek je otevřená data CC BY 4.0, web bez robots.txt a bez ověření (8. 11. 2026); fotky jsou na iispp.npu.cz", "jinak": ""
