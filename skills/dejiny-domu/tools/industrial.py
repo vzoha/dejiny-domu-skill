@@ -19,7 +19,7 @@ import slusne; slusne.instaluj()   # společný limit rychlosti (slusne.py)
 API = "https://api.databaze.fa.cvut.cz/apiPublic/industrialni-topografie/"
 WEB = "https://www.industrialnitopografie.cz/cs/structures/"
 STRANA, NEJVIC = 100, 300   # objektů na dotaz / nejvýš na jedno hledání (Praha má ~400)
-JINDE = 20   # zmínek mimo místo vypíše nejvýš (Beroun → 79× řeka Berounka)
+SKUPINA_NEJVIC = 20   # větší skupinu jen spočítá: okres i ověření zmínky stojí dotaz na objekt (Beroun → 79× Berounka)
 
 
 def filtr(sloupce, strana):
@@ -62,8 +62,32 @@ def odkaz(id_, nazev):
 
 
 def v_miste(o, misto):
+    """Obec nebo část obce se jmenuje přesně tak (Březí, ne Vlachovo Březí ani Březina)."""
+    hledane = bez_diakritiky(misto)
+    return any(hledane == bez_diakritiky(o.get(k)) for k in ("addressCity", "addressCityDistrict"))
+
+
+def podobne_misto(o, misto):
     hledane = bez_diakritiky(misto)
     return any(hledane in bez_diakritiky(o.get(k)) for k in ("addressCity", "addressCityDistrict"))
+
+
+_detaily = {}
+
+
+def detail(id_):
+    id_ = int(id_)
+    if id_ not in _detaily:
+        _detaily[id_] = cti(f"structure/detail?structureId={id_}")[0]
+    return _detaily[id_]
+
+
+def zminuje(o, misto):
+    """Fulltext API hledá i uvnitř slov a bez diakritiky („Lniště“ v adrese hrebecskedulnistezky.cz) – ověří slovo v textu."""
+    d = detail(o["id"])
+    texty = " ".join(str(d.get(k) or "") for k in ("nameOriginal", "descriptionPublic", "literature"))
+    kmen = re.sub(r"[aeiouy]+$", "", bez_diakritiky(misto))   # i v jiném pádě (Berouna, Telči)
+    return re.search(rf"\b{re.escape(kmen)}[a-z]{{0,2}}\b", bez_diakritiky(text(texty))) is not None
 
 
 def datace(datings):
@@ -81,21 +105,34 @@ def ma_vyraz(o, vyraz):
     return bez_diakritiky(vyraz) in bez_diakritiky(f"{o.get('nameOriginal')} {druh(o)}")
 
 
-def radek(o):
+def radek(o, s_okresem=False):
     misto = " – ".join(x for x in (o.get("addressCity"), o.get("addressCityDistrict")) if x)
+    if s_okresem and (okres := (detail(o["id"]).get("address") or {}).get("district")):
+        misto += f" (okres {okres})"
     return f"  {o['id']} | {o.get('nameOriginal')} | {misto} | {druh(o)} | {datace(o.get('datings'))}"
 
 
 def vypis(objekty, misto):
     mistni = [o for o in objekty if v_miste(o, misto)]
-    jinde = [o for o in objekty if not v_miste(o, misto)]
+    podobne = [o for o in objekty if not v_miste(o, misto) and podobne_misto(o, misto)]
+    jinde = [o for o in objekty if not podobne_misto(o, misto)]
+    if len(jinde) <= SKUPINA_NEJVIC:
+        jinde = [o for o in jinde if zminuje(o, misto)]
     radky = []
     if mistni:
-        radky += [f"\nV místě „{misto}“ (obec, část obce): {len(mistni)}"] + [radek(o) for o in mistni]
-    if jinde:
-        radky += [f"\nJinde (hledané slovo jen v textu): {len(jinde)}"] + [radek(o) for o in jinde[:JINDE]]
-        if len(jinde) > JINDE:
-            radky.append(f"  … a {len(jinde) - JINDE} dalších – zúží je hledaný výraz (industrial.py \"{misto}\" mlýn)")
+        okresy = len(mistni) <= SKUPINA_NEJVIC
+        radky += [f"\nV místě „{misto}“ (obec, část obce): {len(mistni)}"] + [radek(o, okresy) for o in mistni]
+        if not okresy:
+            radky.append("  okres ukáže detail (industrial.py detail <id>)")
+    for nadpis, skupina in (("Obce a části s podobným názvem", podobne),
+                            ("Jinde, obec zmíněná v textu", jinde)):
+        if not skupina:
+            continue
+        radky.append(f"\n{nadpis}: {len(skupina)}")
+        if len(skupina) <= SKUPINA_NEJVIC:
+            radky += [radek(o) for o in skupina]
+        else:
+            radky.append(f"  nevypisuji, zúží je hledaný výraz (industrial.py \"{misto}\" mlýn)")
     return radky
 
 
@@ -142,7 +179,7 @@ def popis(d):
 
 def main(argv):
     if len(argv) > 2 and argv[1] == "detail":
-        print("\n".join(popis(cti(f"structure/detail?structureId={int(argv[2])}")[0])))
+        print("\n".join(popis(detail(argv[2]))))
         return
     if len(argv) < 2:
         sys.exit(__doc__)

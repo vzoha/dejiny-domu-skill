@@ -49,8 +49,12 @@ digitální knihovnu (CDK), přímo na weby MZK nechodí (podmínky Krameria MZK
   knihovna | přístup | odkaz. Druhý argument zúží roky (`veduty.py "Beroun" 1800-1900`). Heslo ukáže, která ze
   stejnojmenných obcí to je („Pavlov (Břeclav, Česko)“ × „Pavlov (Žďár nad Sázavou, Česko)“). Část obce má heslo
   s městem („Smíchov (Praha, Česko)“), hledej jen „Smíchov“.
-- Hledá jen podle hesla, ne v názvu („Pavlov“ v názvu = portréty I. P. Pavlova). Malá ves heslo často nemá (Lniště nic):
-  pak ručně mapy.mzk.cz (Mollova sbírka podle regionu), grafiky.mzk.cz a pohlednice a fotky muzeí (`esbirky.py`).
+- Hledá jen podle hesla, ne v názvu („Pavlov“ v názvu = portréty I. P. Pavlova). Malá ves heslo často nemá (Lniště nic).
+- `python3 -I tools/veduty.py mapy 48.830 14.615 [od-do]` → mapy, jejichž rozsah v katalogu místo obsahuje, od listů
+  1 : 25 000 po mapy panství a okresních hejtmanství (celá mapa do ±0,45° šířky a ±0,7° délky, ne Čechy ani Evropa).
+  Souřadnice z RÚIAN. Najde i to, co heslo nemá (Lniště: mapa panství Nové Hrady 1847, okres Kaplice 1887, listy
+  1 : 25 000 z let 1917–1941). Místo bývá u okraje listu. Veduty a pohlednice podle polohy nenajde: ručně
+  grafiky.mzk.cz a muzea (`esbirky.py`).
 - `public` = volně online, `onsite` = jen v knihovně. Mapové listy 1 : 25 000 a 1 : 75 000 z 20. stol. bývají onsite.
 - **Veduta není plán:** perspektiva, zkratka a idealizace. Dům podle veduty jen „podobný“, ověř mapou (stabilní katastr).
   Datace grafik bývá odhad („[1840?]“).
@@ -116,8 +120,10 @@ krajská muzea), pohlednice, kresby, obrazy, mapy, předměty. Ochranu ani podm�
 ## Industriální topografie VCPD FA ČVUT (industrialnitopografie.cz) – `tools/industrial.py`
 Průmyslové a technické stavby celé ČR (~4 800): mlýny, pivovary, cihelny, sklárny, továrny, doly, mosty, nádraží,
 vodárny. Hodí se, když byl dům mlýnem, hospodou s pivovarem, továrnou nebo stál u nich.
-- `python3 -I tools/industrial.py "Beroun"` → objekty v obci: id | název | obec – část | druh | datace. Část obce
-  (Holešovice) najde fulltext; objekty, kde se slovo objeví jen v textu (řeka Berounka), vypíše zvlášť a nejvýš 20.
+- `python3 -I tools/industrial.py "Beroun"` → objekty v obci: id | název | obec – část (okres) | druh | datace. Část obce
+  (Holešovice) najde fulltext. Zvlášť vypíše obce s podobným názvem (Moravský Beroun) a objekty, kde je obec jen
+  v textu (most přes Berounku); zmínky ověří jako celé slovo, protože API hledá i uvnitř slov. Skupinu nad 20 objektů
+  jen spočítá.
   Druhý argument zúží: `industrial.py "Beroun" mlýn`.
 - `python3 -I tools/industrial.py detail <id>` → adresa, poloha, datace s událostmi (založen, přestavěn, zbořen), stav,
   památková ochrana, dějiny objektu, **literatura**, osoby a firmy, odkaz a citace podle vzoru VCPD.

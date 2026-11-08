@@ -268,6 +268,15 @@ class SlusneTest(unittest.TestCase):
         self.assertTrue(slusne.blokace("127.0.0.1"))
         self.assertIsNone(slusne.blokace("www.mza.cz"))
 
+    def test_napoveda_nastroje_bez_dotazu(self):
+        # „--help“ nesmí jít na web jako název obce (industrial.py --help hledal obec „--help“)
+        for volba in ("--help", "-h"):
+            p = subprocess.run([sys.executable, "-I", os.path.join(TOOLS, "industrial.py"), volba],
+                               capture_output=True, text=True, env=dict(os.environ, SLUSNE_DIR=self.tmp))
+            self.assertEqual(p.returncode, 0)
+            self.assertIn("Použití:", p.stdout)
+        self.assertFalse([f for f in os.listdir(self.tmp) if f.endswith(".dotaz")])
+
     def test_skript_pres_slusne(self):
         skript = os.path.join(self.tmp, "s.py")
         with open(skript, "w") as f:

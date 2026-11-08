@@ -295,12 +295,22 @@ _lokalni = threading.local()
 _instalovano = False
 
 
+def _napoveda():
+    """Bez toho by nástroj „--help“ hledal jako název obce."""
+    hlavni = sys.modules.get("__main__")
+    if sys.argv[1:2] in (["-h"], ["--help"]) and hlavni is not sys.modules[__name__] and getattr(hlavni, "__doc__", None):
+        print(hlavni.__doc__)
+        sys.exit(0)
+
+
 def instaluj():
-    """Zapne limit pro všechno, co v procesu jde přes http.client (urllib, requests, http.client)."""
+    """Zapne limit pro všechno, co v procesu jde přes http.client (urllib, requests, http.client).
+    Nástroj spuštěný s -h/--help tu rovnou vypíše svůj popis a skončí."""
     global _instalovano
     if _instalovano:
         return
     _instalovano = True
+    _napoveda()
     put, get = http.client.HTTPConnection.putrequest, http.client.HTTPConnection.getresponse
     hlavicka = http.client.HTTPConnection.putheader
 

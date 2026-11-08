@@ -29,7 +29,7 @@ class VedutyTest(unittest.TestCase):
         self.assertEqual(radky[0], "\nVeduty, pohlednice, fotografie: 1")
         self.assertEqual(radky[1], "  [mezi 1833 a 1835] | obraz | Ansicht des Schlosses Teltsch in Mähren | Telč (Česko) | "
                                    "grafické listy | mzk | public | "
-                                   "https://www.ceskadigitalniknihovna.cz/uuid/1dd4cb48-2693-4276-8108-d2228024ec75")
+                                   "https://www.ceskadigitalniknihovna.cz/uuid/uuid:1dd4cb48-2693-4276-8108-d2228024ec75")
         self.assertEqual(radky[2], "\nMapy a plány: 1")
         self.assertIn("| topografické mapy | mzk | onsite |", radky[3])
 
@@ -43,6 +43,23 @@ class VedutyTest(unittest.TestCase):
     def test_dotaz_s_roky(self):
         self.assertEqual(veduty.dotaz("Beroun", ("1800", "1900")),
                          'geographic_names.search:"Beroun" AND model:(graphic OR map) AND date_range_start.year:[1800 TO 1900]')
+
+    def test_dotaz_podle_polohy(self):
+        self.assertEqual(veduty.dotaz_poloha(48.83, 14.6, ("1800", "1900")),
+                         'model:map AND coords.bbox:"Intersects(ENVELOPE(14.6, 14.6, 48.83, 48.83))" '
+                         'AND coords.bbox:"IsWithin(ENVELOPE(13.9, 15.299999999999999, 49.28, 48.379999999999995))" '
+                         'AND date_range_start.year:[1800 TO 1900]')
+
+    def test_souradnice_s_carkou_a_prohozene(self):
+        self.assertEqual(veduty.souradnice("48,830", "14,615"), (48.83, 14.615))
+        with self.assertRaises(SystemExit):
+            veduty.souradnice("14.615", "48.830")
+        with self.assertRaises(SystemExit):
+            veduty.souradnice("sever", "14.6")
+
+    def test_radek_mapy(self):
+        self.assertEqual(veduty.radek_mapy(LIST), "1975 | Telč. 23-431 | topografické mapy | mzk | onsite | "
+                                                  "https://www.ceskadigitalniknihovna.cz/uuid/uuid:e3e7bce0")
 
     def test_spatne_roky(self):
         with self.assertRaises(SystemExit):

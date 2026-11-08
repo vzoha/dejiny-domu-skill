@@ -17,20 +17,37 @@ MOST = {"id": 12355, "nameOriginal": "Železniční most přes Berounku", "addre
 
 class IndustrialTest(unittest.TestCase):
 
-    def test_v_miste_a_jinde(self):
+    def setUp(self):   # detaily objektů bez internetu: okres a text zmínky
+        industrial._detaily.clear()
+        industrial._detaily.update({
+            762: {"address": {"district": "Beroun"}},
+            12355: {"nameOriginal": "Železniční most přes Berounku", "descriptionPublic": "Most u Berouna, okres Beroun."},
+            16414: {"literature": '<a href="http://hrebecskedulnistezky.cz">hrebecskedulnistezky.cz</a>'}})
+
+    def test_v_miste_s_okresem_a_jinde(self):
         radky = industrial.vypis([PIVOVAR, MOST], "Beroun")
         self.assertEqual(radky[0], "\nV místě „Beroun“ (obec, část obce): 1")
-        self.assertEqual(radky[1], "  762 | Měšťanský (Nový) pivovar | Beroun – Město | pivovar, sladovna | 1295, 1870–1871")
-        self.assertEqual(radky[2], "\nJinde (hledané slovo jen v textu): 1")
+        self.assertEqual(radky[1], "  762 | Měšťanský (Nový) pivovar | Beroun – Město (okres Beroun) | pivovar, sladovna | 1295, 1870–1871")
+        self.assertEqual(radky[2], "\nJinde, obec zmíněná v textu: 1")
 
     def test_cast_obce_bez_diakritiky(self):
+        industrial._detaily[94] = {}
         self.assertEqual(industrial.vypis([MLYN], "holesovice")[0], "\nV místě „holesovice“ (obec, část obce): 1")
 
-    def test_jinde_nejvys_dvacet(self):
-        mosty = [dict(MOST, id=i) for i in range(25)]
+    def test_podobny_nazev_obce_zvlast(self):
+        vlachovo = dict(PIVOVAR, id=3528, addressCity="Vlachovo Březí", addressCityDistrict=None)
+        self.assertEqual(industrial.vypis([vlachovo], "Březí")[0], "\nObce a části s podobným názvem: 1")
+
+    def test_zminka_uvnitr_slova_neplati(self):
+        dul = dict(MOST, id=16414, nameOriginal="Důl Václav – Theodor", addressCity="Koclířov")
+        self.assertEqual(industrial.vypis([dul], "Lniště"), [])
+
+    def test_velkou_skupinu_jen_spocita(self):
+        mosty = [dict(MOST, id=i) for i in range(industrial.SKUPINA_NEJVIC + 5)]
         radky = industrial.vypis(mosty, "Beroun")
-        self.assertEqual(len(radky), 1 + industrial.JINDE + 1)
-        self.assertIn("a 5 dalších", radky[-1])
+        self.assertEqual(radky[0], f"\nJinde, obec zmíněná v textu: {industrial.SKUPINA_NEJVIC + 5}")
+        self.assertIn("zúží je hledaný výraz", radky[1])
+        self.assertEqual(len(radky), 2)
 
     def test_vyraz_v_nazvu_nebo_druhu(self):
         self.assertTrue(industrial.ma_vyraz(MLYN, "mlyn"))
