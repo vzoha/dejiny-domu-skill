@@ -313,7 +313,7 @@ class TestKontrola(Projekt):
     def test_nebezpecny_odkaz_mista(self):
         with open(self.path("data", "mista.json"), "w", encoding="utf-8") as f:
             json.dump({"Kaple": {"lat": 49.4, "lon": 15.2, "odkaz": "javascript:void(0)"},
-                       "Mlýn": {"lat": 49.4, "lon": 15.2, "odkaz": "https://cs.wikipedia.org/wiki/Ml%C3%BDn"}}, f)
+                       "Mlýn": {"lat": 49.4, "lon": 15.2, "odkaz": "https://cs.wikipedia.org/wiki/Ml%C3%BDn (s. 5)"}}, f)
         rc, out = self.kontrola()
         self.assertEqual(rc, 1)
         self.assertIn("místo Kaple: odkaz", out)

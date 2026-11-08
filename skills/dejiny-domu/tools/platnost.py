@@ -4,7 +4,7 @@ Jen funkce, nic nespouští. Každá vrací text chyby, nebo None, když je hodn
 """
 import datetime, math, re, unicodedata
 
-BEZPECNY_ODKAZ = re.compile(r"(?i)https?://\S+|/(?!/)\S*|#\S*")   # web, stránka vlastního webu, kotva
+BEZPECNY_ODKAZ = re.compile(r"(?i)https?://|/(?!/)|#")   # začátek: web, stránka vlastního webu, kotva
 
 
 def slugify(text):
@@ -49,7 +49,7 @@ def chyby_vyhrad(x):
 
 def chyba_odkazu(url):
     """Odkaz na webu smí vést jen na http(s) nebo na stránku webu. javascript:, data: ap. by se po kliknutí spustily."""
-    if url and not BEZPECNY_ODKAZ.fullmatch(str(url).strip()):
+    if url and not BEZPECNY_ODKAZ.match(str(url).strip()):
         return f"odkaz {str(url)[:60]!r} nevede na http(s):// ani na stránku webu (/…)"
     return None
 
