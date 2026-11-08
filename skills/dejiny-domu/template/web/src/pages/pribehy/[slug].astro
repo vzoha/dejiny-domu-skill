@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Doplnky from '../../components/Doplnky.astro';
 import { config, mainHouse, houseList, href } from '../../lib/data.js';
 
 // Další příběhy: data/pribeh_<slug>.md (export_web.py je kopíruje do src/generated/pribehy/).
@@ -24,6 +25,7 @@ const zpet = slug === 'obec' ? { href: '/obec/', text: 'Dějiny obce' } : dum ? 
   <h1>{frontmatter.title}</h1>
   {frontmatter.lead && <p class="lead">{frontmatter.lead}</p>}
   <div class="prose prose-story"><Content /></div>
+  <Doplnky misto="pribeh" slug={slug} />
 
   {(ostatni.length > 0 || zpet) && (
     <div class="next-step">

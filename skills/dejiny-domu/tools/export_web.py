@@ -77,7 +77,16 @@ def load_houses():
     return ns
 
 
-def record_rows():
+def neverejne_obrazky(cfg):
+    """Otevřený web: obrázky, které archiv bez souhlasu nedovoluje zveřejnit (podminky.py). Na webu jen přepis a odkaz."""
+    if not (cfg.get("prihlaseni") or {}).get("otevreny") or not os.path.isdir(VYREZY):
+        return set()
+    import podminky
+    return {fn[:-4] for fn in os.listdir(VYREZY)
+            if fn.endswith(".jpg") and podminky.posoud_obrazek(ROOT, fn[:-4])[0] == "souhlas"}
+
+
+def record_rows(skryte):
     svazky = jload("svazky.json", {})
     rows = []
     for z in jload("zaznamy.json", []):
@@ -88,8 +97,9 @@ def record_rows():
             summary=z.get("shrnuti", ""), scan=z.get("snimek", ""),
             archive=sv.get("archiv", ""), volume=sv.get("svazek", ""), vdesc=sv.get("popis", ""),
             portal=sv.get("portal", "archivu"), url=z.get("odkaz") or sv.get("url", ""),
-            img=os.path.exists(os.path.join(VYREZY, key + ".jpg")),
-            full=os.path.exists(os.path.join(ZDROJE, key + ".jpg")),
+            licence=sv.get("licence", ""), licenceUrl=sv.get("licence_url", ""),
+            img=key not in skryte and os.path.exists(os.path.join(VYREZY, key + ".jpg")),
+            full=key not in skryte and os.path.exists(os.path.join(ZDROJE, key + ".jpg")),
         ))
     return rows
 
@@ -211,24 +221,18 @@ def main():
     if "--nasazeni" in sys.argv and not norm_answer(login.get("odpoved", "")) and not login.get("otevreny"):
         sys.exit("CHYBA: v data/web.json není odpověď na přihlašovací otázku – web by byl otevřený komukoli.\n"
                  "Nastavte prihlaseni.odpoved, nebo (jen když to opravdu chcete) prihlaseni.otevreny: true.")
-    if "--nasazeni" in sys.argv and login.get("otevreny"):   # otevřený web = zveřejnění: podmínky archivů (podminky.py)
-        import podminky
-        vd = os.path.join(ROOT, "vyrezy")
-        bez = [f"  {fn[:-4]}: {podminky.posoud_obrazek(ROOT, fn[:-4])[1]}"
-               for fn in sorted(os.listdir(vd)) if os.path.isdir(vd) and fn.endswith(".jpg")
-               and podminky.posoud_obrazek(ROOT, fn[:-4])[0] == "souhlas"]
-        if bez:
-            sys.exit("CHYBA: otevřený web by zveřejnil obrázky, které archiv dovoluje zveřejnit jen se souhlasem:\n"
-                     + "\n".join(bez) + "\nZapište k nim souhlas (pole „souhlas“), dejte je pryč z webu, "
-                     "nebo nechte web neveřejný (prihlaseni.odpoved). Viz reference/podminky.md.")
-    docs_cfg = [d for d in jload("dokumenty.json", []) if not d.get("skryt")]   # "skryt": true = na web nedávat
-    maps_cfg = jload("mapy.json", [])
+    skryte = neverejne_obrazky(cfg)
+    if skryte:
+        print(f"Otevřený web: {len(skryte)} obrázků archiv bez souhlasu nedovoluje zveřejnit, na webu bude jen přepis "
+              "a odkaz (seznam: python3 -I tools/kontrola.py, reference/podminky.md)")
+    docs_cfg = [d for d in jload("dokumenty.json", []) if not d.get("skryt") and d.get("img") not in skryte]   # "skryt": true = na web nedávat
+    maps_cfg = [m for m in jload("mapy.json", []) if m.get("img") not in skryte]
     over_jmena_obrazku("data/zaznamy.json", [z.get("klic", "") for z in jload("zaznamy.json", [])])
     over_jmena_obrazku("data/dokumenty.json", [d.get("img", "") for d in docs_cfg])
     over_jmena_obrazku("data/mapy.json", [m.get("img", "") for m in maps_cfg])
     over_jmena_obrazku("data/web.json uvod.foto", [cfg["uvod"]["foto"]] if cfg.get("uvod", {}).get("foto") else [])
     over_data(OBEC, D, maps_cfg)
-    recs = {r["key"]: r for r in record_rows()}
+    recs = {r["key"]: r for r in record_rows(skryte)}
 
     houses = {}
     for cp, d in D.items():
@@ -244,16 +248,19 @@ def main():
         events = sorted((event(e, recs) for e in d.get("udalosti", [])), key=lambda e: year_key(e["year"]))
         refs = [r for x in events + owners + people for r in x["records"]]
         houses[slug] = dict(
-            cp=cislo_domu(cp, d), part=str(d.get("cast") or ""), slug=slug, name=d.get("nazev", ""), kind=d.get("druh", ""), st=d.get("st", "unk"),
+            key=cp, cp=cislo_domu(cp, d), part=str(d.get("cast") or ""), slug=slug, name=d.get("nazev", ""), kind=d.get("druh", ""), st=d.get("st", "unk"),
             status=STATUS.get(d.get("st"), ""), desc=d.get("popis", ""), note=d.get("note", ""),
             lat=d.get("lat"), lon=d.get("lon"), numbers=[dict(when=a, num=b) for a, b in d.get("cisla", [])],
             events=events, owners=owners, people=people, records=list(dict.fromkeys(refs)),
+            story=dict(title=d.get("pribeh_nadpis", ""), paras=list(d["pribeh"])) if d.get("pribeh") else None,
             docs=[dict(img=x["img"], caption=x["popis"]) for x in docs_cfg if str(cp) in [str(c) for c in x.get("domy", [])]
                   and os.path.exists(os.path.join(VYREZY, x["img"] + ".jpg"))],
         )
-    # hlavní část obce (bez `cast`) první, pak části podle abecedy; v nich podle čísla
-    houses = dict(sorted(houses.items(), key=lambda kv: (kv[1]["part"], int(re.match(r"\d*", kv[1]["cp"]).group(0) or 99999),
-                                                         kv[1]["cp"], kv[0])))
+    # `poradi` u domu (menší dřív, bez něj 0), hlavní část obce (bez `cast`) první, pak části podle abecedy, v nich podle čísla
+    houses = dict(sorted(houses.items(), key=lambda kv: (D[kv[1]["key"]].get("poradi", 0), kv[1]["part"],
+                                                         int(re.match(r"\d*", kv[1]["cp"]).group(0) or 99999), kv[1]["cp"], kv[0])))
+    for i, h in enumerate(houses.values()):
+        h["order"] = i   # JavaScript řadí klíče jako „1“, „22“ vždy číselně – pořadí nese tohle pole (lib/data.js)
 
     village_events = sorted((event(e, recs) for e in ns["OBEC_UDALOSTI"]), key=lambda e: year_key(e["year"]))
     village = dict(name=OBEC.get("nazev", ""), otherNames=OBEC.get("jine_nazvy", ""), municipality=OBEC.get("obec", ""),
@@ -351,6 +358,7 @@ def main():
     images = list(recs) + [d["img"] for d in docs_cfg] + [m["img"] for m in maps_cfg] + \
         ([cfg["uvod"]["foto"]] if cfg.get("uvod", {}).get("foto") else []) + \
         [st["obrazek"] for st in extra_stories if st.get("obrazek")]
+    images = [k for k in images if k not in skryte]
     for sub, src_dir in (("img", VYREZY), ("zdroje", ZDROJE)):
         dst_dir = os.path.join(WEB, "public", sub)
         os.makedirs(dst_dir, exist_ok=True)

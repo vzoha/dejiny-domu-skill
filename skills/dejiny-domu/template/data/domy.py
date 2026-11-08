@@ -36,6 +36,7 @@ OBEC_UDALOSTI = [
 #   drzitele=[dict(od="1786", do="1820", n="Jan Novák", jak="koupě od otce za 300 zl.", st="doc", r=[…], note="")],
 #   obyvatele=[dict(n="Jan Novák", y="1790–1850", role="hospodář", f=["* 1790 Horní Lhota 12", "× 1815 Marie …"], st="doc", r=[…])],
 #   note="rozpory, odkud údaj",
+#   pribeh=["krátký příběh na stránce domu, odstavce"], pribeh_nadpis="", poradi=0,   # nepovinné
 # )
 D = {
 }

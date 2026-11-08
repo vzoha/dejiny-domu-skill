@@ -110,7 +110,7 @@ def main():
     zaloha_nastroju = os.path.join(dst, "pracovni", "zaloha_tools_" + time.strftime("%Y%m%d-%H%M%S"))
     upravene = []
     for f in os.listdir(os.path.join(SKILL, "tools")):
-        if f.endswith((".py", ".sh")) and f != "novy_projekt.py":
+        if f.endswith((".py", ".sh", ".json")) and f != "novy_projekt.py":   # .json: podminky.json
             new, out = os.path.join(SKILL, "tools", f), os.path.join(tools, f)
             if os.path.isfile(out) and not os.path.islink(out) and not stejny_text(new, out):
                 os.makedirs(zaloha_nastroju, exist_ok=True)   # vlastní úprava (nebo starší verze) – nepřijde nazmar
@@ -139,7 +139,7 @@ def main():
         print(f"Web aktualizován na novou šablonu ({len(changed)} souborů). Původní verze jsou v {backup}:")
         for f in changed:
             print("  web/" + f)
-        print("Pokud jste vzhled webu upravovali, převezměte úpravy ze zálohy. Pak `npm ci` a `npm run data` ve web/.")
+        print("Pokud jste vzhled webu upravovali, převezměte úpravy ze zálohy (vlastní bloky patří do web/src/doplnky/, ty aktualizace nepřepíše). Pak `npm ci` a `npm run data` ve web/.")
 
 
 if __name__ == "__main__":

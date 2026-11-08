@@ -493,6 +493,39 @@ class TestExport(Projekt):
         self.assertEqual((s["houses"]["12"]["cp"], s["houses"]["12"]["part"]), ("12", ""))
         self.assertEqual(s["mainHouse"], "lhota-12")
 
+    def test_otevreny_web_bez_snimku_ktere_archiv_nedovoli(self):
+        self.napln()   # zápis ze SOA Třeboň: zveřejnit snímek jen se souhlasem
+        klic = ZAZNAM["klic"]
+        for otevreny, zverejnen in ((False, True), (True, False)):
+            with open(self.path("data", "web.json"), "w", encoding="utf-8") as f:
+                json.dump({"prihlaseni": {"otevreny": True} if otevreny else {"odpoved": "lipa"}}, f)
+            rc, out = self.export("--nasazeni")
+            self.assertEqual(rc, 0, out)
+            zapis = next(r for r in self.site()["records"] if r["key"] == klic)
+            self.assertEqual((zapis["img"], zapis["full"]), (zverejnen, zverejnen))
+            self.assertEqual(os.path.exists(self.path("web", "public", "img", klic + ".jpg")), zverejnen)
+            self.assertEqual(os.path.exists(self.path("web", "public", "zdroje", klic + ".jpg")), zverejnen)
+        rc, out = self.nastroj("kontrola.py").returncode, self.nastroj("kontrola.py").stdout
+        self.assertEqual(rc, 0, out)
+        self.assertIn("Na otevřeném webu je u nich jen přepis a odkaz", out)
+
+    def test_poradi_domu_pribeh_a_licence(self):
+        self.napln()
+        with open(self.path("data", "domy.py"), "a", encoding="utf-8") as f:
+            f.write('D["30"] = dict(st="doc")\nD["12a"] = dict(st="doc")\nD["2"] = dict(st="doc", poradi=-1, '
+                    'pribeh=["První odstavec.", "Druhý."], pribeh_nadpis="Jak se tu žilo")\n')
+        svazky = self.data("svazky")
+        svazky["trebon_4250"].update(licence="CC BY 4.0", licence_url="https://creativecommons.org/licenses/by/4.0/")
+        with open(self.path("data", "svazky.json"), "w", encoding="utf-8") as f:
+            json.dump(svazky, f)
+        rc, out = self.export()
+        self.assertEqual(rc, 0, out)
+        domy = self.site()["houses"]
+        self.assertEqual(sorted(domy, key=lambda k: domy[k]["order"]), ["2", "12", "12a", "30"])
+        self.assertEqual(domy["2"]["story"], {"title": "Jak se tu žilo", "paras": ["První odstavec.", "Druhý."]})
+        self.assertIsNone(domy["12"]["story"])
+        self.assertEqual(self.site()["records"][0]["licence"], "CC BY 4.0")
+
     def test_prolinani_jen_se_stejnym_vyrezem(self):
         v = {"crs": "EPSG:5514", "bbox": [0, 0, 300, 300]}
         polozky = [{"img": "a", "rok": "1900", "zdroj": "x", "skupina": "ves", "vyrez": v},
@@ -915,6 +948,14 @@ class TestMista(Projekt):
 
 
 class TestNovyProjekt(Projekt):
+
+    def test_projekt_ma_tabulku_podminek(self):
+        self.assertEqual(self.text("tools", "podminky.json"), open(os.path.join(SKILL, "tools", "podminky.json"), encoding="utf-8").read())
+        self.napln()
+        os.remove(self.path("tools", "podminky.json"))   # bez tabulky nesmí nástroje potichu pustit všechno
+        p = self.nastroj("podminky.py", "obrazky")
+        self.assertNotEqual(p.returncode, 0)
+        self.assertIn("Tabulka podmínek archivů", p.stderr)
 
     def test_aktualizace_neprepise_data(self):
         self.napln()

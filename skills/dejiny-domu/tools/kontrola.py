@@ -187,15 +187,18 @@ def main():
     root = os.path.dirname(DATA)
     otevreny = bool((cfg.get("prihlaseni") or {}).get("otevreny"))
     vd = os.path.join(root, "vyrezy")
+    bez_souhlasu = {}   # zpráva (archiv a důvod) → obrázky; po archivech, ať stovky snímků z jednoho archivu nejsou stovky řádků
     for fn in sorted(os.listdir(vd)) if os.path.isdir(vd) else []:
         if not fn.endswith(".jpg"):
             continue
         stav, zprava = podminky.posoud_obrazek(root, fn[:-4])
         if stav == "souhlas":
-            (err if otevreny else warn).append(f"PODMÍNKY ({fn[:-4]}): {zprava}" + ("" if otevreny else
-                                               " Web je teď neveřejný, před otevřením to vyřeš."))
+            bez_souhlasu.setdefault(zprava, []).append(fn[:-4])
         elif stav == "pozor" and "nevýdělečně" in zprava:
             warn.append(f"PODMÍNKY ({fn[:-4]}): {zprava}")
+    for zprava, klice in bez_souhlasu.items():
+        warn.append(f"PODMÍNKY ({len(klice)} obrázků: {', '.join(klice[:5])}{', …' if len(klice) > 5 else ''}): {zprava}"
+                    + (" Na otevřeném webu je u nich jen přepis a odkaz." if otevreny else " Až web otevřeš, bude u nich jen přepis a odkaz."))
 
     log = os.path.join(DATA, "research_log.md")
     rows = sum(1 for l in open(log, encoding="utf-8") if re.match(r"^\| \d+ \|", l)) if os.path.exists(log) else 0

@@ -1,0 +1,9 @@
+---
+// Vlastní doplňky webu projektu: každý soubor src/doplnky/*.astro se vykreslí na všech místech, kde stránky mají
+// <Doplnky misto="…" />, a sám rozhodne podle `misto`, jestli tam něco ukáže. Aktualizace skillu složku nepřepíše.
+// Místa: uvod (pod čísly na úvodu), uvod-dum (pod hlavním domem na úvodu), dum (stránka domu, prop dum),
+// pribeh (stránka příběhu, prop slug), paticka (v patičce za textem), konec (konec stránky, skripty).
+const doplnky = Object.values(import.meta.glob('../doplnky/*.astro', { eager: true }));
+const props = Astro.props;
+---
+{doplnky.map((d) => <d.default {...props} />)}

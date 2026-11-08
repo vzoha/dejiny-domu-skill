@@ -55,6 +55,14 @@ skutečnou adresu vyčti z výstupu (`Preview server running at …`) a před od
   (`pribeh.hlavni` = slug příběhu, kam vede tlačítko na úvodu; bez něj vede na rozcestník `/pribehy/`).
 - `galerie.skupiny`: názvy, úvodní věta a pořadí skupin fotek na stránce příběhů (`skupina` v `dokumenty.json`).
   Fotky bez skupiny jdou na konec („Další fotografie“).
+- `indexovat`: `true` = vyhledávače smí web najít. Bez něj má každá stránka `noindex` (výchozí, chrání soukromí
+  lidí z domu). Zapni jen u otevřeného webu, který uživatel výslovně chce mít ve vyhledávání.
+- **Otevřený web a podmínky archivů:** obrázek, který archiv bez souhlasu nedovoluje zveřejnit (`podminky.md`),
+  export na otevřený web nedá. U zápisu zůstane přepis, překlad a odkaz na snímek v archivu. Kontrola je vypíše.
+- **Vlastní doplňky webu** (tlačítko, odkaz v patičce, skript): soubor `web/src/doplnky/<název>.astro`. Vykreslí se
+  na místech `uvod`, `uvod-dum`, `dum` (prop `dum`), `pribeh` (prop `slug`), `paticka` a `konec` a podle propu
+  `misto` sám rozhodne, kde něco ukáže (`{Astro.props.misto === 'paticka' && <> · <a href="…">…</a></>}`).
+  Aktualizace skillu složku `doplnky/` nepřepíše, úpravy šablon webu ano (stará verze jde do zálohy).
 - Šablona `web.json` je prázdná – název nastav hned na začátku.
 ## Zveřejnění na Netlify (výchozí, zdarma)
 1. Uživatel si založí účet na netlify.com (stačí přihlášení přes Google/GitHub) – udělá sám.

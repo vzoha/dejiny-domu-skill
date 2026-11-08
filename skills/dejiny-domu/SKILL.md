@@ -183,8 +183,8 @@ Před zveřejněním projdi s uživatelem `reference/soukromi.md` (dnešní maji
 
 ## Fáze 7 – Zveřejnění (volitelné, jen se souhlasem)
 Netlify: `npm run nasadit` (přihlášení a první propojení dej uživateli s `!`, postup v `reference/web.md`).
-Otevřený web je zveřejnění: obrázky z archivů, které to dovolují jen se souhlasem, nasazení nepustí
-(`python3 -I tools/podminky.py obrazky` je vypíše). Neveřejný web za heslem takové obrázky mít smí.
+Otevřený web je zveřejnění: obrázky z archivů, které to dovolují jen se souhlasem, export vynechá a u zápisu
+nechá přepis a odkaz do archivu (`python3 -I tools/podminky.py obrazky` je vypíše). Neveřejný web za heslem je mít smí.
 Nic nezveřejňuj bez výslovného souhlasu uživatele.
 
 ## Vazba na rodokmen

@@ -5,6 +5,7 @@ import Timeline from '../../components/Timeline.astro';
 import RecLinks from '../../components/RecLinks.astro';
 import Vyhrady from '../../components/Vyhrady.astro';
 import HouseMap from '../../components/HouseMap.astro';
+import Doplnky from '../../components/Doplnky.astro';
 import { houses, records, dateKey, village, houseAddress, houseFullTitle, statusClass, config, mainHouse } from '../../lib/data.js';
 
 export function getStaticPaths() {
@@ -27,6 +28,13 @@ const recs = h.records.filter((r) => records[r]).sort((a, b) => dateKey(records[
     return st && <p><a class="btn" href={st}>Přečíst příběh domu →</a></p>;
   })()}
   {h.note && <p class="note">{h.note}</p>}
+  {h.story && (
+    <section class="house-story">
+      <h2>{h.story.title || 'Příběh domu'}</h2>
+      {h.story.paras.map((p) => <p>{p}</p>)}
+    </section>
+  )}
+  <Doplnky misto="dum" dum={h} />
 
   {h.numbers.length > 0 && (
     <>

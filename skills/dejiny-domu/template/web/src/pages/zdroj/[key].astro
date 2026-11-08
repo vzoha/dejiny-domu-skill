@@ -18,6 +18,7 @@ const r = records[Astro.params.key];
       <tr><th>Archiv</th><td>{r.archive}</td></tr>
       <tr><th>Svazek</th><td>{r.volume}</td></tr>
       <tr><th>Snímek / strana</th><td>{r.scan}{r.url && <> – <a href={r.url} target="_blank" rel="noopener">otevřít na portálu {r.portal}</a></>}</td></tr>
+      {r.licence && <tr><th>Licence</th><td>{r.licenceUrl ? <a href={r.licenceUrl} target="_blank" rel="noopener">{r.licence}</a> : r.licence}</td></tr>}
       {(r.houses.length > 0 || r.village) && <tr><th>Týká se</th><td>{r.houses.map((s, i) => <>{i > 0 && ', '}<HouseLink slug={s} /></>)}{r.village && <>{r.houses.length ? ', ' : ''}<a href="/obec/">obec</a></>}</td></tr>}
     </tbody>
   </table></div>
@@ -27,13 +28,16 @@ const r = records[Astro.params.key];
       <br /><span class="small muted">{r.boxes.length ? 'Červeně je označené místo, ze kterého čteme. ' : ''}{r.full ? 'Kliknutím otevřete výřez v plném rozlišení.' : ''}</span>
     </p>
   )}
+  {!r.img && r.url && (
+    <p class="small muted" style="margin-top:1rem">Archiv nedovoluje zveřejnit snímek jinde než na svém portálu. Originál si prohlédnete přes odkaz „otevřít na portálu“ výše.</p>
+  )}
   {r.orig && (
     <div class="transcript">
       <div class="tr-grid">
         <div><h2>Přepis originálu</h2><p class="tr-orig">{r.orig}</p></div>
         <div><h2>Překlad</h2><p class="tr-cs">{r.cs}</p></div>
       </div>
-      <p class="small muted">Nejistá čtení jsou označená (?), nečitelná místa […]. Přepis si můžete ověřit na výřezu výše.</p>
+      <p class="small muted">Nejistá čtení jsou označená (?), nečitelná místa […]. Přepis si můžete ověřit {r.img ? 'na výřezu výše' : 'na snímku v archivu'}.</p>
     </div>
   )}
 </Base>

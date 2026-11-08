@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import HouseMap from '../components/HouseMap.astro';
+import Doplnky from '../components/Doplnky.astro';
 import Timeline from '../components/Timeline.astro';
 import { stats, config, village, mainHouse, houseList, href, houseAddress, houseFullTitle } from '../lib/data.js';
 import { frontmatter as pribeh } from '../generated/pribeh.md';
@@ -37,6 +38,7 @@ const heroParagraphs = uvod.odstavce ?? (config.maPribeh && pribeh.lead ? [pribe
     <div><strong>{stats.records}</strong>zápisů z pramenů</div>
     {stats.maps > 0 && <div><strong>{stats.maps}</strong>starých map</div>}
   </div>
+  <Doplnky misto="uvod" />
 
   {mainHouse && (
     <>
@@ -49,6 +51,7 @@ const heroParagraphs = uvod.odstavce ?? (config.maPribeh && pribeh.lead ? [pribe
       {mainHouse.desc && <p class="lead">{mainHouse.desc}</p>}
       {mainHouse.events.length > 0 && <Timeline events={mainHouse.events.slice(0, 6)} />}
       <p><a class="btn" href={href.house(mainHouse.slug)}>Celé dějiny domu →</a></p>
+      <Doplnky misto="uvod-dum" />
     </>
   )}
 

@@ -3,6 +3,7 @@ import { Font } from 'astro:assets';
 import '../styles/global.css';
 import '../styles/modern.css';
 import { config } from '../lib/data.js';
+import Doplnky from '../components/Doplnky.astro';
 const siteName = config.nazev || 'Dějiny domu';
 const { title, description = config.popis || siteName, wide = false, narrow = false } = Astro.props;
 const path = Astro.url.pathname;
@@ -20,7 +21,7 @@ const current = (url) => ((url === '/' ? path === '/' : path.startsWith(url)) ? 
     <Font cssVariable="--font-serif" preload />
     <Font cssVariable="--font-sans" preload />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex, nofollow" />
+    {!config.indexovat && <meta name="robots" content="noindex, nofollow" />}
     <meta name="description" content={description} />
     <title>{title ? `${title} · ${siteName}` : siteName}</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='15' fill='%235B4A3A'/><path d='M16 8v16M9 14l7-6 7 6' stroke='%23FBF8F2' stroke-width='2.5' fill='none'/></svg>" />
@@ -49,6 +50,8 @@ const current = (url) => ((url === '/' ? path === '/' : path.startsWith(url)) ? 
     </main>
     <footer class="site-footer">
       {config.zapati || 'Dohledáno v digitalizovaných pramenech'}{config.verejny ? '' : ' · neveřejný web'}
+      <Doplnky misto="paticka" />
     </footer>
+    <Doplnky misto="konec" />
   </body>
 </html>

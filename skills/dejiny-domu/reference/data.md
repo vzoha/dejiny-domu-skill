@@ -57,6 +57,9 @@ ISSUES = [("Kdy dům dostal číslo 12?", "Otevřené: v matrice 1786 je Novák 
 - `obyvatele`: lidé, kteří v domě žili (i výměnkáři, čeleď, nájemníci). `f` krátká fakta
   (`* narození`, `× sňatek`, `† úmrtí`). **Žijící jen jméno** (soukromí).
 - `cisla`: všechna čísla domu v čase, dvojice (období, číslo). Ztotožnění doložit v `udalosti` nebo `note`.
+- `pribeh` (volitelně): krátký příběh přímo na stránce domu, seznam odstavců; `pribeh_nadpis` (výchozí „Příběh
+  domu“). Hodí se u sousedních domů. Delší příběh patří do `data/pribeh_cp<adresa>.md` (`pribehy.md`).
+- `poradi` (volitelně): číslo pro pořadí v seznamu domů (menší dřív, bez něj 0), třeba hlavní statek první.
 
 ## `zaznamy.json` – zápisy z pramenů
 ```json
@@ -78,6 +81,7 @@ ISSUES = [("Kdy dům dostal číslo 12?", "Otevřené: v matrice 1786 je Novák 
 `{"trebon_123456": {"archiv": "SOA Třeboň – SOkA Pelhřimov", "portal": "digi.ceskearchivy.cz",
 "svazek": "Sčítání lidu 1890, Horní Lhota", "popis": "Horní Lhota", "url": "…"}}`. Matriky přes `aron_img.py … svazek`, `mza.py svazek` apod.
 Gruntovní knihy: „Velkostatek Kamenice, gruntovní kniha Horní Lhota 1650–1780, inv. č. …“.
+`licence` a `licence_url` (volitelně): licence materiálu, když ji zdroj uvádí („CC BY 4.0“) – web ji ukáže u zápisu.
 
 ## `prepisy.json`, `zvyrazneni.json`
 `{"<klic>": {"orig": "[Číslo domu] 30\n[Jméno] …", "cs": "Překlad celou větou…"}}`,

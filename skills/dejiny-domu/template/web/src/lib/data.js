@@ -6,7 +6,7 @@ export const mapGroups = site.mapGroups ?? {};
 export const mainHouse = site.mainHouse ? houses[site.mainHouse] : null;
 export const records = Object.fromEntries(site.records.map((r) => [r.key, r]));
 export const recordList = site.records;
-export const houseList = Object.values(houses);
+export const houseList = Object.values(houses).sort((a, b) => a.order - b.order);
 
 export const href = {
   house: (slug) => `/dum/${slug}/`,

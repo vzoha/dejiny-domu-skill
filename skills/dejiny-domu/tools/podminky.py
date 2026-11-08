@@ -21,11 +21,12 @@ _cache = None
 def portaly():
     global _cache
     if _cache is None:
-        try:
+        try:   # bez tabulky by nástroje tiše pustily stahování i zveřejnění, které archiv zakazuje
             with open(SOUBOR, encoding="utf-8") as f:
-                _cache = json.load(f).get("portaly", {})
-        except (OSError, ValueError):
-            _cache = {}
+                _cache = json.load(f)["portaly"]
+        except (OSError, ValueError, KeyError) as e:
+            sys.exit(f"Tabulka podmínek archivů {SOUBOR} chybí nebo je poškozená ({e}). "
+                     "Aktualizuj nástroje projektu (novy_projekt.py) a pusť příkaz znovu.")
     return _cache
 
 
