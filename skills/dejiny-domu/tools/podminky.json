@@ -160,6 +160,11 @@
       "nazev": "Česká digitální knihovna (Krameria knihoven)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "hledání a OCR text veřejných děl; podmínky CDK nenalezeny, za peníze jako MZK (souhlas)", "jinak": ""
     },
+    "www.ceskadigitalniknihovna.cz": {
+      "nazev": "Česká digitální knihovna (web)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "skeny patří knihovně uložení (MZK, UK…), podmínky CDK ani UK nenalezeny – za peníze jako MZK (souhlas) (8. 11. 2026)",
+      "jinak": "Uživatel otevře odkaz z veduty.py a obrázek uloží tlačítkem Export, ty ho přečteš. Nástroje hledají přes API."
+    },
     "anno.onb.ac.at": {
       "nazev": "ANNO (ÖNB)", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""
