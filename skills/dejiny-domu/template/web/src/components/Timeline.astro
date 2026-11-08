@@ -1,5 +1,6 @@
 ---
 import RecLinks from './RecLinks.astro';
+import Vyhrady from './Vyhrady.astro';
 import { statusClass } from '../lib/data.js';
 const { events = [] } = Astro.props;
 const legend = [...new Map(events.map((e) => [e.st, e.status])).entries()];
@@ -12,6 +13,7 @@ const legend = [...new Map(events.map((e) => [e.st, e.status])).entries()];
         <p>{e.text}</p>
         <p class="tl-meta small muted">
           {e.st !== 'doc' && <span class={`chip ${statusClass(e.st)}`}>{e.status}</span>}
+          <Vyhrady caveats={e.caveats} />
           {e.source && <span class="tl-src">{e.source}</span>}
           <RecLinks ids={e.records} />
         </p>

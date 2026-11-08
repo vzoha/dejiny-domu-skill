@@ -16,7 +16,7 @@ if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze 
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 DATA = os.path.join(ROOT, "data")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from platnost import chyba_odkazu, chyba_odpovedi, chyba_polohy, chyby_adres_domu, nemozna_data, obracene_rozpeti, obraceny_interval  # noqa: E402
+from platnost import chyba_odkazu, chyba_odpovedi, chyby_vyhrad, chyba_polohy, chyby_adres_domu, nemozna_data, obracene_rozpeti, obraceny_interval  # noqa: E402
 STAVY = ("doc", "lit", "prob", "fam", "unk")
 DRUHY = set("NOZISGKMCLJ")
 
@@ -54,6 +54,9 @@ def main():
             cited.add(r)
             if r not in keys:
                 err.append(f"{kde} cituje neexistující zápis '{r}'")
+        chyby, upozorneni = chyby_vyhrad(x)
+        err.extend(f"{kde}: {c}" for c in chyby)
+        warn.extend(f"{kde}: {u}" for u in upozorneni)
         if st == "doc" and not x.get("r"):
             warn.append(f"{kde} ({str(x.get(nazev_pole, ''))[:50]}) je 'doc', ale necituje žádný zápis")
         if st == "lit" and not (x.get("zdroj") or x.get("note") or x.get("r")):
@@ -111,7 +114,8 @@ def main():
         data_v(f"zápis {k}", z.get("datum"))
         if z.get("svazek") and z["svazek"] not in svazky:
             err.append(f"zápis {k}: svazek '{z['svazek']}' není v data/svazky.json")
-        if not z.get("odkaz") and not svazky.get(z.get("svazek", ""), {}).get("url") and z.get("druh") != "L":
+        sv = svazky.get(z.get("svazek", ""), {})
+        if not z.get("odkaz") and not sv.get("url") and not sv.get("soukrome") and z.get("druh") != "L":
             warn.append(f"zápis {k}: chybí odkaz na snímek (pole 'odkaz')")
         if not os.path.exists(os.path.join(ROOT, "vyrezy", k + ".jpg")):
             warn.append(f"zápis {k}: chybí výřez vyrezy/{k}.jpg")

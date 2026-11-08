@@ -11,8 +11,17 @@ Položky do JSON souborů přidávej a měň přes `python3 -I tools/zapis.py` (
 | `doc` | přečteno přímo na snímku pramene (matrika, gruntovní kniha, sčítání, katastr, mapa). Vždy s `r` |
 | `lit` | z literatury (kniha, článek, vlastivěda), vždy se `zdroj` („Vlastivěda okresu, 1899, s. 389“) |
 | `prob` | pravděpodobné (shoda jména, doby a čísla, ale ne přímý doklad, třeba před ztotožněním přečíslování), v `note` proč |
-| `fam` | od majitele, pamětníka nebo z domovního dokumentu |
+| `fam` | od majitele nebo pamětníka (vyprávění), případně z domovního dokumentu, který nemáš naskenovaný |
 | `unk` | neznámé |
+
+`st` říká, **odkud** údaj je. **Jak jistě** platí, říkají dvě nepovinná pole (na webu jako štítek vedle stavu):
+- `cteni="nejiste"` – písmo nejde jistě přečíst (jméno, číslo, rok), v textu „Novák (?)“;
+- `dum="nejiste"` – zápis se k domu váže jen odhadem (sedí jméno a doba, ne číslo domu); vždy s `note` proč.
+
+`doc` tedy znamená „čteno ze snímku“, ne „pravda“: písař se mohl splést a údaj může mít výhradu.
+**Rodinný dokument** (kupní smlouva, stavební povolení, fotka s datem) naskenuj do `dokumenty/`, zapiš jako zápis
+druhu `J` se svazkem `{"archiv": "u rodiny Novákových", "svazek": "Kupní smlouva 1923", "soukrome": true}`
+(`soukrome` = žádný portál, kontrola nechce odkaz). Údaj z něj je `doc` s `r` – ne `fam`.
 
 ## `domy.py`
 ```python

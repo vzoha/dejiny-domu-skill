@@ -29,6 +29,24 @@ def chyba_odpovedi(login):
     return None
 
 
+# Jistota zvlášť od původu údaje (st): přečtené ze snímku může být nejisté čtením i přiřazením k domu.
+VYHRADY = {"cteni": "nejisté čtení", "dum": "k domu přiřazeno nejistě"}
+
+
+def vyhrady(x):
+    """Štítky pro web: [„nejisté čtení“, …] podle polí cteni="nejiste" a dum="nejiste"."""
+    return [stitek for pole, stitek in VYHRADY.items() if x.get(pole) == "nejiste"]
+
+
+def chyby_vyhrad(x):
+    """(chyby, upozornění) k polím cteni a dum."""
+    chyby = [f"pole '{p}' smí být jen \"nejiste\" (nebo chybět), je tam {x[p]!r}"
+             for p in VYHRADY if p in x and x[p] != "nejiste"]
+    upozorneni = ["dum=\"nejiste\" bez 'note' – napiš, proč se zápis k domu váže jen nejistě"] \
+        if x.get("dum") == "nejiste" and not x.get("note") else []
+    return chyby, upozorneni
+
+
 def chyba_odkazu(url):
     """Odkaz na webu smí vést jen na http(s) nebo na stránku webu. javascript:, data: ap. by se po kliknutí spustily."""
     if url and not BEZPECNY_ODKAZ.fullmatch(str(url).strip()):

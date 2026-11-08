@@ -355,6 +355,24 @@ class TestKontrola(Projekt):
         self.assertEqual(rc, 1)
         self.assertIn("nemá žádné písmeno a–z ani číslici", out)
 
+    def test_jistota_cteni_a_domu(self):
+        self.napln()
+        with open(self.path("data", "domy.py"), "a", encoding="utf-8") as f:
+            f.write('D["12"]["drzitele"][0].update(cteni="nejiste", dum="nejiste")\n'
+                    'D["12"]["obyvatele"][0]["cteni"] = "asi"\n')
+        rc, out = self.kontrola()
+        self.assertEqual(rc, 1)
+        self.assertIn("obyvatel Josef Novák: pole 'cteni' smí být jen \"nejiste\"", out)
+        self.assertIn("držitel Josef Novák: dum=\"nejiste\" bez 'note'", out)
+
+    def test_rodinny_dokument_bez_odkazu(self):
+        self.napln()
+        self.zapis("svazky", "rodina", {"archiv": "u rodiny Novákových", "svazek": "Kupní smlouva 1923", "soukrome": True})
+        self.zapis("zaznamy", "lhota_smlouva_cp12_1923", {"druh": "J", "datum": "1923", "nazev": "Kupní smlouva",
+                                                          "shrnuti": "Prodej domu.", "svazek": "rodina"})
+        rc, out = self.kontrola()
+        self.assertNotIn("lhota_smlouva_cp12_1923: chybí odkaz", out)
+
     def test_rozbity_domy_py(self):
         with open(self.path("data", "domy.py"), "w", encoding="utf-8") as f:
             f.write("D = {\n")
@@ -424,6 +442,16 @@ class TestExport(Projekt):
         rc, out = self.export()
         self.assertNotEqual(rc, 0)
         self.assertIn("prihlaseni.odpoved", out)
+
+    def test_vyhrady_jistoty_na_webu(self):
+        self.napln()
+        with open(self.path("data", "domy.py"), "a", encoding="utf-8") as f:
+            f.write('D["12"]["drzitele"][0].update(cteni="nejiste", dum="nejiste", note="jen jméno a doba")\n')
+        rc, out = self.export()
+        self.assertEqual(rc, 0, out)
+        majitele = {o["name"]: o["caveats"] for o in self.site()["houses"]["12"]["owners"]}
+        self.assertEqual(majitele["Josef Novák"], ["nejisté čtení", "k domu přiřazeno nejistě"])
+        self.assertEqual(majitele["Jan Novák"], [])
 
     def test_uplny_projekt(self):
         self.napln()

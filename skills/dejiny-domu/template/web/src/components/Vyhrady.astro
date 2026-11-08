@@ -1,0 +1,5 @@
+---
+// Štítky jistoty (cteni/dum = "nejiste" v domy.py) vedle štítku původu údaje.
+const { caveats = [] } = Astro.props;
+---
+{caveats.map((c) => <span class="chip st-prob">{c}</span>)}

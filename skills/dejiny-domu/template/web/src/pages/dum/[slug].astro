@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Record from '../../components/Record.astro';
 import Timeline from '../../components/Timeline.astro';
 import RecLinks from '../../components/RecLinks.astro';
+import Vyhrady from '../../components/Vyhrady.astro';
 import HouseMap from '../../components/HouseMap.astro';
 import { houses, records, dateKey, village, houseTitle, statusClass, config, mainHouse } from '../../lib/data.js';
 
@@ -48,7 +49,7 @@ const recs = h.records.filter((r) => records[r]).sort((a, b) => dateKey(records[
               <td class="small" style="white-space:nowrap">{o.until}</td>
               <td>{o.name}{o.note && <div class="small muted">{o.note}</div>}</td>
               <td class="small">{o.how}</td>
-              <td><div class="src-line"><span class={`chip ${statusClass(o.st)}`}>{o.status}</span><RecLinks ids={o.records} /></div></td>
+              <td><div class="src-line"><span class={`chip ${statusClass(o.st)}`}>{o.status}</span><Vyhrady caveats={o.caveats} /><RecLinks ids={o.records} /></div></td>
             </tr>
           ))}
         </tbody>
@@ -66,7 +67,7 @@ const recs = h.records.filter((r) => records[r]).sort((a, b) => dateKey(records[
             {p.role && <p class="small"><strong>{p.role}</strong></p>}
             {p.facts.length > 0 && <ul class="facts small">{p.facts.map((f) => <li>{f}</li>)}</ul>}
             {p.note && <p class="small muted">{p.note}</p>}
-            <p class="small src-line"><span class={`chip ${statusClass(p.st)}`}>{p.status}</span><RecLinks ids={p.records} /></p>
+            <p class="small src-line"><span class={`chip ${statusClass(p.st)}`}>{p.status}</span><Vyhrady caveats={p.caveats} /><RecLinks ids={p.records} /></p>
           </div>
         ))}
       </div>

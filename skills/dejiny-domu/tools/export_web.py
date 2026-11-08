@@ -15,7 +15,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
 
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, TOOLS)
-from platnost import chyba_odkazu, chyba_odpovedi, chyba_polohy, chyby_adres_domu, norm_answer, slugify  # noqa: E402
+from platnost import chyba_odkazu, chyba_odpovedi, chyba_polohy, chyby_adres_domu, norm_answer, slugify, vyhrady  # noqa: E402
 ROOT = os.path.dirname(TOOLS)
 if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu: data projektu tam nejsou, zápis by šel do skillu
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
@@ -197,7 +197,7 @@ def owner_year(o):
 
 def event(e, recs):
     return dict(year=str(e.get("rok", "")), text=e.get("text", ""), st=e.get("st", "unk"), status=STATUS.get(e.get("st"), ""),
-                source=e.get("zdroj", ""), records=cited(e, recs))
+                source=e.get("zdroj", ""), caveats=vyhrady(e), records=cited(e, recs))
 
 
 def main():
@@ -234,10 +234,10 @@ def main():
         slug = slugify(cp)
         people = [dict(name=o.get("n", ""), years=o.get("y", ""), role=o.get("role", ""), facts=o.get("f", []),
                        st=o.get("st", "unk"), status=STATUS.get(o.get("st"), ""), note=o.get("note", ""),
-                       records=cited(o, recs)) for o in d.get("obyvatele", [])]
+                       caveats=vyhrady(o), records=cited(o, recs)) for o in d.get("obyvatele", [])]
         owners = [dict(since=str(o.get("od", "")), until=str(o.get("do", "")), name=o.get("n", ""), how=o.get("jak", ""),
                        st=o.get("st", "unk"), status=STATUS.get(o.get("st"), ""), note=o.get("note", ""),
-                       records=cited(o, recs)) for o in d.get("drzitele", [])]
+                       caveats=vyhrady(o), records=cited(o, recs)) for o in d.get("drzitele", [])]
         # neznámý začátek („?“ do 1820) řadí podle konce – před toho, kdo ve stejném roce začal
         owners.sort(key=lambda o: (year_key(owner_year(o)), bool(re.search(r"\d", o["since"]))))
         events = sorted((event(e, recs) for e in d.get("udalosti", [])), key=lambda e: year_key(e["year"]))
