@@ -37,11 +37,11 @@ Data se točí kolem **čísla popisného** a jeho držitelů a obyvatel v čase
 1. Jsi ve složce projektu (existuje `data/STAV.md`)? Přečti `data/STAV.md`, konec `data/research_log.md`
    a pokračuj podle „Rozpracováno“. Krátce shrň, kde jste skončili.
    **Verze:** porovnej `.skill_verze` v projektu se `SKILL_DIR/VERZE`. Liší-li se, nabídni aktualizaci:
-   `python3 -I SKILL_DIR/tools/novy_projekt.py <složka projektu>` (data zůstanou), pak ve `web/` `npm install`.
+   `python3 -I SKILL_DIR/tools/novy_projekt.py <složka projektu>` (data zůstanou), pak ve `web/` `npm ci`.
 2. Projekt ještě není → **Fáze 0**.
 
 ## Fáze 0 – Příprava (jednou)
-1. Nástroje: `python3` (≥ 3.9), `node` (≥ 20), `magick` (ImageMagick 7; na Linuxu stačí IM6 s `convert` – nástroje
+1. Nástroje: `python3` (≥ 3.9), `node` (≥ 22.19; starší `npm ci` odmítne hned na začátku), `magick` (ImageMagick 7; na Linuxu stačí IM6 s `convert` – nástroje
    ho najdou samy, v ručních příkazech pak piš `convert` místo `magick`), `git`. Instalace a pasti macOS a Windows:
    `reference/matriky.md` → Technické pasti. Na Windows místo `python3 -I`
    vždy `python -I -X utf8`. Pravidla zapiš do `CLAUDE.md` projektu.
@@ -173,7 +173,7 @@ Příběh domu nabídni, jakmile je ~4 doložených držitelů nebo ~150 let his
 pak `data/pribeh.md` a `web.json` (`pribeh`, `uvod`).
 
 ## Fáze 6 – Web
-Podrobně `reference/web.md`. `cd web && npm install` (jednou), `npm run nahled` → http://localhost:4321.
+Podrobně `reference/web.md`. `cd web && npm ci` (jednou), `npm run nahled` → http://localhost:4321.
 Po změně dat `npm run data && npm run build`. Hlášky `POZOR: nefunkční odkaz` oprav hned.
 Před zveřejněním projdi s uživatelem `reference/soukromi.md` (dnešní majitelé, žijící lidé, fotky sousedů).
 

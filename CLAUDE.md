@@ -25,6 +25,11 @@ release: 0.3.6
 
 Kontrolu formátu dělá hook `.githooks/commit-msg`; po naklonování ho zapni přes `git config core.hooksPath .githooks`.
 
+## Knihovny webu (template/web)
+`package-lock.json` generuj **npm 10** (`npx -y npm@10 install`): npm 11 vynechá volitelné `@emnapi/*` a `npm ci`
+v npm 10 pak skončí chybou (audit D03). Ověř `npm ci` v npm 10 i 11, `npm audit` a `npm run build` na skutečném projektu.
+Nejnižší Node = nejvyšší `engines.node` v locku (teď undici ≥ 22.19): oprav `package.json` (`engines`) i `SKILL.md`.
+
 ## Před vydáním verze
 
 `python3 -m unittest discover tests` – testy `zapis.py`, `kontrola.py`, `export_web.py` a `novy_projekt.py` (bez sítě, pár sekund). Spouštěj i po každé změně těch nástrojů.

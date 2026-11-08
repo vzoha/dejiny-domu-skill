@@ -10,7 +10,7 @@ rámečkem, přepisem a překladem), „Co hledáme“, výzkumný deník, hled�
 ## Příkazy (ve složce `web/`)
 | příkaz | co dělá |
 |---|---|
-| `npm install` | jednou na začátku (stáhne knihovny, ~1 minuta) |
+| `npm ci` | jednou na začátku a po aktualizaci šablony (stáhne knihovny přesně podle `package-lock.json`, ~1 minuta) |
 | `npm run data` | převede data do webu (vždy po změně dat; funkční Python 3 vyhledá `scripts/data.mjs`) |
 | `npm run build` | sestaví web do `dist/` |
 | `npm run nahled` | data + build + náhled na http://localhost:4321 (Ctrl+C ukončí) |
@@ -112,4 +112,4 @@ katastr (WMS `services.cuzk.cz/wms/wms.asp`, vrstva `KN`). Staré mapy jsou obr�
 Znovu spusť `python3 -I SKILL_DIR/tools/novy_projekt.py <složka projektu>`. Data (`data/`, výřezy) zůstanou, `tools/` se přepíše
 a soubory ve `web/`, které se liší od nové šablony, taky – staré verze uloží do `pracovni/zaloha_web_<datum>/` a vypíše jejich seznam.
 Upravoval-li jsi s uživatelem vzhled (styly, stránky), převezmi úpravy ze zálohy (porovnej soubory) a ověř web. Pak ve `web/`
-`npm install` a `npm run data`. Starou šablonu přihlášení `export_web.py` odmítne s výzvou k aktualizaci.
+`npm ci` a `npm run data`. Starou šablonu přihlášení `export_web.py` odmítne s výzvou k aktualizaci.
