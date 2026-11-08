@@ -10,6 +10,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | dnes | katastr nemovitostí, RÚIAN | parcela, k. ú., dnešní obec | `mista.py ruian "Osada čp"` (hned ve Fázi 0 – dnešní obec a k. ú. bývají jiné, než se čeká), nahlizenidokn.cuzk.cz |
 | 1938–dnes | letecké snímky | jak dům a dvůr vypadaly, kdy přibyly a zmizely stavby | ags.cuzk.gov.cz/archiv (Archiv ČÚZK, ročníky vypíše `cuzk_archiv.py lms`), ortofoto CENIA z 50. let (`cuzk_archiv.py mapa cenia50`, smí do PDF), mapy.cz → „Letecká“ s volbou roku |
 | 1880–1950 | pozemkový katastr (mapa ~1900–1950) | parcely a budovy, sedí na dnešní mapu | `cuzk_archiv.py mapa pk` |
+| 1951–1992 | smlouvy, dědictví, evidence nemovitostí (od 1964) | vlastníci, ale **1951–1964 bez úplné evidence** (níže „Vlastníci po roce 1950“) | majitelé domu, katastrální pracoviště, SOkA |
 | 1870–1950 | pozemkové knihy (vložky) a sbírka listin | vlastníci, kupní a svatební smlouvy, dluhy, výměnky | katastrální pracoviště (do 1950 často SOA / SOkA) – `archivni_dotazy.md` |
 | 1857–1921 | sčítání lidu (1857, 1869, 1880, 1890, 1900, 1910, 1921) | **celá domácnost po číslech domů**: jména, roky a místa narození, vztahy, řemesla, dobytek | SOkA. Jižní Čechy jsou na digi.ceskearchivy.cz (stejný portál jako matriky; snímky jen prohlížet, `podminky.md`) |
 | 1784–1900 | matriky (od 1784 se v nich uvádí číslo domu) | kdo v domě bydlel při křtu, sňatku a úmrtí. **Čti podle čísla domu, ne podle jména.** Číslo je bydliště, ne vždy místo události (svatba v kostele, smrt v nemocnici, ženich z jiného domu) | `matriky.md`, `portaly.md` |
@@ -67,6 +68,20 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
   adresa v jiném roce může být jiný dům (sousední nebo naproti přes ulici). Rok přečíslování hledej „kotvou“ – osobou
   nebo firmou, která má v jednom roce starou a v dalším novou adresu – a potvrď ho jako výš (vyhláška, celá ulice
   posunutá naráz, čp. beze změny). Údaj s adresou bez čp. a mimo ověřené období je `prob`.
+
+## Vlastníci po roce 1950 – díra v evidenci
+Zdroj: ČÚZK, Historie pozemkových evidencí (cuzk.gov.cz → Katastr nemovitostí → O katastru).
+- **1951–1964 se vlastnictví nikde úplně nevedlo.** Od 1. 1. 1951 (občanský zákoník 141/1950 Sb.) vlastnictví
+  přecházelo už samotnou smlouvou, rozhodnutím soudu nebo úřadu, zápis do pozemkové knihy nebyl potřeba. Jednotná
+  evidence půdy (od 1956) zapisovala, **kdo půdu užívá, ne kdo ji vlastní** (JZD, státní statek).
+- Od 1. 4. 1964 evidence nemovitostí: převod platil po registraci smlouvy státním notářstvím. Vlastníky do ní
+  doplňovali postupně až do 1988, údaje jsou často neúplné. Od 1993 katastr nemovitostí.
+- **Poslední zápis v pozemkové knize neznamená, že dům dál patřil témuž člověku.** Prodej, dědictví nebo
+  konfiskace po 1950 v knize být nemusí. U držitele z knihy piš „podle pozemkové knihy (poslední zápis <rok>)“,
+  ne „vlastnil do …“. Další řádek v `drzitele` dej až podle dokladu.
+- Doklady za 1951–1992: smlouvy a usnesení o dědictví u majitelů (zeptej se jich, `pametnici.md`), sbírka listin
+  a list vlastnictví evidence nemovitostí (katastrální pracoviště), spisy státního notářství a národního výboru
+  (SOkA). Co kde je, ověř dotazem → `archivni_dotazy.md`. Nic z toho není online.
 
 ## Gruntovní knihy – jak na ně
 1. Zjisti **panství**, ke kterému ves (nebo dům!) patřila před 1848. Ves mohla patřit pod dvě panství (část domů
