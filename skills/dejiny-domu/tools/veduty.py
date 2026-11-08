@@ -94,7 +94,7 @@ def main(argv):
     radky = vypis(zaznamy, misto)
     if not radky:
         print(f"V digitálních knihovnách nic s heslem „{misto}“. Ručně: mapy.mzk.cz, grafiky.mzk.cz, "
-              "pohlednice v muzeích (eSbírky).")
+              "pohlednice a fotky muzeí: esbirky.py.")
         return
     if celkem > len(zaznamy):
         print(f"Knihovny mají {celkem} záznamů, nástroj vypíše nejvýš {NEJVIC} – zúž roky (veduty.py \"{misto}\" 1800-1900).")

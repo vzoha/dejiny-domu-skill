@@ -50,7 +50,7 @@ digitální knihovnu (CDK), přímo na weby MZK nechodí (podmínky Krameria MZK
   stejnojmenných obcí to je („Pavlov (Břeclav, Česko)“ × „Pavlov (Žďár nad Sázavou, Česko)“). Část obce má heslo
   s městem („Smíchov (Praha, Česko)“), hledej jen „Smíchov“.
 - Hledá jen podle hesla, ne v názvu („Pavlov“ v názvu = portréty I. P. Pavlova). Malá ves heslo často nemá (Lniště nic):
-  pak ručně mapy.mzk.cz (Mollova sbírka podle regionu), grafiky.mzk.cz a pohlednice v muzeích.
+  pak ručně mapy.mzk.cz (Mollova sbírka podle regionu), grafiky.mzk.cz a pohlednice a fotky muzeí (`esbirky.py`).
 - `public` = volně online, `onsite` = jen v knihovně. Mapové listy 1 : 25 000 a 1 : 75 000 z 20. stol. bývají onsite.
 - **Veduta není plán:** perspektiva, zkratka a idealizace. Dům podle veduty jen „podobný“, ověř mapou (stabilní katastr).
   Datace grafik bývá odhad („[1840?]“).
@@ -71,6 +71,20 @@ hledej sám v prohlížeči (`agent-browser`, ochranu nemá, robots.txt Claude-U
 - Sken patří archivu uložení: do výstupu jen popis, citace a odkaz, obrázek podle podmínek toho archivu (`podminky.md`).
 - Po roce 1850 a malé obce: `veduty.py` (grafiky a pohlednice knihoven), městské archivy mají vlastní digitální archivy
   s mapami a vedutami (např. Archiv města Plzně, digiarchiv.plzen.eu), kroniky a muzea.
+
+## Sbírky muzeí a galerií (eSbírky, www.esbirky.cz) – `tools/esbirky.py`
+Portál Národního muzea se sbírkami desítek muzeí a galerií: fotografie a skleněné negativy (Etnografický archiv NM,
+krajská muzea), pohlednice, kresby, obrazy, mapy, předměty. Ochranu ani podmínky užití nemá, licence je u předmětu.
+- `python3 -I tools/esbirky.py "Holešovice"` → předměty s obcí v názvu: id | datace | název | nosič | sbírka | licence.
+  Druhý argument zúží roky (`esbirky.py "Telč" 1850-1950`). Jen název obce, bez dalších slov.
+- Hledání webu je volné („Nežetice“ najde Sezemice, „Telč“ i střelecké terče), řadí podle shody. Nástroj projde prvních
+  5 stran (90 předmětů) a nechá jen ty s obcí v názvu (i v jiném pádě: „ze Lniště“, „v Telči“). Zmínku jen v popisu
+  nenajde – pak web s filtrem Typ předmětu.
+- `python3 -I tools/esbirky.py detail <id>` → popis, místo, instituce, sbírka, inv. č., licence, co smí do výstupu,
+  odkaz a citace. Místo bývá jen „Česko“, stejnojmenné obce rozliší popis a sbírka (městské muzeum).
+- Datace bývá jen století („1901–2000“) – podobu domu k roku z ní neurčíš, ověř mapou nebo ortofotem.
+- Obrázek: PDM, CC0, CC BY = smí i do placeného výstupu s autorem, institucí a licencí; CC BY-NC… (většina NM) jen
+  nevýdělečně, jinak popis, citace a odkaz. Obrázek otevře uživatel odkazem.
 
 ## Industriální topografie VCPD FA ČVUT (industrialnitopografie.cz) – `tools/industrial.py`
 Průmyslové a technické stavby celé ČR (~4 800): mlýny, pivovary, cihelny, sklárny, továrny, doly, mosty, nádraží,
