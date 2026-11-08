@@ -15,7 +15,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
 
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, TOOLS)
-from platnost import chyba_odkazu, chyba_odpovedi, chyba_polohy, chyby_adres_domu, norm_answer, slugify, vyhrady  # noqa: E402
+from platnost import chyba_odkazu, chyba_odpovedi, chyba_polohy, chyby_adres_domu, cislo_domu, norm_answer, slugify, vyhrady  # noqa: E402
 ROOT = os.path.dirname(TOOLS)
 if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu: data projektu tam nejsou, zápis by šel do skillu
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
@@ -243,14 +243,16 @@ def main():
         events = sorted((event(e, recs) for e in d.get("udalosti", [])), key=lambda e: year_key(e["year"]))
         refs = [r for x in events + owners + people for r in x["records"]]
         houses[slug] = dict(
-            cp=str(cp), slug=slug, name=d.get("nazev", ""), kind=d.get("druh", ""), st=d.get("st", "unk"),
+            cp=cislo_domu(cp, d), part=str(d.get("cast") or ""), slug=slug, name=d.get("nazev", ""), kind=d.get("druh", ""), st=d.get("st", "unk"),
             status=STATUS.get(d.get("st"), ""), desc=d.get("popis", ""), note=d.get("note", ""),
             lat=d.get("lat"), lon=d.get("lon"), numbers=[dict(when=a, num=b) for a, b in d.get("cisla", [])],
             events=events, owners=owners, people=people, records=list(dict.fromkeys(refs)),
             docs=[dict(img=x["img"], caption=x["popis"]) for x in docs_cfg if str(cp) in [str(c) for c in x.get("domy", [])]
                   and os.path.exists(os.path.join(VYREZY, x["img"] + ".jpg"))],
         )
-    houses = dict(sorted(houses.items(), key=lambda kv: (int(re.match(r"\d*", kv[1]["cp"]).group(0) or 99999), kv[1]["cp"])))
+    # hlavní část obce (bez `cast`) první, pak části podle abecedy; v nich podle čísla
+    houses = dict(sorted(houses.items(), key=lambda kv: (kv[1]["part"], int(re.match(r"\d*", kv[1]["cp"]).group(0) or 99999),
+                                                         kv[1]["cp"], kv[0])))
 
     village_events = sorted((event(e, recs) for e in ns["OBEC_UDALOSTI"]), key=lambda e: year_key(e["year"]))
     village = dict(name=OBEC.get("nazev", ""), otherNames=OBEC.get("jine_nazvy", ""), municipality=OBEC.get("obec", ""),

@@ -14,7 +14,7 @@ const takeoverYear = (o) => (/\d/.test(o.since) ? o.since : /\d/.test(o.until) ?
           <span class="house-cp"><small>čp.</small>{h.cp}</span>
           <div>
             <h2>{h.name || h.kind || 'dům'}</h2>
-            {h.name && h.kind && <p class="small muted">{h.kind}</p>}
+            {(h.part || (h.name && h.kind)) && <p class="small muted">{[h.part, h.name && h.kind].filter(Boolean).join(' · ')}</p>}
           </div>
         </div>
         {h.owners.length > 0 && (

@@ -2,12 +2,12 @@
 import Base from '../layouts/Base.astro';
 import HouseMap from '../components/HouseMap.astro';
 import Timeline from '../components/Timeline.astro';
-import { stats, config, village, mainHouse, houseList, href, houseTitle } from '../lib/data.js';
+import { stats, config, village, mainHouse, houseList, href, houseAddress, houseFullTitle } from '../lib/data.js';
 import { frontmatter as pribeh } from '../generated/pribeh.md';
 const uvod = config.uvod ?? {};
 const cards = config.zajimavosti_na_uvodu ?? [];
 const hasMap = houseList.some((h) => h.lat != null) || village.lat != null;
-const heroTitle = uvod.nadpis || config.nazev || (mainHouse ? `${village.name} ${houseTitle(mainHouse)}` : village.name) || 'Dějiny domu';
+const heroTitle = uvod.nadpis || config.nazev || (mainHouse ? houseFullTitle(mainHouse) : village.name) || 'Dějiny domu';
 const heroParagraphs = uvod.odstavce ?? (config.maPribeh && pribeh.lead ? [pribeh.lead] : []);
 ---
 <Base title="">
@@ -42,7 +42,7 @@ const heroParagraphs = uvod.odstavce ?? (config.maPribeh && pribeh.lead ? [pribe
     <>
       <div class="section-head">
         <div>
-          <p class="eyebrow">{mainHouse.name ? `${village.name} čp. ${mainHouse.cp}` : village.name}</p>
+          <p class="eyebrow">{mainHouse.name ? houseAddress(mainHouse) : mainHouse.part || village.name}</p>
           <h2><a href={href.house(mainHouse.slug)}>{mainHouse.name || `čp. ${mainHouse.cp}`}</a></h2>
         </div>
       </div>

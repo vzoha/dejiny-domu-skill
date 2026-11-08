@@ -22,7 +22,8 @@ OBEC = dict(
 OBEC_UDALOSTI = [
 ]
 
-# Domy podle čísla popisného (klíč = číslo jako text, i „12a“, „ev. 3“).
+# Domy podle čísla popisného (klíč = číslo jako text, i „12a“, „ev. 3“). Dvě části obce se stejným čp. nebo nový
+# dům na místě starého: jiný klíč („lhota-12“) a cp="12", cast="Horní Lhota" (reference/data.md).
 # Pozor na přečíslování: čísla se zaváděla 1770–71 a obce se často přečíslovaly (hlavně 1805–1830 a po 1900).
 # dict(
 #   nazev="U Nováků",                   # jméno statku / chalupy (po domácku), může být prázdné

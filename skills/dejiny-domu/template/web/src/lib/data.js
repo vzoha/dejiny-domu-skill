@@ -20,5 +20,8 @@ export function dateKey(date) {
   return Number(y) * 10000 + Number(m) * 100 + Number(d);
 }
 
-export const houseTitle = (h) => `čp. ${h.cp}${h.name ? ` – ${h.name}` : ''}`;
+// h.part = část obce (pole `cast`), když má obec víc částí se stejnými čísly
+export const houseTitle = (h) => `${h.part ? `${h.part} ` : ''}čp. ${h.cp}${h.name ? ` – ${h.name}` : ''}`;
+export const houseAddress = (h) => `${h.part || village.name} čp. ${h.cp}`.trim();
+export const houseFullTitle = (h) => `${houseAddress(h)}${h.name ? ` – ${h.name}` : ''}`;
 export const statusClass = (st) => ({ doc: 'st-doc', lit: 'st-fam', prob: 'st-prob', fam: 'st-fam' })[st] ?? 'st-unk';

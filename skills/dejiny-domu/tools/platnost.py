@@ -77,6 +77,24 @@ def chyby_adres_domu(klice):
             for s, ks in podle.items() if len(ks) > 1 or not s]
 
 
+def cislo_domu(klic, d):
+    """Zobrazené číslo domu: pole `cp`, chybí-li, klíč (klíč = čp. je výchozí zápis)."""
+    return str(d.get("cp") or klic)
+
+
+def chyby_cisel_domu(D):
+    """(chyby, upozornění): `cp` a `cast` jen text; dva domy se stejným číslem ve stejné části obce bez období v `cisla`."""
+    chyby, podle = [], {}
+    for k, d in D.items():
+        chyby += [f"dům {k}: pole '{p}' piš jako text (\"12\"), ne {type(d[p]).__name__}"
+                  for p in ("cp", "cast") if p in d and not isinstance(d[p], str)]
+        podle.setdefault((cislo_domu(k, d), str(d.get("cast") or "")), []).append(k)
+    upozorneni = [f"domy {', '.join(map(str, ks))}: stejné čp. {cp}{f' ({cast})' if cast else ''} – jiná část obce? Doplň"
+                  " 'cast'. Nový dům na místě starého? Doplň oběma 'cisla' s obdobím (reference/data.md)"
+                  for (cp, cast), ks in podle.items() if len(ks) > 1 and not all(D[k].get("cisla") for k in ks)]
+    return chyby, upozorneni
+
+
 DATUM = re.compile(r"\b(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})\b")
 
 

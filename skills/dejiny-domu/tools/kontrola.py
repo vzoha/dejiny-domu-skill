@@ -16,7 +16,7 @@ if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze 
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 DATA = os.path.join(ROOT, "data")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from platnost import chyba_odkazu, chyba_odpovedi, chyby_vyhrad, chyba_polohy, chyby_adres_domu, nemozna_data, obracene_rozpeti, obraceny_interval  # noqa: E402
+from platnost import chyba_odkazu, chyba_odpovedi, chyby_vyhrad, chyba_polohy, chyby_adres_domu, chyby_cisel_domu, cislo_domu, nemozna_data, obracene_rozpeti, obraceny_interval  # noqa: E402
 STAVY = ("doc", "lit", "prob", "fam", "unk")
 DRUHY = set("NOZISGKMCLJ")
 
@@ -67,6 +67,9 @@ def main():
     if c := chyba_polohy(OBEC):
         err.append(f"OBEC: {c}")
     err += chyby_adres_domu(D)
+    c, u = chyby_cisel_domu(D)
+    err += c
+    warn += u
 
     def data_v(kde, *hodnoty):
         for h in hodnoty:
@@ -79,7 +82,7 @@ def main():
         data_v(f"událost obce {e.get('rok')}", e.get("rok"), e.get("text"))
     for cp, d in D.items():
         if not isinstance(cp, str):
-            err.append(f"dům {cp!r}: číslo popisné piš jako text (\"30\"), ne číslo")
+            err.append(f"dům {cp!r}: klíč domu piš jako text (\"30\"), ne číslo")
         if d.get("st", "unk") not in STAVY:
             err.append(f"dům {cp}: neznámý stav '{d.get('st')}'")
         for e in d.get("udalosti", []):
@@ -98,7 +101,7 @@ def main():
             if obracene_rozpeti(o.get("y")):
                 err.append(f"dům {cp}, obyvatel {o.get('n')}: roky {o['y']} jsou pozpátku")
         if d.get("lat") is None and d.get("lon") is None:
-            warn.append(f"dům {cp}: nemá polohu (tools/mista.py hledej \"Obec {cp}\" nebo z mapy, zapiš lat/lon)")
+            warn.append(f"dům {cp}: nemá polohu (tools/mista.py hledej \"{d.get('cast') or 'Obec'} {cislo_domu(cp, d)}\" nebo z mapy, zapiš lat/lon)")
         elif c := chyba_polohy(d):
             err.append(f"dům {cp}: {c}")
 

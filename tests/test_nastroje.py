@@ -301,7 +301,7 @@ class TestKontrola(Projekt):
             f.write("D = {12: dict(st='doc')}\n")
         rc, out = self.kontrola()
         self.assertEqual(rc, 1)
-        self.assertIn("číslo popisné piš jako text", out)
+        self.assertIn("klíč domu piš jako text", out)
 
     def test_soukromi_zijici_lide(self):
         self.napln()
@@ -334,6 +334,16 @@ class TestKontrola(Projekt):
         rc, out = self.kontrola()
         self.assertEqual(rc, 1)
         self.assertIn("stejná adresa stránky /dum/12a/", out)
+
+    def test_stejne_cp_ve_dvou_castech_obce(self):
+        with open(self.path("data", "domy.py"), "w", encoding="utf-8") as f:
+            f.write("D = {'12': dict(st='doc'), 'lhota-12': dict(cp='12', cast='Horní Lhota', st='doc'),"
+                    " 'mlyn': dict(cp='5', st='doc'), '5': dict(st='doc'), 'x': dict(cp=7, st='doc')}\n")
+        rc, out = self.kontrola()
+        self.assertEqual(rc, 1)
+        self.assertNotIn("domy 12, lhota-12", out)        # jiná část obce = jiný dům
+        self.assertIn("domy mlyn, 5: stejné čp. 5", out)  # bez 'cisla' s obdobím nejde poznat, který je který
+        self.assertIn("dům x: pole 'cp' piš jako text", out)
 
     def test_nemozne_datum_a_obraceny_interval(self):
         self.napln()
@@ -436,6 +446,19 @@ class TestExport(Projekt):
         rc, out = self.export()
         self.assertNotEqual(rc, 0)
         self.assertIn("/dum/12a/", out)
+
+    def test_klic_domu_jiny_nez_cp(self):
+        with open(self.path("data", "domy.py"), "w", encoding="utf-8") as f:
+            f.write("D = {'lhota-12': dict(cp='12', cast='Horní Lhota', st='doc'), '30': dict(st='doc'), '12': dict(st='doc')}\n")
+        with open(self.path("data", "web.json"), "w", encoding="utf-8") as f:
+            json.dump({"hlavni_dum": "lhota-12", "prihlaseni": {"otevreny": True}}, f)
+        rc, out = self.export()
+        self.assertEqual(rc, 0, out)
+        s = self.site()
+        self.assertEqual(list(s["houses"]), ["12", "30", "lhota-12"])   # hlavní část obce první
+        self.assertEqual((s["houses"]["lhota-12"]["cp"], s["houses"]["lhota-12"]["part"]), ("12", "Horní Lhota"))
+        self.assertEqual((s["houses"]["12"]["cp"], s["houses"]["12"]["part"]), ("12", ""))
+        self.assertEqual(s["mainHouse"], "lhota-12")
 
     def test_odpoved_jen_z_jinych_pisem_export_odmitne(self):
         self.nastroj("zapis.py", "web", "prihlaseni", "-", vstup='{"otazka": "Heslo?", "odpoved": "漢字"}')

@@ -43,6 +43,14 @@ D = {
 ISSUES = [("Kdy dům dostal číslo 12?", "Otevřené: v matrice 1786 je Novák na čp. 4…")]
 ```
 - Klíč domu = číslo popisné **jako text** („12“, „12a“, „ev. 3“). Adresa stránky `/dum/12/`.
+- Klíč je jen označení domu v datech (`r`, `hlavni_dum`, `domy` v `dokumenty.json`). Když čp. k rozlišení nestačí,
+  zvol klíč jiný a číslo dej do `cp` (na webu „čp. 12“, chybí = klíč):
+  - **víc částí obce se stejným čp.**: `"lhota-12": dict(cp="12", cast="Horní Lhota", …)`, `cast` = část obce
+    (na webu „Horní Lhota čp. 12“). Dům v hlavní části `cast` nemá.
+  - **nový dům na místě starého** (starý zbořen, nový dostal stejné číslo): dva domy, např. `"12"` a
+    `"12-stary"` s `cp="12"`, oba s obdobím v `cisla`. Stejné číslo ještě neznamená stejný dům a nové číslo nový dům
+    – co je stejná stavba, rozhodni podle pramenů a napiš do `note`.
+- Kontrola upozorní na dva domy se stejným `cp` a `cast`, kterým chybí období v `cisla`.
 - `rok` / `od` / `do` jako text: „1352“, „22. 7. 1352“, „asi 1600“, „před 1654“. Web řadí podle prvního čtyřčíslí.
 - `udalosti`: stavba, požár, přestavba, dělení gruntu, prodej, sčítání (shrnutí domácnosti), válka, elektrifikace…
 - `drzitele`: jeden řádek = jeden držitel (u manželů „Jan a Marie Novákovi“), `jak` = koupě / dědictví / přiženění / dražba / přídělem.
