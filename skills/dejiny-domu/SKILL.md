@@ -94,6 +94,7 @@ Základní smyčka pro každý pramen:
    a případně online jde kniha až 100/75/75 let po **posledním** zápisu – mladší kniha je na matričním úřadě.
 3. **Stáhni snímek** do `pracovni/<svazek>/` (před stažením se podívej, jestli ho už nemáš), nebo si ho vyžádej
    od uživatele, a **přečti ho sám** ze snímku v plném rozlišení.
+   Vybledlé písmo nebo tužku čti ze `zesil_snimek.py` (porovnání originálu a zesílené verze).
 4. **Zapiš nález** (vždy všech 6 kroků):
    1. svazek do `data/svazky.json` (`aron_img.py <apu> svazek`, jinak `zapis.py svazky …`),
    2. zápis do `data/zaznamy.json` přes `tools/zapis.py` (klíč `obec_druh_cp_kdo_rok`, např. `lhota_scitani_cp12_1890`),
@@ -256,6 +257,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly; u 20. stol. ukáže DNNT → `portaly.md`) |
 | `overit.py <snímek> x0,y0,x1,y1 <prefix>` | zápis na dvě čitelné poloviny – ověření čtení |
 | `vyrez.py <obrázek> <klíč> x0,y0,x1,y1` | výřez do `zdroje/` a `vyrezy/` (i mapy a fotky, celé = `0,0,1,1`) |
+| `zesil_snimek.py <obrázek> [x0,y0,x1,y1] [--zvetsit N]` | vybledlé písmo a tužka: šedý originál a zesílená verze pod sebou (`<jméno>_porovnani.jpg`) |
 | `ramecek.py <klíč> x0,y0,x1,y1 [--vyrez a0,b0,a1,b1]` | rámeček čteného místa (souřadnice výřezu; s `--vyrez` stránky) + kontrolní obrázek |
 | `mista.py ruian "Osada čp"` / `okoli "Ulice čp/čo"` / `parcely "Osada čp"` / `hledej "dotaz"` / `pridej "Název" …` | dům v RÚIAN (obec, parcela, k. ú., poloha; i „Ulice čo“) / všechny dnešní adresy v okolí (rohové domy, přečíslování) / sousední stavební parcely s odstupem (najdi dům na staré mapě) / souřadnice z OSM / body na mapu |
 | `ipr_praha.py serie <místo> [polomer] [--zapsat skupina]` | Praha: staré plány 1791–1944 a letecké snímky 1938–2002 se stejným výřezem (rovnou do `mapy.json`) |

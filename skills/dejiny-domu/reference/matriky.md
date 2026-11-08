@@ -59,6 +59,9 @@ do archivu kniha půjde až 2035. Dotaz na úřad zapiš do `archivni_dotazy.md`
 - Kurentový rejstřík: stáhni plné rozlišení a rozřež stránku na čtvrtiny (sloupec jmen + data),
   `magick f.jpg -crop 1250x1650+X+Y +repage ctvrt.jpg`. **Dopisované řádky** se snadno přečtou špatně (Franziska × Heinrich,
   strana 131 × 151) – údaj z rejstříku vždy ověř v matrice.
+- **Vybledlý inkoust, tužka, tmavý mikrofilm:** `python3 -I tools/zesil_snimek.py <snímek> [x0,y0,x1,y1] [--zvetsit 2]`
+  → `<jméno>_porovnani.jpg` (nahoře šedý originál, dole odečtené pozadí a ztmavené písmo). Čti z obou: zesílení
+  zvýrazní i skvrny a ztuční přeškrtnutí, sporné písmeno rozhodne originál. Ostrý snímek zesilovat netřeba.
 - Do ~1780 latina nebo čeština, pak hodně němčina (kurent), od ~1860 často čeština, ve 20. století čeština.
 - Česká jména v němčině/latině: Johann/Joannes = Jan, Wenzel/Wenceslaus = Václav, Joseph = Josef, Franz/Franciscus = František,
   Maria = Marie, Anna, Katharina = Kateřina, Barbara = Barbora, Magdalena = Majdalena/Magdaléna, Theresia = Terezie,

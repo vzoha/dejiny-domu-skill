@@ -251,8 +251,8 @@ Archeologické akce (výzkumy při stavbách), lokality a nálezy po katastrech,
 - **Archiválie** (urbáře, gruntovní a pozemkové knihy velkostatků – most přes 17. století): `a-info <archivalieId>`,
   `a-snimek`, `a-link`, `a-svazek` (klíč `ebad_a_<id>`). Archiválii nástroj nehledá – najdi ji na portálu v prohlížeči;
   id je v adrese `…/pages/ArchivaliePage/archivalieId/<id>`.
-- Starší snímky bývají z mikrofilmu nebo silně vybledlé – čti se zvýšeným kontrastem:
-  `magick x.jpg -colorspace Gray -contrast-stretch 2%x30% x_k.jpg` (výřez pak dělej z kontrastní verze a poznamenej to v přepisu).
+- Starší snímky bývají z mikrofilmu nebo silně vybledlé – čti ze zesílené verze:
+  `python3 -I tools/zesil_snimek.py x.jpg [x0,y0,x1,y1]` (výřez pro web pak dělej z originálu).
 - Portál dává vždy celý snímek (nedlaždicuje); náhled a výřez dělá nástroj po stažení přes ImageMagick (`magick`).
   Denní údržba kolem 4:44 (asi 2 minuty).
 
