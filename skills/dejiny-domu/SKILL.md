@@ -241,6 +241,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `mis.py hledej "Text"`, `mis.py detail <id>` | MIS NPÚ: fotky, plány a mapy obce s datem vzniku a autorem, jen popis a odkaz (soubory ne) |
 | `industrial.py "Obec" [výraz]`, `industrial.py detail <id>` | Industriální topografie VCPD FA ČVUT: mlýny, pivovary, cihelny, továrny, doly, mosty obce s datací, dějinami, literaturou a citací; jen zjištění a odkaz |
 | `veduty.py "Obec" [od-do]` | Veduty, pohlednice, fotografie a mapy obce z digitálních knihoven (Česká digitální knihovna: grafické sbírky a mapy MZK, UK a další) podle geografického hesla, s přístupem a odkazem |
+| `seidel.py "Obec"`, `seidel.py detail <id>` | Fotoateliér Seidel (Krumlovsko, Šumava, Pošumaví 1880–1960): pohledy na obec a ateliérové portréty obyvatel se jménem a adresou s číslem domu |
 | `esbirky.py "Obec" [od-do]`, `esbirky.py detail <id>` | eSbírky (muzea a galerie, Národní muzeum): fotografie, negativy, pohlednice, kresby a předměty s obcí v názvu, detail s popisem, licencí (co smí do výstupu) a citací |
 | `narp.py "Obec"`, `narp.py detail <id>` | Národní archivní portál: fondy obce ve všech archivech ČR (archiv obce, MNV, škola, JZD, velkostatek, firmy) s číslem NAD a přístupností, bez snímků – podklad pro dotaz archivu |
 | `aron_search.py "Obec" ["fond"]`, `aron_search.py scitani "Obec"`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |

@@ -30,6 +30,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | vše | literatura, vlastivědy, kroniky obce a školy, noviny | události obce (požáry, války, stavby), staré názvy | Kramerius (`kramerius.py`), ANNO (`anno.py`), Google Books, SOkA (kroniky bývají online) |
 | 1500–1850 | veduty v archivech (Soupis vedut do roku 1850) | podoba města, zámku, kláštera, kostela, katastrofy | www.veduty.cz v prohlížeči (`portaly.md`), hlavně města; sken patří archivu uložení |
 | 1600–1950 | veduty, grafické listy, pohlednice, plány měst (knihovny) | podoba vsi, kostela, zámku, náměstí; staré plány města | `veduty.py "Obec"` (MZK, UK a další přes CDK); veduta není plán, ověř mapou. Malé vsi ručně: mapy.mzk.cz, grafiky.mzk.cz, muzea (`esbirky.py`) |
+| 1880–1960 | Fotoateliér Seidel, Český Krumlov (**jen Krumlovsko, Šumava, Pošumaví**) | pohledy na obec a domy, pohlednice; **ateliérové portréty obyvatel se jménem a adresou s čp.** (kniha zakázek) | `seidel.py "Obec"`, `detail <id>`; stejnojmenné obce rozliší pošta v adrese |
 | 1860–1990 | fotografie, pohlednice, kresby a předměty ve sbírkách muzeí (eSbírky) | podoba domu, ulice, náměstí, slavností; staré negativy Národního a krajských muzeí | `esbirky.py "Obec"`, `detail <id>` (název obce v názvu předmětu); obrázek podle licence předmětu |
 | 1764–1880 | vojenská mapování (1. 1764–68, 2. 1836–52, 3. 1876–80) | vzhled vsi a okolí, cesty, mlýny | 2. mapování: WMS CENIA (`portaly.md` → Staré mapy a drobné památky); oldmaps.geolab.cz (nespolehlivé), mapire.eu (jen prohlížení) |
 

@@ -56,6 +56,11 @@
       "nazev": "Archeologická mapa ČR (Digitální archiv AMČR)", "dotazy": true, "obrazky": true, "vyrez": "nekomercne",
       "proc": "data CC BY-NC 4.0 – jen nevýdělečně a s autorem; API komerčně jen s písemnou smlouvou (8. 11. 2026)", "jinak": ""
     },
+    "fotobanka.seidel.cz": {
+      "nazev": "Fotobanka Musea Fotoateliér Seidel (Regionální muzeum v Českém Krumlově)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "aplikace s veřejným API bez přihlášení a ochrany, robots.txt nemá; podmínky užití ani licence nenalezeny, muzeum prodává jen tisky (8. 11. 2026); fotky Františka Seidela († 1997) chráněné autorským právem",
+      "jinak": "Popis, zákazníka a odkaz vypíše seidel.py. Do výstupu popis, jméno a adresa s citací (negativ č.), fotku jen se souhlasem muzea."
+    },
     "www.esbirky.cz": {
       "nazev": "eSbírky (sbírky muzeí a galerií, Národní muzeum)", "dotazy": true, "obrazky": false, "vyrez": "neresi",
       "proc": "web bez ochrany a bez podmínek užití; robots.txt zakazuje všem (*) /hledat a /api/, Claude-User nejmenuje; licence je u každého předmětu (PDM, CC0, CC BY…, CC BY-NC…) (8. 11. 2026)",

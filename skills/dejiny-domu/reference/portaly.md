@@ -72,6 +72,20 @@ hledej sám v prohlížeči (`agent-browser`, ochranu nemá, robots.txt Claude-U
 - Po roce 1850 a malé obce: `veduty.py` (grafiky a pohlednice knihoven), městské archivy mají vlastní digitální archivy
   s mapami a vedutami (např. Archiv města Plzně, digiarchiv.plzen.eu), kroniky a muzea.
 
+## Fotoateliér Seidel, Český Krumlov (fotobanka.seidel.cz) – `tools/seidel.py`
+Negativy Josefa (do 1935) a Františka Seidela (do 1970) a sbírka pohlednic R. Finka: Krumlovsko, Šumava, Pošumaví,
+českorakouské pomezí. Fotobanka se 8. 11. 2026 teprve plní („testovací provoz“), co dnes chybí, může přibýt.
+- `python3 -I tools/seidel.py "Slavče"` → dvě skupiny: **obec na snímku** (pohled, dům, kostel, pohlednice) a
+  **zákazníci ateliéru z obce**: portrét s jménem a adresou z knihy zakázek („Klimová Theresie, Slavče 23, Post Č.
+  Křemže“, 1926). Adresa s čp. = kdo v domě bydlel a jak vypadal. Zákazník je jen v detailu, nástroj ho načte
+  u prvních 30 snímků (pomalé, ~1 s na snímek).
+- Hledání webu je volné (Mohuřice → „Moric“), nástroj nechá jen snímky s obcí v adrese, popisu nebo popisku na desce.
+  U pohledů z 50. let je „zákazník“ ten, kdo si fotku objednal, ne obyvatel.
+- **Stejnojmenné obce** rozliší pošta v adrese: Slavče u Křemže („P. Křemže“) × Slavče u Trhových Svinů. Německé názvy
+  zkus zvlášť (Schweinitz), přepisy jmen bývají zkomolené (Klimová × „Klinová“ na desce).
+- `python3 -I tools/seidel.py detail <id>` → datum, zákazník, adresa, popisek na desce, číslo negativu, technika,
+  odkaz a citace. Fotku otevře uživatel odkazem; do výstupu jen se souhlasem muzea.
+
 ## Sbírky muzeí a galerií (eSbírky, www.esbirky.cz) – `tools/esbirky.py`
 Portál Národního muzea se sbírkami desítek muzeí a galerií: fotografie a skleněné negativy (Etnografický archiv NM,
 krajská muzea), pohlednice, kresby, obrazy, mapy, předměty. Ochranu ani podmínky užití nemá, licence je u předmětu.
