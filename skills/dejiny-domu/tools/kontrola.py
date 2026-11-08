@@ -15,6 +15,8 @@ if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze 
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 DATA = os.path.join(ROOT, "data")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from platnost import chyba_odkazu, chyba_polohy, chyby_adres_domu, nemozna_data, obracene_rozpeti, obraceny_interval  # noqa: E402
 STAVY = ("doc", "lit", "prob", "fam", "unk")
 DRUHY = set("NOZISGKMCLJ")
 
@@ -59,10 +61,19 @@ def main():
 
     if not OBEC.get("nazev"):
         warn.append("domy.py: OBEC nemá název")
+    if c := chyba_polohy(OBEC):
+        err.append(f"OBEC: {c}")
+    err += chyby_adres_domu(D)
+
+    def data_v(kde, *hodnoty):
+        for h in hodnoty:
+            for dt in nemozna_data(h):
+                err.append(f"{kde}: datum {dt} v kalendáři není (oprav podle pramenu)")
     for i, e in enumerate(ns.get("OBEC_UDALOSTI", [])):
         if not re.search(r"\d{4}", str(e.get("rok", ""))):
             warn.append(f"událost obce č. {i + 1}: rok bez letopočtu – na webu se zařadí na konec")
         polozka(f"událost obce {e.get('rok')}", e)
+        data_v(f"událost obce {e.get('rok')}", e.get("rok"), e.get("text"))
     for cp, d in D.items():
         if not isinstance(cp, str):
             err.append(f"dům {cp!r}: číslo popisné piš jako text (\"30\"), ne číslo")
@@ -70,14 +81,23 @@ def main():
             err.append(f"dům {cp}: neznámý stav '{d.get('st')}'")
         for e in d.get("udalosti", []):
             polozka(f"dům {cp}, událost {e.get('rok')}", e)
+            data_v(f"dům {cp}, událost {e.get('rok')}", e.get("rok"), e.get("text"))
         for o in d.get("drzitele", []):
             polozka(f"dům {cp}, držitel {o.get('n')}", o, "n")
+            data_v(f"dům {cp}, držitel {o.get('n')}", o.get("od"), o.get("do"), o.get("jak"))
             if not (o.get("od") or o.get("do")):
                 warn.append(f"dům {cp}, držitel {o.get('n')}: chybí 'od' i 'do'")
+            elif obraceny_interval(o.get("od"), o.get("do")):
+                err.append(f"dům {cp}, držitel {o.get('n')}: 'od' {o['od']} je po 'do' {o['do']} (prohozené?)")
         for o in d.get("obyvatele", []):
             polozka(f"dům {cp}, obyvatel {o.get('n')}", o, "n")
-        if d.get("lat") is None:
+            data_v(f"dům {cp}, obyvatel {o.get('n')}", o.get("y"), *o.get("f", []))
+            if obracene_rozpeti(o.get("y")):
+                err.append(f"dům {cp}, obyvatel {o.get('n')}: roky {o['y']} jsou pozpátku")
+        if d.get("lat") is None and d.get("lon") is None:
             warn.append(f"dům {cp}: nemá polohu (tools/mista.py hledej \"Obec {cp}\" nebo z mapy, zapiš lat/lon)")
+        elif c := chyba_polohy(d):
+            err.append(f"dům {cp}: {c}")
 
     for z in zaz:
         k = z.get("klic", "?")
@@ -86,6 +106,9 @@ def main():
                 err.append(f"zápis {k}: chybí pole '{f}'")
         if z.get("druh") and z["druh"] not in DRUHY:
             err.append(f"zápis {k}: neznámý druh '{z['druh']}' (povolené: {', '.join(sorted(DRUHY))})")
+        if c := chyba_odkazu(z.get("odkaz")):
+            err.append(f"zápis {k}: {c}")
+        data_v(f"zápis {k}", z.get("datum"))
         if z.get("svazek") and z["svazek"] not in svazky:
             err.append(f"zápis {k}: svazek '{z['svazek']}' není v data/svazky.json")
         if not z.get("odkaz") and not svazky.get(z.get("svazek", ""), {}).get("url") and z.get("druh") != "L":
@@ -99,7 +122,12 @@ def main():
         if k not in cited:
             warn.append(f"zápis {k}: necituje ho žádný dům ani událost obce (doplnit do 'r')")
 
+    for k, sv in svazky.items():
+        if c := chyba_odkazu(sv.get("url")):
+            err.append(f"svazek {k}: {c}")
     for m in jload("mapy.json", []):
+        if c := chyba_odkazu(m.get("url")):
+            err.append(f"mapa {m.get('img')}: {c}")
         if not os.path.exists(os.path.join(ROOT, "vyrezy", m.get("img", "") + ".jpg")):
             err.append(f"mapa {m.get('img')}: chybí obrázek vyrezy/{m.get('img')}.jpg (tools/vyrez.py)")
         if not m.get("zdroj"):
@@ -109,8 +137,12 @@ def main():
             if str(c) not in D:
                 err.append(f"dokument {d.get('img')}: dům '{c}' není v domy.py")
     for name, e in jload("mista.json", {}).items():
-        if "lat" not in e:
+        if e.get("lat") is None and e.get("lon") is None:
             warn.append(f"místo {name}: nemá souřadnice (spusťte tools/mista.py)")
+        elif c := chyba_polohy(e):
+            err.append(f"místo {name}: {c}")
+        if c := chyba_odkazu(e.get("odkaz")):
+            err.append(f"místo {name}: {c}")
 
     cfg = jload("web.json", {})
     if not (cfg.get("prihlaseni") or {}).get("odpoved") and not (cfg.get("prihlaseni") or {}).get("otevreny"):
@@ -136,7 +168,6 @@ def main():
                         "(data/pribeh.md, reference/pribehy.md); koncept nejdřív ukaž uživateli v chatu")
 
     # podmínky archivů: obrázky, které se bez souhlasu nesmí zveřejnit (tools/podminky.py, reference/podminky.md)
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import podminky
     root = os.path.dirname(DATA)
     otevreny = bool((cfg.get("prihlaseni") or {}).get("otevreny"))

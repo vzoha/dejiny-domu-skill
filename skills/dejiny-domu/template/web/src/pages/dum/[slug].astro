@@ -22,7 +22,7 @@ const recs = h.records.filter((r) => records[r]).sort((a, b) => dateKey(records[
   {h.desc && <p class="lead">{h.desc}</p>}
   {(() => {
     const st = mainHouse && mainHouse.cp === h.cp && config.maPribeh ? (config.pribeh?.hlavni ? `/pribehy/${config.pribeh.hlavni}/` : '/pribehy/')
-      : (config.dalsiPribehy ?? []).some((p) => p.slug === `cp${h.cp}`) ? `/pribehy/cp${h.cp}/` : null;
+      : (config.dalsiPribehy ?? []).some((p) => p.slug === `cp${h.slug}`) ? `/pribehy/cp${h.slug}/` : null;
     return st && <p><a class="btn" href={st}>Přečíst příběh domu →</a></p>;
   })()}
   {h.note && <p class="note">{h.note}</p>}

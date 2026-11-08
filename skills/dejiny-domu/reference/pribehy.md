@@ -52,7 +52,7 @@ obdobi: 1654–dnes
 obrazek: foto_cp12_1935
 ---
 ```
-`obrazek` = klíč ve `vyrezy/`. Slug `cp<čp>` přidá tlačítko „Přečíst příběh domu“ na stránku domu, slug `obec`
+`obrazek` = klíč ve `vyrezy/`. Slug `cp<adresa domu>` (čp. 12 → `cp12`, 12a → `cp12a`, ev. 3 → `cpev-3`) přidá tlačítko „Přečíst příběh domu“ na stránku domu, slug `obec`
 tlačítko „Přečíst příběh obce“ na stránku obce. Tlačítko na úvodu vede na `web.json` → `pribeh.hlavni` (slug).
 Starý `pribeh.md` pak už nepoužívej (s rozcestníkem se neukáže) – přejmenuj ho na `pribeh_<slug>.md`.
 

@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { config, mainHouse, href } from '../../lib/data.js';
+import { config, mainHouse, houseList, href } from '../../lib/data.js';
 
 // Další příběhy: data/pribeh_<slug>.md (export_web.py je kopíruje do src/generated/pribehy/).
 export function getStaticPaths() {
@@ -15,9 +15,9 @@ const { Content, frontmatter } = mod;
 const { slug } = Astro.params;
 const ostatni = (config.dalsiPribehy ?? []).filter((p) => p.slug !== slug)
   .map((p) => ({ href: `/pribehy/${p.slug}/`, title: p.title, lead: p.lead }));
-// Protějšek tlačítka „Přečíst příběh domu/obce“ na stránce domu a obce.
-const cp = slug === config.pribeh?.hlavni && mainHouse ? mainHouse.cp : slug.match(/^cp(\d+)$/)?.[1];
-const zpet = slug === 'obec' ? { href: '/obec/', text: 'Dějiny obce' } : cp ? { href: `/dum/${cp}/`, text: 'Dějiny domu' } : null;
+// Protějšek tlačítka „Přečíst příběh domu/obce“ na stránce domu a obce. Příběh domu = slug cp<adresa domu> (ev. 3 → cpev-3).
+const dum = slug === config.pribeh?.hlavni && mainHouse ? mainHouse : houseList.find((h) => slug === `cp${h.slug}`);
+const zpet = slug === 'obec' ? { href: '/obec/', text: 'Dějiny obce' } : dum ? { href: href.house(dum.slug), text: 'Dějiny domu' } : null;
 ---
 <Base title={frontmatter.title}>
   <p class="crumbs"><a href="/pribehy/">Příběhy</a></p>

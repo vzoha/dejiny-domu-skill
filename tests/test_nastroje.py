@@ -298,6 +298,45 @@ class TestKontrola(Projekt):
         rc, out = self.kontrola()
         self.assertIn("SOUKROMÍ", out)
 
+    def test_nebezpecny_odkaz_mista(self):
+        with open(self.path("data", "mista.json"), "w", encoding="utf-8") as f:
+            json.dump({"Kaple": {"lat": 49.4, "lon": 15.2, "odkaz": "javascript:void(0)"},
+                       "Mlýn": {"lat": 49.4, "lon": 15.2, "odkaz": "https://cs.wikipedia.org/wiki/Ml%C3%BDn"}}, f)
+        rc, out = self.kontrola()
+        self.assertEqual(rc, 1)
+        self.assertIn("místo Kaple: odkaz", out)
+        self.assertNotIn("místo Mlýn", out)
+
+    def test_poloha_bez_lon(self):
+        self.napln()
+        with open(self.path("data", "domy.py"), "a", encoding="utf-8") as f:
+            f.write('del D["12"]["lon"]\nOBEC["lat"] = "49,4"\n')
+        rc, out = self.kontrola()
+        self.assertEqual(rc, 1)
+        self.assertIn("dům 12: má jen lat", out)
+        self.assertIn("OBEC: lat '49,4' není číslo", out)
+
+    def test_kolize_adres_domu(self):
+        with open(self.path("data", "domy.py"), "w", encoding="utf-8") as f:
+            f.write("D = {'12a': dict(st='doc'), '12á': dict(st='doc')}\n")
+        rc, out = self.kontrola()
+        self.assertEqual(rc, 1)
+        self.assertIn("stejná adresa stránky /dum/12a/", out)
+
+    def test_nemozne_datum_a_obraceny_interval(self):
+        self.napln()
+        with open(self.path("data", "domy.py"), "a", encoding="utf-8") as f:
+            f.write('D["12"]["drzitele"].append(dict(od="1900", do="1800", n="Petr Nový", st="fam"))\n'
+                    'D["12"]["udalosti"].append(dict(rok="31. 2. 1900", text="Požár.", st="fam"))\n'
+                    'D["12"]["drzitele"].append(dict(od="asi 1900", do="1800", n="Nejistý", st="fam"))\n'
+                    'D["12"]["obyvatele"].append(dict(n="Anna Nová", y="1860–1795", st="fam"))\n')
+        rc, out = self.kontrola()
+        self.assertEqual(rc, 1)
+        self.assertIn("držitel Petr Nový: 'od' 1900 je po 'do' 1800", out)
+        self.assertIn("datum 31. 2. 1900 v kalendáři není", out)
+        self.assertIn("obyvatel Anna Nová: roky 1860–1795 jsou pozpátku", out)
+        self.assertNotIn("Nejistý: 'od'", out)   # nejistou mez nechá být
+
     def test_rozbity_domy_py(self):
         with open(self.path("data", "domy.py"), "w", encoding="utf-8") as f:
             f.write("D = {\n")
@@ -339,6 +378,28 @@ class TestExport(Projekt):
         rc, out = self.export()
         self.assertNotEqual(rc, 0)
         self.assertIn("pribeh_*.md obrazek", out)
+
+    def test_nebezpecny_odkaz_export_odmitne(self):
+        with open(self.path("data", "mista.json"), "w", encoding="utf-8") as f:
+            json.dump({"Kaple": {"lat": 49.4, "lon": 15.2, "odkaz": " JavaScript:alert(1)"}}, f)
+        rc, out = self.export()
+        self.assertNotEqual(rc, 0)
+        self.assertIn("data/mista.json Kaple", out)
+
+    def test_misto_bez_lon_export_odmitne_srozumitelne(self):
+        with open(self.path("data", "mista.json"), "w", encoding="utf-8") as f:
+            json.dump({"Kaple": {"lat": 49.4}}, f)
+        rc, out = self.export()
+        self.assertNotEqual(rc, 0)
+        self.assertNotIn("KeyError", out)
+        self.assertIn("Kaple: má jen lat", out)
+
+    def test_kolize_adres_domu_export_odmitne(self):
+        with open(self.path("data", "domy.py"), "w", encoding="utf-8") as f:
+            f.write("D = {'12a': dict(st='doc'), '12á': dict(st='doc')}\n")
+        rc, out = self.export()
+        self.assertNotEqual(rc, 0)
+        self.assertIn("/dum/12a/", out)
 
     def test_uplny_projekt(self):
         self.napln()

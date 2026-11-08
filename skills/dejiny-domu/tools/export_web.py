@@ -14,6 +14,8 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
         _s.reconfigure(encoding="utf-8", errors="replace")
 
 TOOLS = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, TOOLS)
+from platnost import chyba_odkazu, chyba_polohy, chyby_adres_domu, slugify  # noqa: E402
 ROOT = os.path.dirname(TOOLS)
 if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu: data projektu tam nejsou, zápis by šel do skillu
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
@@ -47,6 +49,23 @@ def over_jmena_obrazku(odkud, jmena):
     if spatne:
         sys.exit(f"CHYBA: {odkud}: klíč obrázku smí mít jen písmena, číslice, _ - . (bez lomítek a ..): "
                  + ", ".join(spatne) + "\nOprav ho a export pusť znovu.")
+
+
+def over_data(OBEC, D, maps_cfg):
+    """Skončí na datech, která by rozbila web nebo zveřejnila spustitelný odkaz (podrobně je hlásí kontrola.py)."""
+    svazky = jload("svazky.json", {})
+    odkazy = [(f"data/zaznamy.json {z.get('klic')}", z.get("odkaz")) for z in jload("zaznamy.json", [])]
+    odkazy += [(f"data/svazky.json {k}", sv.get("url")) for k, sv in svazky.items()]
+    odkazy += [(f"data/mapy.json {m.get('img')}", m.get("url")) for m in maps_cfg]
+    mista = jload("mista.json", {})
+    odkazy += [(f"data/mista.json {n}", e.get("odkaz")) for n, e in mista.items()]
+    chyby = [f"{kde}: {c}" for kde, url in odkazy if (c := chyba_odkazu(url))]
+    polohy = [("domy.py OBEC", OBEC)] + [(f"domy.py dům {cp}", d) for cp, d in D.items()] + \
+             [(f"data/mista.json {n}", e) for n, e in mista.items()]
+    chyby += [f"{kde}: {c}" for kde, x in polohy if (c := chyba_polohy(x))]
+    chyby += [f"domy.py {c}" for c in chyby_adres_domu(D)]
+    if chyby:
+        sys.exit("CHYBA: data by rozbila web:\n  " + "\n  ".join(chyby) + "\nOprav je (python3 -I tools/kontrola.py) a export pusť znovu.")
 
 
 def load_houses():
@@ -88,11 +107,6 @@ def group_buttons(md):
             btn = f'<p class="group-more"><a class="btn btn-ghost" href="{html.escape(m.group(3))}">{html.escape(m.group(2))}</a></p>\n\n'
             parts[i] = m.group(1) + part[m.end():].rstrip("\n") + "\n\n" + btn
     return "".join(parts)
-
-
-def slugify(text):
-    t = unicodedata.normalize("NFKD", str(text)).encode("ascii", "ignore").decode().lower()
-    return re.sub(r"[^a-z0-9]+", "-", t).strip("-")
 
 
 def norm_answer(text):
@@ -202,7 +216,6 @@ def main():
         sys.exit("CHYBA: v data/web.json není odpověď na přihlašovací otázku – web by byl otevřený komukoli.\n"
                  "Nastavte prihlaseni.odpoved, nebo (jen když to opravdu chcete) prihlaseni.otevreny: true.")
     if "--nasazeni" in sys.argv and login.get("otevreny"):   # otevřený web = zveřejnění: podmínky archivů (podminky.py)
-        sys.path.insert(0, TOOLS)
         import podminky
         vd = os.path.join(ROOT, "vyrezy")
         bez = [f"  {fn[:-4]}: {podminky.posoud_obrazek(ROOT, fn[:-4])[1]}"
@@ -218,6 +231,7 @@ def main():
     over_jmena_obrazku("data/dokumenty.json", [d.get("img", "") for d in docs_cfg])
     over_jmena_obrazku("data/mapy.json", [m.get("img", "") for m in maps_cfg])
     over_jmena_obrazku("data/web.json uvod.foto", [cfg["uvod"]["foto"]] if cfg.get("uvod", {}).get("foto") else [])
+    over_data(OBEC, D, maps_cfg)
     recs = {r["key"]: r for r in record_rows()}
 
     houses = {}
@@ -274,7 +288,7 @@ def main():
 
     places = [dict(name=n, lat=e["lat"], lon=e["lon"], desc=e.get("popis", ""), kind=e.get("druh", ""),
                    link=e.get("odkaz", ""), linkText=e.get("odkaz_text", ""), approx=bool(e.get("priblizne")))
-              for n, e in jload("mista.json", {}).items() if "lat" in e]
+              for n, e in jload("mista.json", {}).items() if e.get("lat") is not None]
 
     years = [year_key(e["year"]) // 10000 for e in village_events] + \
             [year_key(e["year"]) // 10000 for h in houses.values() for e in h["events"]] + \
