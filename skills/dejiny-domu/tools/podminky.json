@@ -48,6 +48,10 @@
       "proc": "stránku knihy a snímky chrání ověření ALTCHA; zveřejnit a dál využívat jen s písemným souhlasem",
       "jinak": "Knihy obce najdeš nástrojem (mza.py hledat / matriky). Stránku knihy otevře uživatel v prohlížeči, ověření vyřeší sám a snímek uloží do pracovni/ nebo pošle snímek obrazovky; ty ho přečteš."
     },
+    "portal.nacr.cz": {
+      "nazev": "Národní archivní portál (evidence fondů)", "dotazy": true, "obrazky": false, "vyrez": "neresi",
+      "proc": "veřejná evidence fondů všech archivů (zákon o archivnictví § 18b), bez robots.txt a bez ověření; snímky tu nejsou (8. 11. 2026)", "jinak": ""
+    },
     "aron.vychodoceskearchivy.cz": {
       "nazev": "SOA Hradec Králové (ARON)", "dotazy": true, "obrazky": true, "vyrez": "neresi",
       "proc": "stahovat se smí; archiv si stěžuje na AI boty – málo a pomalu", "jinak": ""

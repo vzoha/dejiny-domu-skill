@@ -28,6 +28,7 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | SOA Praha (eBadatelna) | Ručně | ano | neřeší | neřeší | ano | robots.txt jmenovitě zakazuje ClaudeBota. Po registraci si knihu stáhnete jako ZIP. Poplatek za zveřejnění žádný |
 | SOA Hradec Králové (ARON) | Nástroj | ano | neřeší | neřeší | ano | Stahovat jednotlivé snímky i celé knihy se smí. Archiv si stěžuje na AI boty, stahujte málo a pomalu |
 | Národní archiv (policejní přihlášky, konskripce Prahy) | Nástroj | ano | neřeší | neřeší | ano | Jen zákaz v robots.txt, podmínky nenalezeny (8. 11. 2026). Nástroj hledá jen konkrétní osoby |
+| Národní archivní portál (seznam fondů všech archivů) | Nástroj | ano | ano | — | ano | Jen popis fondů, snímky tu nejsou. Veřejná evidence ze zákona, robots.txt ani ověření nemá (8. 11. 2026) |
 | Národní archiv (Digitální badatelna) | Ručně | ano | neřeší | souhlas | ano | Ověření „nejsem robot“ řešíte vy. Zveřejnit jen se souhlasem |
 | Archiv hl. m. Prahy | Nástroj | ano | souhlas | souhlas | ano | Objednávka s účelem, užití zdarma. Na web nejvýš 500 px s vodoznakem |
 | FamilySearch | Ručně | ano | ano, pro klienta | souhlas | ano | Genealog smí bádat pro klienta a předat mu výsledek. Stahovat jen ručně, roboti zakázáni |

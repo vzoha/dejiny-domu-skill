@@ -23,6 +23,17 @@ Prahy) a **DNNT na ndk.cz** (neveřejný tisk čitelný po přihlášení) – s
 Adresy u nevyzkoušených portálů ověř při prvním použití (portály se mění). Pro pohraničí a mimo ČR viz `playbook.md` §2
 (Matricula pro Rakousko/Německo, Geneteka pro Polsko, FamilySearch pro Slovensko) a níže.
 
+## Národní archivní portál (portal.nacr.cz) – `tools/narp.py`, seznam fondů všech archivů
+Ústřední evidence Národního archivního dědictví: každý fond v každém archivu ČR (i muzea a knihovny), bez snímků.
+Řekne, **co se k obci dochovalo a kde to leží** – než napíšeš archivu, víš název fondu, číslo NAD a jestli je přístupný.
+- `python3 -I tools/narp.py "Slavče"` → fondy se slovem v názvu, seřazené podle archivu. Hledá se v názvu fondu,
+  takže zkus i tehdejší obec, panství („Velkostatek Trhové Sviny“) nebo cech.
+- `python3 -I tools/narp.py detail <id>` → NAD, značka, přístupnost, téma, počty knih a kartonů, název inventáře, odkaz.
+- **Stejnojmenné obce** rozliší závorka („Slavče (u Trhových Svinů)“ × „(u Českých Budějovic)“). Vyber podle okresu.
+- Obsah inventářů tu většinou není („strojopisná pomůcka“ = jen v archivu). Fond bez pomůcky je nezpracovaný.
+- „Nepřístupný“ fond: zeptej se archivu, často jde o nezpracovaný fond nebo ochranu osobních údajů.
+- Stejný software ARON jako SOA Zámrsk (níže), API `https://portal.nacr.cz/aron/api/aron`.
+
 ## ARON (SOA Zámrsk) – hotové nástroje
 - **Hledání svazků:** `python3 -I tools/aron_search.py "Holice"` → řádky `apu_id | signatura, roky | druh, obce`.
   Popis obsahuje druh knihy (NAROZENÝCH / ODDANÝCH / ZEMŘELÝCH, index) a všechny obce farnosti.

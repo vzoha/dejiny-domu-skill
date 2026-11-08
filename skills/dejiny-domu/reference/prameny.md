@@ -23,6 +23,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | 1720–1750 | karolinský katastr (**Slezsko**) | usedlosti a poplatníci | ZA Opava – ověř v katalogu, co je k obci a zda online |
 | 1651 | soupis poddaných podle víry (**jen Čechy**) | domácnosti s věkem, ale **ne vždy úplné**: děti někde všechny, jinde až od ~1 roku nebo od ~10 let (podle panství), věk zaokrouhlený | edice po krajích |
 | 1400–1700 | urbáře | povinnosti a platy jednotlivých usedlostí | fond velkostatku v SOA, edice |
+| 1850–1990 | fondy obce a úřadů: archiv obce, MNV, škola, JZD, spolky, firmy | stavební povolení, domovní knihy, konfiskace a přídělové listiny, kroniky, kolektivizace | **co se k obci dochovalo a kde:** `narp.py "Obec"` (Národní archivní portál, všechny archivy). Snímky nejsou, fond si vyžádej v SOkA → `archivni_dotazy.md` |
 | vše | literatura, vlastivědy, kroniky obce a školy, noviny | události obce (požáry, války, stavby), staré názvy | Kramerius (`kramerius.py`), ANNO (`anno.py`), Google Books, SOkA (kroniky bývají online) |
 | 1764–1880 | vojenská mapování (1. 1764–68, 2. 1836–52, 3. 1876–80) | vzhled vsi a okolí, cesty, mlýny | 2. mapování: WMS CENIA (`portaly.md` → Staré mapy a drobné památky); oldmaps.geolab.cz (nespolehlivé), mapire.eu (jen prohlížení) |
 
@@ -81,7 +82,8 @@ Zdroj: ČÚZK, Historie pozemkových evidencí (cuzk.gov.cz → Katastr nemovito
   ne „vlastnil do …“. Další řádek v `drzitele` dej až podle dokladu.
 - Doklady za 1951–1992: smlouvy a usnesení o dědictví u majitelů (zeptej se jich, `pametnici.md`), sbírka listin
   a list vlastnictví evidence nemovitostí (katastrální pracoviště), spisy státního notářství a národního výboru
-  (SOkA). Co kde je, ověř dotazem → `archivni_dotazy.md`. Nic z toho není online.
+  (SOkA). Které fondy obce (MNV, JZD) se dochovaly, vypíše `narp.py "Obec"`; co v nich je, ověř dotazem →
+  `archivni_dotazy.md`. Nic z toho není online.
 
 ## Gruntovní knihy – jak na ně
 1. Zjisti **panství**, ke kterému ves (nebo dům!) patřila před 1848. Ves mohla patřit pod dvě panství (část domů
@@ -98,6 +100,7 @@ Zdroj: ČÚZK, Historie pozemkových evidencí (cuzk.gov.cz → Katastr nemovito
    a farářů, josefinský katastr „Der Obrigkeit“ (bez čísla domu), urbáře, účty velkostatku. Chybějící dům v poddanské
    knize ještě neznamená, že nestál.
 5. Online nejsou všechny. Co není, zapiš do `archivni_dotazy.md` (fond, signatura, roky) a navrhni návštěvu badatelny.
+   Ve kterém archivu fond velkostatku leží a jak se přesně jmenuje: `narp.py "Velkostatek <panství>"`.
 
 ## Stabilní katastr (Archiv ČÚZK, `cuzk_archiv.py`)
 Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz už neexistuje). Nástroj ho čte bez prohlížeče.

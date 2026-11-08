@@ -20,8 +20,8 @@ import slusne; slusne.instaluj()   # společný limit rychlosti k webům archiv�
 
 API = "https://aron.vychodoceskearchivy.cz/api/aron"
 
-def post(path, body, tries=3):
-    req = urllib.request.Request(API + path, data=json.dumps(body).encode(),
+def post(path, body, tries=3, api=API):
+    req = urllib.request.Request(api + path, data=json.dumps(body).encode(),
                                  headers={"Content-Type": "application/json"})
     for attempt in range(tries):   # ARON občas neodpoví (timeout) – zkusit znovu s pauzou
         try:
@@ -54,10 +54,10 @@ def place(desc):
         parts.pop(0)
     return re.sub(r"^\(?(farnost|soudní okres) ", "", ", ".join(parts))
 
-def detail(apu_id, tries=3):
+def detail(apu_id, tries=3, api=API):
     for attempt in range(tries):
         try:
-            with urllib.request.urlopen(f"{API}/apu/{apu_id}", timeout=90) as r:
+            with urllib.request.urlopen(f"{api}/apu/{apu_id}", timeout=90) as r:
                 return json.load(r)
         except OSError:
             if attempt == tries - 1:
