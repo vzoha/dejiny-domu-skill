@@ -57,6 +57,21 @@ digitální knihovnu (CDK), přímo na weby MZK nechodí (podmínky Krameria MZK
 - Obrázek do výstupu jen volné dílo a podle podmínek knihovny (`podminky.md`, Kramerius MZK = souhlas), jinak popis,
   citace (knihovna, název, rok, signatura) a odkaz.
 
+## Veduty v archivech do roku 1850 (www.veduty.cz) – prohlížeč
+Soupis vedut vzniklých do roku 1850 (MV ČR, archivy ČR a SR, mapová sbírka PřF UK): ~14 000 záznamů, většinou se skenem.
+Města, zámky, kláštery, kostely, poutní místa, požáry a povodně; ves jen výjimečně. Nástroj není (aplikace se session),
+hledej sám v prohlížeči (`agent-browser`, ochranu nemá, robots.txt Claude-User nejmenuje), jen pár dotazů.
+- Pole vpravo nahoře = fulltext celého záznamu: „Telč“ najde i soubory vedut jiných měst, kde je Telč jen zmínka. Zpřesni
+  **Rozšířené vyhledávání → Popis veduty** (jen co je na obrázku) a přepínač **Celé slovo**; německý název zkus zvlášť.
+- Detail: popis, přepis legendy, autor, nakladatel, datace, technika, **archiv uložení a fond**, číslo soupisu (II/5-1296)
+  a „Přímý odkaz na záznam“ (permalink) – ten dej do citace. Rejstřík „Místo“ (Telč (okr. Jihlava)) ukáže všechny
+  veduty místa.
+- Veduta není plán: perspektiva, zkratky, idealizace, kopie starších předloh (datace vydání ≠ stav místa). Dům podle ní
+  jen „podobný“, ověř stabilním katastrem.
+- Sken patří archivu uložení: do výstupu jen popis, citace a odkaz, obrázek podle podmínek toho archivu (`podminky.md`).
+- Po roce 1850 a malé obce: `veduty.py` (grafiky a pohlednice knihoven), městské archivy mají vlastní digitální archivy
+  s mapami a vedutami (např. Archiv města Plzně, digiarchiv.plzen.eu), kroniky a muzea.
+
 ## Industriální topografie VCPD FA ČVUT (industrialnitopografie.cz) – `tools/industrial.py`
 Průmyslové a technické stavby celé ČR (~4 800): mlýny, pivovary, cihelny, sklárny, továrny, doly, mosty, nádraží,
 vodárny. Hodí se, když byl dům mlýnem, hospodou s pivovarem, továrnou nebo stál u nich.

@@ -56,6 +56,11 @@
       "nazev": "Archeologická mapa ČR (Digitální archiv AMČR)", "dotazy": true, "obrazky": true, "vyrez": "nekomercne",
       "proc": "data CC BY-NC 4.0 – jen nevýdělečně a s autorem; API komerčně jen s písemnou smlouvou (8. 11. 2026)", "jinak": ""
     },
+    "www.veduty.cz": {
+      "nazev": "Veduty v českých a slovenských archivech (Soupis vedut do 1850)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "aplikace bez ochrany, „všechna práva vyhrazena“, robots.txt zakazuje všem (*), Claude-User nejmenuje (8. 11. 2026); skeny patří archivu uložení",
+      "jinak": "Hledej v prohlížeči (agent-browser), jen pár dotazů. Do výstupu popis, citace s číslem soupisu a permalink; sken jen podle podmínek archivu uložení."
+    },
     "industrialnitopografie.cz": {
       "nazev": "Industriální topografie VCPD FA ČVUT", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "web a robots.txt (Allow: /) bez ochrany, obsah „všechna práva vyhrazena“, doporučená citace autor záznamu, název, Industriální topografie VCPD FA ČVUT, datum, číslo položky (/cs/about-project, 8. 11. 2026)",

@@ -28,6 +28,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | 1700–1990 | průmyslové a technické stavby (Industriální topografie VCPD FA ČVUT) | mlýn, pivovar, cihelna, továrna: datace, majitelé firmy, přestavby, zánik, literatura | `industrial.py "Obec"`, `detail <id>`; jen vybrané stavby, chybět smí |
 | 1850–1990 | fondy obce a úřadů: archiv obce, MNV, škola, JZD, spolky, firmy | stavební povolení, domovní knihy, konfiskace a přídělové listiny, kroniky, kolektivizace | **co se k obci dochovalo a kde:** `narp.py "Obec"` (Národní archivní portál, všechny archivy). Snímky nejsou, fond si vyžádej v SOkA → `archivni_dotazy.md` |
 | vše | literatura, vlastivědy, kroniky obce a školy, noviny | události obce (požáry, války, stavby), staré názvy | Kramerius (`kramerius.py`), ANNO (`anno.py`), Google Books, SOkA (kroniky bývají online) |
+| 1500–1850 | veduty v archivech (Soupis vedut do roku 1850) | podoba města, zámku, kláštera, kostela, katastrofy | www.veduty.cz v prohlížeči (`portaly.md`), hlavně města; sken patří archivu uložení |
 | 1600–1950 | veduty, grafické listy, pohlednice, plány měst (knihovny) | podoba vsi, kostela, zámku, náměstí; staré plány města | `veduty.py "Obec"` (MZK, UK a další přes CDK); veduta není plán, ověř mapou. Malé vsi ručně: mapy.mzk.cz, grafiky.mzk.cz, muzea |
 | 1764–1880 | vojenská mapování (1. 1764–68, 2. 1836–52, 3. 1876–80) | vzhled vsi a okolí, cesty, mlýny | 2. mapování: WMS CENIA (`portaly.md` → Staré mapy a drobné památky); oldmaps.geolab.cz (nespolehlivé), mapire.eu (jen prohlížení) |
 
