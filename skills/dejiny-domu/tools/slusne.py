@@ -198,11 +198,27 @@ def _zkontroluj_blokaci(host):
         raise Zablokovano(_hlaska(host, *b))
 
 
-def pockej(host, co, nejdele=None):
+OCHRANA = re.compile(r"/(challenge|captcha|altcha)\b|[?&](challenge|captcha)=", re.I)
+
+
+class Ochrana(SystemExit):
+    pass
+
+
+def zkontroluj_ochranu(adresa):
+    """Adresa ověření proti robotům (i jako cíl přesměrování) → konec. Ochrana se nikdy neobchází."""
+    if OCHRANA.search(adresa or ""):
+        raise Ochrana(f"OCHRANA: {host_z(adresa)} chce ověření proti robotům ({adresa}). NEOBCHÁZEJ ho – nástroj ani "
+                      "prohlížeč řízený skriptem. Stránku otevře uživatel v prohlížeči sám a ty čteš, co ti pošle.")
+
+
+def pockej(host, co, nejdele=None, adresa=None):
     """Počká, až je na webu volno (společně pro všechny procesy). Zablokovaný web → Zablokovano.
-    nejdele: kolik s nejvýš čekat (hook má časový limit) – jinak Fronta a termín se nezabere."""
+    nejdele: kolik s nejvýš čekat (hook má časový limit) – jinak Fronta a termín se nezabere.
+    adresa: celá adresa požadavku – podmínky portálu mají i výjimky podle cesty (podminky.json, „vyjimky“)."""
     host = (host or "").lower()
-    podminky.zkontroluj_stahovani(host, co)
+    zkontroluj_ochranu(adresa)
+    podminky.zkontroluj_stahovani(adresa or host, co)
     _zkontroluj_blokaci(host)
     rozestup = LIMITY.get(host, VYCHOZI)[0 if co == "dotaz" else 1]
     with open(_soubor(host, co), "a+", encoding="utf-8") as f:
@@ -292,9 +308,10 @@ def instaluj():
         if getattr(_lokalni, "robots", False):
             return put(self, method, url, *a, **k)
         co = druh(url)
-        pockej(self.host, co)
+        https = isinstance(self, http.client.HTTPSConnection)
+        pockej(self.host, co, adresa=url if "://" in url else f"{'https' if https else 'http'}://{self.host}{url}")
         zkontroluj_robots(self.host, urllib.parse.urlsplit(url).path if "://" in url else url.split("?", 1)[0],
-                          isinstance(self, http.client.HTTPSConnection), self.port)
+                          https, self.port)
         _lokalni.posledni = (self.host, co)
         return put(self, method, url, *a, **k)
 
@@ -346,7 +363,7 @@ def curl(args, **kw):
     host = cil.hostname if cil else ""
     co = druh(urls[0]) if urls else "dotaz"
     if host:
-        pockej(host, co)
+        pockej(host, co, adresa=urls[0])
         zkontroluj_robots(host, cil.path, cil.scheme == "https", cil.port)
     args = ["-A", UA, *_bez_user_agentu(args)]
     kw.setdefault("stderr", subprocess.PIPE)
@@ -367,6 +384,7 @@ def curl(args, **kw):
     p.stderr = re.sub(r"\n?SLUSNE \d+ \S*\n", "", p.stderr or "")
     if host and vysledky:
         kod, kde = vysledky[-1]
+        zkontroluj_ochranu(kde)
         posoudit(urllib.parse.urlsplit(kde).hostname or host, co, int(kod))
     return p
 
@@ -397,7 +415,7 @@ def main(a):
     elif a[0] == "curl":
         try:
             p = curl(a[1:])
-        except (Zablokovano, RobotsZakazuje, podminky.Zakazano) as e:
+        except (Zablokovano, RobotsZakazuje, Ochrana, podminky.Zakazano) as e:
             print(e, file=sys.stderr)
             sys.exit(22)
         sys.stderr.write(p.stderr)

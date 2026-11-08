@@ -59,9 +59,11 @@ class Zakazano(SystemExit):   # SystemExit: nástroje chytají Exception, tohle 
     pass
 
 
-def zkontroluj_stahovani(host, co):
-    """co = 'dotaz' nebo 'obr'. Zakázaný portál → Zakazano s návodem, co dělat místo toho."""
-    p = pravidlo(host)
+def zkontroluj_stahovani(adresa, co):
+    """adresa = celá adresa nebo doména (výjimky podle cesty jen s celou adresou); co = 'dotaz' nebo 'obr'.
+    Zakázaný portál → Zakazano s návodem, co dělat místo toho."""
+    p = pravidlo(adresa)
+    host = p["host"] if p else ""
     if not p:
         return
     smi = p.get("dotazy", True) if co == "dotaz" else p.get("obrazky", True)

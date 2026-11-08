@@ -93,8 +93,8 @@ def webfetch(url):
     if not host or LOKAL.match(host):
         return
     try:
-        slusne.pockej(host, slusne.druh(url), nejdele=40)   # hook má timeout 60 s – po něm by WebFetch prošel bez limitu
-    except (slusne.Zablokovano, slusne.Fronta) as e:
+        slusne.pockej(host, slusne.druh(url), nejdele=40, adresa=url)   # hook má timeout 60 s – po něm by WebFetch prošel bez limitu
+    except (slusne.Zablokovano, slusne.Fronta, slusne.Ochrana, slusne.podminky.Zakazano) as e:
         zamitni(str(e))
 
 

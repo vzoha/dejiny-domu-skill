@@ -59,7 +59,11 @@
     "iispp.npu.cz": {
       "nazev": "NPÚ – MIS a Carmen (fotky, plány, průzkumy)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "fotky a plány jsou dílo NPÚ: zveřejnit jen se smlouvou, web nejvýš 200×300 px nebo s vodoznakem, v tisku licence od 1 500 Kč (badatelský řád a ceník NPÚ, 8. 11. 2026)",
-      "jinak": "Popis a odkaz vypíše mis.py, fotku si uživatel prohlédne přes odkaz. Carmen (/carmen/) má ochranu proti robotům – hledá uživatel v prohlížeči. Do PDF nebo na web jen odkaz, nebo kopii objednat u NPÚ (k neveřejnému užití)."
+      "jinak": "Popis a odkaz vypíše mis.py, fotku si uživatel prohlédne přes odkaz. Carmen (/carmen/) má ochranu proti robotům – hledá uživatel v prohlížeči. Do PDF nebo na web jen odkaz, nebo kopii objednat u NPÚ (k neveřejnému užití).",
+      "vyjimky": [
+        {"obsahuje": "/carmen/", "dotazy": false, "obrazky": false, "proc": "Carmen přesměruje na ověření proti robotům (/carmen/challenge, 8. 11. 2026)",
+         "jinak": "Uživatel otevře odkaz Carmen z pamatky.py detail v prohlížeči a pošle ti, co našel. Kopii průzkumu nebo plánu objedná u NPÚ (gnr.sbirkaplanu@npu.cz)."}
+      ]
     },
     "aron.vychodoceskearchivy.cz": {
       "nazev": "SOA Hradec Králové (ARON)", "dotazy": true, "obrazky": true, "vyrez": "neresi",

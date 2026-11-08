@@ -59,6 +59,7 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 
 ## Jak se tím řídí nástroje skillu
 - `tools/podminky.json` je stejná tabulka pro nástroje. `slusne.py` ji kontroluje před každým požadavkem: portál, který stahování nedovoluje, skončí hláškou „PODMÍNKY: …“ s návodem, jak dál. Takhle stojí `trebon.py`, `portafontium.py`, `ebadatelna.py` a v `mza.py` vše kromě hledání knih (stránku knihy chrání ALTCHA). Zůstávají ve skillu pro případ, že archiv dá souhlas.
+- Pravidla platí i pro část webu (`vyjimky` podle adresy, třeba Carmen na iispp.npu.cz). Přesměrování na ověření proti robotům (`/challenge`, `/captcha`) nástroj zastaví hláškou „OCHRANA: …“, nikdy ho neřeší.
 - `python3 -I tools/podminky.py <adresa>` vypíše pravidla pro portál.
 - `vyrez.py` po uložení řekne, jestli obrázek smí na veřejný web. `kontrola.py` a nasazení otevřeného webu obrázek bez souhlasu nepustí. Na neveřejný web (za heslem) smí. Souhlas archivu zapište k zápisu nebo mapě do pole `souhlas` (kdo a kdy).
 - Hlášku „PODMÍNKY“ neobcházejte jiným nástrojem, curl ani prohlížečem řízeným skriptem.

@@ -25,6 +25,11 @@ class Server(http.server.BaseHTTPRequestHandler):
         Server.ua = self.headers.get("User-Agent")
         if "pomalu" in self.path:
             time.sleep(0.5)
+        if self.path.startswith("/overeni"):   # jako Carmen: přesměrování na ověření proti robotům
+            self.send_response(302)
+            self.send_header("Location", "/challenge?rd=/overeni")
+            self.end_headers()
+            return
         if self.path.startswith("/presmeruj"):   # na jiný web: localhost místo 127.0.0.1
             self.send_response(302)
             self.send_header("Location", f"http://localhost:{self.server.server_port}/429")
@@ -216,6 +221,26 @@ class SlusneTest(unittest.TestCase):
         self.assertEqual(p.returncode, 0, p.stderr)
         self.assertEqual(Server.ua, slusne.UA)
 
+    def test_presmerovani_na_overeni_zastavi(self):
+        with self.assertRaises(slusne.Ochrana):
+            self.get("/overeni")
+        self.assertEqual(Server.pocet, 1)   # na /challenge už nástroj nešel
+
+    def test_curl_presmerovani_na_overeni_zastavi(self):
+        with self.assertRaises(slusne.Ochrana):
+            slusne.curl(["-s", "-L", self.url + "/overeni"], stdout=subprocess.PIPE)
+
+    def test_vyjimka_podminek_podle_cesty(self):
+        puvodni = slusne.podminky.portaly
+        slusne.podminky.portaly = lambda: {"127.0.0.1": {"nazev": "Test", "dotazy": True, "obrazky": True,
+                                           "vyjimky": [{"obsahuje": "/carmen/", "dotazy": False, "proc": "ověření"}]}}
+        try:
+            self.assertEqual(self.get("/mis/1"), b"ok")
+            with self.assertRaises(slusne.podminky.Zakazano):
+                self.get("/carmen/1")
+        finally:
+            slusne.podminky.portaly = puvodni
+
     def test_druh(self):
         for url in ("https://x/iipsrv/iipsrv.fcgi?IIIF=/a.jp2/full/full/0/default.jpg", "https://x/a_files/12/3_4.jpg",
                     "https://images.archives.cz/ximage/matriky/zoomify/a/ImageProperties.xml"):
@@ -279,6 +304,11 @@ class HlidacTest(unittest.TestCase):
         if not p.stdout.strip():
             return "povoleno"
         return json.loads(p.stdout)["hookSpecificOutput"]["permissionDecision"]
+
+    def test_webfetch_zakazany_portal_a_overeni(self):
+        self.assertEqual(self.rozhodni("https://digi.ceskearchivy.cz/4250/5", "WebFetch"), "deny")
+        self.assertEqual(self.rozhodni("https://iispp.npu.cz/carmen/combined?area=-1", "WebFetch"), "deny")
+        self.assertEqual(self.rozhodni("https://example.org/challenge?rd=/x", "WebFetch"), "deny")
 
     def test_zamitne(self):
         for cmd in ('curl -s "https://www.mza.cz/actapublica/matrika/hledani_obec?obec_id=1"',
