@@ -129,7 +129,9 @@ Pravidla kvality:
 ### Webové aplikace bez API – prohlížeč
 Když portál nemá nástroj ani čitelné API (mapové aplikace, prohlížeče snímků, nahlizenidokn, chartae-antiquae),
 **použij sám prohlížeč přes skill `agent-browser`**, nenechávej to na uživateli. **Neplatí** pro portály, které podle
-`reference/podminky.md` nástrojům stahování nedovolují nebo mají ochranu proti robotům: tam kliká uživatel. Pasti:
+`reference/podminky.md` nástrojům stahování nedovolují nebo mají ochranu proti robotům: tam kliká uživatel.
+Samotný robots.txt tě nezastaví: na dotaz uživatele bádáš jako on při klikání, ne jako plošný robot. Proto ber jen to,
+co hledáš, nic dvakrát a co nejméně požadavků. Robots.txt, který jmenovitě zakazuje AI (ClaudeBot), ale respektuj. Pasti:
 - Playwright hlásí „Executable doesn't exist“ → spusť s nainstalovaným chromiem:
   `agent-browser --executable-path "$(ls -d ~/.cache/ms-playwright/chromium-*/chrome-linux/chrome | tail -1)" open <url>`
   (když už běží démon, nejdřív `agent-browser close`).
@@ -230,9 +232,10 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `cuzk_archiv.py listy / rady / prehled / rastry / export / mapa / lms` | Archiv ČÚZK: stabilní katastr (originální mapy s reambulací, císařské otisky, indikační skici), evidenční mapy (změny do 20. stol.), pozemkový katastr, ročníky leteckých snímků 30.–60. let (jen seznam); `rady` = všechny další řady k místu s id rastrů (otisky katastrálních map měst 1 : 1000, mapa evidence nemovitostí, SM5); `mapa cenia50` ortofoto CENIA z 50. let (smí do PDF) |
 | `aron_search.py "Obec" ["fond"]`, `aron_search.py scitani "Obec"`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |
 | `portafontium.py …`, `ebadatelna.py …` | SOA Plzeň, SOA Praha. **Stojí:** firewall / zákaz robotů; snímky uloží uživatel (eBadatelna: ZIP po registraci) |
-| `ahmp_search.sh`, `ahmp_scan.py` | Praha (matriky). `policie_prihlasky.py` **stojí** (zákaz robotů Národního archivu) |
+| `ahmp_search.sh`, `ahmp_scan.py`, `policie_prihlasky.py` | Praha (matriky; policejní přihlášky 1850–1914 z Národního archivu) |
 | `mza.py hledat / matriky / scitani` | MZA Brno (jižní Morava, Acta Publica): knihy obce, sčítací operáty obce. Stránku knihy a snímky chrání ALTCHA – otevře uživatel (`info`, `link`, `svazek`, `snimek` stojí) |
 | `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, ZA Opava, Matricula |
+| `hroby.py najdi / stahni / hledej` | hřbitovní pasporty obcí (GisOnline.cz): zemřelí 20. stol. se jménem a daty (`portaly.md` → Hroby) |
 | `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly; u 20. stol. ukáže DNNT → `portaly.md`) |
 | `overit.py <snímek> x0,y0,x1,y1 <prefix>` | zápis na dvě čitelné poloviny – ověření čtení |
 | `vyrez.py <obrázek> <klíč> x0,y0,x1,y1` | výřez do `zdroje/` a `vyrezy/` (i mapy a fotky, celé = `0,0,1,1`) |

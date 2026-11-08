@@ -1,5 +1,5 @@
 {
-  "_info": "Podmínky portálů pro nástroje skillu. Zdroj a vysvětlení: reference/podminky.md (stav 3. 11. 2026, jen veřejné zdroje, není to právní rada). dotazy/obrazky = smí nástroj stahovat stránky / snímky z této domény. vyrez = smí jít obrázek do výstupu: ano | neresi (podmínky mlčí) | nekomercne | souhlas | ne. vyjimky = pravidlo podle textu v adrese, zdroji nebo názvu (malá písmena).",
+  "_info": "Podmínky portálů pro nástroje skillu. Zdroj a vysvětlení: reference/podminky.md (stav 3. 11. 2026, jen veřejné zdroje, není to právní rada). dotazy/obrazky = smí nástroj stahovat stránky / snímky z této domény. vyrez = smí jít obrázek do výstupu: ano | neresi (podmínky mlčí) | nekomercne | souhlas | ne. vyjimky = pravidlo podle textu v adrese, zdroji nebo názvu (malá písmena). Samotný robots.txt stahování na žádost uživatele nezakazuje (reference/podminky.md), jen když jmenuje AI.",
   "portaly": {
     "digi.ceskearchivy.cz": {
       "nazev": "SOA Třeboň (DigiArchiv)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
@@ -13,17 +13,16 @@
     },
     "ebadatelna.soapraha.cz": {
       "nazev": "SOA Praha (eBadatelna)", "dotazy": false, "obrazky": false, "vyrez": "neresi",
-      "proc": "robots.txt zakazuje ClaudeBota a všem robotům stahovat digitalizáty",
+      "proc": "robots.txt jmenovitě zakazuje ClaudeBota (výslovné přání nechodit s AI) a všem robotům stahovat digitalizáty",
       "jinak": "Uživatel se zaregistruje, na záložce „Popis knihy“ klikne na „Stáhnout knihu jako ZIP“, rozbalí ho do pracovni/ a ty snímky přečteš."
     },
     "digi.nacr.cz": {
-      "nazev": "Národní archiv (konskripce, policejní přihlášky)", "dotazy": false, "obrazky": false, "vyrez": "neresi",
-      "proc": "robots.txt zakazuje všechny roboty",
-      "jinak": "Uživatel přihlášku najde a uloží v prohlížeči do pracovni/, ty ji přečteš."
+      "nazev": "Národní archiv (konskripce, policejní přihlášky)", "dotazy": true, "obrazky": true, "vyrez": "neresi",
+      "proc": "jen robots.txt (Disallow pro všechny, AI nejmenuje); podmínky ani ochrana nenalezeny (8. 11. 2026) – na žádost badatele smí, jen hledané přihlášky"
     },
     "digitalnibadatelna.nacr.cz": {
       "nazev": "Národní archiv (Digitální badatelna)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
-      "proc": "robots.txt zakazuje všechny roboty, vstupní ověření; zveřejnit jen se souhlasem",
+      "proc": "vstupní ověření „jste člověk“; zveřejnit jen se souhlasem",
       "jinak": "Uživatel snímek uloží v prohlížeči do pracovni/, ty ho přečteš."
     },
     "digi.soalitomerice.cz": {
@@ -149,6 +148,10 @@
       "nazev": "Mapire (Arcanum)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
       "proc": "podmínky zakazují roboty, uložená data za peníze jen se smlouvou",
       "jinak": "Uživatel mapu prohlíží sám a popíše, co na ní je. Stejné mapy bývají v Geolabu nebo ÚAZK."
+    },
+    "app.gisonline.cz": {
+      "nazev": "GisOnline.cz (mapové portály obcí, TopGis)", "dotazy": true, "obrazky": true, "vyrez": "souhlas",
+      "proc": "jen robots.txt (/api2/, AI nejmenuje); podmínky užití nezveřejněné (8. 11. 2026); data patří obci, fotky náhrobků jen odkazem"
     }
   }
 }

@@ -14,7 +14,7 @@ Matriky jsou online u osmi státních archivů – podle toho, **kde dům stojí
 | MZA Brno | jižní Morava, Vysočina z části | Acta Publica – www.mza.cz/actapublica | **částečně – `mza.py`** hledá knihy, snímek uloží uživatel (ALTCHA) |
 | MZA Brno – gruntovní a pozemkové knihy | totéž | ARON MZA – www.mza.cz/aron | **prohlížeč** – katalog v `agent-browser --headed` tempem člověka nebo uživatel ručně; skriptu API vrací 403 |
 | ZA Opava | severní Morava a Slezsko, Olomoucko a Litovelsko | Digitální badatelna – digi.archives.cz/da/ | **částečně – `soal_zoomify.py`** (jen s prohlížečem, CAPTCHU řeší uživatel) |
-| Národní archiv | židovské matriky (HBMa), soupisy; pražské policejní přihlášky 1850–1914 | digitalnibadatelna.nacr.cz; digi.nacr.cz/prihlasky2 | **ručně** – robots.txt zakazuje roboty |
+| Národní archiv | židovské matriky (HBMa), soupisy; pražské policejní přihlášky 1850–1914 | digitalnibadatelna.nacr.cz; digi.nacr.cz/prihlasky2 | badatelna **ručně** (ověření „jste člověk“); přihlášky `policie_prihlasky.py` |
 
 Pro **20. století** (městské domy, adresáře, stavební povolení) jsou hlavní **IPR Praha** (staré plány a letecké snímky
 Prahy) a **DNNT na ndk.cz** (neveřejný tisk čitelný po přihlášení) – sekce níže.
@@ -183,9 +183,9 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
   Celé hledání bez filtru ukáže i nedigitalizované archiválie (karton jen v badatelně) a panství obce v popisu map.
 - Podmínky jako u Acta Publica: snímky dál využít jen se souhlasem MZA (`podminky.md`), do výstupu přepis a odkaz.
 
-## Pražské policejní přihlášky 1850–1914 (Národní archiv) – ručně
-- **Podmínky:** robots.txt Národního archivu zakazuje všechny roboty, `policie_prihlasky.py` proto stojí. Kartu najde
-  uživatel na digi.nacr.cz/prihlasky2 a uloží ji do `pracovni/`, ty ji přečteš. Popis nástroje níže platí jen se souhlasem.
+## Pražské policejní přihlášky 1850–1914 (Národní archiv) – `tools/policie_prihlasky.py`
+- **Podmínky:** jen zákaz v robots.txt, podmínky užití ani ochrana nenalezeny (8. 11. 2026, `podminky.md`). Hledej jen
+  konkrétní osoby a stahuj jen karty, které opravdu potřebuješ.
 - Karty pražských rodin: hlava rodiny, manželka s rokem a místem narození, děti s roky, adresy, někdy místo sňatku.
   Výborné, když rodina žila v Praze a nevíš farnost (pražské matriky nemají rejstříky).
 - `python3 -I tools/policie_prihlasky.py Kolar [Jan] [1850] [1870]` – příjmení bez diakritiky (začátek jména), jméno a roky
@@ -227,6 +227,11 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
   cenný pramen hlavně pro 20. století, kde matriky ještě nejsou přístupné.
 - Evidence hrobových míst: správa hřbitova (kdo je v hrobě uložen, kdo platí nájem – často žijící potomek);
   řada měst má online vyhledávání hrobů. Mezinárodně BillionGraves a Find a Grave.
+- **Hřbitovní pasporty obcí (GisOnline.cz)** – `tools/hroby.py`: hroby a zemřelí se jménem, narozením, úmrtím a pohřbem,
+  hlavně 1920–2020. `najdi "<obec>"` zkusí adresy app.gisonline.cz/<obec> a vypíše obec a okres podle RÚIAN (obce stejného
+  jména!), `stahni <projekt>` uloží `data/hroby.json`, `hledej <příjmení>` vypíše zemřelé. Číslo popisné u hrobů není:
+  shoda jména s obyvatelem je vodítko, ověř ji. Fotky náhrobků jen odkazem, jména zemřelých za posledních ~50 let
+  na veřejný web jen se souhlasem rodiny. Jiné mapové portály obcí hledej na webu obce („mapa hřbitova“).
 
 ## IPR Praha – staré plány a letecké snímky Prahy (gs-pub.praha.eu) – `tools/ipr_praha.py`, bez tokenu
 Pro Prahu výrazně lepší než Archiv ČÚZK (jeho spojené vrstvy stabilního katastru Prahu nepokrývají). Vše georeferencované
