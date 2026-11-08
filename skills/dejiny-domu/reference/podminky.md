@@ -58,6 +58,7 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | II. vojenské mapování (geoportál CENIA) | Nástroj | ano | prohlížet ano | souhlas | ano | Podmínky si odporují. Obrázky vezměte z Geolabu |
 | IPR Praha, mapy a dnešní snímky | Nástroj | ano | ano | ano | ano | Uveďte „datový podklad © IPR Praha“ |
 | IPR Praha, letecké snímky 1938–1996 | Nástroj | ano | ano | ano | ano | Jako mapy IPR. Snímky ale nejspíš pocházejí od armády, před zveřejněním za peníze ověřte |
+| Translokační plány židovských obydlí 1727–1728 (VÚGTK, Národní archiv, MZA) | Nástroj | ano | neřeší | souhlas | ano | Aplikace bez ochrany a podmínek užití, robots.txt nic nezakazuje (8. 11. 2026). Plány jsou volné dílo, skeny ale patří archivu (NA, MZA): obrázek se souhlasem archivu, zjištění s citací |
 | Indikační skici, Čechy (Národní archiv) | Ručně | ano | neřeší | souhlas | ano | Najdete je v aplikaci ČÚZK Archiv, patří ale Národnímu archivu |
 | Indikační skici, Morava (MZA) | Ručně | ano | neřeší | souhlas | ano | Platí podmínky MZA |
 | Mapové portály obcí (GisOnline.cz) | Nástroj | ano | neřeší | souhlas | ano | Pasporty hřbitovů: zemřelí se jménem a daty. Data patří obci, podmínky nezveřejněné (8. 11. 2026). Fotky náhrobků jen odkazem, jména zemřelých za posledních ~50 let na web jen se souhlasem rodiny |

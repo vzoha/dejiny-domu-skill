@@ -20,6 +20,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | 1550–1850 | **gruntovní knihy** (pozemkové knihy vrchnosti) | **všichni držitelé gruntu za sebou**: koupě, dědictví, cena, splátky, výminky, sirotci | fond velkostatku (panství) v SOA. Některé jsou digitalizované na portálech SOA |
 | 1654 | berní rula (**jen Čechy**) | jméno hospodáře, kategorie usedlosti, výměra, dobytek | tištěná edice po krajích (Kramerius / knihovny) |
 | 1656–1679 | lánové rejstříky (**Morava**, protějšek berní ruly) | hospodář, usedlost, lány, pustá místa | MZA (fond lánových rejstříků), edice a výtahy v literatuře – ověř svazek v katalogu ARON MZA |
+| 1727–1728 | translokační plány židovských obydlí (**jen ~200 obcí, kde žili Židé**) | plán ulice, náměstí nebo vsi s domy, synagogou, kostelem, často i radnicí a dvorem; sto let před stabilním katastrem | `translokace.py "Obec"`, `detail <č.>`; **plán je návrh přestěhování, ne doklad, že se stalo** – porovnej s indikační skicou |
 | 1720–1750 | karolinský katastr (**Slezsko**) | usedlosti a poplatníci | ZA Opava – ověř v katalogu, co je k obci a zda online |
 | 1651 | soupis poddaných podle víry (**jen Čechy**) | domácnosti s věkem, ale **ne vždy úplné**: děti někde všechny, jinde až od ~1 roku nebo od ~10 let (podle panství), věk zaokrouhlený | edice po krajích |
 | 1400–1700 | urbáře | povinnosti a platy jednotlivých usedlostí | fond velkostatku v SOA, edice |

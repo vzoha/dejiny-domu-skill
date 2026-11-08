@@ -243,6 +243,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `veduty.py "Obec" [od-do]` | Veduty, pohlednice, fotografie a mapy obce z digitálních knihoven (Česká digitální knihovna: grafické sbírky a mapy MZK, UK a další) podle geografického hesla, s přístupem a odkazem |
 | `seidel.py "Obec"`, `seidel.py detail <id>` | Fotoateliér Seidel (Krumlovsko, Šumava, Pošumaví 1880–1960): pohledy na obec a ateliérové portréty obyvatel se jménem a adresou s číslem domu |
 | `esbirky.py "Obec" [od-do]`, `esbirky.py detail <id>` | eSbírky (muzea a galerie, Národní muzeum): fotografie, negativy, pohlednice, kresby a předměty s obcí v názvu, detail s popisem, licencí (co smí do výstupu) a citací |
+| `translokace.py "Obec"`, `translokace.py detail <č.>` | Translokační plány židovských obydlí 1727–1728 (~200 měst a vsí v Čechách a na Moravě): plán náměstí nebo vsi sto let před stabilním katastrem, zakreslené domy, synagoga, kostel; návrh přestěhování, ne skutečnost |
 | `narp.py "Obec"`, `narp.py detail <id>` | Národní archivní portál: fondy obce ve všech archivech ČR (archiv obce, MNV, škola, JZD, velkostatek, firmy) s číslem NAD a přístupností, bez snímků – podklad pro dotaz archivu |
 | `aron_search.py "Obec" ["fond"]`, `aron_search.py scitani "Obec"`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |
 | `ebadatelna.py …` | SOA Praha: matriky a archiválie, snímky jen ty, které čteš (celá kniha: ZIP po registraci) |

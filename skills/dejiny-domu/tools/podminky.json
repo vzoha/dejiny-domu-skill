@@ -61,6 +61,16 @@
       "proc": "aplikace s veřejným API bez přihlášení a ochrany, robots.txt nemá; podmínky užití ani licence nenalezeny, muzeum prodává jen tisky (8. 11. 2026); fotky Františka Seidela († 1997) chráněné autorským právem",
       "jinak": "Popis, zákazníka a odkaz vypíše seidel.py. Do výstupu popis, jméno a adresa s citací (negativ č.), fotku jen se souhlasem muzea."
     },
+    "www.vugtk.cz": {
+      "nazev": "Translokační plány židovských obydlí 1727–1728 (Národní archiv, MZA a VÚGTK)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "statická aplikace bez ochrany, robots.txt nic nezakazuje, podmínky užití nenalezeny (8. 11. 2026); plány jsou volné dílo, skeny patří archivu uložení (NA, MZA)",
+      "jinak": "Plány a zakreslené stavby vypíše translokace.py, plán si uživatel prohlédne odkazem. Do výstupu zjištění s citací (archiv, sbírka, signatura), obrázek se souhlasem archivu."
+    },
+    "www.chartae-antiquae.cz": {
+      "nazev": "Chartae antiquae (dlaždice translokačních plánů a indikačních skic VÚGTK)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "jen dlaždice obrázků pro prohlížeč aplikace www.vugtk.cz/plany, robots.txt nemá (8. 11. 2026)",
+      "jinak": "Plán si uživatel prohlédne v aplikaci (odkaz z translokace.py); když ho chceš přečíst, ať uloží výřez do pracovni/."
+    },
     "www.esbirky.cz": {
       "nazev": "eSbírky (sbírky muzeí a galerií, Národní muzeum)", "dotazy": true, "obrazky": true, "vyrez": "neresi",
       "proc": "web bez ochrany a bez podmínek užití; robots.txt zakazuje všem (*) /hledat a /api/, Claude-User nejmenuje; licence je u každého předmětu (PDM, CC0, CC BY…, CC BY-NC…) (8. 11. 2026)",

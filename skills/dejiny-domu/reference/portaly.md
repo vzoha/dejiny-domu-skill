@@ -72,6 +72,19 @@ hledej sám v prohlížeči (`agent-browser`, ochranu nemá, robots.txt Claude-U
 - Po roce 1850 a malé obce: `veduty.py` (grafiky a pohlednice knihoven), městské archivy mají vlastní digitální archivy
   s mapami a vedutami (např. Archiv města Plzně, digiarchiv.plzen.eu), kroniky a muzea.
 
+## Translokační plány židovských obydlí 1727–1728 (www.vugtk.cz/plany) – `tools/translokace.py`
+Plány z let 1727–1728 k nařízení odstěhovat Židy od kostelů a křesťanských domů: ~200 měst a vsí v Čechách
+(Národní archiv, Sbírka map a plánů) a na Moravě (MZA). Aplikaci udělal VÚGTK s Národním archivem, u plánu ukáže
+i indikační skicu a dnešní letecký snímek.
+- `python3 -I tools/translokace.py "Boskovice"` → číslo plánu | lokalita, německý název, okres | rok | název plánu |
+  archiv, sbírka, inv. č., signatura | odkaz. Hledá celé jméno obce česky nebo německy (Boskowitz), ne kus.
+- `python3 -I tools/translokace.py detail 98` → autor (měřič), verifikace (hejtman), měřítko, legenda a co je
+  zakresleno: počet židovských domů, synagoga, škola, kostel, fara, radnice, dvůr, hospoda; odkaz na židovskou matriku.
+- **Plán je návrh, ne skutečnost**: kreslí, kde Židé bydlí a kam se mají přestěhovat. Zda se to stalo, ukážou až
+  pozdější prameny (indikační skica, katastry, matriky). Dům přiřaď podle polohy na skice.
+- Plán si uživatel prohlédne odkazem (obrázek se načítá po dlaždicích z chartae-antiquae.cz, nástroj ho nestahuje).
+  Do výstupu zjištění s citací (archiv, Sbírka map a plánů, inv. č., signatura), obrázek se souhlasem archivu.
+
 ## Fotoateliér Seidel, Český Krumlov (fotobanka.seidel.cz) – `tools/seidel.py`
 Negativy Josefa (do 1935) a Františka Seidela (do 1970) a sbírka pohlednic R. Finka: Krumlovsko, Šumava, Pošumaví,
 českorakouské pomezí. Fotobanka se 8. 11. 2026 teprve plní („testovací provoz“), co dnes chybí, může přibýt.
