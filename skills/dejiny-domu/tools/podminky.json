@@ -71,6 +71,16 @@
       "proc": "jen dlaždice obrázků pro prohlížeč aplikace www.vugtk.cz/plany, robots.txt nemá (8. 11. 2026)",
       "jinak": "Plán si uživatel prohlédne v aplikaci (odkaz z translokace.py); když ho chceš přečíst, ať uloží výřez do pracovni/."
     },
+    "ares.gov.cz": {
+      "nazev": "ARES (Ministerstvo financí): firmy, družstva a společenství vlastníků se sídlem v domě", "dotazy": true, "obrazky": false, "vyrez": "neresi",
+      "proc": "veřejné REST API, užívat může každý; podmínky provozu: nejvýš 500 dotazů za minutu, neposílat opakovaně stejné ani nesmyslné dotazy (8. 11. 2026); údaje jen informativní",
+      "jinak": "Subjekty v domě vypíše rejstrik.py. Podnikající fyzické osoby a statutáři jsou žijící lidé: jména do výstupu jen se souhlasem."
+    },
+    "or.justice.cz": {
+      "nazev": "Veřejný rejstřík a Sbírka listin (Ministerstvo spravedlnosti)", "dotazy": false, "obrazky": false, "vyrez": "neresi",
+      "proc": "robots.txt zakazuje všem (*) /ias/, Claude-User nejmenuje; hledá jen podle názvu, IČO nebo spisové značky, ne podle adresy (8. 11. 2026)",
+      "jinak": "Výpis a sbírku listin otevře uživatel odkazem z rejstrik.py. Zaniklé firmy hledej ručně podle názvu (ulice, obec) s volbou „Platné i neplatné“."
+    },
     "www.esbirky.cz": {
       "nazev": "eSbírky (sbírky muzeí a galerií, Národní muzeum)", "dotazy": true, "obrazky": true, "vyrez": "neresi",
       "proc": "web bez ochrany a bez podmínek užití; robots.txt zakazuje všem (*) /hledat a /api/, Claude-User nejmenuje; licence je u každého předmětu (PDM, CC0, CC BY…, CC BY-NC…) (8. 11. 2026)",

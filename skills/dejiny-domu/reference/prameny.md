@@ -28,6 +28,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | vše | Památkový katalog NPÚ (památky i evidované objekty bez ochrany) | vznik a stavební vývoj, popis, literatura, odkazy na fotky a plány NPÚ | `pamatky.py "Obec"`, `detail <id>`; dům v katalogu chybět smí. Fotky obce i mimo katalog `mis.py hledej`, plány a stavebněhistorické průzkumy Carmen (ručně, `portaly.md`) |
 | 1700–1990 | průmyslové a technické stavby (Industriální topografie VCPD FA ČVUT) | mlýn, pivovar, cihelna, továrna: datace, majitelé firmy, přestavby, zánik, literatura | `industrial.py "Obec"`, `detail <id>`; jen vybrané stavby, chybět smí |
 | 1850–1990 | fondy obce a úřadů: archiv obce, MNV, škola, JZD, spolky, firmy | stavební povolení, domovní knihy, konfiskace a přídělové listiny, kroniky, kolektivizace | **co se k obci dochovalo a kde:** `narp.py "Obec"` (Národní archivní portál, všechny archivy). Snímky nejsou, fond si vyžádej v SOkA → `archivni_dotazy.md` |
+| 1990–dnes | veřejný rejstřík (ARES): firmy, družstva, společenství vlastníků se sídlem v domě | **datum vzniku SVJ ≈ kdy se prodávaly byty**, bytové družstvo jako vlastník, hospoda a obchod v přízemí; sbírka listin (stanovy, smlouvy) | `rejstrik.py "Část obce" <čp>`, `detail <IČO>`; jen dnes zapsané, zaniklé ručně (`portaly.md`). **Sídlo není doklad vlastnictví ani bydliště** |
 | vše | literatura, vlastivědy, kroniky obce a školy, noviny | události obce (požáry, války, stavby), staré názvy | Kramerius (`kramerius.py`), ANNO (`anno.py`), Google Books, SOkA (kroniky bývají online) |
 | 1500–1850 | veduty v archivech (Soupis vedut do roku 1850) | podoba města, zámku, kláštera, kostela, katastrofy | www.veduty.cz v prohlížeči (`portaly.md`), hlavně města; sken patří archivu uložení |
 | 1600–1950 | veduty, grafické listy, pohlednice, plány měst (knihovny) | podoba vsi, kostela, zámku, náměstí; staré plány města | `veduty.py "Obec"` (MZK, UK a další přes CDK); veduta není plán, ověř mapou. Mapy malé vsi podle polohy: `veduty.py mapy <šířka> <délka>`; obrázky ručně grafiky.mzk.cz, muzea (`esbirky.py`) |
@@ -95,6 +96,11 @@ Zdroj: ČÚZK, Historie pozemkových evidencí (cuzk.gov.cz → Katastr nemovito
   a list vlastnictví evidence nemovitostí (katastrální pracoviště), spisy státního notářství a národního výboru
   (SOkA). Které fondy obce (MNV, JZD) se dochovaly, vypíše `narp.py "Obec"`; co v nich je, ověř dotazem →
   `archivni_dotazy.md`. Nic z toho není online.
+- Od 1990 pomůže veřejný rejstřík: `rejstrik.py "Část obce" <čp>`. Společenství vlastníků jednotek (SVJ) vzniklo,
+  až když se dům rozdělil na byty jako jednotky a ty měly víc vlastníků (do 2013 ze zákona při 5 jednotkách a 3
+  vlastnících, od 2014 zápisem). Datum vzniku v `detail <IČO>` („Datum vzniku společenství“) je tedy **zhruba doba
+  prodeje bytů**, ne den rozdělení domu. Bytové družstvo v domě bývá vlastníkem domu. Kdo vlastní dnes, řekne list
+  vlastnictví.
 
 ## Gruntovní knihy – jak na ně
 1. Zjisti **panství**, ke kterému ves (nebo dům!) patřila před 1848. Ves mohla patřit pod dvě panství (část domů

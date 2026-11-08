@@ -89,6 +89,21 @@ i indikační skicu a dnešní letecký snímek.
 - Plán si uživatel prohlédne odkazem (obrázek se načítá po dlaždicích z chartae-antiquae.cz, nástroj ho nestahuje).
   Do výstupu zjištění s citací (archiv, Sbírka map a plánů, inv. č., signatura), obrázek se souhlasem archivu.
 
+## Veřejný rejstřík a ARES (ares.gov.cz, or.justice.cz) – `tools/rejstrik.py`
+ARES (Ministerstvo financí) má veřejné API: najde subjekty se sídlem na adrese. Veřejný rejstřík (or.justice.cz)
+hledá jen podle názvu, IČO nebo spisové značky, proto nástroj jde přes ARES a na or.justice.cz jen odkáže.
+- `python3 -I tools/rejstrik.py "Holešovice" 1425` → všechny adresy domu (rohový dům má dvě) a subjekty se sídlem
+  v kterékoli z nich: IČO | název | právní forma | zápis | adresa | odkaz na výpis a sbírku listin. Část obce
+  jako v adrese (Holešovice, ne Praha 7), číslo popisné, ne orientační. Stejnojmenné části obce vypíše zvlášť,
+  rozliší je PSČ. Evidenční čísla (č. ev., chaty) vynechá.
+- **Podnikající fyzické osoby jen spočítá**, jména nevypíše: jsou to žijící lidé, často jen bydliště.
+- `python3 -I tools/rejstrik.py detail 26480808` → názvy a sídla s daty, předmět činnosti, ostatní skutečnosti
+  (u SVJ „Datum vzniku společenství: 1.7.2000.“), spisová značka. Členy statutárního orgánu nevypíše.
+- ARES podle adresy najde **jen dnes zapsané** subjekty. Zaniklé (družstvo, firma z 90. let) hledej na or.justice.cz
+  ručně: název (ulice, obec, „SVJ <ulice>“) a „Platné i neplatné“. Sbírka listin (stanovy, prohlášení vlastníka,
+  smlouvy) je u výpisu, otevře ji uživatel.
+- Limit ARES: nejvýš 500 dotazů za minutu, neposílat opakovaně stejné dotazy. Nástroj na dům pošle 3–10 dotazů.
+
 ## Fotoateliér Seidel, Český Krumlov (fotobanka.seidel.cz) – `tools/seidel.py`
 Negativy Josefa (do 1935) a Františka Seidela (do 1970) a sbírka pohlednic R. Finka: Krumlovsko, Šumava, Pošumaví,
 českorakouské pomezí. Fotobanka se 8. 11. 2026 teprve plní („testovací provoz“), co dnes chybí, může přibýt.
