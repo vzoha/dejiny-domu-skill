@@ -23,6 +23,16 @@ Prahy) a **DNNT na ndk.cz** (neveřejný tisk čitelný po přihlášení) – s
 Adresy u nevyzkoušených portálů ověř při prvním použití (portály se mění). Pro pohraničí a mimo ČR viz `playbook.md` §2
 (Matricula pro Rakousko/Německo, Geneteka pro Polsko, FamilySearch pro Slovensko) a níže.
 
+## Památkový katalog NPÚ (pamatkovykatalog.cz) – `tools/pamatky.py`
+Kulturní památky a objekty, které památkáři jen evidují (návesní kaple, boží muka, mlýny, domy bez ochrany).
+- `python3 -I tools/pamatky.py "Lniště"` → objekty v obci, části obce nebo ulici: id | název | adresa | ochrana | anotace.
+  Druhý argument zúží na číslo v adrese (`pamatky.py "Na Maninách" 27`). Hledá se fulltextem, objekty jen se zmínkou
+  jinde vypíše zvlášť. Víc než 250 výsledků katalog nevrátí – zúžit na část obce nebo ulici.
+- `python3 -I tools/pamatky.py detail <id>` → vznik, autor, stavební vývoj, popis, **literatura o objektu**, fotky v MIS
+  (popis + odkaz), odkaz do Carmen (plány, průzkumy), trvalý odkaz a citace.
+- **Chybějící dům v katalogu neznamená, že nemá historickou hodnotu.** Údaje NPÚ (datace, popis) jsou `lit`, ne doklad.
+- Fotky a plány (MIS, Carmen na iispp.npu.cz) jsou dílo NPÚ: do výstupu jen odkaz (`podminky.md`).
+
 ## Národní archivní portál (portal.nacr.cz) – `tools/narp.py`, seznam fondů všech archivů
 Ústřední evidence Národního archivního dědictví: každý fond v každém archivu ČR (i muzea a knihovny), bez snímků.
 Řekne, **co se k obci dochovalo a kde to leží** – než napíšeš archivu, víš název fondu, číslo NAD a jestli je přístupný.

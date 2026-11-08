@@ -52,6 +52,15 @@
       "nazev": "Národní archivní portál (evidence fondů)", "dotazy": true, "obrazky": false, "vyrez": "neresi",
       "proc": "veřejná evidence fondů všech archivů (zákon o archivnictví § 18b), bez robots.txt a bez ověření; snímky tu nejsou (8. 11. 2026)", "jinak": ""
     },
+    "pamatkovykatalog.cz": {
+      "nazev": "Památkový katalog NPÚ", "dotazy": true, "obrazky": false, "vyrez": "neresi",
+      "proc": "seznam památek je otevřená data CC BY 4.0, web bez robots.txt a bez ověření (8. 11. 2026); fotky jsou na iispp.npu.cz", "jinak": ""
+    },
+    "iispp.npu.cz": {
+      "nazev": "NPÚ – MIS a Carmen (fotky, plány, průzkumy)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "fotky a plány jsou dílo NPÚ: zveřejnit jen se smlouvou, web nejvýš 200×300 px nebo s vodoznakem, v tisku licence od 1 500 Kč (badatelský řád a ceník NPÚ, 8. 11. 2026)",
+      "jinak": "Fotku si uživatel prohlédne přes odkaz z pamatky.py detail. Do PDF nebo na web jen odkaz, nebo kopii objednat u NPÚ (k neveřejnému užití)."
+    },
     "aron.vychodoceskearchivy.cz": {
       "nazev": "SOA Hradec Králové (ARON)", "dotazy": true, "obrazky": true, "vyrez": "neresi",
       "proc": "stahovat se smí; archiv si stěžuje na AI boty – málo a pomalu", "jinak": ""
