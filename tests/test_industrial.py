@@ -45,7 +45,7 @@ class IndustrialTest(unittest.TestCase):
     def test_velkou_skupinu_jen_spocita(self):
         mosty = [dict(MOST, id=i) for i in range(industrial.SKUPINA_NEJVIC + 5)]
         radky = industrial.vypis(mosty, "Beroun")
-        self.assertEqual(radky[0], f"\nJinde, obec zmíněná v textu: {industrial.SKUPINA_NEJVIC + 5}")
+        self.assertEqual(radky[0], f"\nJinde, neověřeno (fulltext hledá i uvnitř slov, zužuj výrazem): {industrial.SKUPINA_NEJVIC + 5}")
         self.assertIn("zúží je hledaný výraz", radky[1])
         self.assertEqual(len(radky), 2)
 

@@ -33,6 +33,8 @@ class EsbirkyTest(unittest.TestCase):
         self.assertTrue(esbirky.v_nazvu("Náměstí v Telči", "Telč"))
         self.assertTrue(esbirky.v_nazvu("[Praha-Holešovice]", "Holešovice"))
         self.assertFalse(esbirky.v_nazvu("Telčice", "Telč"))
+        self.assertFalse(esbirky.v_nazvu("Lhotka u Prahy", "Lhota"))   # zdrobnělina je jiná obec
+        self.assertTrue(esbirky.v_nazvu("Mlýn pod Lhotou", "Lhota"))
         self.assertFalse(esbirky.v_nazvu("Sezemice", "Nežetice"))
         self.assertFalse(esbirky.v_nazvu(None, "Telč"))
 

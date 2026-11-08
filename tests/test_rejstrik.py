@@ -86,6 +86,11 @@ class RejstrikTest(unittest.TestCase):
         self.assertIn("Název: Základní škola", radky)
         self.assertIn("Vznik: 1995-01-24", radky)
 
+    def test_detail_prazdny_rejstrik_ze_zakladnich_udaju(self):
+        zakladni = {"obchodniJmeno": "Spolek", "sidlo": {"textovaAdresa": "Náves 1"}}
+        radky = rejstrik.detail("2", nacti=lambda cesta: {"zaznamy": []} if "-vr/" in cesta else zakladni)
+        self.assertIn("Název: Spolek", radky)
+
     def test_detail_neni(self):
         with self.assertRaises(SystemExit):
             rejstrik.detail("99999999", nacti=http_404)

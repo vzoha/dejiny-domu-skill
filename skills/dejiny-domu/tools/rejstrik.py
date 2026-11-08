@@ -92,16 +92,18 @@ def obdobi(polozka):
 def detail(ico, nacti=cti):
     """Záznam veřejného rejstříku (historie názvů a sídel); subjekt mimo rejstřík (škola, obec) ze základních údajů."""
     try:
-        zaznamy = nacti(f"/ekonomicke-subjekty-vr/{urllib.parse.quote(ico)}")["zaznamy"]
+        zaznamy = nacti(f"/ekonomicke-subjekty-vr/{urllib.parse.quote(ico)}").get("zaznamy") or []
     except urllib.error.HTTPError as e:
         if e.code != 404:
             raise
+        return zakladni_udaje(ico, nacti)
+    if not zaznamy:
         return zakladni_udaje(ico, nacti)
     z = next((z for z in zaznamy if z.get("primarniZaznam")), zaznamy[0])
     radky = [f"IČO: {ico}", f"Stav: {z.get('stavSubjektu', '?')}, zápis {z.get('datumZapisu') or '?'}"
              + (f", výmaz {z['datumVymazu']}" if z.get("datumVymazu") else "")]
     radky += [f"Název {obdobi(n)}: {n['hodnota']}" for n in z.get("obchodniJmeno") or []]
-    radky += [f"Sídlo {obdobi(a)}: {a['adresa'].get('textovaAdresa')}" for a in z.get("adresy") or []
+    radky += [f"Sídlo {obdobi(a)}: {(a.get('adresa') or {}).get('textovaAdresa', '?')}" for a in z.get("adresy") or []
               if a.get("typAdresy") == "SIDLO"]
     radky += [f"Předmět činnosti {obdobi(c)}: {c['hodnota']}"
               for c in (z.get("cinnosti") or {}).get("predmetCinnosti") or []]

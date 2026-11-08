@@ -77,7 +77,8 @@ def detail(cislo, nacti=cti):
         stranka = nacti(odkaz(cislo))
     except urllib.error.HTTPError as e:
         if e.code in (404, 500):   # neexistující číslo web hlásí jako 500
-            sys.exit(f"Plán {cislo} mezi translokačními plány není (číslo z výpisu, např. 1 nebo „4 a“).")
+            sys.exit(f"Plán {cislo} se nenačetl: číslo mezi plány není (čísla z výpisu, např. 1 nebo „4 a“), "
+                     f"nebo má web výpadek (hlásí obojí stejně) – když je číslo z výpisu, zkus to později.")
         raise
     udaje = vlastnosti(stranka)
     if not udaje:

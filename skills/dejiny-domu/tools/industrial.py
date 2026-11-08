@@ -87,7 +87,7 @@ def zminuje(o, misto):
     d = detail(o["id"])
     texty = " ".join(str(d.get(k) or "") for k in ("nameOriginal", "descriptionPublic", "literature"))
     kmen = re.sub(r"[aeiouy]+$", "", bez_diakritiky(misto))   # i v jiném pádě (Berouna, Telči)
-    return re.search(rf"\b{re.escape(kmen)}[a-z]{{0,2}}\b", bez_diakritiky(text(texty))) is not None
+    return re.search(rf"\b{re.escape(kmen)}(?:[aeiouy][a-z]?)?\b", bez_diakritiky(text(texty))) is not None
 
 
 def datace(datings):
@@ -116,7 +116,8 @@ def vypis(objekty, misto):
     mistni = [o for o in objekty if v_miste(o, misto)]
     podobne = [o for o in objekty if not v_miste(o, misto) and podobne_misto(o, misto)]
     jinde = [o for o in objekty if not podobne_misto(o, misto)]
-    if len(jinde) <= SKUPINA_NEJVIC:
+    overeno = len(jinde) <= SKUPINA_NEJVIC
+    if overeno:
         jinde = [o for o in jinde if zminuje(o, misto)]
     radky = []
     if mistni:
@@ -125,7 +126,8 @@ def vypis(objekty, misto):
         if not okresy:
             radky.append("  okres ukáže detail (industrial.py detail <id>)")
     for nadpis, skupina in (("Obce a části s podobným názvem", podobne),
-                            ("Jinde, obec zmíněná v textu", jinde)):
+                            ("Jinde, obec zmíněná v textu" if overeno
+                             else "Jinde, neověřeno (fulltext hledá i uvnitř slov, zužuj výrazem)", jinde)):
         if not skupina:
             continue
         radky.append(f"\n{nadpis}: {len(skupina)}")
@@ -178,7 +180,9 @@ def popis(d):
 
 
 def main(argv):
-    if len(argv) > 2 and argv[1] == "detail":
+    if len(argv) > 1 and argv[1] == "detail":
+        if len(argv) < 3 or not argv[2].isdigit():
+            sys.exit("Použití: industrial.py detail <id> (číslo z prvního sloupce výpisu).")
         print("\n".join(popis(detail(argv[2]))))
         return
     if len(argv) < 2:

@@ -45,7 +45,7 @@ def bez_diakritiky(s):
 def v_nazvu(nazev, obec):
     """Obec jako slovo v názvu, i v jiném pádě („Madona ze Lniště“, „Telče“), ne jiná obec („Telčice“)."""
     kmen = re.sub(r"[aeiouy]+$", "", bez_diakritiky(obec))
-    return re.search(rf"\b{re.escape(kmen)}[a-z]{{0,2}}\b", bez_diakritiky(nazev)) is not None
+    return re.search(rf"\b{re.escape(kmen)}(?:[aeiouy][a-z]?)?\b", bez_diakritiky(nazev)) is not None
 
 
 def hledej(obec, roky=None):

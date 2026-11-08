@@ -35,7 +35,7 @@ def bez_diakritiky(s):
 def zminuje(text, obec):
     """Obec jako začátek slova, i v jiném pádě („Slavče“, „Slavči“); hledání webu je volné (Mohuřice → Moric)."""
     kmen = re.sub(r"[aeiouy]+$", "", bez_diakritiky(obec))
-    return re.search(rf"\b{re.escape(kmen)}[a-z]{{0,2}}\b", bez_diakritiky(text)) is not None
+    return re.search(rf"\b{re.escape(kmen)}(?:[aeiouy][a-z]?)?\b", bez_diakritiky(text)) is not None
 
 
 def hledej(obec):
