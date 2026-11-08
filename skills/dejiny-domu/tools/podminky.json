@@ -52,6 +52,10 @@
       "nazev": "Národní archivní portál (evidence fondů)", "dotazy": true, "obrazky": false, "vyrez": "neresi",
       "proc": "veřejná evidence fondů všech archivů (zákon o archivnictví § 18b), bez robots.txt a bez ověření; snímky tu nejsou (8. 11. 2026)", "jinak": ""
     },
+    "digiarchiv.aiscr.cz": {
+      "nazev": "Archeologická mapa ČR (Digitální archiv AMČR)", "dotazy": true, "obrazky": true, "vyrez": "nekomercne",
+      "proc": "data CC BY-NC 4.0 – jen nevýdělečně a s autorem; API komerčně jen s písemnou smlouvou (8. 11. 2026)", "jinak": ""
+    },
     "pamatkovykatalog.cz": {
       "nazev": "Památkový katalog NPÚ", "dotazy": true, "obrazky": false, "vyrez": "neresi",
       "proc": "seznam památek je otevřená data CC BY 4.0, web bez robots.txt a bez ověření (8. 11. 2026); fotky jsou na iispp.npu.cz", "jinak": ""

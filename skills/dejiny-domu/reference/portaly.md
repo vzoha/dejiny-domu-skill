@@ -41,6 +41,13 @@ Kulturní památky a objekty, které památkáři jen evidují (návesní kaple,
   („veškerá literatura a dokumentace“). Průzkum (SHP) domu je nejlepší popis, co je z které doby – kopii objedná
   uživatel u NPÚ (gnr.sbirkaplanu@npu.cz, k neveřejnému užití; badatelna byla 8. 11. 2026 dočasně zavřená).
 
+## Archeologická mapa ČR (AMČR) – digiarchiv.aiscr.cz, ručně
+Archeologické akce (výzkumy při stavbách), lokality a nálezy po katastrech, u části dokumentace zprávy a plány.
+- Hledá uživatel v Digitálním archivu AMČR podle katastrálního území nebo obce, ty radíš: akce na návsi nebo
+  u domu ukáže starší zástavbu a dataci, chybějící záznam neznamená, že tu nic nebylo (výzkum se dělá jen při stavbách).
+- Licence CC BY-NC 4.0: jen nekomerčně a s uvedením autora. API (api.aiscr.cz, OAI-PMH na hromadné stahování)
+  komerčně jen s písemnou smlouvou – nástroj skill nemá. Citace: „AIS CR: Archeologická mapa České republiky [cit. datum]“.
+
 ## Národní archivní portál (portal.nacr.cz) – `tools/narp.py`, seznam fondů všech archivů
 Ústřední evidence Národního archivního dědictví: každý fond v každém archivu ČR (i muzea a knihovny), bez snímků.
 Řekne, **co se k obci dochovalo a kde to leží** – než napíšeš archivu, víš název fondu, číslo NAD a jestli je přístupný.
