@@ -30,7 +30,7 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | Národní archiv (policejní přihlášky, konskripce Prahy) | Nástroj | ano | neřeší | neřeší | ano | Jen zákaz v robots.txt, podmínky nenalezeny (8. 11. 2026). Nástroj hledá jen konkrétní osoby |
 | Národní archivní portál (seznam fondů všech archivů) | Nástroj | ano | ano | — | ano | Jen popis fondů, snímky tu nejsou. Veřejná evidence ze zákona, robots.txt ani ověření nemá (8. 11. 2026) |
 | Památkový katalog NPÚ (seznam památek) | Nástroj | ano | ano | — | ano | Otevřená data CC BY 4.0, citace „NPÚ, Památkový katalog, katalogové číslo …“. Fotky v katalogu jsou z MIS (řádek níže) |
-| NPÚ MIS a Carmen (fotky, plány, průzkumy) | Nástroj (jen odkazy) | ano | souhlas | souhlas | ano | Fotky a plány jsou dílo NPÚ. Zveřejnit jen se smlouvou, na web nejvýš 200×300 px nebo s vodoznakem, v tisku licence od 1 500 Kč. Kopie k neveřejnému užití se objednává |
+| NPÚ MIS a Carmen (fotky, plány, průzkumy) | MIS nástroj (popis a odkaz), Carmen ručně | ano | souhlas | souhlas | ano | Carmen chrání ověření proti robotům, export z MIS reCAPTCHA. Fotky a plány jsou dílo NPÚ. Zveřejnit jen se smlouvou, na web nejvýš 200×300 px nebo s vodoznakem, v tisku licence od 1 500 Kč. Kopie k neveřejnému užití se objednává |
 | Národní archiv (Digitální badatelna) | Ručně | ano | neřeší | souhlas | ano | Ověření „nejsem robot“ řešíte vy. Zveřejnit jen se souhlasem |
 | Archiv hl. m. Prahy | Nástroj | ano | souhlas | souhlas | ano | Objednávka s účelem, užití zdarma. Na web nejvýš 500 px s vodoznakem |
 | FamilySearch | Ručně | ano | ano, pro klienta | souhlas | ano | Genealog smí bádat pro klienta a předat mu výsledek. Stahovat jen ručně, roboti zakázáni |

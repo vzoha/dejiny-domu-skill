@@ -32,6 +32,14 @@ Kulturní památky a objekty, které památkáři jen evidují (návesní kaple,
   (popis + odkaz), odkaz do Carmen (plány, průzkumy), trvalý odkaz a citace.
 - **Chybějící dům v katalogu neznamená, že nemá historickou hodnotu.** Údaje NPÚ (datace, popis) jsou `lit`, ne doklad.
 - Fotky a plány (MIS, Carmen na iispp.npu.cz) jsou dílo NPÚ: do výstupu jen odkaz (`podminky.md`).
+- **MIS** (`tools/mis.py`): fotky, plány a mapy i u objektů, které v katalogu nejsou. `mis.py hledej "Lniště"` →
+  id | datum vzniku | typ | popis | lokalita | autor (nejvýš 50, MIS ukáže jen prvních 200 – zpřesni slovem: „kaple“,
+  „čp. 12“). `mis.py detail <id>` → pracoviště, licence, místo s čp., vazba na památku. Hromadný export chrání
+  reCAPTCHA – nepoužívat. Staré evidenční listy a fotky (60.–90. léta) ukážou dřívější podobu.
+- **Carmen** (plány, stavebněhistorické průzkumy, restaurátorské zprávy; sbírka plánů NPÚ v Praze): web přesměruje
+  na ověření proti robotům, hledá uživatel v prohlížeči. Odkaz na všechno k objektu dá `pamatky.py detail`
+  („veškerá literatura a dokumentace“). Průzkum (SHP) domu je nejlepší popis, co je z které doby – kopii objedná
+  uživatel u NPÚ (gnr.sbirkaplanu@npu.cz, k neveřejnému užití; badatelna byla 8. 11. 2026 dočasně zavřená).
 
 ## Národní archivní portál (portal.nacr.cz) – `tools/narp.py`, seznam fondů všech archivů
 Ústřední evidence Národního archivního dědictví: každý fond v každém archivu ČR (i muzea a knihovny), bez snímků.

@@ -1,5 +1,5 @@
 {
-  "_info": "Podmínky portálů pro nástroje skillu. Zdroj a vysvětlení: reference/podminky.md (stav 3. 11. 2026, jen veřejné zdroje, není to právní rada). dotazy/obrazky = smí nástroj stahovat stránky / snímky z této domény. vyrez = smí jít obrázek do výstupu: ano | neresi (podmínky mlčí) | nekomercne | souhlas | ne. vyjimky = pravidlo podle textu v adrese, zdroji nebo názvu (malá písmena). Samotný robots.txt stahování na žádost uživatele nezakazuje (reference/podminky.md), jen když jmenuje AI.",
+  "_info": "Podmínky portálů pro nástroje skillu. Zdroj a vysvětlení: reference/podminky.md (stav 3. 11. 2026, jen veřejné zdroje, není to právní rada). dotazy/obrazky = smí nástroj stahovat stránky / snímky z této domény. vyrez = smí jít obrázek do výstupu: ano | neresi (podmínky mlčí) | nekomercne | souhlas | ne. vyjimky = pravidlo podle textu v adrese, zdroji nebo názvu (malá písmena). Samotný robots.txt stahování na žádost uživatele nezakazuje (reference/podminky.md), jen když jmenuje Claude-User (hlídá slusne.py).",
   "portaly": {
     "digi.ceskearchivy.cz": {
       "nazev": "SOA Třeboň (DigiArchiv)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
@@ -59,7 +59,7 @@
     "iispp.npu.cz": {
       "nazev": "NPÚ – MIS a Carmen (fotky, plány, průzkumy)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "fotky a plány jsou dílo NPÚ: zveřejnit jen se smlouvou, web nejvýš 200×300 px nebo s vodoznakem, v tisku licence od 1 500 Kč (badatelský řád a ceník NPÚ, 8. 11. 2026)",
-      "jinak": "Fotku si uživatel prohlédne přes odkaz z pamatky.py detail. Do PDF nebo na web jen odkaz, nebo kopii objednat u NPÚ (k neveřejnému užití)."
+      "jinak": "Popis a odkaz vypíše mis.py, fotku si uživatel prohlédne přes odkaz. Carmen (/carmen/) má ochranu proti robotům – hledá uživatel v prohlížeči. Do PDF nebo na web jen odkaz, nebo kopii objednat u NPÚ (k neveřejnému užití)."
     },
     "aron.vychodoceskearchivy.cz": {
       "nazev": "SOA Hradec Králové (ARON)", "dotazy": true, "obrazky": true, "vyrez": "neresi",
