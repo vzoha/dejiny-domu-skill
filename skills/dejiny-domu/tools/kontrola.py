@@ -16,7 +16,7 @@ if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze 
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 DATA = os.path.join(ROOT, "data")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from platnost import chyba_odkazu, chyba_polohy, chyby_adres_domu, nemozna_data, obracene_rozpeti, obraceny_interval  # noqa: E402
+from platnost import chyba_odkazu, chyba_odpovedi, chyba_polohy, chyby_adres_domu, nemozna_data, obracene_rozpeti, obraceny_interval  # noqa: E402
 STAVY = ("doc", "lit", "prob", "fam", "unk")
 DRUHY = set("NOZISGKMCLJ")
 
@@ -145,7 +145,9 @@ def main():
             err.append(f"místo {name}: {c}")
 
     cfg = jload("web.json", {})
-    if not (cfg.get("prihlaseni") or {}).get("odpoved") and not (cfg.get("prihlaseni") or {}).get("otevreny"):
+    if c := chyba_odpovedi(cfg.get("prihlaseni")):
+        err.append(f"web.json: {c}")
+    elif not (cfg.get("prihlaseni") or {}).get("odpoved") and not (cfg.get("prihlaseni") or {}).get("otevreny"):
         warn.append("web.json: není nastavená odpověď na přihlašovací otázku – nasazení webu skončí chybou")
     if cfg.get("hlavni_dum") and str(cfg["hlavni_dum"]) not in D:
         err.append(f"web.json: hlavni_dum '{cfg['hlavni_dum']}' není v domy.py")

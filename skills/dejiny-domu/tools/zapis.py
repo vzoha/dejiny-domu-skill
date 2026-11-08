@@ -95,6 +95,10 @@ def zapis(nazev, klic, obj, sloucit=False):
         sys.exit("Vstup musí být jeden objekt JSON ({…}).")
     if sloucit and not isinstance(obj, dict):
         sys.exit("--sloucit jde jen s objektem JSON ({…}).")
+    try:   # osamělá polovina páru UTF-16 (\ud800 ve vstupu) by spadla až při zápisu – odmítnout dřív, než se sáhne na data
+        json.dumps([klic, obj], ensure_ascii=False).encode("utf-8")
+    except UnicodeEncodeError as e:
+        sys.exit(f"Vstup obsahuje neplatný znak ({e.object[e.start:e.end]!r}, poškozená diakritika?) – oprav ho, nic jsem nezapsal.")
     seznam = nazev in SEZNAMY
     if seznam and obj.setdefault(SEZNAMY[nazev], klic) != klic:
         sys.exit(f"Klíč „{klic}“ nesedí s „{SEZNAMY[nazev]}“ ve vstupu („{obj[SEZNAMY[nazev]]}“).")

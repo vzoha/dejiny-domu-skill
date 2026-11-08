@@ -20,7 +20,7 @@ Před každým požadavkem se navíc kontrolují podmínky portálu (tools/podmi
 portál, který nástrojům stahování nedovoluje, skončí hláškou „PODMÍNKY: …“ s návodem, jak dál.
 Stav je ve ~/.cache/dejiny-domu/slusne/ (jinde: proměnná SLUSNE_DIR).
 """
-import http.client, json, os, re, subprocess, sys, threading, time, urllib.parse
+import email.utils, http.client, json, os, re, subprocess, sys, threading, time, urllib.parse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import podminky   # co smí nástroje stahovat (tools/podminky.json)
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
@@ -39,6 +39,15 @@ BLOKACE = 30 * 60
 PRIPONA = re.compile(r"\.(jpe?g|png|gif|webp|tiff?|jp2|dzi)$", re.I)   # jen v cestě: MZA má stránku knihy na …?image=…jp2
 OBRAZEK = re.compile(r"_files/|iipsrv|IIIF=|Deepzoom=|ximage|zoomify|"
                      r"TileGroup|ImageProperties\.xml|isrv\d*\.cgi|/full/|default\.jpg|/image/|mrimage|/tiles?/", re.I)
+
+
+MAX_DLAZDIC = 3000   # jeden snímek v plném rozlišení má nejvýš stovky dlaždic; víc = chybná odpověď serveru
+
+
+def strop_dlazdic(pocet, kde):
+    """Skončí dřív, než nástroj začne stahovat nesmyslně velký snímek (server poslal špatné rozměry)."""
+    if pocet > MAX_DLAZDIC:
+        sys.exit(f"{kde}: snímek by měl {pocet} dlaždic (strop {MAX_DLAZDIC}) – server poslal nečekané rozměry, nic nestahuji.")
 
 
 class Zablokovano(SystemExit):   # SystemExit: nástroje chytají OSError/Exception – tohle jim neproklouzne do opakování
@@ -102,8 +111,23 @@ def blokace(host):
 
 
 def zablokuj(host, proc, sekund=BLOKACE):
-    with open(_soubor(host, "blok"), "w", encoding="utf-8") as f:
+    """Zápis přes dočasný soubor a os.replace: souběžný proces nikdy nepřečte napůl zapsanou blokaci."""
+    cil = _soubor(host, "blok")
+    tmp = f"{cil}.{os.getpid()}.{threading.get_ident()}"
+    with open(tmp, "w", encoding="utf-8") as f:
         json.dump({"do": time.time() + sekund, "proc": proc}, f, ensure_ascii=False)
+    os.replace(tmp, cil)
+
+
+def sekund_z_retry_after(hodnota):
+    """Retry-After je počet sekund, nebo datum (RFC 9110 § 10.2.3). Neznámý tvar → None."""
+    hodnota = str(hodnota or "").strip()
+    if hodnota.isdigit():
+        return int(hodnota)
+    try:
+        return max(0, round(email.utils.parsedate_to_datetime(hodnota).timestamp() - time.time()))
+    except (TypeError, ValueError):
+        return None
 
 
 def _hlaska(host, do, proc):
@@ -194,9 +218,7 @@ def posoudit(host, co, kod, retry_after=None):
                          "nebo web zablokoval IP adresu (v prohlížeči „Sorry, you have been blocked“ → vypni VPN nebo "
                          "zkus jinou síť). Neopakuj dotaz ve smyčce.")
     if kod in (429, 503) or (kod == 403 and co == "dotaz"):
-        sekund = BLOKACE
-        if retry_after and str(retry_after).isdigit():
-            sekund = max(BLOKACE, int(retry_after))
+        sekund = max(BLOKACE, sekund_z_retry_after(retry_after) or 0)
         proc = f"HTTP {kod}"
         zablokuj(host, proc, sekund)
         raise Zablokovano(_hlaska(host, time.time() + sekund, proc))
@@ -236,8 +258,11 @@ HODNOTOVE = {"-e", "--referer", "-x", "--proxy", "-H", "--header", "-b", "--cook
 
 
 def curl(args, **kw):
-    """Spustí curl s limitem: počká podle první adresy, po odpovědi posoudí kód. Vrací CompletedProcess (stderr jako text)."""
+    """Spustí curl s limitem: počká podle adresy, po odpovědi posoudí kód webu, kde curl skončil (i po přesměrování).
+    Jedna adresa na volání – víc adres by curl stáhl hned po sobě mimo limit. Vrací CompletedProcess (stderr jako text)."""
     urls = [a for i, a in enumerate(args) if re.match(r"https?://", a) and (i == 0 or args[i - 1] not in HODNOTOVE)]
+    if len(urls) > 1:
+        sys.exit("slusne.py curl: jedna adresa na jedno volání (víc adres by šlo mimo limit rychlosti) – spusť curl pro každou zvlášť.")
     host = urllib.parse.urlsplit(urls[0]).hostname if urls else ""
     co = druh(urls[0]) if urls else "dotaz"
     if host:
@@ -246,7 +271,7 @@ def curl(args, **kw):
     kw.setdefault("text", True)
     kw.setdefault("encoding", "utf-8")
     kw.setdefault("errors", "replace")
-    args, znacka = list(args), "%{stderr}\nSLUSNE %{http_code}\n"
+    args, znacka = list(args), "%{stderr}\nSLUSNE %{http_code} %{url_effective}\n"
     for i, x in enumerate(args[:-1]):
         if x in ("-w", "--write-out"):   # vlastní -w nechat, značku připojit za něj (curl bere jen poslední -w)
             args[i + 1] += znacka
@@ -256,10 +281,11 @@ def curl(args, **kw):
     p = subprocess.run(["curl", *args], **kw)
     if host:
         odpovedel(host, co)
-    kody = re.findall(r"SLUSNE (\d+)", p.stderr or "")
-    p.stderr = re.sub(r"\n?SLUSNE \d+\n", "", p.stderr or "")
-    if host and kody:
-        posoudit(host, co, int(kody[-1]))
+    vysledky = re.findall(r"SLUSNE (\d+) (\S*)", p.stderr or "")
+    p.stderr = re.sub(r"\n?SLUSNE \d+ \S*\n", "", p.stderr or "")
+    if host and vysledky:
+        kod, kde = vysledky[-1]
+        posoudit(urllib.parse.urlsplit(kde).hostname or host, co, int(kod))
     return p
 
 

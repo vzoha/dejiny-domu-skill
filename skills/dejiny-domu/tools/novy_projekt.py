@@ -39,6 +39,12 @@ def odkazy_v_cilech(dst):
     return [c for c in cile if os.path.islink(c)]
 
 
+def stejny_text(a, b):
+    """Stejný obsah bez ohledu na konce řádků (.sh v projektu má vždy LF, skill na Windows může mít CRLF)."""
+    with open(a, "rb") as fa, open(b, "rb") as fb:
+        return fa.read().replace(b"\r\n", b"\n") == fb.read().replace(b"\r\n", b"\n")
+
+
 def copy_tree(src, dst, backup=None):
     """Zkopíruje chybějící soubory. S backup= přepíše i ty, které se liší, a starou verzi uloží do backup/."""
     changed = []
@@ -101,9 +107,16 @@ def main():
     changed = copy_tree(os.path.join(SKILL, "template", "web"), web, backup if os.path.isdir(web) else None)
     tools = os.path.join(dst, "tools")
     os.makedirs(tools, exist_ok=True)
+    zaloha_nastroju = os.path.join(dst, "pracovni", "zaloha_tools_" + time.strftime("%Y%m%d-%H%M%S"))
+    upravene = []
     for f in os.listdir(os.path.join(SKILL, "tools")):
         if f.endswith((".py", ".sh")) and f != "novy_projekt.py":
-            copy(os.path.join(SKILL, "tools", f), os.path.join(tools, f))   # nástroje vždy aktualizovat
+            new, out = os.path.join(SKILL, "tools", f), os.path.join(tools, f)
+            if os.path.isfile(out) and not os.path.islink(out) and not stejny_text(new, out):
+                os.makedirs(zaloha_nastroju, exist_ok=True)   # vlastní úprava (nebo starší verze) – nepřijde nazmar
+                shutil.copy2(out, os.path.join(zaloha_nastroju, f))
+                upravene.append(f)
+            copy(new, out)   # nástroje vždy aktualizovat
             if f.endswith(".sh"):   # skill naklonovaný na Windows (core.autocrlf) má CRLF – Git Bash by skript nespustil
                 p = os.path.join(tools, f)
                 data = open(p, "rb").read()
@@ -119,6 +132,9 @@ def main():
     pridej_hook(dst)
     copy(os.path.join(SKILL, "VERZE"), os.path.join(dst, ".skill_verze"))   # SKILL.md podle něj nabídne aktualizaci
     print("Projekt připraven:", dst)
+    if upravene:
+        print(f"Nástroje aktualizovány ({len(upravene)}). Předchozí verze jsou v {zaloha_nastroju} – "
+              "pokud jste některý upravovali, převezměte úpravu ze zálohy.")
     if changed:
         print(f"Web aktualizován na novou šablonu ({len(changed)} souborů). Původní verze jsou v {backup}:")
         for f in changed:

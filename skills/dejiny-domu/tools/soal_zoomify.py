@@ -70,6 +70,7 @@ def main():
     w, h = dims[L]
     nx, ny = math.ceil(w / T), math.ceil(h / T)
     start = sum(counts[:L])
+    slusne.strop_dlazdic(nx * ny, base)
     d = tempfile.mkdtemp(dir=os.path.dirname(os.path.abspath(out)))
     try:   # dočasnou složku uklidit i při výpadku sítě nebo chybě ImageMagicku
         def tile(yx):

@@ -12,7 +12,7 @@ Použití:
       co uživatel čeká (osada patří k jiné obci, k. ú. má jméno sousední vsi). Dotaz = "Osada čp", "Ulice čp",
       "Ulice čp/čo" nebo ve městě i "Ulice čo" (číslo orientační, jak je na domě).
   mista.py okoli <"Ulice čp/čo" | lat,lon> [polomer_m=80]
-      všechny dnešní adresy v okolí (RÚIAN) seřazené podle čp. – rohové domy mají dvě adresy; podklad pro tabulku
+      všechny dnešní adresy v okolí (RÚIAN) seřazené podle čp., do poloměru; adresy jedné budovy (roh) označí; podklad pro tabulku
       adres domu v čase a pro rozlišení domů se stejnou starou adresou (reference/prameny.md → Čísla domů).
   mista.py parcely <"Osada čp" | lat,lon> [polomer_m=60] [vse]
       dnešní stavební parcely kolem domu s odstupem v metrech (E/N = na východ/sever). Podle nich najdeš dům
@@ -106,66 +106,75 @@ def ruian(dotaz):
                   f"k. ú. {ku[0]['attributes']['nazev'] if ku else '?'} ({pa['katastralniuzemi']})")
 
 
-def okoli(misto, polomer=80):
+def stred(misto):
+    """lat, lon z „lat,lon“ nebo z jediné adresy RÚIAN. Víc míst se stejnou adresou = skončí, ať se nevybere náhodné."""
     if "," in misto and all(c in "0123456789., -" for c in misto):
-        lat, lon = (float(v) for v in misto.split(","))
-    else:
-        f = adresni_mista(misto, "adresa")
-        if not f:
-            sys.exit(f"RÚIAN „{misto}“ nezná – zadej „Ulice čp/čo“ nebo lat,lon.")
-        lat, lon = f[0]["geometry"]["y"], f[0]["geometry"]["x"]
-        print("střed:", f[0]["attributes"]["adresa"]
-              + (f"  (POZOR: {len(f)} míst se stejnou adresou, jiné zadej jako lat,lon z mista.py ruian)" if len(f) > 1 else ""))
+        return tuple(float(v) for v in misto.split(","))
+    f = adresni_mista(misto, "adresa")
+    if not f:
+        sys.exit(f"RÚIAN „{misto}“ nezná – zadej „Ulice čp/čo“ nebo lat,lon.")
+    if len(f) > 1:
+        sys.exit(f"RÚIAN má {len(f)} míst s adresou „{misto}“ – vyber podle PSČ a okresu a zadej ho jako lat,lon:\n"
+                 + "\n".join(f"  {a['attributes']['adresa']}   {a['geometry']['y']:.5f},{a['geometry']['x']:.5f}" for a in f))
+    print("střed:", f[0]["attributes"]["adresa"])
+    return f[0]["geometry"]["y"], f[0]["geometry"]["x"]
+
+
+def v_obdelniku(vrstva, lat, lon, polomer, dotaz):
+    """Prvky vrstvy RÚIAN v obdélníku kolem středu. Obdélník je větší než kruh – vzdálenost filtruje volající."""
     dlat = polomer / 111320
     dlon = dlat / math.cos(math.radians(lat))
-    q = urllib.parse.urlencode({"geometry": f"{lon - dlon},{lat - dlat},{lon + dlon},{lat + dlat}",
-                                "geometryType": "esriGeometryEnvelope", "inSR": 4326, "spatialRel": "esriSpatialRelIntersects",
-                                "outFields": "adresa", "returnGeometry": "true", "outSR": 4326, "f": "json"})
-    with urllib.request.urlopen(f"{RUIAN}/1/query?{q}", timeout=60) as r:
-        feats = json.load(r).get("features", [])
+    q = {"geometry": f"{lon - dlon},{lat - dlat},{lon + dlon},{lat + dlat}", "geometryType": "esriGeometryEnvelope",
+         "inSR": 4326, "spatialRel": "esriSpatialRelIntersects", "returnGeometry": "true", "outSR": 4326, "f": "json", **dotaz}
+    with urllib.request.urlopen(f"{RUIAN}/{vrstva}/query?{urllib.parse.urlencode(q)}", timeout=60) as r:
+        res = json.load(r)
+    if res.get("exceededTransferLimit"):
+        print(f"POZOR: služba vrátila jen prvních {len(res.get('features', []))} prvků – zmenši poloměr")
+    return res.get("features", [])
+
+
+def odstup(lat, lon, lat2, lon2):
+    """(na východ, na sever) v metrech."""
+    return round((lon2 - lon) * 111320 * math.cos(math.radians(lat))), round((lat2 - lat) * 111320)
+
+
+def okoli(misto, polomer=80):
+    lat, lon = stred(misto)
+    feats = v_obdelniku(1, lat, lon, polomer, {"outFields": "adresa,stavebniobjekt"})
 
     def cislo_popisne(adresa):   # „Ulice 12/3, Obec, …“ → 12
         c = adresa.split(",")[0].rsplit(" ", 1)[-1].split("/")[0]
         return int(c) if c.isdigit() else 0
-
-    def metry(g):
-        return round(math.hypot((g["y"] - lat) * 111320, (g["x"] - lon) * 111320 * math.cos(math.radians(lat))))
-    rows = sorted((cislo_popisne(f["attributes"]["adresa"]), f["attributes"]["adresa"].split(",")[0], metry(f["geometry"]))
-                  for f in feats)
-    for c, a, m in rows:
-        print(f"čp. {c:<6} {a:40} {m:>4} m")
-    print(f"{len(rows)} adres do {polomer:g} m. Stejné čp. dvakrát = rohový dům se dvěma adresami.")
+    rows = []
+    for f in feats:
+        m = round(math.hypot(*odstup(lat, lon, f["geometry"]["y"], f["geometry"]["x"])))
+        if m <= polomer:
+            a = f["attributes"]
+            rows.append((cislo_popisne(a["adresa"]), a["adresa"].split(",")[0], m, a.get("stavebniobjekt")))
+    adres_budovy = {}
+    for *_, so in rows:
+        adres_budovy[so] = adres_budovy.get(so, 0) + 1
+    for c, a, m, so in sorted(rows):
+        print(f"čp. {c:<6} {a:40} {m:>4} m" + ("   ← víc adres jedné budovy" if so and adres_budovy[so] > 1 else ""))
+    print(f"{len(rows)} adres do {polomer:g} m. „Víc adres jedné budovy“ = tentýž stavební objekt RÚIAN (roh nebo dva vchody);"
+          " stejné čp. bez té značky může být jiná budova.")
 
 
 def parcely(misto, polomer=60, vse=False):
-    if "," in misto and all(c in "0123456789., -" for c in misto):
-        lat, lon = (float(v) for v in misto.split(","))
-    else:
-        f = adresni_mista(misto, "adresa")
-        if not f:
-            sys.exit(f"RÚIAN „{misto}“ nezná – zadej lat,lon.")
-        lat, lon = f[0]["geometry"]["y"], f[0]["geometry"]["x"]
-        print("střed:", f[0]["attributes"]["adresa"]
-              + (f"  (POZOR: {len(f)} míst se stejnou adresou, jiné zadej jako lat,lon z mista.py ruian)" if len(f) > 1 else ""))
-    dlat = polomer / 111320
-    dlon = dlat / math.cos(math.radians(lat))
-    q = {"geometry": f"{lon - dlon},{lat - dlat},{lon + dlon},{lat + dlat}", "geometryType": "esriGeometryEnvelope",
-         "inSR": 4326, "spatialRel": "esriSpatialRelIntersects", "outFields": "kmenovecislo,poddelenicisla,druhcislovanikod,vymeraparcely",
-         "returnGeometry": "true", "outSR": 4326, "f": "json"}
+    lat, lon = stred(misto)
+    q = {"outFields": "kmenovecislo,poddelenicisla,druhcislovanikod,vymeraparcely"}
     if not vse:
         # v k. ú. s jednou číselnou řadou jsou všechny parcely pozemkové, dům poznáš jen podle druhu pozemku
         q["where"] = f"druhcislovanikod={STAVEBNI} OR druhpozemkukod={ZASTAVENA_PLOCHA}"
-    with urllib.request.urlopen(f"{RUIAN}/5/query?{urllib.parse.urlencode(q)}", timeout=60) as r:
-        feats = json.load(r).get("features", [])
     rows = []
-    for f in feats:
+    for f in v_obdelniku(5, lat, lon, polomer, q):
         a, ring = f["attributes"], f["geometry"]["rings"][0]
         cy, cx = sum(p[1] for p in ring) / len(ring), sum(p[0] for p in ring) / len(ring)
         rows.append((a["druhcislovanikod"] != STAVEBNI, a["kmenovecislo"], cislo_parcely(a),
-                     a.get("vymeraparcely"), round((cx - lon) * 111320 * math.cos(math.radians(lat))), round((cy - lat) * 111320)))
+                     a.get("vymeraparcely"), *odstup(lat, lon, cy, cx)))
     for _, _, c, v, e, n in sorted(rows):
         print(f"{c:12} {v or 0:>7.0f} m²   E {e:>4} m  N {n:>4} m")
-    print(f"{len(rows)} parcel do {polomer:g} m od středu. Nízká čísla stavebních parcel = starší zástavba.")
+    print(f"{len(rows)} parcel v okolí ±{polomer:g} m od středu. Nízká čísla stavebních parcel = starší zástavba.")
 
 
 def main():

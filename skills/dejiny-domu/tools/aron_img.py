@@ -90,6 +90,7 @@ def fetch_image(dzi_url, level_offset=1, out="page.jpg", crop=None):
         x0, y0, x1, y1 = crop
         c0, c1 = int(x0 * w // ts), min(cols - 1, int(x1 * w // ts))
         r0, r1 = int(y0 * h // ts), min(rows - 1, int(y1 * h // ts))
+    slusne.strop_dlazdic((c1 - c0 + 1) * (r1 - r0 + 1), dzi_url)
     base = dzi_url[: -len(".dzi")] + "_files"
     tmp = tempfile.mkdtemp(prefix="aron_")
     try:

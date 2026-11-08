@@ -13,6 +13,22 @@ def slugify(text):
     return re.sub(r"[^a-z0-9]+", "-", t).strip("-")
 
 
+def norm_answer(text):
+    """Stejná normalizace jako v prihlaseni.html: bez diakritiky, malá písmena, jen a-z0-9."""
+    t = unicodedata.normalize("NFD", str(text))
+    t = "".join(c for c in t if not unicodedata.combining(c)).lower()
+    return re.sub(r"[^a-z0-9]", "", t)
+
+
+def chyba_odpovedi(login):
+    """Odpověď, ze které normalizace nic nenechá („漢字“, „???“): přihlásit by se nešlo a web by vypadal otevřený."""
+    odpoved = (login or {}).get("odpoved")
+    if odpoved and not norm_answer(odpoved):
+        return (f"prihlaseni.odpoved {str(odpoved)[:30]!r} nemá žádné písmeno a–z ani číslici (diakritika a jiná písma"
+                " se odstraňují) – zvol odpověď z latinky nebo čísel")
+    return None
+
+
 def chyba_odkazu(url):
     """Odkaz na webu smí vést jen na http(s) nebo na stránku webu. javascript:, data: ap. by se po kliknutí spustily."""
     if url and not BEZPECNY_ODKAZ.fullmatch(str(url).strip()):

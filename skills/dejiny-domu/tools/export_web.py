@@ -8,14 +8,14 @@ web/nginx.conf a web/netlify/edge-functions/brana.js.
 
 Spouští se z web/ příkazem `npm run data` (nebo přímo `python3 -I tools/export_web.py`, na Windows `python -I -X utf8 …`).
 """
-import hashlib, html, json, os, re, shutil, subprocess, sys, unicodedata
+import hashlib, html, json, os, re, shutil, subprocess, sys
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, TOOLS)
-from platnost import chyba_odkazu, chyba_polohy, chyby_adres_domu, slugify  # noqa: E402
+from platnost import chyba_odkazu, chyba_odpovedi, chyba_polohy, chyby_adres_domu, norm_answer, slugify  # noqa: E402
 ROOT = os.path.dirname(TOOLS)
 if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu: data projektu tam nejsou, zápis by šel do skillu
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
@@ -109,13 +109,6 @@ def group_buttons(md):
     return "".join(parts)
 
 
-def norm_answer(text):
-    """Stejná normalizace jako v prihlaseni.html: bez diakritiky, malá písmena, jen a-z0-9."""
-    t = unicodedata.normalize("NFD", text)
-    t = "".join(c for c in t if not unicodedata.combining(c)).lower()
-    return re.sub(r"[^a-z0-9]", "", t)
-
-
 def year_key(text):
     """Řadicí klíč z „1351“, „22. 7. 1351“, „asi 1600“, „1786–1820“ (první čtyřčíslí, pak den a měsíc)."""
     t = str(text or "")
@@ -161,7 +154,7 @@ def write(path, text):
 
 def login_files(cfg):
     """Přihlašovací brána: otázka na webu, na serveru (nginx i Netlify) jen otisk odpovědi (SHA-256).
-    Stejný otisk spočítá přihlašovací stránka a uloží ho do cookie – samotná odpověď se nikam neukládá."""
+    Stejný otisk spočítá přihlašovací stránka a uloží ho do cookie – samotná odpověď na web nejde (je jen v data/web.json)."""
     login = cfg.get("prihlaseni") or {}
     answer = norm_answer(login.get("odpoved", ""))
     tpl = open(os.path.join(WEB, "prihlaseni.sablona.html"), encoding="utf-8").read()
@@ -212,6 +205,8 @@ def main():
     OBEC, D, ISSUES = ns["OBEC"], ns["D"], ns["ISSUES"]
     cfg = jload("web.json", {})
     login = cfg.get("prihlaseni") or {}
+    if c := chyba_odpovedi(login):
+        sys.exit(f"CHYBA: data/web.json: {c}.")
     if "--nasazeni" in sys.argv and not norm_answer(login.get("odpoved", "")) and not login.get("otevreny"):
         sys.exit("CHYBA: v data/web.json není odpověď na přihlašovací otázku – web by byl otevřený komukoli.\n"
                  "Nastavte prihlaseni.odpoved, nebo (jen když to opravdu chcete) prihlaseni.otevreny: true.")

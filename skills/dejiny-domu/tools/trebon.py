@@ -30,6 +30,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá 
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 
 BASE = "https://digi.ceskearchivy.cz"
+MAX_UROVNI = 12   # 2^12 = plné rozlišení i největších snímků; víc = server neodpovídá prázdnou dlaždicí za okrajem
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu: data projektu tam nejsou, zápis by šel do skillu
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
@@ -115,37 +116,43 @@ def snimek(bid, n, out, nahled=False):
     if not m:
         sys.exit("token obrázku nenalezen (snímek neexistuje?)")
     src = f"{BASE}/cgi-bin/isrv8.cgi?{m.group(1)}"
-    # najdi nejvyšší úroveň a počet dlaždic
+
     def tile(t, x, y):
+        """JPEG dlaždice, nebo b"" za okrajem snímku (server vrací prázdnou odpověď). Cokoli jiného = chyba, ne konec."""
         d, _ = get(f"{src}.0.{t}-{x}-{y}", referer=ref, binary=True)
+        if d and not d.startswith(b"\xff\xd8"):
+            sys.exit(f"Server místo dlaždice {t}-{x}-{y} vrátil něco jiného než obrázek – snímek nestahuji ({ref}).")
         return d
+    # nejvyšší úroveň (plné rozlišení) = poslední, která má dlaždici 0-0
     tier = 1
     while tile(tier + 1, 0, 0):
         tier += 1
+        if tier > MAX_UROVNI:
+            sys.exit(f"Snímek má víc než {MAX_UROVNI} úrovní přiblížení – nečekaná odpověď serveru, nic nestahuji ({ref}).")
     if nahled:
         tier = max(1, tier - 2)
     tmp = tempfile.mkdtemp(prefix="trebon_")
-    rows, y = [], 0
-    while True:
-        x, row = 0, []
+    try:   # dočasné dlaždice uklidit i po chybě
+        rows, y, pocet = [], 0, 0
         while True:
-            d = tile(tier, x, y)
-            if not d:
+            x, row = 0, []
+            while d := tile(tier, x, y):
+                pocet += 1
+                slusne.strop_dlazdic(pocet, ref)
+                p = os.path.join(tmp, f"t_{y}_{x}.jpg")
+                with open(p, "wb") as f:
+                    f.write(d)
+                row.append(p)
+                x += 1
+            if not row:
                 break
-            p = os.path.join(tmp, f"t_{y}_{x}.jpg")
-            open(p, "wb").write(d)
-            row.append(p)
-            x += 1
-        if not row:
-            break
-        rp = os.path.join(tmp, f"row_{y}.png")
-        subprocess.run([MAGICK, *row, "-crop", "768x769+0+0", "+repage", "+append", rp], check=True)
-        rows.append(rp)
-        y += 1
-    subprocess.run([MAGICK, *rows, "-crop", "100%x768+0+0", "+repage", "-append", out], check=True)
-    for f in os.listdir(tmp):
-        os.remove(os.path.join(tmp, f))
-    os.rmdir(tmp)
+            rp = os.path.join(tmp, f"row_{y}.png")
+            subprocess.run([MAGICK, *row, "-crop", "768x769+0+0", "+repage", "+append", rp], check=True)
+            rows.append(rp)
+            y += 1
+        subprocess.run([MAGICK, *rows, "-crop", "100%x768+0+0", "+repage", "-append", out], check=True)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
     r = subprocess.run([MAGICK, out + "[0]", "-format", "%wx%h", "info:"], capture_output=True, text=True)
     print(out, r.stdout, "odkaz:", ref)
 

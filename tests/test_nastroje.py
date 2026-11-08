@@ -4,7 +4,7 @@ Spuštění z kořene repa:  python3 -m unittest discover tests
 Bez sítě a bez závislostí (jen standardní knihovna). Každý test si založí projekt ze šablony skillu v dočasné
 složce a pracuje se smyšlenými daty (Horní Lhota).
 """
-import json, os, shutil, subprocess, sys, tempfile, time, unittest
+import json, os, re, shutil, subprocess, sys, tempfile, time, unittest
 
 SKILL = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "skills", "dejiny-domu")
 # nejmenší platný JPEG (1×1 px) – export ho jen kopíruje, rozměry nezjišťuje
@@ -216,6 +216,18 @@ class TestSoubeh(Projekt):
         self.assertTrue(self.text("data", "svazky.json").startswith('{"rucni": {"svazek": "Gruntovní kniha", "popis": "zapsal uživatel"}'))
         self.assertEqual(self.data("svazky")["ebad_1"], {"svazek": "Matrika N 1800–1850"})
 
+    def test_neplatny_unicode_odmitne_bez_zmeny_souboru(self):
+        self.zapis("svazky", "a", {"svazek": "Gruntovní kniha"})
+        pred = self.text("data", "svazky.json")
+        vstup = self.path("pracovni", "vstup.json")
+        with open(vstup, "w", encoding="utf-8") as f:
+            f.write('{"svazek": "Grunt\\ud800"}')   # osamělá polovina páru UTF-16
+        p = self.nastroj("zapis.py", "svazky", "a", vstup)
+        self.assertNotEqual(p.returncode, 0)
+        self.assertIn("neplatný znak", p.stderr)
+        self.assertNotIn("Traceback", p.stderr)
+        self.assertEqual(self.text("data", "svazky.json"), pred)
+
     def test_mista_zapise_jen_zmenene_misto(self):
         self.zapis("mista", "Kaple", {"lat": 49.1, "lon": 15.1, "popis": "barokní"})
         p = self.py("import mista; mista.geocode = lambda q: (49.2, 15.2, 'osm/1')\n"
@@ -337,6 +349,12 @@ class TestKontrola(Projekt):
         self.assertIn("obyvatel Anna Nová: roky 1860–1795 jsou pozpátku", out)
         self.assertNotIn("Nejistý: 'od'", out)   # nejistou mez nechá být
 
+    def test_odpoved_jen_z_jinych_pisem(self):
+        self.nastroj("zapis.py", "web", "prihlaseni", "-", vstup='{"otazka": "Heslo?", "odpoved": "漢字"}')
+        rc, out = self.kontrola()
+        self.assertEqual(rc, 1)
+        self.assertIn("nemá žádné písmeno a–z ani číslici", out)
+
     def test_rozbity_domy_py(self):
         with open(self.path("data", "domy.py"), "w", encoding="utf-8") as f:
             f.write("D = {\n")
@@ -400,6 +418,12 @@ class TestExport(Projekt):
         rc, out = self.export()
         self.assertNotEqual(rc, 0)
         self.assertIn("/dum/12a/", out)
+
+    def test_odpoved_jen_z_jinych_pisem_export_odmitne(self):
+        self.nastroj("zapis.py", "web", "prihlaseni", "-", vstup='{"otazka": "Heslo?", "odpoved": "漢字"}')
+        rc, out = self.export()
+        self.assertNotEqual(rc, 0)
+        self.assertIn("prihlaseni.odpoved", out)
 
     def test_uplny_projekt(self):
         self.napln()
@@ -610,6 +634,49 @@ mza.snimek(1, 1, "pracovni/x.jpg")
         self.assertEqual(os.listdir(self.path("pracovni")), ["x.jpg"])
 
 
+class TestTrebon(Projekt):
+    """trebon.py snimek bez sítě: podvržený server dlaždic, ImageMagick nahrazený (jen se počítá)."""
+
+    def snimek(self, dlazdice):
+        """`dlazdice(t, x, y)` vrací tělo odpovědi; vrátí (návratový kód, počet dotazů na dlaždice, výstup)."""
+        p = subprocess.run([sys.executable, "-I", "-X", "utf8", "-c", f"""
+import subprocess, sys; sys.path.insert(0, 'tools'); import trebon
+JPEG = {JPEG!r}
+dotazy = []
+def get(path, referer=None, binary=False):
+    if "isrv8.cgi" not in path:
+        return ('showImage("x","tok")', path)
+    t, x, y = (int(v) for v in path.rsplit(".", 1)[1].split("-"))
+    dotazy.append(1)
+    return ({dlazdice}), path
+trebon.get = get
+trebon.magick = lambda: "magick"
+trebon.subprocess.run = lambda *a, **k: subprocess.CompletedProcess(a, 0, "", "")
+try:
+    trebon.snimek(1, 1, "pracovni/x.jpg")
+finally:
+    print("DOTAZU", len(dotazy))
+"""], cwd=self.root, capture_output=True, text=True, encoding="utf-8")
+        return p.returncode, int(re.search(r"DOTAZU (\d+)", p.stdout).group(1)), p.stdout + p.stderr
+
+    def test_snimek_slepi_existujici_dlazdice(self):
+        rc, n, out = self.snimek("JPEG if t <= 3 and x < 2 and y < 2 else b''")
+        self.assertEqual(rc, 0, out)
+        self.assertEqual(n, 3 + 2 * 3 + 1)   # úrovně 2–4, dva řádky po 2 + konec řádku, prázdný třetí řádek
+
+    def test_html_misto_dlazdice_zastavi_hned(self):
+        rc, n, out = self.snimek("b'<html>chyba</html>' if t > 2 else JPEG")
+        self.assertNotEqual(rc, 0)
+        self.assertLess(n, 5)
+        self.assertIn("něco jiného než obrázek", out)
+
+    def test_nekonecne_urovne_maji_strop(self):
+        rc, n, out = self.snimek("JPEG")
+        self.assertNotEqual(rc, 0)
+        self.assertLessEqual(n, 13)
+        self.assertNotIn("Traceback", out)
+
+
 @unittest.skipUnless(shutil.which("bash"), "chybí bash")
 class TestMatricula(Projekt):
     """matricula_dl.sh a matricula_batch.sh bez sítě: curl v PATH je podvržený a vrací obsah souboru VRAT."""
@@ -701,6 +768,36 @@ ipr_praha.main()
         self.assertIn("mapy.json selhal", out)
 
 
+class TestMista(Projekt):
+    """mista.py okoli/parcely bez sítě: odpovědi RÚIAN podstrčené místo urlopen."""
+
+    def okoli(self, adresy, rucne):
+        kod = (f"import mista, sys\nADR = {adresy!r}\n"
+               "mista.adresni_mista = lambda d, p: [{'attributes': {'adresa': a}, 'geometry': {'y': y, 'x': x}}"
+               " for a, y, x, _ in ADR[:2 if d == 'Dvojí 1' else 1]]\n"
+               "mista.v_obdelniku = lambda *a: [{'attributes': {'adresa': a, 'stavebniobjekt': so}, 'geometry': {'y': y, 'x': x}} for a, y, x, so in ADR]\n"
+               f"sys.argv = ['mista.py', 'okoli', {rucne!r}, '80']; mista.main()")
+        return subprocess.run([sys.executable, "-I", "-X", "utf8", "-c", "import sys; sys.path.insert(0, 'tools')\n" + kod],
+                              cwd=self.root, capture_output=True, text=True, encoding="utf-8")
+
+    ADRESY = [("Dlouhá 12/3, Lhota", 49.0, 15.0, 7), ("Krátká 12/1, Lhota", 49.0001, 15.0, 7),
+              ("Polní 14, Lhota", 49.0002, 15.0, 8), ("Daleká 99, Lhota", 49.00096, 15.0, 9)]   # 107 m na sever
+
+    def test_okoli_jen_do_polomeru_a_roh_podle_budovy(self):
+        p = self.okoli(self.ADRESY, "Dlouhá 12/3")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertNotIn("Daleká", p.stdout)
+        self.assertIn("3 adres do 80 m", p.stdout)
+        self.assertRegex(p.stdout, r"Krátká 12/1 +11 m +← víc adres jedné budovy")
+        self.assertRegex(p.stdout, r"Polní 14 +22 m\n")   # jiná budova: bez značky
+
+    def test_vic_mist_se_stejnou_adresou_nevybere_nahodne(self):
+        p = self.okoli(self.ADRESY, "Dvojí 1")
+        self.assertNotEqual(p.returncode, 0)
+        self.assertIn("RÚIAN má 2 míst", p.stderr)
+        self.assertIn("49.00010,15.00000", p.stderr)
+
+
 class TestNovyProjekt(Projekt):
 
     def test_aktualizace_neprepise_data(self):
@@ -710,6 +807,22 @@ class TestNovyProjekt(Projekt):
                            capture_output=True, text=True, encoding="utf-8")
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
         self.assertEqual((self.text("data", "domy.py"), self.text("data", "zaznamy.json")), pred)
+
+    def test_aktualizace_zazalohuje_upraveny_nastroj(self):
+        with open(self.path("tools", "vyrez.py"), "a", encoding="utf-8") as f:
+            f.write("# vlastní úprava\n")
+        p = self.aktualizuj()
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertIn("Nástroje aktualizovány (1)", p.stdout)
+        zalohy = [d for d in os.listdir(self.path("pracovni")) if d.startswith("zaloha_tools_")]
+        self.assertEqual(len(zalohy), 1)
+        self.assertTrue(self.text("pracovni", zalohy[0], "vyrez.py").endswith("# vlastní úprava\n"))
+        self.assertNotIn("vlastní úprava", self.text("tools", "vyrez.py"))   # nástroj je zase ze skillu
+
+    def test_aktualizace_beze_zmen_nezalohuje(self):
+        p = self.aktualizuj()
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertNotIn("Nástroje aktualizovány", p.stdout)
 
     def aktualizuj(self, cil=None):
         return subprocess.run([sys.executable, "-I", os.path.join(SKILL, "tools", "novy_projekt.py"), cil or self.root],

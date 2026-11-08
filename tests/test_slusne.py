@@ -2,7 +2,7 @@
 
 Bez internetu: odpovědi 200/403/429/503 dává lokální HTTP server. Stav limitu je v dočasné složce (SLUSNE_DIR).
 """
-import http.server, json, os, shutil, subprocess, sys, tempfile, threading, time, unittest, urllib.request
+import email.utils, http.server, json, os, shutil, subprocess, sys, tempfile, threading, time, unittest, urllib.request
 
 TOOLS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "skills", "dejiny-domu", "tools")
 sys.path.insert(0, TOOLS)
@@ -16,6 +16,11 @@ class Server(http.server.BaseHTTPRequestHandler):
         Server.pocet += 1
         if "pomalu" in self.path:
             time.sleep(0.5)
+        if self.path.startswith("/presmeruj"):   # na jiný web: localhost místo 127.0.0.1
+            self.send_response(302)
+            self.send_header("Location", f"http://localhost:{self.server.server_port}/429")
+            self.end_headers()
+            return
         kod = next((int(k) for k in ("403", "429", "503") if k in self.path), 200)
         self.send_response(kod)
         self.end_headers()
@@ -49,6 +54,35 @@ class SlusneTest(unittest.TestCase):
 
     def get(self, path):
         return urllib.request.urlopen(self.url + path, timeout=10).read()
+
+    def test_retry_after_jako_datum(self):
+        za_dve_hodiny = email.utils.formatdate(time.time() + 7200, usegmt=True)
+        self.assertAlmostEqual(slusne.sekund_z_retry_after(za_dve_hodiny), 7200, delta=5)
+        self.assertEqual(slusne.sekund_z_retry_after("120"), 120)
+        self.assertIsNone(slusne.sekund_z_retry_after("brzy"))
+        with self.assertRaises(slusne.Zablokovano):
+            slusne.posoudit("archiv.example", "dotaz", 429, za_dve_hodiny)
+        self.assertGreater(slusne.blokace("archiv.example")[0], time.time() + 7000)   # ne jen výchozích 30 min
+
+    @unittest.skipUnless(shutil.which("curl"), "chybí curl")
+    def test_curl_dve_adresy_odmitne(self):
+        with self.assertRaises(SystemExit) as e:
+            slusne.curl(["-s", self.url + "/ok", "http://localhost/ok"])
+        self.assertIn("jedna adresa", str(e.exception.code))
+        self.assertEqual(Server.pocet, 0)
+
+    @unittest.skipUnless(shutil.which("curl"), "chybí curl")
+    def test_curl_po_presmerovani_posoudi_cilovy_web(self):
+        with self.assertRaises(slusne.Zablokovano):
+            slusne.curl(["-s", "-L", "-o", os.devnull, self.url + "/presmeruj"])
+        self.assertTrue(slusne.blokace("localhost"))
+        self.assertIsNone(slusne.blokace("127.0.0.1"))
+
+    def test_strop_dlazdic(self):
+        slusne.strop_dlazdic(slusne.MAX_DLAZDIC, "x")   # na stropu ještě projde
+        with self.assertRaises(SystemExit) as e:
+            slusne.strop_dlazdic(slusne.MAX_DLAZDIC + 1, "https://archiv/snimek")
+        self.assertIn("nic nestahuji", str(e.exception.code))
 
     def test_rozestup_dotazu(self):
         t = time.time()

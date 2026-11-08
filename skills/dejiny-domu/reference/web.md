@@ -45,7 +45,8 @@ skutečnou adresu vyčti z výstupu (`Preview server running at …`) a před od
 - **Přihlášení:** otázka, na kterou znají odpověď jen ti, komu je web určený – rodina, sousedé, spolek
   (ne snadno dohledatelná na sociálních sítích).
   Odpověď se porovnává bez diakritiky a velkých písmen. Na serveru i v cookie prohlížeče je jen její otisk (SHA-256),
-  samotná odpověď se nikam neukládá. Krátkou nebo běžnou odpověď (jméno, obec) ale jde z otisku uhádnout zkoušením,
+  samotná odpověď je jen v `data/web.json` projektu (na web se nedostane). Musí mít aspoň jedno písmeno a–z nebo číslici
+  (jiná písma než latinka se odstraní – kontrola i export to hlídají). Krátkou nebo běžnou odpověď (jméno, obec) ale jde z otisku uhádnout zkoušením,
   proto ať ji uživatel nepoužívá jako heslo jinde. Bez odpovědi nasazení (`npm run nasadit`, `deploy-caprover`)
   skončí chybou; otevřený web jen výslovně přes `"otevreny": true` v `prihlaseni`.
   Je to lehká ochrana proti náhodným návštěvníkům, ne bankovní zabezpečení – citlivé věci na web nepatří.
