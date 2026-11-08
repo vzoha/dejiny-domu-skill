@@ -7,7 +7,7 @@ nástroj si ho obstará sám a uloží na hodinu do pracovni/.cuzk_token.
 
 Použití (z kořene projektu):
   cuzk_archiv.py listy "Horní Lhota 12" | lat,lon
-      které listy stabilního katastru pokrývají místo: katastrální obec v roce 1827 (často jiná než dnes – malá ves
+      které listy stabilního katastru pokrývají místo: katastrální obec stabilního katastru (často jiná než dnes – malá ves
       bývala součástí sousední), originální mapa (om_SIGN_INV, rok reambulace, listy om_SOUB), císařský otisk
       (cio_SIGN_INV), evidenční mapa (změny 1883–1956, je-li naskenovaná) a indikační skica (S0X = předpona
       rastrů ve službě skici).
@@ -134,7 +134,7 @@ def listy(m):
         print("stabilní katastr: žádný list (zkus jiné místo)")
     for r in d.get("results", []):
         a = {k: v for k, v in r["attributes"].items() if v and v.strip() and v != "Null"}
-        print(f"katastrální obec 1827: {a.get('NAZ_PUV_CS', '?')} ({a.get('NAZ_PUV_NE', '')})")
+        print(f"katastrální obec (stabilní katastr): {a.get('NAZ_PUV_CS', '?')} ({a.get('NAZ_PUV_NE', '')})")
         print(f"  originální mapa: {a.get('om_NAZEV_JEDNOTKY', '–')}, sign. {a.get('om_SIGNATURA', '?')}, "
               f"inv. č. {a.get('om_INV_CISLO', '?')}, mapováno {a.get('om_ROZPIS_DAT', '?')}, "
               f"reambulace {a.get('om_REAMBULACE', '–')}")

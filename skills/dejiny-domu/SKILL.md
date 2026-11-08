@@ -78,10 +78,11 @@ Než začneš číst, zjisti a zapiš do `OBEC` a `STAV.md`:
 ## Fáze 3 – Prameny, od dneška zpátky
 Podrobně `reference/prameny.md`. **Městský dům z 20. století (činžák) má vlastní pořadí** – `prameny.md` → Městský dům
 20. století (staré plány, adresní knihy, adresáře, stavební povolení, DNNT). Pro venkovský dům se osvědčuje:
-**sčítání lidu 1921 → 1857** (celé domácnosti po číslech domů) → **matriky podle čísla domu** (1784–1900: kdo se kde
-narodil, oženil a zemřel) → **stabilní katastr** 1827 (číslo, půdorys, držitel na indikační skice) → josefský 1785
-a tereziánský katastr 1748 → **gruntovní knihy** (všichni držitelé gruntu a za kolik) → berní rula 1654,
-soupis poddaných 1651, urbáře → literatura a listiny (nejstarší zmínky o vsi).
+**sčítání lidu 1921 → 1857** (celé domácnosti po číslech domů) → **matriky podle čísla domu** (1784–1900: kdo v domě bydlel
+při křtu, sňatku a úmrtí) → **stabilní katastr** 1824–1843 (číslo, půdorys, držitel na indikační skice; rok mapování
+obce je u listu) → josefský 1785 a tereziánský katastr 1748 → **gruntovní knihy** (všichni držitelé gruntu a za kolik)
+→ berní rula 1654 a soupis poddaných 1651 (**jen Čechy**; Morava: lánové rejstříky, Slezsko: karolinský katastr,
+`prameny.md`), urbáře → literatura a listiny (nejstarší zmínky o vsi).
 
 Základní smyčka pro každý pramen:
 1. **Vyber cíl:** nejmladší neznámé období domu, nebo konkrétní otázku („kdo byl držitel před Nováky?“).
@@ -89,7 +90,8 @@ Základní smyčka pro každý pramen:
    AHMP, Litoměřice a Opava přes `soal_zoomify.py`…). Gruntovní knihy hledej ve fondu velkostatku.
    **Než sáhneš na portál, podívej se do `reference/podminky.md`.** Kde nástroj nesmí (Třeboň, Porta fontium,
    eBadatelna, Národní archiv, snímky MZA), snímek uloží uživatel do `pracovni/` a ty ho přečteš, nebo čte sám a ty radíš.
-   Ověř lhůty (matriky: narození 100 let, sňatky 75, úmrtí 30).
+   Ověř lhůty (`matriky.md`): zápis smí vidět kdokoli 100/75/30 let od zápisu (narození/sňatek/úmrtí), do archivu
+   a případně online jde kniha až 100/75/75 let po **posledním** zápisu – mladší kniha je na matričním úřadě.
 3. **Stáhni snímek** do `pracovni/<svazek>/` (před stažením se podívej, jestli ho už nemáš), nebo si ho vyžádej
    od uživatele, a **přečti ho sám** ze snímku v plném rozlišení.
 4. **Zapiš nález** (vždy všech 6 kroků):

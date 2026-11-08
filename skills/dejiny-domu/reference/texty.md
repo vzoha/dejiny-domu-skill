@@ -16,11 +16,11 @@ zajímavosti, příběh, popisky map a fotek, shrnutí a překlady zápisů (`sh
    | místo | piš |
    |---|---|
    | grunt, usedlost | statek, chalupa (u prvního výskytu „grunt – usedlost s poli“) |
-   | držitel | majitel, hospodář |
+   | držitel (gruntu) | „hospodařil na statku“, „statek držel“; **majitel** jen tam, kde pramen vlastnictví dokládá (pozemková kniha, smlouva) – držitel, majitel a hlava domácnosti nemusí být tentýž člověk |
    | reambulace | doplnění mapy |
    | indikační skica | pracovní mapa katastru se jmény majitelů |
    | stavební parcela 62 | (vynech, nebo „pozemek domu“) |
-   | majitel bytu (ve sčítání) | hlava rodiny |
+   | majitel bytu (ve sčítání) | hlava domácnosti (ne majitel domu) |
    | podruhyně | nájemnice bez vlastního domu |
    | výměnek, výminek | domek / světnice pro staré hospodáře, kteří předali statek dětem |
    | sn., fol., inv. č., signatury | nikdy v textu – jen v pramenech |

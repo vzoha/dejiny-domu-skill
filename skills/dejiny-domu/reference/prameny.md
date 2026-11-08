@@ -12,13 +12,15 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | 1880–1950 | pozemkový katastr (mapa ~1900–1950) | parcely a budovy, sedí na dnešní mapu | `cuzk_archiv.py mapa pk` |
 | 1870–1950 | pozemkové knihy (vložky) a sbírka listin | vlastníci, kupní a svatební smlouvy, dluhy, výměnky | katastrální pracoviště (do 1950 často SOA / SOkA) – `archivni_dotazy.md` |
 | 1857–1921 | sčítání lidu (1857, 1869, 1880, 1890, 1900, 1910, 1921) | **celá domácnost po číslech domů**: jména, roky a místa narození, vztahy, řemesla, dobytek | SOkA. Jižní Čechy jsou na digi.ceskearchivy.cz (stejný portál jako matriky; snímky jen prohlížet, `podminky.md`) |
-| 1784–1900 | matriky (od 1784 se v nich uvádí číslo domu) | kdo se v domě narodil, oženil a zemřel. **Čti podle čísla domu, ne podle jména** | `matriky.md`, `portaly.md` |
-| 1824–1843 | stabilní katastr: císařské otisky, indikační skici, písemný operát | půdorys domu a dvora, číslo domu, parcely. **Indikační skica má u parcel i jméno držitele** | `cuzk_archiv.py` (Archiv ČÚZK: originální mapy s reambulací, otisky, skici), písemný operát (parcelní protokoly) v Národním archivu |
-| 1785–1789 | josefský katastr | držitel, výměra pozemků, číslo domu | Národní archiv (fond Josefský katastr). Často jen badatelna |
-| 1748–1757 | tereziánský katastr | usedlíci podle kategorie (sedlák, chalupník), výměra | Národní archiv. Výtahy bývají v regionální literatuře |
+| 1784–1900 | matriky (od 1784 se v nich uvádí číslo domu) | kdo v domě bydlel při křtu, sňatku a úmrtí. **Čti podle čísla domu, ne podle jména.** Číslo je bydliště, ne vždy místo události (svatba v kostele, smrt v nemocnici, ženich z jiného domu) | `matriky.md`, `portaly.md` |
+| 1824–1843 | stabilní katastr: císařské otisky, indikační skici, písemný operát | půdorys domu a dvora, číslo domu, parcely. **Indikační skica má u parcel i jméno držitele** | `cuzk_archiv.py` (Archiv ČÚZK: originální mapy s reambulací, otisky, skici), písemný operát (parcelní protokoly): Čechy Národní archiv, Morava MZA, Slezsko ZA Opava |
+| 1785–1789 | josefský katastr | držitel, výměra pozemků, číslo domu | Čechy Národní archiv (fond Josefský katastr), Morava MZA, Slezsko ZA Opava. Často jen badatelna |
+| 1748–1757 | tereziánský katastr | usedlíci podle kategorie (sedlák, chalupník), výměra | Čechy Národní archiv, Morava MZA, Slezsko ZA Opava. Výtahy bývají v regionální literatuře |
 | 1550–1850 | **gruntovní knihy** (pozemkové knihy vrchnosti) | **všichni držitelé gruntu za sebou**: koupě, dědictví, cena, splátky, výminky, sirotci | fond velkostatku (panství) v SOA. Některé jsou digitalizované na portálech SOA |
-| 1654 | berní rula | jméno hospodáře, kategorie usedlosti, výměra, dobytek | tištěná edice po krajích (Kramerius / knihovny) |
-| 1651 | soupis poddaných podle víry | celé domácnosti s věkem | edice po krajích |
+| 1654 | berní rula (**jen Čechy**) | jméno hospodáře, kategorie usedlosti, výměra, dobytek | tištěná edice po krajích (Kramerius / knihovny) |
+| 1656–1679 | lánové rejstříky (**Morava**, protějšek berní ruly) | hospodář, usedlost, lány, pustá místa | MZA (fond lánových rejstříků), edice a výtahy v literatuře – ověř svazek v katalogu ARON MZA |
+| 1720–1750 | karolinský katastr (**Slezsko**) | usedlosti a poplatníci | ZA Opava – ověř v katalogu, co je k obci a zda online |
+| 1651 | soupis poddaných podle víry (**jen Čechy**) | domácnosti s věkem, ale **ne vždy úplné**: děti někde všechny, jinde až od ~1 roku nebo od ~10 let (podle panství), věk zaokrouhlený | edice po krajích |
 | 1400–1700 | urbáře | povinnosti a platy jednotlivých usedlostí | fond velkostatku v SOA, edice |
 | vše | literatura, vlastivědy, kroniky obce a školy, noviny | události obce (požáry, války, stavby), staré názvy | Kramerius (`kramerius.py`), ANNO (`anno.py`), Google Books, SOkA (kroniky bývají online) |
 | 1764–1880 | vojenská mapování (1. 1764–68, 2. 1836–52, 3. 1876–80) | vzhled vsi a okolí, cesty, mlýny | 2. mapování: WMS CENIA (`portaly.md` → Staré mapy a drobné památky); oldmaps.geolab.cz (nespolehlivé), mapire.eu (jen prohlížení) |
@@ -37,7 +39,7 @@ Osvědčené pořadí:
 5. **Stavební povolení a soutěže:** Stavitelské listy (rubrika „Kde se bude stavěti?“ – stavebník, pozemek, počet pater),
    inzeráty „zadá práce na stavbu…“ v denících (Právo lidu, Národní listy). Stavebníkem bývá družstvo, stavitel nebo firma.
 6. **Ročenky a seznamy členů spolků a zaměstnanců** (s adresami) – bydliště konkrétních lidí po letech; stejná osoba
-   ve dvou ročnících s jinou adresou domu = doklad přečíslování.
+   ve dvou ročnících s jinou adresou domu = **vodítko** k přečíslování, ne doklad (mohla se přestěhovat).
 7. **Družstva:** jubilejní sborníky („Dílo družstevní svépomoci“ 1933), výroční brožury – počty domů, sídlo, fotky.
    Nástupce (lidové / stavební bytové družstvo) může mít archiv stavební dokumentace.
 8. **Archiv:** stavební spis (stavební úřad městské části, AHMP), pozemková kniha (katastrální úřad), archiv družstva →
@@ -49,17 +51,22 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
 ## Čísla domů – největší past
 - Čísla popisná zavedla konskripce 1770–1771. **Ves se pak často přečíslovala** (typicky kolem 1805–1830 a znovu
   po 1900). Dnešní čp. 12 může být v roce 1800 jiné číslo.
-- Jak to poznat: stejná rodina pod dvěma čísly v blízkých letech (matrika ↔ sčítání), stabilní katastr (číslo
-  v 1827 + půdorys = dnešní parcela), indikační skica (jméno držitele). Do `cisla` u domu zapiš všechna čísla s roky
+- **Stejná osoba pod dvěma čísly je jen vodítko.** Mohla se přestěhovat, mít dva domy nebo provozovny, starý údaj
+  se mohl opisovat dál, nebo jde o jmenovce. Přečíslování dolož něčím, co se týká domu, ne osoby: srovnávací
+  seznam čísel, vyhláška obce s datem, tentýž dům nebo parcela na mapě či v pozemkové knize pod oběma čísly,
+  nebo totéž posunutí u **několika** sousedních domů naráz. Dokud to nemáš, zapiš obě možnosti (přečíslování ×
+  přestěhování). Adresáře a OCR opisující tentýž zdroj nejsou dva nezávislé doklady.
+- Jak to poznat: stejná rodina pod dvěma čísly v blízkých letech (matrika ↔ sčítání) jako vodítko, stabilní katastr (číslo
+  z doby mapování obce + půdorys = dnešní parcela), indikační skica (jméno držitele). Do `cisla` u domu zapiš všechna čísla s roky
   a **doklad** (klíč zápisu).
 - Nový dům na parcele starého (vyhořel, rozdělení gruntu) dostává často nové číslo. Rozdělený grunt má dvě čísla.
 - Do ztotožnění starého a nového čísla je všechno starší `prob`, s poznámkou proč.
 - **Města: orientační čísla se měnila** (i ve 20. století, celé ulice najednou) a rohové domy mají dvě adresy.
   Nejdřív sestav **tabulku adres domu v čase** (čp., všechna č. or. a ulice, rok změny) a zapiš ji do `cisla` domu
   i do `STAV.md`. Každý nález s adresou („Dlouhá 38“, 1946) převeď podle **data** přes tuto tabulku: stejná
-  adresa v jiném roce může být jiný dům (sousední nebo naproti přes ulici). Rok přečíslování dolož „kotvou“ – stejnou
-  osobou nebo firmou, která má v jednom roce starou a v dalším novou adresu. Údaj s adresou bez čp. a mimo
-  ověřené období je `prob`.
+  adresa v jiném roce může být jiný dům (sousední nebo naproti přes ulici). Rok přečíslování hledej „kotvou“ – osobou
+  nebo firmou, která má v jednom roce starou a v dalším novou adresu – a potvrď ho jako výš (vyhláška, celá ulice
+  posunutá naráz, čp. beze změny). Údaj s adresou bez čp. a mimo ověřené období je `prob`.
 
 ## Gruntovní knihy – jak na ně
 1. Zjisti **panství**, ke kterému ves (nebo dům!) patřila před 1848. Ves mohla patřit pod dvě panství (část domů
@@ -79,7 +86,7 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
 
 ## Stabilní katastr (Archiv ČÚZK, `cuzk_archiv.py`)
 Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz už neexistuje). Nástroj ho čte bez prohlížeče.
-1. `python3 -I tools/cuzk_archiv.py listy "Osada čp"` → katastrální obec v roce 1827 (**malá ves bývá součástí
+1. `python3 -I tools/cuzk_archiv.py listy "Osada čp"` → katastrální obec v době stabilního katastru (**malá ves bývá součástí
    katastru sousední obce**) a předpony rastrů originální mapy, otisku, evidenční mapy a skici.
 2. `cuzk_archiv.py prehled stable <om_SIGN_INV> pracovni/katastr/prehled.jpg` → všechny listy v jednom náhledu
    (pod každým id) → najdi ves, pak výřez ve velkém (`export stable <id> … x0,y0,x1,y1 5000`, podíly 0–1 jako u

@@ -8,14 +8,22 @@
 | **Z** | zemřelí, *Liber defunctorum*, *Sterbebuch* | datum úmrtí a pohřbu, dům, jméno, věk, příčina | věk → odhad roku narození, stav (vdova po…) |
 | **I** | index (rejstřík) k N/O/Z | jméno → datum / strana | rychlé hledání; **index bývá neúplný**, negativní výsledek v indexu nic nedokazuje |
 
-Další prameny: sčítání lidu (1857–1921; domácnosti s daty narození), soupis poddaných 1651 (celé rodiny s věkem),
-berní rula 1654 (jen hospodáři), gruntovní/pozemkové knihy (kdo vlastnil který dům – propojí generace přes dům),
+Další prameny: sčítání lidu (1857–1921; domácnosti s daty narození), soupis poddaných 1651 (Čechy; rodiny s věkem,
+děti ne všude všechny – chybějící dítě není důkaz úmrtí), berní rula 1654 (Čechy, jen hospodáři), gruntovní/pozemkové knihy (kdo vlastnil který dům – propojí generace přes dům),
 vojenské záznamy, domovské listy, parte. Viz `portaly.md` a `playbook.md` §2.
 
 ## Lhůty (zákon 301/2000 Sb.)
-Do archivu (a tedy online) jde svazek, až od jeho **posledního** zápisu uplyne: narození **100 let**, sňatky **75**, úmrtí **30**.
-Mladší knihy jsou na matričním úřadě obce s rozšířenou působností / pověřeném úřadě – výpis dostane přímý příbuzný
-(žádost + doklady o příbuzenství). Zapiš do `archivni_dotazy.md`.
+Dvě různé lhůty, nepleť je ([MV](https://mv.gov.cz/nahlizeni-do-matricnich-knih-a-sbirky-listin)):
+- **Nahlížení do zápisu (§ 25b):** kdokoli, když od **toho zápisu** uplyne: narození **100 let**, sňatek **75**, úmrtí **30**.
+  Dřív jen ten, koho se zápis týká, jeho rodina (manžel, rodiče, děti, sourozenci, prarodiče, vnuci, pravnuci)
+  nebo kdo doloží, že výpis nezbytně potřebuje (§ 25).
+- **Předání knihy archivu (§ 23):** celá kniha, až od jejího **posledního** zápisu uplyne: narození **100 let**,
+  sňatky **75**, úmrtí **75**. Do té doby je na matričním úřadě (obec s rozšířenou působností / pověřený úřad).
+- **Předání archivu ≠ online.** Archiv knihu naskenuje, až na ni dojde. Co je online, ukáže až portál archivu.
+
+Příklad: úmrtí z roku 1980 smí vidět kdokoli, ale kniha vedená do 1990 je ještě na matričním úřadě – nahlížet se dá
+jen tam, za přítomnosti matrikáře. Narození z roku 1890 v knize vedené do 1935 je na matrice přístupné už dnes,
+do archivu kniha půjde až 2035. Dotaz na úřad zapiš do `archivni_dotazy.md`.
 
 ## Jak vypadá hledání v praxi
 1. **Obec → farnost.** Malé vesnice patřily k faře v sousední obci; popis svazku vyjmenovává všechny obce farnosti.
@@ -94,20 +102,16 @@ Mladší knihy jsou na matričním úřadě obce s rozšířenou působností / 
 - „Vdovec“ u ženicha = hledej první manželství a děti z něj.
 
 ## Stavy údajů v datech
-| stav | kdy |
-|---|---|
-| `doc` | přečteno přímo na snímku zápisu, který osobu jednoznačně identifikuje |
-| `prob` | silná shoda (jméno, doba, místo, dům, řemeslo), ale bez přímého zápisu; vždy `note` proč |
-| `fam` | od rodiny / z rodinného dokumentu |
-| `mh` | jen z cizího stromu na internetu |
-| `unk` | známe jen místo v rodokmenu |
+Stavy (`doc`, `lit`, `prob`, `fam`, `unk`) jsou v `data.md`. U matrik: `doc` jen tehdy, když zápis osobu i dům
+jednoznačně určuje. Údaj z cizího stromu na internetu (MyHeritage, Geni) je nanejvýš `prob` s `note`, odkud je.
 
 ## Typické pasti (ze skutečného výzkumu)
 - Písař spletl jméno dědečka (Josef místo Václava) – rozhodne více zápisů téže rodiny.
 - Dítě zapsané pod jiným křestním jménem, než jakým ho volala rodina (Františka → v rodině Anna).
 - Sňatek pár měsíců před porodem nebo po něm – není chyba, jen „svatba na poslední chvíli“; zajímavost pro web.
 - Nemanželské dítě nese příjmení matky; otec chybí nebo je dopsán později (legitimace na okraji).
-- Stejný předek dvakrát v rodokmenu (vzdálení příbuzní se vzali) – v datech `SAME`.
+- Stejné jméno ve dvou domech nebo dvou generacích (otec a syn, bratranci) – rozliš je podle věku, manželky a domu,
+  než je spojíš v jednu osobu.
 - Index nenašel ≠ zápis neexistuje. Zapiš, co přesně jsi prošel.
 - Pomocníci (subagenti) a OCR/AI čtou historické písmo chybně – vždy ověř sám (viz `playbook.md` §1 bod 10).
 - **Nenačtený snímek není „nenalezeno“.** Když konverzace narazí na limit obrázků, snímky se tiše zahodí („media removed“)
@@ -145,5 +149,5 @@ Mladší knihy jsou na matričním úřadě obce s rozšířenou působností / 
   soubor) – data zapisuj podle pravidla „Zápis do dat“ v SKILL.md.
 - Windows nerozlišuje velikost písmen v názvech (`o_29.jpg` = `O_29.jpg`) – náhled a plné rozlišení odliš předponou
   (`nahled_`, `plne_`), jinak se přepíšou.
-- Datové soubory zapisuj v UTF-8 **bez BOM** (Windows PowerShell 5.1 s `-Encoding UTF8` přidá BOM a `osoby.py` pak nejde načíst).
+- Datové soubory zapisuj v UTF-8 **bez BOM** (Windows PowerShell 5.1 s `-Encoding UTF8` přidá BOM a nástroje pak JSON nenačtou).
 

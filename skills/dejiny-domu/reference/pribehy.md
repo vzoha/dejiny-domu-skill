@@ -17,7 +17,7 @@ Co najdeš při čtení, hned zapiš do `data/zajimavosti.md` (nadpis `##` + 2�
 | Dvě vrchnosti | ves rozdělená mezi dvě panství, roboty jinam |
 | Přečíslování | „dům měl tři různá čísla“ |
 | 20. století | odsun Němců, kolektivizace, chalupáři. Jen fakta, citlivé věci se souhlasem (`soukromi.md`) |
-| Mapy | co ukazuje stabilní katastr 1827 a co zmizelo (stodola, rybník, cesta) |
+| Mapy | co ukazuje stabilní katastr (1824–1843) a co zmizelo (stodola, rybník, cesta) |
 | Ústní podání vs. prameny | co vypráví sousedé a co potvrdil (nebo vyvrátil) archiv |
 
 Nejlepší 2–4 dej na úvod webu (`web.json` → `zajimavosti_na_uvodu`).
