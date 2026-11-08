@@ -11,9 +11,18 @@ import slusne  # noqa: E402
 
 class Server(http.server.BaseHTTPRequestHandler):
     pocet = 0
+    robots = ""   # text robots.txt testovacího webu
+    ua = None     # User-Agent posledního dotazu
 
     def do_GET(self):
+        if self.path == "/robots.txt":
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(Server.robots.encode())
+            return
         Server.pocet += 1
+        Server.ua = self.headers.get("User-Agent")
         if "pomalu" in self.path:
             time.sleep(0.5)
         if self.path.startswith("/presmeruj"):   # na jiný web: localhost místo 127.0.0.1
@@ -48,6 +57,7 @@ class SlusneTest(unittest.TestCase):
         os.environ["SLUSNE_DIR"] = self.tmp
         slusne.LIMITY["127.0.0.1"] = (0.3, 0.01)
         Server.pocet = 0
+        Server.robots = ""
 
     def tearDown(self):
         shutil.rmtree(self.tmp, ignore_errors=True)
@@ -175,6 +185,36 @@ class SlusneTest(unittest.TestCase):
         with self.assertRaises(Exception):
             self.get("/403/snimek.jpg")   # běžná chyba HTTP, ne blokace
         self.assertIsNone(slusne.blokace("127.0.0.1"))
+
+    def test_robots_zakaz_pro_claude_user_plati(self):
+        Server.robots = "User-agent: Claude-User\nDisallow: /tajne\n"
+        with self.assertRaises(slusne.RobotsZakazuje):
+            self.get("/tajne/1")
+        self.assertEqual(Server.pocet, 0)
+        self.assertEqual(self.get("/jinde"), b"ok")
+
+    def test_robots_zakaz_jinych_robotu_neplati(self):
+        Server.robots = ("User-agent: ClaudeBot\nDisallow: /\n\nUser-agent: Claude-SearchBot\nDisallow: /\n\n"
+                         "User-agent: GPTBot\nDisallow: /\n\nUser-agent: *\nDisallow: /\n")
+        self.assertEqual(self.get("/cokoli"), b"ok")
+
+    def test_robots_jednou_za_den(self):
+        self.get("/a")
+        Server.robots = "User-agent: Claude-User\nDisallow: /\n"   # změna se projeví až po dni
+        self.assertEqual(self.get("/b"), b"ok")
+
+    def test_predstavi_se_jako_claude_user(self):
+        urllib.request.urlopen(urllib.request.Request(self.url + "/ok", headers={"User-Agent": "Mozilla/5.0 (vlastni)"}),
+                               timeout=10).read()
+        self.assertEqual(Server.ua, slusne.UA)
+        self.assertIn("Claude-User", slusne.UA)
+
+    def test_curl_vlastni_user_agent_nahradi(self):
+        self.assertEqual(slusne._bez_user_agentu(["-s", "-A", "x", "-H", "User-Agent: y", "-H", "Accept: z",
+                                                  "--user-agent=w", "https://a/"]), ["-s", "-H", "Accept: z", "https://a/"])
+        p = slusne.curl(["-s", "-A", "vlastni", self.url + "/ok"], stdout=subprocess.PIPE)
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertEqual(Server.ua, slusne.UA)
 
     def test_druh(self):
         for url in ("https://x/iipsrv/iipsrv.fcgi?IIIF=/a.jp2/full/full/0/default.jpg", "https://x/a_files/12/3_4.jpg",

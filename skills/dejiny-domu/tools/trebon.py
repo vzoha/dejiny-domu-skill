@@ -47,7 +47,7 @@ def magick():
     return m
 _cj = http.cookiejar.CookieJar()
 _op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(_cj))
-_op.addheaders = [("User-Agent", "Mozilla/5.0 (dejiny-domu)")]
+_op.addheaders = [("User-Agent", slusne.UA)]
 
 
 def get(path, referer=None, binary=False):

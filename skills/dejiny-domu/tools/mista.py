@@ -40,7 +40,7 @@ OUT = os.path.join(ROOT, "data", "mista.json")
 
 def geocode(q):
     url = "https://nominatim.openstreetmap.org/search?" + urllib.parse.urlencode({"q": q, "format": "json", "limit": 1})
-    req = urllib.request.Request(url, headers={"User-Agent": "dejiny-domu-skill/1.0 (local history map, occasional geocoding)"})
+    req = urllib.request.Request(url, headers={"User-Agent": slusne.UA})
     with urllib.request.urlopen(req, timeout=30) as r:
         res = json.load(r)
     time.sleep(1.1)

@@ -18,9 +18,12 @@ Nástroje v tools/ to mají zapnuté samy (`slusne.instaluj()` na začátku). Vl
   python3 -I tools/slusne.py odblokuj <web>                       -> zrušit blokaci (jen když víš, že šlo o omyl)
 Před každým požadavkem se navíc kontrolují podmínky portálu (tools/podminky.json, reference/podminky.md):
 portál, který nástrojům stahování nedovoluje, skončí hláškou „PODMÍNKY: …“ s návodem, jak dál.
+Nástroje se představují jako Claude-User (stahování na dotaz uživatele, ne plošný robot) a dodržují robots.txt
+skupiny, která jmenuje Claude-User. Zákaz pro ClaudeBota (trénink), Claude-SearchBota nebo GPTBota se jich netýká,
+obecné `User-agent: *` taky ne (reference/podminky.md). robots.txt se stahuje 1× za den do stejné složky.
 Stav je ve ~/.cache/dejiny-domu/slusne/ (jinde: proměnná SLUSNE_DIR).
 """
-import email.utils, http.client, json, os, re, subprocess, sys, threading, time, urllib.parse
+import email.utils, http.client, json, os, re, subprocess, sys, threading, time, urllib.parse, urllib.robotparser
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import podminky   # co smí nástroje stahovat (tools/podminky.json)
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
@@ -36,6 +39,9 @@ LIMITY = {
     "gs-pub.praha.eu": (0.5, 0.05),
 }
 BLOKACE = 30 * 60
+ROBOT = "Claude-User"
+UA = f"Mozilla/5.0 (compatible; {ROBOT}; dejiny-domu skill, on user request; +https://github.com/vzoha/dejiny-domu-skill)"
+ROBOTS_PLATNOST = 24 * 3600
 PRIPONA = re.compile(r"\.(jpe?g|png|gif|webp|tiff?|jp2|dzi)$", re.I)   # jen v cestě: MZA má stránku knihy na …?image=…jp2
 OBRAZEK = re.compile(r"_files/|iipsrv|IIIF=|Deepzoom=|ximage|zoomify|"
                      r"TileGroup|ImageProperties\.xml|isrv\d*\.cgi|/full/|default\.jpg|/image/|mrimage|/tiles?/", re.I)
@@ -141,6 +147,51 @@ class Fronta(SystemExit):
     pass
 
 
+class RobotsZakazuje(SystemExit):
+    pass
+
+
+def _stahni_robots(host, https, port):
+    """Text robots.txt, nebo "" (chybí, chyba, HTML místo textu). Mimo limit a hlídání kódů: 1 požadavek za den."""
+    _lokalni.robots = True
+    try:
+        c = (http.client.HTTPSConnection if https else http.client.HTTPConnection)(host, port, timeout=15)
+        c.request("GET", "/robots.txt", headers={"User-Agent": UA})
+        r = c.getresponse()
+        text = r.read(500_000).decode("utf-8", "replace")
+        return text if r.status == 200 and "html" not in (r.getheader("Content-Type") or "") else ""
+    except (OSError, http.client.HTTPException):
+        return ""
+    finally:
+        _lokalni.robots = False
+
+
+def robots_povoli(host, cesta, https=True, port=None):
+    """Povolí robots.txt webu Claude-User tuhle cestu? Rozhoduje jen skupina, která Claude-User jmenuje."""
+    soubor = _soubor(host, "robots")
+    try:
+        cerstvy = time.time() - os.path.getmtime(soubor) < ROBOTS_PLATNOST
+    except OSError:
+        cerstvy = False
+    if cerstvy:
+        with open(soubor, encoding="utf-8") as f:
+            text = f.read()
+    else:
+        text = _stahni_robots(host, https, port)
+        with open(soubor, "w", encoding="utf-8") as f:
+            f.write(text)
+    rp = urllib.robotparser.RobotFileParser()
+    rp.parse(text.splitlines())
+    skupina = next((e for e in rp.entries if e.applies_to(ROBOT)), None)   # `*` je v rp.default_entry, sem nepatří
+    return skupina is None or skupina.allowance(cesta or "/")
+
+
+def zkontroluj_robots(host, cesta, https=True, port=None):
+    if not robots_povoli(host, cesta, https, port):
+        raise RobotsZakazuje(f"ROBOTS: {host} v robots.txt zakazuje {ROBOT} cestu {cesta} – web si nepřeje AI ani na dotaz "
+                             "uživatele. Nic nestahuj, ani jinou cestou. Stránku si otevře uživatel v prohlížeči sám.")
+
+
 def _zkontroluj_blokaci(host):
     b = blokace(host)
     if b:
@@ -235,26 +286,54 @@ def instaluj():
         return
     _instalovano = True
     put, get = http.client.HTTPConnection.putrequest, http.client.HTTPConnection.getresponse
+    hlavicka = http.client.HTTPConnection.putheader
 
     def putrequest(self, method, url, *a, **k):
+        if getattr(_lokalni, "robots", False):
+            return put(self, method, url, *a, **k)
         co = druh(url)
         pockej(self.host, co)
+        zkontroluj_robots(self.host, urllib.parse.urlsplit(url).path if "://" in url else url.split("?", 1)[0],
+                          isinstance(self, http.client.HTTPSConnection), self.port)
         _lokalni.posledni = (self.host, co)
         return put(self, method, url, *a, **k)
 
+    def putheader(self, header, *values):
+        if header.lower() == "user-agent" and not getattr(_lokalni, "robots", False):
+            values = (UA,)   # i nástroje s vlastní hlavičkou se představí stejně
+        return hlavicka(self, header, *values)
+
     def getresponse(self, *a, **k):
         r = get(self, *a, **k)
+        if getattr(_lokalni, "robots", False):
+            return r
         host, co = getattr(_lokalni, "posledni", (self.host, "dotaz"))
         odpovedel(host, co)
         posoudit(host, co, r.status, r.getheader("Retry-After"))
         return r
 
     http.client.HTTPConnection.putrequest = putrequest
+    http.client.HTTPConnection.putheader = putheader
     http.client.HTTPConnection.getresponse = getresponse
 
 
 HODNOTOVE = {"-e", "--referer", "-x", "--proxy", "-H", "--header", "-b", "--cookie", "-A", "--user-agent",
              "-u", "--user", "-d", "--data", "--data-urlencode", "-F", "--form"}   # volby curl, jejichž hodnota může být adresa
+
+
+def _bez_user_agentu(args):
+    """Volby curl bez vlastního User-Agentu (-A, --user-agent, -H "User-Agent: …") – představí se UA ze slusne.py."""
+    volby = ("-A", "--user-agent")
+    ua_hlavicka = lambda x: re.match(r"\s*user-agent\s*:", x, re.I)
+    out, preskoc = [], False
+    for i, a in enumerate(args):
+        if preskoc:
+            preskoc = False
+        elif a in volby or (a in ("-H", "--header") and i + 1 < len(args) and ua_hlavicka(args[i + 1])):
+            preskoc = True
+        elif not a.startswith("--user-agent="):
+            out.append(a)
+    return out
 
 
 def curl(args, **kw):
@@ -263,10 +342,13 @@ def curl(args, **kw):
     urls = [a for i, a in enumerate(args) if re.match(r"https?://", a) and (i == 0 or args[i - 1] not in HODNOTOVE)]
     if len(urls) > 1:
         sys.exit("slusne.py curl: jedna adresa na jedno volání (víc adres by šlo mimo limit rychlosti) – spusť curl pro každou zvlášť.")
-    host = urllib.parse.urlsplit(urls[0]).hostname if urls else ""
+    cil = urllib.parse.urlsplit(urls[0]) if urls else None
+    host = cil.hostname if cil else ""
     co = druh(urls[0]) if urls else "dotaz"
     if host:
         pockej(host, co)
+        zkontroluj_robots(host, cil.path, cil.scheme == "https", cil.port)
+    args = ["-A", UA, *_bez_user_agentu(args)]
     kw.setdefault("stderr", subprocess.PIPE)
     kw.setdefault("text", True)
     kw.setdefault("encoding", "utf-8")
@@ -315,7 +397,7 @@ def main(a):
     elif a[0] == "curl":
         try:
             p = curl(a[1:])
-        except (Zablokovano, podminky.Zakazano) as e:
+        except (Zablokovano, RobotsZakazuje, podminky.Zakazano) as e:
             print(e, file=sys.stderr)
             sys.exit(22)
         sys.stderr.write(p.stderr)

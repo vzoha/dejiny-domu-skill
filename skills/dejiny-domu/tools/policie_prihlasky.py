@@ -21,7 +21,7 @@ import slusne; slusne.instaluj()   # společný limit rychlosti k webům archiv�
 
 BASE = "https://digi.nacr.cz/prihlasky2/"
 _op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor())
-_op.addheaders = [("User-Agent", "Mozilla/5.0 (dejiny-domu)")]
+_op.addheaders = [("User-Agent", slusne.UA)]
 
 
 def get(url, data=None):

@@ -34,7 +34,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu: data projektu tam nejsou, zápis by šel do skillu
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
-UA = "Mozilla/5.0 (dejiny-domu)"   # s výchozím User-Agentem Pythonu portál vrací 403
+UA = slusne.UA   # s výchozím User-Agentem Pythonu portál vrací 403 (slusne.UA začíná „Mozilla/5.0“)
 
 
 def get(path, ajax=False):

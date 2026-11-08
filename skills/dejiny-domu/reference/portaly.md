@@ -6,7 +6,7 @@ Matriky jsou online u osmi státních archivů – podle toho, **kde dům stojí
 | Archiv | Oblast | Portál s matrikami | Vyzkoušeno se skillem |
 |---|---|---|---|
 | SOA Zámrsk | východní Čechy (Hradecký a Pardubický kraj) | ARON – aron.vychodoceskearchivy.cz | **ano – hotové nástroje** |
-| SOA Praha | střední Čechy | eBadatelna – ebadatelna.soapraha.cz | **ručně** – kniha jako ZIP po registraci (robots.txt zakazuje roboty) |
+| SOA Praha | střední Čechy | eBadatelna – ebadatelna.soapraha.cz | **ano** – `ebadatelna.py` (celá kniha i jako ZIP po registraci) |
 | SOA Plzeň | západní Čechy | Porta fontium – portafontium.eu | **ručně** – snímek uloží uživatel (firewall proti skriptům, jen nevýdělečně) |
 | SOA Třeboň | jižní Čechy | digi.ceskearchivy.cz | **jen číst** – snímky jen k prohlížení online, čte uživatel |
 | SOA Litoměřice | severní Čechy | Digitální badatelna – digi.soalitomerice.cz | **částečně – `soal_zoomify.py`** (knihu najdi v prohlížeči) |
@@ -97,11 +97,11 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
 - Bez prohlížečového User-Agentu portál vrací 403 (nástroj ho posílá). Jmenné hledání portál nemá – indexy jsou jen uvnitř knih
   (`*i`, `ooi`, `+i` v seznamu knih fary).
 
-## SOA Praha (eBadatelna, ebadatelna.soapraha.cz) – ručně, kniha jako ZIP
-- **Podmínky:** robots.txt zakazuje ClaudeBota a všem robotům stahovat digitalizáty. `ebadatelna.py` proto stojí (`podminky.md`).
-- **Postup:** uživatel se zaregistruje (zdarma), otevře knihu, na záložce „Popis knihy“ vlevo dole klikne
-  „Stáhnout knihu jako ZIP“ a rozbalí ho do `pracovni/<kniha>/`. Ty snímky přečteš. Archiv stažení sám nabízí.
-- Níže je popis nástroje pro případ, že archiv souhlas dá:
+## SOA Praha (eBadatelna, ebadatelna.soapraha.cz) – `tools/ebadatelna.py`
+- **Podmínky:** robots.txt zakazuje ClaudeBota (trénink modelů), GPTBota a robota „rodokmen“, Claude-User ne (8. 11. 2026).
+  Ostatním robotům zakazuje digitalizáty (`/d/`, `/a/`) – nástroj stahuje jen snímky, které čteš, nic dvakrát.
+- **Celá kniha:** uživatel se zaregistruje (zdarma), otevře knihu, na záložce „Popis knihy“ vlevo dole klikne
+  „Stáhnout knihu jako ZIP“ a rozbalí ho do `pracovni/<kniha>/`. U knihy, kterou čteš celou, šetrnější než snímek po snímku.
 - `ebadatelna.py hledat "Obec"` → celé názvy lokalit („Lhota - obec X - okres Y“); `matriky "Obec"` (nebo celý název)
   → matrikaId | kniha | druh | roky | fara | počet snímků. U stejnojmenných obcí vypíše možnosti.
 - `ebadatelna.py info <matrikaId>` → obsah knihy včetně **rozvržení stran po vesnicích** (např. „1–48 Ves A, 49–82 Ves B,

@@ -30,7 +30,7 @@ ROK = re.compile(r"1[5-9]\d\d|20\d\d")
 
 
 def stahni_url(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "dejiny-domu (skill, on user request)"})
+    req = urllib.request.Request(url, headers={"User-Agent": slusne.UA})
     with urllib.request.urlopen(req, timeout=60) as r:
         return r.read().decode()
 

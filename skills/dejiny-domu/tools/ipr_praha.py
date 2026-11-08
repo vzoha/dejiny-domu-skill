@@ -31,7 +31,7 @@ if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze 
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 B = "https://gs-pub.praha.eu"
 RUIAN = "https://ags.cuzk.cz/arcgis/rest/services/RUIAN/Prohlizeci_sluzba_nad_daty_RUIAN/MapServer"
-UA = {"User-Agent": "Mozilla/5.0 (dejiny-domu skill)"}
+UA = {"User-Agent": slusne.UA}
 ZDROJ = "IPR Praha, Geoportál hl. m. Prahy (geoportalpraha.cz)"
 # klíč: (rok, název, typ, služba nebo id vrstvy)
 VRSTVY = {

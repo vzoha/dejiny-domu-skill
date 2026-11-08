@@ -40,7 +40,7 @@ CDK_POLE = {"fedora.model": "model", "root_title": "root.title", "datum_begin": 
             "datum_str": "date.str", "dostupnost": "accessibility", "PID": "pid"}
 DIR = os.path.join(ROOT, "pracovni", "dnnt")
 PID = re.compile(r"uuid:[\w-]+")   # pid jde do adresy API: žádná lomítka ani tečky
-UA = {"User-Agent": "Mozilla/5.0 (dejiny-domu skill)"}
+UA = {"User-Agent": slusne.UA}
 
 
 def get(url):

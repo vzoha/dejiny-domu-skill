@@ -71,7 +71,7 @@ def je_jpeg(path):
 
 
 def server_odpovida(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (dejiny-domu zdravi)"})
+    req = urllib.request.Request(url, headers={"User-Agent": slusne.UA})
     try:
         with urllib.request.urlopen(req, timeout=30) as r:
             return True, str(r.status)

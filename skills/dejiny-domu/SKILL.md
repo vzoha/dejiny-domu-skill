@@ -89,7 +89,7 @@ Základní smyčka pro každý pramen:
 2. **Najdi svazek:** sčítání a matriky jsou na stejných portálech (ARON `aron_search.py`, Acta Publica `mza.py`,
    AHMP, Litoměřice a Opava přes `soal_zoomify.py`…). Gruntovní knihy hledej ve fondu velkostatku.
    **Než sáhneš na portál, podívej se do `reference/podminky.md`.** Kde nástroj nesmí (Třeboň, Porta fontium,
-   eBadatelna, Národní archiv, snímky MZA), snímek uloží uživatel do `pracovni/` a ty ho přečteš, nebo čte sám a ty radíš.
+   Digitální badatelna NA, snímky MZA), snímek uloží uživatel do `pracovni/` a ty ho přečteš, nebo čte sám a ty radíš.
    Ověř lhůty (`matriky.md`): zápis smí vidět kdokoli 100/75/30 let od zápisu (narození/sňatek/úmrtí), do archivu
    a případně online jde kniha až 100/75/75 let po **posledním** zápisu – mladší kniha je na matričním úřadě.
 3. **Stáhni snímek** do `pracovni/<svazek>/` (před stažením se podívej, jestli ho už nemáš), nebo si ho vyžádej
@@ -131,7 +131,9 @@ Když portál nemá nástroj ani čitelné API (mapové aplikace, prohlížeče 
 **použij sám prohlížeč přes skill `agent-browser`**, nenechávej to na uživateli. **Neplatí** pro portály, které podle
 `reference/podminky.md` nástrojům stahování nedovolují nebo mají ochranu proti robotům: tam kliká uživatel.
 Samotný robots.txt tě nezastaví: na dotaz uživatele bádáš jako on při klikání, ne jako plošný robot. Proto ber jen to,
-co hledáš, nic dvakrát a co nejméně požadavků. Robots.txt, který jmenovitě zakazuje AI (ClaudeBot), ale respektuj. Pasti:
+co hledáš, nic dvakrát a co nejméně požadavků. Nástroje se představují jako Claude-User (stahování na dotaz uživatele)
+a `slusne.py` dodrží robots.txt, který jmenuje Claude-User. Zákaz pro ClaudeBota (trénink modelů) nebo GPTBota se tě
+netýká. V prohlížeči platí totéž: robots.txt s Claude-User respektuj. Pasti:
 - Playwright hlásí „Executable doesn't exist“ → spusť s nainstalovaným chromiem:
   `agent-browser --executable-path "$(ls -d ~/.cache/ms-playwright/chromium-*/chrome-linux/chrome | tail -1)" open <url>`
   (když už běží démon, nejdřív `agent-browser close`).
@@ -232,7 +234,8 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `cuzk_archiv.py listy / rady / prehled / rastry / export / mapa / lms` | Archiv ČÚZK: stabilní katastr (originální mapy s reambulací, císařské otisky, indikační skici), evidenční mapy (změny do 20. stol.), pozemkový katastr, ročníky leteckých snímků 30.–60. let (jen seznam); `rady` = všechny další řady k místu s id rastrů (otisky katastrálních map měst 1 : 1000, mapa evidence nemovitostí, SM5); `mapa cenia50` ortofoto CENIA z 50. let (smí do PDF) |
 | `narp.py "Obec"`, `narp.py detail <id>` | Národní archivní portál: fondy obce ve všech archivech ČR (archiv obce, MNV, škola, JZD, velkostatek, firmy) s číslem NAD a přístupností, bez snímků – podklad pro dotaz archivu |
 | `aron_search.py "Obec" ["fond"]`, `aron_search.py scitani "Obec"`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |
-| `portafontium.py …`, `ebadatelna.py …` | SOA Plzeň, SOA Praha. **Stojí:** firewall / zákaz robotů; snímky uloží uživatel (eBadatelna: ZIP po registraci) |
+| `ebadatelna.py …` | SOA Praha: matriky a archiválie, snímky jen ty, které čteš (celá kniha: ZIP po registraci) |
+| `portafontium.py …` | SOA Plzeň. **Stojí:** firewall; snímky uloží uživatel |
 | `ahmp_search.sh`, `ahmp_scan.py`, `policie_prihlasky.py` | Praha (matriky; policejní přihlášky 1850–1914 z Národního archivu) |
 | `mza.py hledat / matriky / scitani` | MZA Brno (jižní Morava, Acta Publica): knihy obce, sčítací operáty obce. Stránku knihy a snímky chrání ALTCHA – otevře uživatel (`info`, `link`, `svazek`, `snimek` stojí) |
 | `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, ZA Opava, Matricula |

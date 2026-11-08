@@ -9,7 +9,7 @@
 - **Jen číst:** snímky se nesmí kopírovat. Čtete vy, AI poradí, co hledat a jak číst staré písmo.
 - **Objednat:** snímky jen přes archiv nebo e-shop.
 
-**Zákaz pro roboty (soubor robots.txt)** je pokyn pro vyhledávače a plošné stahovače. Nástroj skillu na váš konkrétní dotaz se chová jako vy při klikání: vezme jen to, co hledáte, pomalu a nic dvakrát. Proto ho samotný robots.txt nezastaví. Vždy ale platí podmínky portálu, které roboty nebo kopírování výslovně zakazují, a robots.txt, který jmenovitě zakazuje AI (například ClaudeBot). Ověření „nejsem robot“ a blokace se nikdy neobcházejí.
+**Zákaz pro roboty (soubor robots.txt)** je pokyn pro vyhledávače a plošné stahovače. Nástroj skillu na váš konkrétní dotaz se chová jako vy při klikání: vezme jen to, co hledáte, pomalu a nic dvakrát. Proto ho samotný robots.txt nezastaví. Nástroje se představují jako **Claude-User** (robot Anthropicu, který stahuje na dotaz uživatele) a dodrží robots.txt, který Claude-User jmenuje. Zákaz pro ClaudeBota (sbírá web pro trénink modelů), Claude-SearchBota nebo GPTBota se dotazu uživatele netýká. Vždy ale platí podmínky portálu, které roboty nebo kopírování výslovně zakazují. Ověření „nejsem robot“ a blokace se nikdy neobcházejí.
 
 Další sloupce: **Pro sebe** (rodina, nevýdělečný web), **Za peníze** (placené bádání pro někoho jiného), **Obrázky** (zveřejnit snímek nebo výřez), **Výsledky** (zveřejnit zjištění a vlastní přepis).
 
@@ -25,7 +25,7 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | SOA Litoměřice | Ručně | ano | neřeší | souhlas | ano | Zveřejnit jen se souhlasem. Knihu najdete vy, snímky stáhne nástroj. Po ~100 rychlých kliknutích blok na 30 minut |
 | ZA Opava | Ručně | ano | neřeší | souhlas | ano | Stejný portál jako Litoměřice. Ověření „nejsem robot“ řešíte vy |
 | MZA Brno (Acta publica) | Ručně | ano | neřeší | souhlas | ano | Snímky nezveřejňovat a dál nevyužívat bez písemného souhlasu. Ověření řešíte vy |
-| SOA Praha (eBadatelna) | Ručně | ano | neřeší | neřeší | ano | robots.txt jmenovitě zakazuje ClaudeBota. Po registraci si knihu stáhnete jako ZIP. Poplatek za zveřejnění žádný |
+| SOA Praha (eBadatelna) | Nástroj | ano | neřeší | neřeší | ano | robots.txt zakazuje ClaudeBota (trénink), ne Claude-User (8. 11. 2026). Stahujte jen snímky, které čtete. Po registraci jde i celá kniha jako ZIP. Poplatek za zveřejnění žádný |
 | SOA Hradec Králové (ARON) | Nástroj | ano | neřeší | neřeší | ano | Stahovat jednotlivé snímky i celé knihy se smí. Archiv si stěžuje na AI boty, stahujte málo a pomalu |
 | Národní archiv (policejní přihlášky, konskripce Prahy) | Nástroj | ano | neřeší | neřeší | ano | Jen zákaz v robots.txt, podmínky nenalezeny (8. 11. 2026). Nástroj hledá jen konkrétní osoby |
 | Národní archivní portál (seznam fondů všech archivů) | Nástroj | ano | ano | — | ano | Jen popis fondů, snímky tu nejsou. Veřejná evidence ze zákona, robots.txt ani ověření nemá (8. 11. 2026) |

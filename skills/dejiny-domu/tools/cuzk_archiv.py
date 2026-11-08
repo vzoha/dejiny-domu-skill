@@ -65,7 +65,7 @@ TOKEN = os.path.join(ROOT, "pracovni", ".cuzk_token")
 def get(url, params=None, binary=False):
     if params:
         url += "?" + urllib.parse.urlencode(params)
-    req = urllib.request.Request(url, headers={"Referer": REFERER, "User-Agent": "Mozilla/5.0 (dejiny-domu)"})
+    req = urllib.request.Request(url, headers={"Referer": REFERER, "User-Agent": slusne.UA})
     for pokus in range(3):
         try:
             with urllib.request.urlopen(req, timeout=120) as r:
