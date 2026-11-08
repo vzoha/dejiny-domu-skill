@@ -48,6 +48,9 @@ Osvědčené pořadí:
    Nástupce (lidové / stavební bytové družstvo) může mít archiv stavební dokumentace.
 8. **Archiv:** stavební spis (stavební úřad městské části, AHMP), pozemková kniha (katastrální úřad), archiv družstva →
    `archivni_dotazy.md`.
+9. **Pozůstalost architekta nebo stavitele** (víš-li, kdo dům navrhl: Stavitelské listy, Památkový katalog, spis):
+   `narp.py "<příjmení>"` najde jeho fond – často Archiv architektury a stavitelství NTM (výkresy, skici, fotky,
+   korespondence). Návrh v pozůstalosti nemusí být postavený, nebo jinak: porovnej s plánem ze spisu a s mapou.
 Většina tisku 1900–1990 je v Krameriu NK **neveřejná, ale v režimu DNNT** – čitelná z domova po přihlášení
 (`portaly.md` → DNNT, nástroj `dnnt.py`: hledání, úryvky, hromadné čtení, `adresa` najde i rozdělená slova).
 Bez přihlášení vidíš jen úryvky ve vyhledávání.

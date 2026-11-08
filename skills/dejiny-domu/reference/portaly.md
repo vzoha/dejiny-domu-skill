@@ -41,6 +41,14 @@ Kulturní památky a objekty, které památkáři jen evidují (návesní kaple,
   („veškerá literatura a dokumentace“). Průzkum (SHP) domu je nejlepší popis, co je z které doby – kopii objedná
   uživatel u NPÚ (gnr.sbirkaplanu@npu.cz, k neveřejnému užití; badatelna byla 8. 11. 2026 dočasně zavřená).
 
+## NTM – Archiv architektury a stavitelství (Praha), badatelna
+Pozůstalosti architektů a stavitelů (asi 200 000 plánů), výkresy, skici, fotky, korespondence.
+- Fond najdi v NARP: `narp.py "<příjmení architekta>"` (archiv „Národní technické muzea – Archiv architektury
+  a stavitelství“), `narp.py detail <id>` dá číslo NAD a inventář. Seznam fondů je i jako PDF na ntm.cz.
+- Online nic není: studium jen v badatelně po objednání (badatelna@ntm.cz), materiál z depozitáře mimo Prahu trvá
+  déle. Navrhni to uživateli jako dotaz archivu (`archivni_dotazy.md`) s fondem a stavbou (adresa, rok).
+- Kopie jen pro studium badatele, zveřejnění se smlouvou (`podminky.md`). Návrh nemusí být postavený.
+
 ## Archeologická mapa ČR (AMČR) – digiarchiv.aiscr.cz, ručně
 Archeologické akce (výzkumy při stavbách), lokality a nálezy po katastrech, u části dokumentace zprávy a plány.
 - Hledá uživatel v Digitálním archivu AMČR podle katastrálního území nebo obce, ty radíš: akce na návsi nebo
