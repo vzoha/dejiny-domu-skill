@@ -111,6 +111,16 @@
       "proc": "volná díla jako PDF ručně, komerční užití nejasné",
       "jinak": "Uživatel volné dílo stáhne jako PDF do dokumenty/, ty ho přečteš."
     },
+    "mapy.mzk.cz": {
+      "nazev": "Mapové sbírky MZK (Kramerius MZK)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "pohled na Kramerius MZK (www.digitalniknihovna.cz/mzk), podmínky stejné: ručně, komerční užití nejasné (8. 11. 2026)",
+      "jinak": "Mapy obce vypíše veduty.py přes Českou digitální knihovnu. Uživatel otevře odkaz v prohlížeči a pošle ti, co vidí."
+    },
+    "grafiky.mzk.cz": {
+      "nazev": "Grafické sbírky MZK (Kramerius MZK)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "pohled na Kramerius MZK, podmínky stejné: ručně, komerční užití nejasné (8. 11. 2026)",
+      "jinak": "Veduty obce vypíše veduty.py přes Českou digitální knihovnu. Uživatel otevře odkaz v prohlížeči a pošle ti, co vidí."
+    },
     "api.ceskadigitalniknihovna.cz": {
       "nazev": "Česká digitální knihovna (Krameria knihoven)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "hledání a OCR text veřejných děl; podmínky CDK nenalezeny, za peníze jako MZK (souhlas)", "jinak": ""

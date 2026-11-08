@@ -41,6 +41,22 @@ Kulturní památky a objekty, které památkáři jen evidují (návesní kaple,
   („veškerá literatura a dokumentace“). Průzkum (SHP) domu je nejlepší popis, co je z které doby – kopii objedná
   uživatel u NPÚ (gnr.sbirkaplanu@npu.cz, k neveřejnému užití; badatelna byla 8. 11. 2026 dočasně zavřená).
 
+## Veduty a mapy v digitálních knihovnách (MZK, UK…) – `tools/veduty.py`
+Grafické sbírky (veduty, grafické listy, pohlednice, diapozitivy) a mapy knihoven: MZK (Mollova sbírka, mapy.mzk.cz,
+grafiky.mzk.cz), Univerzita Karlova (plány Prahy, diapozitivy staveb), VKOL a další. Nástroj hledá přes Českou
+digitální knihovnu (CDK), přímo na weby MZK nechodí (podmínky Krameria MZK: ručně).
+- `python3 -I tools/veduty.py "Telč"` → veduty a mapy s geografickým heslem obce: rok | druh | název | heslo | žánr |
+  knihovna | přístup | odkaz. Druhý argument zúží roky (`veduty.py "Beroun" 1800-1900`). Heslo ukáže, která ze
+  stejnojmenných obcí to je („Pavlov (Břeclav, Česko)“ × „Pavlov (Žďár nad Sázavou, Česko)“). Část obce má heslo
+  s městem („Smíchov (Praha, Česko)“), hledej jen „Smíchov“.
+- Hledá jen podle hesla, ne v názvu („Pavlov“ v názvu = portréty I. P. Pavlova). Malá ves heslo často nemá (Lniště nic):
+  pak ručně mapy.mzk.cz (Mollova sbírka podle regionu), grafiky.mzk.cz a pohlednice v muzeích.
+- `public` = volně online, `onsite` = jen v knihovně. Mapové listy 1 : 25 000 a 1 : 75 000 z 20. stol. bývají onsite.
+- **Veduta není plán:** perspektiva, zkratka a idealizace. Dům podle veduty jen „podobný“, ověř mapou (stabilní katastr).
+  Datace grafik bývá odhad („[1840?]“).
+- Obrázek do výstupu jen volné dílo a podle podmínek knihovny (`podminky.md`, Kramerius MZK = souhlas), jinak popis,
+  citace (knihovna, název, rok, signatura) a odkaz.
+
 ## Industriální topografie VCPD FA ČVUT (industrialnitopografie.cz) – `tools/industrial.py`
 Průmyslové a technické stavby celé ČR (~4 800): mlýny, pivovary, cihelny, sklárny, továrny, doly, mosty, nádraží,
 vodárny. Hodí se, když byl dům mlýnem, hospodou s pivovarem, továrnou nebo stál u nich.
