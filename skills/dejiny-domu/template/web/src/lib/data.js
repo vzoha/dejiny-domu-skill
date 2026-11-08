@@ -2,6 +2,7 @@
 import site from '../data/site.json';
 
 export const { village, houses, stats, issues, docs, config, maps, places } = site;
+export const mapGroups = site.mapGroups ?? {};
 export const mainHouse = site.mainHouse ? houses[site.mainHouse] : null;
 export const records = Object.fromEntries(site.records.map((r) => [r.key, r]));
 export const recordList = site.records;

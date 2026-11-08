@@ -345,6 +345,39 @@ class TestKontrola(Projekt):
         self.assertIn("domy mlyn, 5: stejné čp. 5", out)  # bez 'cisla' s obdobím nejde poznat, který je který
         self.assertIn("dům x: pole 'cp' piš jako text", out)
 
+    def mapy(self, *vyrezy):
+        """Mapy jedné skupiny s danými výřezy (None = bez pole vyrez), obrázky 1×1 px."""
+        polozky = []
+        for i, v in enumerate(vyrezy):
+            polozky.append({"img": f"mapa_{i}", "rok": "1900", "zdroj": "ČÚZK", "skupina": "ves", **({"vyrez": v} if v else {})})
+            with open(self.path("vyrezy", f"mapa_{i}.jpg"), "wb") as f:
+                f.write(JPEG)
+        with open(self.path("data", "mapy.json"), "w", encoding="utf-8") as f:
+            json.dump(polozky, f)
+
+    def test_mapy_se_stejnym_vyrezem_bez_upozorneni(self):
+        v = {"crs": "EPSG:5514", "bbox": [0, 0, 300, 300]}
+        self.mapy(v, dict(v, bbox=[1, 1, 301, 301]))   # 1 m z 300 m = zaokrouhlení
+        rc, out = self.kontrola()
+        self.assertNotIn("mapy skupiny", out)
+
+    def test_mapy_bez_vyrezu_nebo_s_jinym_vedle_sebe(self):
+        v = {"crs": "EPSG:5514", "bbox": [0, 0, 300, 300]}
+        for vyrezy, duvod in (((v, None), "bez pole 'vyrez': mapa_1"),
+                              ((v, dict(v, bbox=[50, 0, 350, 300])), "mapa_1 má jiný výřez"),
+                              ((v, dict(v, crs="EPSG:3857")), "mapa_1 má jiný výřez"),
+                              ((dict(v, bbox=[0, 0, 600, 300]),) * 2, "nemá poměr stran výřezu")):
+            self.mapy(*vyrezy)
+            rc, out = self.kontrola()
+            self.assertIn("mapy skupiny ves: web je ukáže vedle sebe", out)
+            self.assertIn(duvod, out)
+
+    def test_neplatny_vyrez_je_chyba(self):
+        self.mapy({"crs": "EPSG:5514", "bbox": [300, 0, 0, 300]})
+        rc, out = self.kontrola()
+        self.assertEqual(rc, 1)
+        self.assertIn("mapa mapa_0: vyrez", out)
+
     def test_nemozne_datum_a_obraceny_interval(self):
         self.napln()
         with open(self.path("data", "domy.py"), "a", encoding="utf-8") as f:
@@ -459,6 +492,28 @@ class TestExport(Projekt):
         self.assertEqual((s["houses"]["lhota-12"]["cp"], s["houses"]["lhota-12"]["part"]), ("12", "Horní Lhota"))
         self.assertEqual((s["houses"]["12"]["cp"], s["houses"]["12"]["part"]), ("12", ""))
         self.assertEqual(s["mainHouse"], "lhota-12")
+
+    def test_prolinani_jen_se_stejnym_vyrezem(self):
+        v = {"crs": "EPSG:5514", "bbox": [0, 0, 300, 300]}
+        polozky = [{"img": "a", "rok": "1900", "zdroj": "x", "skupina": "ves", "vyrez": v},
+                   {"img": "b", "rok": "1950", "zdroj": "x", "skupina": "ves", "vyrez": v},
+                   {"img": "c", "rok": "1900", "zdroj": "x", "skupina": "dum", "vyrez": v},
+                   {"img": "d", "rok": "1950", "zdroj": "x", "skupina": "dum"}]
+        for m in polozky:
+            with open(self.path("vyrezy", m["img"] + ".jpg"), "wb") as f:
+                f.write(JPEG)
+        with open(self.path("data", "mapy.json"), "w", encoding="utf-8") as f:
+            json.dump(polozky, f)
+        rc, out = self.export()
+        self.assertEqual(rc, 0, out)
+        self.assertEqual(self.site()["mapGroups"], {"ves": {"overlay": True}, "dum": {"overlay": False}})
+
+    def test_neplatny_vyrez_export_odmitne(self):
+        with open(self.path("data", "mapy.json"), "w", encoding="utf-8") as f:
+            json.dump([{"img": "a", "vyrez": {"crs": "EPSG:5514", "bbox": "0,0,300,300"}}], f)
+        rc, out = self.export()
+        self.assertNotEqual(rc, 0)
+        self.assertIn("data/mapy.json a: vyrez", out)
 
     def test_odpoved_jen_z_jinych_pisem_export_odmitne(self):
         self.nastroj("zapis.py", "web", "prihlaseni", "-", vstup='{"otazka": "Heslo?", "odpoved": "漢字"}')
@@ -787,7 +842,11 @@ class TestIpr(Projekt):
 import subprocess, sys; sys.path.insert(0, 'tools'); import ipr_praha
 ipr_praha.get = lambda url, binary=False: {odpoved!r}
 ipr_praha.sjtsk = lambda lat, lon: (-740000 - lat, -1040000 - lon)
-ipr_praha.subprocess.run = lambda cmd, **kw: subprocess.CompletedProcess(cmd, {zapis_kod} if "zapis.py" in cmd[2] else 0, "", "chyba zápisu")
+def run(cmd, **kw):
+    if "zapis.py" in cmd[2]:
+        print("ZAPIS", kw.get("input"))
+    return subprocess.CompletedProcess(cmd, {zapis_kod} if "zapis.py" in cmd[2] else 0, "", "chyba zápisu")
+ipr_praha.subprocess.run = run
 sys.argv = ["ipr_praha.py", "serie", *{list(args)!r}, "--jen", "herget_1791"]
 ipr_praha.main()
 """], cwd=self.root, capture_output=True, text=True, encoding="utf-8")
@@ -812,6 +871,12 @@ ipr_praha.main()
         self.assertEqual(kod, 1, out)
         self.assertIn("1×1 px místo 2×2", out)
         self.assertEqual(self.soubory(), [])
+
+    def test_zapsana_mapa_ma_vyrez(self):
+        kod, out = self.serie(JPEG, "1,1", "80", "1", "--zapsat", "dum")
+        self.assertEqual(kod, 0, out)
+        polozka = json.loads(out.split("ZAPIS ", 1)[1].splitlines()[0])
+        self.assertEqual(polozka["vyrez"], {"crs": "EPSG:5514", "bbox": [-740081.0, -1040081.0, -739921.0, -1039921.0]})
 
     def test_selhany_zapis_do_map_vrati_chybu(self):
         kod, out = self.serie(JPEG, "1,1", "80", "1", "--zapsat", "dum", zapis_kod=1)

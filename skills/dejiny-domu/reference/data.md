@@ -88,13 +88,19 @@ Gruntovní knihy: „Velkostatek Kamenice, gruntovní kniha Horní Lhota 1650–
 ```json
 [{"img": "mapa_lhota_1827_cisarsky_otisk", "rok": "1827", "nazev": "Stabilní katastr – císařský otisk",
   "zdroj": "ČÚZK, Archiv ČÚZK, císařský otisk B2/a/6C 570, list 4", "url": "https://ags.cuzk.gov.cz/archiv/", "popis": "Čp. 12 je dřevěný dům (žlutě) u cesty…",
-  "skupina": "ves"}]
+  "skupina": "ves", "vyrez": {"crs": "EPSG:5514", "bbox": [-747980.0, -1183760.0, -747680.0, -1183460.0]}}]
 ```
 - Obrázek přes `vyrez.py dokumenty/<soubor> <img> 0,0,1,1` (celý) nebo s výřezem (vznikne `vyrezy/` i `zdroje/`).
-- `skupina`: mapy se **stejným výřezem krajiny** (stejná oblast, sever nahoře, stejné měřítko) mají stejnou
-  skupinu. Web je umí prolínat posuvníkem. Mapy s jiným výřezem skupinu nemají a jsou jen v galerii.
-  **Snímky obrazovky od uživatele (geoportál, Mapy.cz) skupinu nedostávají**: nemají stejný výřez ani měřítko
-  a prolínání nesedí (automatické zarovnání přes OpenCV selhává – jiná sezóna, rozlišení). Pro porovnání stáhni
+- `skupina`: mapy ke vzájemnému porovnání. Web je ukáže **vedle sebe**; **prolíná** je posuvníkem jen tehdy, když
+  mají všechny stejný `vyrez` (souřadnicový systém a rohy, odchylka do 1 % šířky) a obrázek s poměrem stran
+  výřezu. Kontrola řekne, proč skupina prolínaná není. Mapa bez skupiny je jen v galerii.
+- `vyrez`: kus krajiny na obrázku, `{"crs": "EPSG:5514", "bbox": [x0, y0, x1, y1]}` (S-JTSK v metrech, jako
+  posílá dotaz na mapový server). `ipr_praha.py --zapsat` ho zapíše sám, `cuzk_archiv.py mapa` ho vypíše.
+  Platí pro celý stažený obrázek (`vyrez.py … 0,0,1,1`), po oříznutí už ne. Bez vyrezu = jen vedle sebe.
+  Ani stejný výřez nedokazuje, že mapa sedí: stará mapa mívá polohové chyby, pozdější doplňky nebo plán, který
+  se nepostavil, a bílé místo neznamená, že tam nic nestálo.
+  **Snímky obrazovky od uživatele (geoportál, Mapy.cz) `vyrez` nedostávají** (výřez ani měřítko neznáš, odhad
+  by prolínání jen předstíral; automatické zarovnání přes OpenCV selhává – jiná sezóna, rozlišení). Pro prolínání stáhni
   sérii se stejným bbox (WMS/ArcGIS export, např. ortofota ČÚZK po letech, `cuzk_archiv.py mapa` se stejným poloměrem).
 - `zdroj` povinně (autorská práva). Je vidět na webu – žádné TODO ani pracovní poznámky; ty patří do `poznamka`
   (na web nejde). `rok` musí obsahovat čtyřčíslí („1827“, „asi 1840“), jinak se mapa řadí na konec.

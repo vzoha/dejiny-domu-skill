@@ -216,7 +216,7 @@ Obecně a stručně, bez osobních údajů. Nic sám neposílej.
 | `data/domy.py` | `OBEC`, `OBEC_UDALOSTI`, domy `D` (čísla, události, držitelé, obyvatelé), `ISSUES` |
 | `data/zaznamy.json`, `data/svazky.json` | zápisy z pramenů a svazky, ze kterých jsou |
 | `data/prepisy.json`, `data/zvyrazneni.json` | přepisy s překlady, rámečky čteného místa |
-| `data/mapy.json` | staré mapy a letecké snímky (rok, zdroj, skupina pro porovnání) |
+| `data/mapy.json` | staré mapy a letecké snímky (rok, zdroj, skupina pro porovnání, výřez pro prolínání) |
 | `data/research_log.md` | deník všech hledání |
 | `data/pametnici.md`, `data/archivni_dotazy.md` | co víme od lidí; co jen v archivu |
 | `data/zajimavosti.md`, `data/pribeh.md`, `data/web.json`, `data/dokumenty.json`, `data/mista.json` | texty a nastavení webu, fotky, body na mapě |

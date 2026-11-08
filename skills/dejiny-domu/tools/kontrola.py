@@ -16,7 +16,7 @@ if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze 
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 DATA = os.path.join(ROOT, "data")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from platnost import chyba_odkazu, chyba_odpovedi, chyby_vyhrad, chyba_polohy, chyby_adres_domu, chyby_cisel_domu, cislo_domu, nemozna_data, obracene_rozpeti, obraceny_interval  # noqa: E402
+from platnost import chyba_odkazu, chyba_odpovedi, chyby_vyhrad, chyba_polohy, chyba_vyrezu, chyby_adres_domu, chyby_cisel_domu, cislo_domu, nemozna_data, obracene_rozpeti, obraceny_interval, proc_neprolinat, skupiny_map  # noqa: E402
 STAVY = ("doc", "lit", "prob", "fam", "unk")
 DRUHY = set("NOZISGKMCLJ")
 
@@ -132,13 +132,19 @@ def main():
     for k, sv in svazky.items():
         if c := chyba_odkazu(sv.get("url")):
             err.append(f"svazek {k}: {c}")
-    for m in jload("mapy.json", []):
+    mapy = jload("mapy.json", [])
+    for m in mapy:
         if c := chyba_odkazu(m.get("url")):
+            err.append(f"mapa {m.get('img')}: {c}")
+        if c := chyba_vyrezu(m.get("vyrez")):
             err.append(f"mapa {m.get('img')}: {c}")
         if not os.path.exists(os.path.join(ROOT, "vyrezy", m.get("img", "") + ".jpg")):
             err.append(f"mapa {m.get('img')}: chybí obrázek vyrezy/{m.get('img')}.jpg (tools/vyrez.py)")
         if not m.get("zdroj"):
             warn.append(f"mapa {m.get('img')}: chybí 'zdroj' (odkud mapa je – kvůli autorským právům)")
+    for g, ms in skupiny_map([m for m in mapy if not chyba_vyrezu(m.get("vyrez"))]).items():
+        if duvod := proc_neprolinat(ms, os.path.join(ROOT, "vyrezy")):
+            warn.append(f"mapy skupiny {g}: web je ukáže vedle sebe, ne prolnuté – {duvod} (reference/data.md)")
     for d in jload("dokumenty.json", []):
         for c in d.get("domy", []):
             if str(c) not in D:

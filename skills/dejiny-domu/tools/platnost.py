@@ -2,7 +2,7 @@
 
 Jen funkce, nic nespouští. Každá vrací text chyby, nebo None, když je hodnota v pořádku.
 """
-import datetime, math, re, unicodedata
+import datetime, math, os, re, unicodedata
 
 BEZPECNY_ODKAZ = re.compile(r"(?i)https?://|/(?!/)|#")   # začátek: web, stránka vlastního webu, kotva
 
@@ -93,6 +93,80 @@ def chyby_cisel_domu(D):
                   " 'cast'. Nový dům na místě starého? Doplň oběma 'cisla' s obdobím (reference/data.md)"
                   for (cp, cast), ks in podle.items() if len(ks) > 1 and not all(D[k].get("cisla") for k in ks)]
     return chyby, upozorneni
+
+
+def jpeg_rozmery(d):
+    """(šířka, výška) z hlavičky JPEG, None když to JPEG není."""
+    if d[:3] != b"\xff\xd8\xff":
+        return None
+    i = 2
+    while i + 9 <= len(d) and d[i] == 0xFF:
+        znacka, delka = d[i + 1], int.from_bytes(d[i + 2:i + 4], "big")
+        if 0xC0 <= znacka <= 0xCF and znacka not in (0xC4, 0xC8, 0xCC):   # SOF: rozměry obrázku
+            return int.from_bytes(d[i + 7:i + 9], "big"), int.from_bytes(d[i + 5:i + 7], "big")
+        i += 2 + delka
+    return None
+
+
+def rozmery_obrazku(cesta):
+    """(šířka, výška) JPEG souboru, None když chybí nebo to JPEG není."""
+    try:
+        with open(cesta, "rb") as f:
+            return jpeg_rozmery(f.read())
+    except FileNotFoundError:
+        return None
+
+
+def vyrez_sjtsk(bbox):
+    """Pole `vyrez` mapy stažené z mapového serveru v S-JTSK (bbox v metrech)."""
+    return {"crs": "EPSG:5514", "bbox": [round(v, 1) for v in bbox]}
+
+
+def chyba_vyrezu(v):
+    """Pole `vyrez` mapy: {"crs": "EPSG:5514", "bbox": [x0, y0, x1, y1]}, x0 < x1 a y0 < y1. Chybí = v pořádku."""
+    if v is None:
+        return None
+    b = v.get("bbox") if isinstance(v, dict) else None
+    cisla = isinstance(b, list) and len(b) == 4 and all(
+        isinstance(c, (int, float)) and not isinstance(c, bool) and math.isfinite(c) for c in b)
+    if not (cisla and b[0] < b[2] and b[1] < b[3] and isinstance(v.get("crs"), str) and v["crs"]):
+        return (f"vyrez {str(v)[:80]!r} má být {{\"crs\": \"EPSG:5514\", \"bbox\": [x0, y0, x1, y1]}}"
+                " s x0 < x1 a y0 < y1 (vypíše ho cuzk_archiv.py mapa, ipr_praha.py ho zapíše sám)")
+    return None
+
+
+def skupiny_map(mapy):
+    """{skupina: [mapy]} jen se dvěma a více mapami – jedna mapa nemá s čím se porovnat."""
+    podle = {}
+    for m in mapy:
+        if m.get("skupina"):
+            podle.setdefault(m["skupina"], []).append(m)
+    return {g: ms for g, ms in podle.items() if len(ms) > 1}
+
+
+PRESNOST_VYREZU = 0.01   # rohy a poměr stran smí ujet o 1 % šířky výřezu (3 m u 300 m)
+
+
+def proc_neprolinat(mapy, vyrezy):
+    """Proč mapy jedné skupiny nejde prolínat (web je dá vedle sebe), None = jde.
+
+    mapy mají platný nebo chybějící `vyrez`, vyrezy = složka s obrázky map pro web.
+    Stejný výřez je jen předpoklad: mapa může mít polohové chyby nebo zachycovat plán místo skutečnosti.
+    """
+    bez = [m["img"] for m in mapy if not m.get("vyrez")]
+    if bez:
+        return f"bez pole 'vyrez': {', '.join(bez)}"
+    vzor = mapy[0]["vyrez"]["bbox"]
+    tolerance = PRESNOST_VYREZU * (vzor[2] - vzor[0])
+    for m in mapy:
+        v = m["vyrez"]
+        if v["crs"] != mapy[0]["vyrez"]["crs"] or any(abs(a - b) > tolerance for a, b in zip(v["bbox"], vzor)):
+            return f"{m['img']} má jiný výřez než {mapy[0]['img']}"
+        r = rozmery_obrazku(os.path.join(vyrezy, m["img"] + ".jpg"))
+        pomer_vyrezu = (v["bbox"][2] - v["bbox"][0]) / (v["bbox"][3] - v["bbox"][1])
+        if r and abs(r[0] / r[1] / pomer_vyrezu - 1) > PRESNOST_VYREZU:
+            return f"{m['img']}: obrázek {r[0]}×{r[1]} px nemá poměr stran výřezu (oříznutý?)"
+    return None
 
 
 DATUM = re.compile(r"\b(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})\b")

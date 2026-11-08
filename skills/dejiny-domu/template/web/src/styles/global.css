@@ -164,3 +164,5 @@ th { font-weight: 600; color: #5a4632; background: #f6f0e6; }
 .cmp-box { position: relative; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .cmp-box img { display: block; width: 100%; }
 .cmp-box img + img { position: absolute; inset: 0; height: 100%; object-fit: fill; }
+.cmp-side { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.cmp-side img + img { position: static; height: auto; }

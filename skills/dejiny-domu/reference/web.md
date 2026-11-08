@@ -4,7 +4,7 @@ Web je statický (Astro + vyhledávání Pagefind), data bere z `data/` přes `t
 Stránky: úvod (lákadlo, hlavní dům s časovou osou, zajímavosti, mapa), příběhy (jeden, nebo rozcestník s kartami
 + galerie fotek po skupinách), zajímavosti, obec (údaje a časová
 osa), domy (seznam), stránka domu (čísla v čase, časová osa, držitelé, obyvatelé, mapa, fotky, prameny), staré mapy
-(galerie + prolínání map stejné `skupiny`), mapa (OpenStreetMap, letecký snímek a katastr ČÚZK), prameny (s výřezem,
+(galerie, mapy stejné `skupiny` vedle sebe, se stejným `vyrez` prolínání), mapa (OpenStreetMap, letecký snímek a katastr ČÚZK), prameny (s výřezem,
 rámečkem, přepisem a překladem), „Co hledáme“, výzkumný deník, hledání.
 
 ## Příkazy (ve složce `web/`)

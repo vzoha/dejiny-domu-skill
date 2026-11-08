@@ -15,7 +15,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
 
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, TOOLS)
-from platnost import chyba_odkazu, chyba_odpovedi, chyba_polohy, chyby_adres_domu, cislo_domu, norm_answer, slugify, vyhrady  # noqa: E402
+from platnost import chyba_odkazu, chyba_odpovedi, chyba_polohy, chyba_vyrezu, chyby_adres_domu, cislo_domu, norm_answer, proc_neprolinat, skupiny_map, slugify, vyhrady  # noqa: E402
 ROOT = os.path.dirname(TOOLS)
 if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu: data projektu tam nejsou, zápis by šel do skillu
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
@@ -64,6 +64,7 @@ def over_data(OBEC, D, maps_cfg):
              [(f"data/mista.json {n}", e) for n, e in mista.items()]
     chyby += [f"{kde}: {c}" for kde, x in polohy if (c := chyba_polohy(x))]
     chyby += [f"domy.py {c}" for c in chyby_adres_domu(D)]
+    chyby += [f"data/mapy.json {m.get('img')}: {c}" for m in maps_cfg if (c := chyba_vyrezu(m.get("vyrez")))]
     if chyby:
         sys.exit("CHYBA: data by rozbila web:\n  " + "\n  ".join(chyby) + "\nOprav je (python3 -I tools/kontrola.py) a export pusť znovu.")
 
@@ -282,6 +283,9 @@ def main():
                  full=os.path.exists(os.path.join(ZDROJE, m["img"] + ".jpg")))
             for m in maps_cfg if os.path.exists(os.path.join(VYREZY, m["img"] + ".jpg"))]
     maps.sort(key=lambda m: year_key(m["year"]))
+    na_webu = {m["img"] for m in maps}
+    map_groups = {g: dict(overlay=proc_neprolinat(ms, VYREZY) is None)
+                  for g, ms in skupiny_map([m for m in maps_cfg if m["img"] in na_webu]).items()}
 
     places = [dict(name=n, lat=e["lat"], lon=e["lon"], desc=e.get("popis", ""), kind=e.get("druh", ""),
                    link=e.get("odkaz", ""), linkText=e.get("odkaz_text", ""), approx=bool(e.get("priblizne")))
@@ -315,7 +319,7 @@ def main():
     public_cfg["dalsiPribehy"] = [{k: v for k, v in st.items() if k != "text"} for st in extra_stories]
     main_house = slugify(cfg.get("hlavni_dum", "")) or next(iter(houses), "")
     site = dict(config=public_cfg, village=village, houses=houses, mainHouse=main_house if main_house in houses else None,
-                records=records, maps=maps, places=places, stats=stats,
+                records=records, maps=maps, mapGroups=map_groups, places=places, stats=stats,
                 issues=[dict(title=i, text="") if isinstance(i, str) else dict(title=i[0], text=i[1]) for i in ISSUES],
                 docs=[dict(img=d["img"], caption=d["popis"], houses=[slugify(c) for c in d.get("domy", []) if slugify(c) in houses],
                            group=d.get("skupina", ""), order=d.get("poradi", 99), pair=d.get("par", ""), wide=d.get("format") == "sirka",

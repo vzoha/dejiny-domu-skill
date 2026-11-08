@@ -29,7 +29,7 @@ Použití (z kořene projektu):
       a citaci; CC BY, smí i do PDF). Malé obce spojené vrstvy ČÚZK často nepokrývají (bílý obrázek) –
       pak listy + export. Výchozí poloměr 150 m, 1500 px. Vypíše i dnešní adresní body RÚIAN (čísla domů)
       v pixelech obrázku a s ImageMagickem je zakreslí do <vystup>_adresy.jpg: na které staré stavební parcele
-      dnešní číslo stojí (ztotožnění domu, přečíslování).
+      dnešní číslo stojí (ztotožnění domu, přečíslování). Vypíše „vyrez“ do mapy.json (prolínání na webu).
   cuzk_archiv.py rady "Horní Lhota 12" | lat,lon
       všechny mapové řady Archivu ČÚZK k místu (jako panel „Archivní mapy“ v aplikaci), nejen stabilní katastr:
       otisky katastrálních map (města často 1 : 1000, stav 1. pol. 20. stol.), mapa evidence nemovitostí, mapa
@@ -45,6 +45,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
+from platnost import vyrez_sjtsk  # noqa: E402
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -249,6 +250,8 @@ def mapa(vrstva, m, out, polomer=150, px=1500):
             "size": f"{px},{px}", "format": "jpg", "dpi": 96, "f": "image"}, binary=True)
         save_jpeg(img, out)
         print(f"{out} – zkontroluj, jestli není bílý (vrstva tu nemusí být)")
+    print(f'Do data/mapy.json k mapě (celý obrázek, vyrez.py … 0,0,1,1): "vyrez": {json.dumps(vyrez_sjtsk(bbox))}'
+          ' – stejný výřez = web prolíná')
     adresy(bbox, px, out)
 
 

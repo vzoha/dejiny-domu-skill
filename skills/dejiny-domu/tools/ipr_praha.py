@@ -13,7 +13,7 @@ Použití (z kořene projektu):
       Střed = bod (dům); „Ulice čp/čo“ se dohledá v RÚIAN. Výřez je čtverec 2×polomer metrů, sever nahoře
       (osy S-JTSK jsou proti severu pootočené jen o pár stupňů).
       --zapsat skupina   rovnou vytvoří výřezy (vyrezy/, zdroje/) mapa_<skupina>_<klic> a položky v data/mapy.json
-                         se zdrojem, rokem, skupinou a výřezem S-JTSK v „poznamka“; popis doplň potom
+                         se zdrojem, rokem, skupinou a výřezem (pole „vyrez“, web podle něj prolíná); popis doplň potom
                          (zapis.py mapy <img> … --sloucit).
 Šetři server: jedna série = ~20 požadavků. Výřez kolem domu: polomer 80–100 m, okolí: 300 m.
 """
@@ -22,6 +22,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
+from platnost import jpeg_rozmery, vyrez_sjtsk  # noqa: E402
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -100,19 +101,6 @@ class ChybaSluzby(Exception):
     """Služba místo mapy vrátila chybu nebo obrázek jiné velikosti."""
 
 
-def jpeg_rozmery(d):
-    """(šířka, výška) z hlavičky JPEG, None když to JPEG není."""
-    if d[:3] != b"\xff\xd8\xff":
-        return None
-    i = 2
-    while i + 9 <= len(d) and d[i] == 0xFF:
-        znacka, delka = d[i + 1], int.from_bytes(d[i + 2:i + 4], "big")
-        if 0xC0 <= znacka <= 0xCF and znacka not in (0xC4, 0xC8, 0xCC):   # SOF: rozměry obrázku
-            return int.from_bytes(d[i + 7:i + 9], "big"), int.from_bytes(d[i + 5:i + 7], "big")
-        i += 2 + delka
-    return None
-
-
 def stahni(klic, bbox, px, out):
     """Uloží vrstvu do out; False = prázdný obrázek (mimo pokrytí), chyba služby → ChybaSluzby."""
     _, _, typ, sl = VRSTVY[klic]
@@ -186,7 +174,7 @@ def main():
                            stdout=subprocess.DEVNULL)
             polozka = {"img": img, "rok": rok, "nazev": nazev, "url": "https://www.geoportalpraha.cz",
                        "zdroj": f"{ZDROJ}, {'archivní ortofotomapa' if typ == 'ort' else 'služba arch/' + sl}",
-                       "popis": "", "skupina": sk, "poznamka": f"výřez {georef}"}
+                       "popis": "", "skupina": sk, "vyrez": vyrez_sjtsk(bbox)}
             p = subprocess.run([sys.executable, "-I", os.path.join(tools, "zapis.py"), "mapy", img, "-"],
                                input=json.dumps(polozka, ensure_ascii=False), text=True, capture_output=True)
             print(p.stdout.strip() or p.stderr.strip())
