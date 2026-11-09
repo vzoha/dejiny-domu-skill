@@ -49,6 +49,7 @@ def geocode(q):
 
 
 RUIAN = "https://ags.cuzk.cz/arcgis/rest/services/RUIAN/Prohlizeci_sluzba_nad_daty_RUIAN/MapServer"
+GEOMETRIE = "https://ags.cuzk.gov.cz/arcgis/rest/services/Utilities/Geometry/GeometryServer/project"
 STAVEBNI = 1            # druhcislovanikod: 1 stavební, 2 pozemková parcela
 ZASTAVENA_PLOCHA = 13   # druhpozemkukod „zastavěná plocha a nádvoří“
 
@@ -57,6 +58,16 @@ def cislo_parcely(a):
     """„st. 12/3“; k. ú. s jednou číselnou řadou stavební parcely nemá, „st.“ tam správně chybí."""
     cislo = f"{a['kmenovecislo']}" + (f"/{a['poddelenicisla']}" if a.get("poddelenicisla") else "")
     return ("st. " if a.get("druhcislovanikod") == STAVEBNI else "") + cislo
+
+
+def sjtsk(lat, lon):
+    """WGS 84 → S-JTSK (m) přes geometrickou službu ČÚZK. Bez transformace datumu 1623 by bod ujel o ~10 m."""
+    g = json.dumps({"geometryType": "esriGeometryPoint", "geometries": [{"x": lon, "y": lat}]})
+    q = urllib.parse.urlencode({"inSR": 4326, "outSR": 5514, "geometries": g, "f": "json",
+                                "transformation": 1623, "transformForward": "false"})
+    with urllib.request.urlopen(f"{GEOMETRIE}?{q}", timeout=60) as r:
+        p = json.load(r)["geometries"][0]
+    return p["x"], p["y"]
 
 
 def ruian_q(vrstva, where, pole, geo=False):

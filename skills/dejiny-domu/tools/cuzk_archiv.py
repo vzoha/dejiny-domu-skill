@@ -208,22 +208,13 @@ def prehled(sluzba, vzor, out, sirka=600):
     print(f"{out} – {len(soubory) // 3} listů; pod náhledem je id pro export")
 
 
-def sjtsk(lat, lon):
-    """WGS 84 → S-JTSK (m). Bez transformace datumu 1623 by střed ujel o ~10 m."""
-    g = json.dumps({"geometryType": "esriGeometryPoint", "geometries": [{"x": lon, "y": lat}]})
-    p = get("https://ags.cuzk.gov.cz/arcgis/rest/services/Utilities/Geometry/GeometryServer/project",
-            {"inSR": 4326, "outSR": 5514, "geometries": g, "f": "json",
-             "transformation": 1623, "transformForward": "false"})["geometries"][0]
-    return p["x"], p["y"]
-
-
 def obalka(bbox):
     return ",".join(f"{v:.1f}" for v in bbox)
 
 
 def mapa(vrstva, m, out, polomer=150, px=1500):
     px, r = int(px), float(polomer)
-    x, y = sjtsk(*mista.stred(m))
+    x, y = mista.sjtsk(*mista.stred(m))
     bbox = (x - r, y - r, x + r, y + r)   # v S-JTSK (ne WGS 84: server by ho převedl bez datumu, ~110 m vedle)
     if vrstva == "cenia50":
         img = get(f"{CENIA}/mapcache/ortofotomapa_historicka/wms", {
@@ -283,7 +274,7 @@ def adresy(bbox, px, out):
 
 def lms(m):
     """Ročníky leteckých měřických snímků nad místem (katalog, žádné obrázky)."""
-    x, y = sjtsk(*mista.stred(m))
+    x, y = mista.sjtsk(*mista.stred(m))
     d = archiv("LMS_1930_40_50_60s/ImageServer/query", {
         "geometry": json.dumps({"x": x, "y": y, "spatialReference": {"wkid": 5514}}), "geometryType": "esriGeometryPoint",
         "spatialRel": "esriSpatialRelIntersects", "outFields": "Name", "returnGeometry": "false", "f": "json"})
