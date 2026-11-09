@@ -238,7 +238,7 @@ def scitani(obec):
     if not navrhy:
         sys.exit(f"Obec „{obec}“ portál sčítacích operátů nezná – sčítání tu pro ni není (zkus německý název nebo začátek).")
     vysl = []
-    for n in navrhy[:5]:
+    for n in [n for n in navrhy if isinstance(n, dict)][:5]:   # našeptávač přidá i holé řetězce (Láz 9. 11.)
         print("#", n["label"])
         stranka = g(SCITANI + "do_search", {"search": n["value"], "submit": "Vyhledat"})
         for cislo in range(2, 30):
