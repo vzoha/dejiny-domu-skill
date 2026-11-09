@@ -67,6 +67,7 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | Translokační plány židovských obydlí 1727–1728 (VÚGTK, Národní archiv, MZA) | Nástroj | ano | neřeší | souhlas | ano | Aplikace bez ochrany a podmínek užití, robots.txt nic nezakazuje (8. 11. 2026). Plány jsou volné dílo, skeny ale patří archivu (NA, MZA): obrázek se souhlasem archivu, zjištění s citací |
 | Indikační skici, Čechy (Národní archiv) | Ručně | ano | neřeší | souhlas | ano | Najdete je v aplikaci ČÚZK Archiv, patří ale Národnímu archivu |
 | Indikační skici, Morava (MZA) | Ručně | ano | neřeší | souhlas | ano | Platí podmínky MZA |
+| Evidence válečných hrobů (MO ČR) | Nástroj | ano | ano | souhlas | ano | Jména, data a nápisy s citací „Centrální evidence válečných hrobů, MO ČR“ a číslem hrobu nebo IČP (web nabízí export dat pro vlastní využití). Fotky nahrávají úřady obcí bez licence, jen odkazem |
 | Mapové portály obcí (GisOnline.cz) | Nástroj | ano | neřeší | souhlas | ano | Pasporty hřbitovů: zemřelí se jménem a daty. Data patří obci, podmínky nezveřejněné (8. 11. 2026). Fotky náhrobků jen odkazem, jména zemřelých za posledních ~50 let na web jen se souhlasem rodiny |
 | Mapire (Arcanum) | Jen číst | ano | prohlížet ano | souhlas | ano | Roboti zakázáni, uložená data za peníze jen se smlouvou. Prohlížet a popsat smíte, snímky obrazovky ne |
 

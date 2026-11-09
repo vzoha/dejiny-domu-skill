@@ -57,6 +57,7 @@ KONTROLY = [
     ("pamatky", "detail památky", ["pamatky.py", "detail", "680990"], r"k\. ú\. Mohuřice", None),
     ("mis", "dokumentace NPÚ", ["mis.py", "hledej", "Lniště"], r"^1618605 \|", None),
     ("narp", "archivní fondy", ["narp.py", "Slavče", "3"], r"d8e1f538-559e-44e8-b781-b5b3377be52b", None),
+    ("valecne_hroby", "pomník padlých", ["valecne_hroby.py", "obec", "Slavče"], r"Jakub Bícha, \* 1881", None),
     ("hroby", "hřbitovní pasport", ["hroby.py", "najdi", "Brod nad Dyjí"], r"projekt 353", None),
     ("esbirky", "předměty obce", ["esbirky.py", "Lniště"], r"^  63291100 \|.*Madona ze Lniště", None),
     ("esbirky", "detail předmětu", ["esbirky.py", "detail", "63291100"], r"^Název: Madona ze Lniště", None),

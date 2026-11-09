@@ -448,6 +448,14 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
   jména!), `stahni <projekt>` uloží `data/hroby.json`, `hledej <příjmení>` vypíše zemřelé. Číslo popisné u hrobů není:
   shoda jména s obyvatelem je vodítko, ověř ji. Fotky náhrobků jen odkazem, jména zemřelých za posledních ~50 let
   na veřejný web jen se souhlasem rodiny. Jiné mapové portály obcí hledej na webu obce („mapa hřbitova“).
+- **Válečné hroby a pomníky padlých (Centrální evidence válečných hrobů MO, evidencevh.mo.gov.cz)** –
+  `tools/valecne_hroby.py`. `obec "<Obec>" [--orp <ORP>]`: pomníky, desky a hroby s polohou (náves, osada, GPS), nápisem
+  a **přepsanými jmény** (rok narození, úmrtí, místo smrti). Hledá jen podle názvu obce, ne části obce (Lniště → Slavče);
+  stejnojmenné obce rozliší `--orp`. `padli <Příjmení> [Jméno] --obec <Obec>`: Evidence padlých (~50 000 vojáků
+  rakousko-uherské armády z kartoték VÚA, ne všichni padlí) s domovskou obcí, okresem, útvarem, smrtí a prameny s odkazem
+  do Digitální studovny VÚA (kartotéka padlých, matriky pluků, Verlustliste). Podle obce hledat nejde, jen podle
+  jména; obec a jméno bývají německy. Číslo domu evidence nemá: shodu s obyvatelem ověř podle věku a obce. Server občas
+  vrátí chybu 500, nástroj zopakuje. Fotky v evidenci jen odkazem (úřady je nahrávají bez licence).
 
 ## Ortofota po letech (ČÚZK a kraje) – `tools/ortofota.py`
 - `python3 -I tools/ortofota.py serie "Osada čp" 100 --zapsat dum` → ročníky do `pracovni/ortofota/`, výřezy a `mapy.json`

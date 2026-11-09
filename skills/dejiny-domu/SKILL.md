@@ -254,6 +254,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `ahmp_search.sh`, `ahmp_scan.py`, `policie_prihlasky.py` | Praha (matriky; policejní přihlášky 1850–1914 z Národního archivu) |
 | `mza.py hledat / matriky / scitani` | MZA Brno (jižní Morava, Acta Publica): knihy obce, sčítací operáty obce. Stránku knihy a snímky chrání ALTCHA – otevře uživatel (`info`, `link`, `svazek`, `snimek` stojí) |
 | `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, ZA Opava, Matricula |
+| `valecne_hroby.py obec "Obec"` / `padli <Příjmení> [Jméno] --obec X` | pomníky padlých a válečné hroby obce se jmény (Evidence válečných hrobů MO) / padlí v 1. sv. válce s domovskou obcí, útvarem a prameny VÚA |
 | `hroby.py najdi / stahni / hledej` | hřbitovní pasporty obcí (GisOnline.cz): zemřelí 20. stol. se jménem a daty (`portaly.md` → Hroby) |
 | `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly; u 20. stol. ukáže DNNT → `portaly.md`) |
 | `overit.py <snímek> x0,y0,x1,y1 <prefix>` | zápis na dvě čitelné poloviny – ověření čtení |
