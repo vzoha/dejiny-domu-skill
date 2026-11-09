@@ -184,6 +184,11 @@
       "nazev": "ANNO (ÖNB)", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""
     },
+    "bildkatalog.herder-institut.de": {
+      "nazev": "Herder-Institut Marburg, Bildkatalog (Bildarchiv)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "robots.txt jmenuje Claude-User a zakazuje vše (Disallow: /), web chrání Anubis (nástroji Access Denied); reprodukce jen pro uvedený účel, dalším osobám a k publikaci jen s písemným souhlasem a poplatkem (Vertragsbedingungen für Publikationen, 9. 11. 2026)",
+      "jinak": "Bildkatalog prohledá uživatel sám v prohlížeči (Claude ho neotevírá ani v Chromu); ty radíš, co hledat (německý název obce, okres). Skeny objedná u bildarchiv@herder-institut.de: 20 hotových digitalizátů za čtvrtletí zdarma, rešerše 2,50 € + 7,50 €/¼ h; zveřejnění nebo předání zákazníkovi jen se souhlasem (od 30 €)."
+    },
     "www.zanikleobce.cz": {
       "nazev": "Zaniklé obce a objekty (zanikleobce.cz)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "dobrovolnický portál P. Berana, příspěvky patří přispěvatelům, licence žádná, web brání kopírování fotek; robots.txt zakazuje * hledání a adresy s ? (web padal na 429), Claude-User nejmenuje; nástroj čte jen mapu (1× za 30 dní) a stránky nalezených míst (9. 11. 2026)",

@@ -148,6 +148,20 @@ Negativy Josefa (do 1935) a Františka Seidela (do 1970) a sbírka pohlednic R. 
 - `python3 -I tools/seidel.py detail <id>` → datum, zákazník, adresa, popisek na desce, číslo negativu, technika,
   odkaz a citace. Fotku otevře uživatel odkazem; do výstupu jen se souhlasem muzea.
 
+## Herder-Institut Marburg, Bildarchiv (bildkatalog.herder-institut.de) – jen ručně
+Asi 800 000 fotek, negativů, diapozitivů, pohlednic a kreseb ze střední a východní Evropy, z Česka větší soubory
+(hlavně německá místa, památky, města), od 16. století, těžiště fotky a pohlednice od konce 19. století. Online
+Bildkatalog popisuje asi třetinu, o zbytku poradí archiv.
+- **Claude Bildkatalog neotevírá, ani nástrojem, ani v Chromu:** robots.txt jmenuje Claude-User a zakazuje celý web,
+  web chrání Anubis (nástroji „Access Denied“). Hledá uživatel sám v prohlížeči; ty poradíš, co zadat: **německý
+  název obce** (Krummau, Schweinitz), okres, památku. Výsledky ať zkopíruje (Ctrl+A, Ctrl+C) nebo vyfotí obrazovku.
+- Skeny: objednávka u bildarchiv@herder-institut.de (Bestellformular), TIF 300 dpi. Podle ceníku (Kostenverzeichnis
+  2025) je 20 už digitalizovaných snímků za čtvrtletí zdarma, nové skeny 10 zdarma, pak 10 € + 5 €/snímek; rešerše
+  archivem 2,50 € + 7,50 € za každou čtvrthodinu.
+- **Obrázek do výstupu jen s písemným souhlasem:** reprodukce smí jen pro uvedený účel, dalším osobám ani do sbírek
+  bez souhlasu, publikace na žádost (Publikationsantrag) od 30 € do 1 000 výtisků, kromě výrobních nákladů.
+  Bez souhlasu do výstupu jen zjištění, inv. č. a citace „Herder-Institut, Marburg, Bildarchiv, inv. č. …“.
+
 ## Zaniklé obce a objekty (www.zanikleobce.cz) – `tools/zanikleobce.py`
 Dobrovolnický portál (Pavel Beran, od 2005): přes 7 600 zaniklých vsí, samot, mlýnů, dvorů, cihelen, továren, kaplí
 a hradů, hlavně v pohraničí vysídleném po 1945, ale i mlýny a dvory ve vnitrozemí. U místa bývají dobové fotky
