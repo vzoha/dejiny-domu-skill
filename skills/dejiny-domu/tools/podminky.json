@@ -96,6 +96,11 @@
       "proc": "web bez ochrany a bez podmínek užití; robots.txt zakazuje všem (*) /hledat a /api/, Claude-User nejmenuje; licence je u každého předmětu (PDM, CC0, CC BY…, CC BY-NC…) (8. 11. 2026)",
       "jinak": "Předměty a licenci vypíše esbirky.py. Obrázek do výstupu podle licence předmětu (detail): PDM, CC0, CC BY = s autorem a institucí, CC BY-NC = jen nevýdělečně, bez licence = souhlas instituce."
     },
+    "badatelna.ostrava.cz": {
+      "nazev": "Archiv města Ostravy (Digitální badatelna)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "aplikace Bach se session bez ochrany, robots.txt nemá (9. 11. 2026); publikování textu i obrázků jen se souhlasem AMO a s citací",
+      "jinak": "Hledej v prohlížeči (agent-browser), jen pár dotazů. Do výstupu zjištění s citací (fond, NAD, inv. č., signatura); snímky a plány jen se souhlasem AMO."
+    },
     "www.veduty.cz": {
       "nazev": "Veduty v českých a slovenských archivech (Soupis vedut do 1850)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "aplikace bez ochrany, „všechna práva vyhrazena“, robots.txt zakazuje všem (*), Claude-User nejmenuje (8. 11. 2026); skeny patří archivu uložení",

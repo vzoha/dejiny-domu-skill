@@ -55,7 +55,9 @@ Osvědčené pořadí:
 7. **Družstva:** jubilejní sborníky („Dílo družstevní svépomoci“ 1933), výroční brožury – počty domů, sídlo, fotky.
    Nástupce (lidové / stavební bytové družstvo) může mít archiv stavební dokumentace.
 8. **Archiv:** stavební spis (stavební úřad městské části, AHMP), pozemková kniha (katastrální úřad), archiv družstva →
-   `archivni_dotazy.md`.
+   `archivni_dotazy.md`. **Stojící dům má spis na stavebním úřadu, zbořený v archivu města** (tak to výslovně píše
+   Archiv města Ostravy, ten má popisy spisů a plánů s adresou v Digitální badatelně, `portaly.md`; jinde podobně, ověř).
+   Spis stojícího domu nahlédne vlastník nebo kdo má jeho plnou moc.
 9. **Pozůstalost architekta nebo stavitele** (víš-li, kdo dům navrhl: Stavitelské listy, Památkový katalog, spis):
    `narp.py "<příjmení>"` najde jeho fond – často Archiv architektury a stavitelství NTM (výkresy, skici, fotky,
    korespondence). Návrh v pozůstalosti nemusí být postavený, nebo jinak: porovnej s plánem ze spisu a s mapou.
@@ -202,6 +204,10 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
 - Sčítání 1857–1880 nemusí být pro každý soudní okres online, 1890–1921 obvykle ano.
 - **Brno** (město, předměstí, připojené obce) má vlastní sčítání v Archivu města Brna s rejstříkem jmen po domech:
   `brno_scitani.py dum "Ulice" <číslo>`, `osoby …` (`portaly.md` → Archiv města Brna). 1910 jen v badatelně.
+- **Ostrava:** sčítání je podle tehdejšího politického okresu, ne podle dnešního města. Archiv města Ostravy má jen
+  1900, 1910 a 1921 obcí okresu Moravská Ostrava (Moravská Ostrava, Přívoz, Vítkovice, Mariánské Hory, Zábřeh,
+  Hrabová…); před 1900 SOkA Frýdek-Místek, Slezská Ostrava 1921 SOkA Frýdek-Místek, Svinov SOkA Nový Jičín. Digitalizované
+  operáty jsou v Digitální badatelně ZA Opava (`portaly.md`), 1930 a mladší Národní archiv.
 - **Údaje o domě a obyvatelé bývají na různých snímcích.** 1910: titulní list s vlastníkem domu, na dalším snímku
   osoby; 1921: sběrný arch domovní → prázdný list → sčítací arch. **Vždy stáhni i 1–3 následující snímky.**
   1857: cizí (čeleď, učni, tovaryši z jiných obcí) bývají jen v souhrnné tabulce cizích (Fremden-Tabelle) za souhrny

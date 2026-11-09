@@ -61,6 +61,19 @@ digitální knihovnu (CDK), přímo na weby MZK nechodí (podmínky Krameria MZK
 - Obrázek do výstupu jen volné dílo a podle podmínek knihovny (`podminky.md`, Kramerius MZK = souhlas), jinak popis,
   citace (knihovna, název, rok, signatura) a odkaz.
 
+## Archiv města Ostravy (badatelna.ostrava.cz) – prohlížeč
+Digitální badatelna AMO (Archivní Vademecum, Bach systems): ~120 tis. záznamů, 1,7 mil. snímků. Databáze **Stavební
+dokumentace**, Sčítací operáty, Domovské matriky a knihy přihlášených, Hřbitovní a kremační knihy, Mapy a plány,
+Fotografie, Kroniky, inventáře fondů. Nástroj není (aplikace se session), hledej v prohlížeči (`agent-browser`, bez
+ochrany), jen pár dotazů.
+- Pole nahoře hledá ve všech popisech. Ulice („Nádražní“) najde inventární záznamy s adresou a čp.: stavební spisy
+  okresního úřadu a města (stavebník, firma, „Nádražní čp. 344, strojnická dílna… (18 plánů)“), spolky, živnosti.
+  Hledej i čp. s názvem části obce (Přívoz, Vítkovice, Mariánské Hory) a německý název ulice.
+- **Spisy stojících domů má stavební úřad městského obvodu, AMO jen zbořené** (amo.ostrava.cz › Nehledejte u nás).
+- Sčítání v AMO jen 1900, 1910, 1921 obcí okresu Moravská Ostrava, ostatní podle tehdejšího okresu (`prameny.md`).
+- Detail: fond, NAD, číslo pomůcky, inventární číslo, signatura, je-li digitalizováno. Do citace „Archiv města
+  Ostravy, <fond>, inv. č. …, sign. …“. Publikovat text i obrázek jen se souhlasem AMO (`podminky.md`).
+
 ## Veduty v archivech do roku 1850 (www.veduty.cz) – prohlížeč
 Soupis vedut vzniklých do roku 1850 (MV ČR, archivy ČR a SR, mapová sbírka PřF UK): ~14 000 záznamů, většinou se skenem.
 Města, zámky, kláštery, kostely, poutní místa, požáry a povodně; ves jen výjimečně. Nástroj není (aplikace se session),
