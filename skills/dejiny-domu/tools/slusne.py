@@ -37,6 +37,7 @@ LIMITY = {
     "kramerius5.nkp.cz": (1.0, 0.05), "anno.onb.ac.at": (1.0, 0.05),
     "nominatim.openstreetmap.org": (1.1, 1.1),                       # pravidla OSM: nejvýš 1 dotaz za s
     "gs-pub.praha.eu": (0.5, 0.05), "geoportal.cuzk.gov.cz": (0.5, 0.05),
+    "commons.wikimedia.org": (0.5, 0.05), "www.wikidata.org": (0.5, 0.05),   # API pro roboty, sériové dotazy povoleny
 }
 BLOKACE = 30 * 60
 ROBOT = "Claude-User"

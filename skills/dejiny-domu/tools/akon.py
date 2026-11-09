@@ -28,7 +28,6 @@ MAPA = "https://akon.onb.ac.at/#center={}&zoom=13"
 VYCHOZI_KM = 3
 GEOHASH = "0123456789bcdefghjkmnpqrstuvwxyz"
 CACHE = os.path.join(os.path.expanduser("~"), ".cache", "dejiny-domu", "akon")
-POLOHA = re.compile(r"\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*")   # „šířka,délka“
 
 
 def nacti_data():
@@ -132,22 +131,6 @@ def detail(karty, id_karty):
     return [f"{n}: {v}" for n, v in radky if v]
 
 
-def stred(misto):
-    """(lat, lon, popis) z „šířka,délka“ nebo z názvu obce či části obce v RÚIAN; obec mimo RÚIAN → (None, None, None)."""
-    if POLOHA.fullmatch(misto):
-        lat, lon = (float(x) for x in misto.split(","))
-        return lat, lon, misto
-    import mista   # střed obce z RÚIAN; jen v projektu (mista.py jinde skončí)
-    obce = mista.obec_stred(misto)
-    if len(obce) > 1:
-        sys.exit(f"RÚIAN má {len(obce)} obcí nebo částí jménem „{misto}“ – vyber podle PSČ a zadej šířka,délka:\n"
-                 + "\n".join(f"  {n}   {y:.5f},{x:.5f}" for n, y, x in obce))
-    if obce:
-        popis, lat, lon = obce[0]
-        return lat, lon, popis
-    return None, None, None
-
-
 def main(argv):
     if len(argv) < 2:
         sys.exit(__doc__)
@@ -163,8 +146,9 @@ def main(argv):
     a = p.parse_args(argv[1:])
     misto, polomer = a.misto, a.km
     roky = tuple(int(x) for x in a.roky.split("-")) if a.roky else None
-    lat, lon, popis = stred(misto)
-    obec = None if POLOHA.fullmatch(misto) else misto
+    import mista   # střed obce z RÚIAN; jen v projektu (mista.py jinde skončí)
+    lat, lon, popis = mista.obec_nebo_poloha(misto)
+    obec = None if mista.POLOHA.fullmatch(misto) else misto
     nalez = najdi(nacti_data(), lat, lon, obec, polomer, roky)
     if popis:
         print(f"Střed: {popis} ({lat:.5f},{lon:.5f}), okruh {polomer:g} km.")

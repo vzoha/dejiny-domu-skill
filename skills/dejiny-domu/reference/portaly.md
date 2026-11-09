@@ -148,6 +148,23 @@ Negativy Josefa (do 1935) a Františka Seidela (do 1970) a sbírka pohlednic R. 
 - `python3 -I tools/seidel.py detail <id>` → datum, zákazník, adresa, popisek na desce, číslo negativu, technika,
   odkaz a citace. Fotku otevře uživatel odkazem; do výstupu jen se souhlasem muzea.
 
+## Wikimedia Commons (commons.wikimedia.org) – `tools/commons.py`
+Fotky, pohlednice, rytiny, plány a mapy, které nahráli lidé, muzea a knihovny. Jen volné licence: obrázek smí i do
+placeného výstupu (Public domain a CC0 se zdrojem, CC BY a CC BY-SA s autorem a licencí).
+- `python3 -I tools/commons.py "Rumburk"` → kategorii obce najde přes Wikidata (vlastnost P373) a rozliší podle polohy
+  z RÚIAN (spouštět ze složky projektu). Projde strom kategorií, napřed historické (History, Postcards, Old…, 1900s),
+  vynechá lidi, silnice, zastávky, znaky, přírodu, zvuk a video. Vypíše rok | soubor | kategorie | licence | odkaz:
+  soubory do roku 1960 a nedatované přímo z historické kategorie (pohlednice bývají bez data). Druhý argument roky
+  (`commons.py "Telč" 1800-1920`).
+- **Stejnojmenné obce** (Slavče): nástroj vypíše kategorie s nejbližší obcí z RÚIAN a skončí, vyber `--kategorie
+  "Slavče (Vrábče)"`. Bez kategorie na Wikidatech najdi kategorii na webu a zadej ji stejně.
+- Větší města mají stovky kategorií: nástroj projde 60 (asi minuta, Rumburk 76 souborů), víc `--kategorii 120`.
+  Vesnice bývá hotová za pár sekund a často nemá nic starého (Lniště, Nežetice, Dobrovítov 0).
+- Kategorie u souboru říká, co na něm je: v kategorii obce bývají i obrazy z muzea, portréty a hrad za vsí
+  (Blíževedly = Ronov). Rok je datum vzniku podle Commons („before 1882“ = nejpozději).
+- `python3 -I tools/commons.py detail "<soubor>"` → popis, datum, autor, zdroj, licence, odkaz na obrázek a citace.
+  Licenci určil ten, kdo soubor nahrál: u starých děl s „Own work“ jde o jeho sken, dílo samo je volné stářím.
+
 ## Pohlednice AKON, Rakouská národní knihovna (akon.onb.ac.at) – `tools/akon.py`
 Ansichtskarten Online: pohlednice 1896–1925 z celé monarchie, Čechy, Morava a Slezsko hlavně německy (Krummau,
 Prachatitz, Komotau). Otevřená data ÖNB Labs mají 34 846 pohlednic ve volném díle, z Česka asi 1 700 (391 míst:

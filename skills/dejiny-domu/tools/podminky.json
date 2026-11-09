@@ -184,6 +184,21 @@
       "nazev": "ANNO (ÖNB)", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""
     },
+    "commons.wikimedia.org": {
+      "nazev": "Wikimedia Commons", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "jen volné licence (Public domain, CC0, CC BY, CC BY-SA), komerční užití dovolené s autorem a licencí; API pro roboty, robots.txt zakazuje * /w/, Claude-User nejmenuje (9. 11. 2026)",
+      "jinak": ""
+    },
+    "upload.wikimedia.org": {
+      "nazev": "Wikimedia Commons (soubory)", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "soubory Commons, licence u souboru (commons.py detail) (9. 11. 2026)",
+      "jinak": ""
+    },
+    "www.wikidata.org": {
+      "nazev": "Wikidata", "dotazy": true, "obrazky": false, "vyrez": "ano",
+      "proc": "data CC0, API pro roboty (9. 11. 2026)",
+      "jinak": ""
+    },
     "labs.onb.ac.at": {
       "nazev": "ÖNB Labs (otevřená data AKON, pohlednice 1896–1925)", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "otevřená data: metadata CC0, obrázky volné dílo (Public Domain Mark v manifestu IIIF); robots.txt zakazuje * jen cesty GitLabu (i /raw), Claude-User nejmenuje (9. 11. 2026)",

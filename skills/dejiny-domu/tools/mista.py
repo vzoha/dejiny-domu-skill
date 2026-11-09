@@ -156,6 +156,25 @@ def obec_stred(nazev):
     return [(f"{n}, {'/'.join(pscs)} {obec}", *median(b)) for obec, pscs, b in skupiny]
 
 
+POLOHA = re.compile(r"\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*")   # „šířka,délka“
+
+
+def obec_nebo_poloha(misto):
+    """(lat, lon, popis) z „šířka,délka“ nebo z názvu obce či části obce v RÚIAN; obec mimo RÚIAN → (None, None, None).
+    Víc stejnojmenných obcí = skončí se seznamem, ať se nevybere náhodná."""
+    if POLOHA.fullmatch(misto):
+        lat, lon = (float(x) for x in misto.split(","))
+        return lat, lon, misto
+    obce = obec_stred(misto)
+    if len(obce) > 1:
+        sys.exit(f"RÚIAN má {len(obce)} obcí nebo částí jménem „{misto}“ – vyber podle PSČ a zadej šířka,délka:\n"
+                 + "\n".join(f"  {n}   {y:.5f},{x:.5f}" for n, y, x in obce))
+    if obce:
+        popis, lat, lon = obce[0]
+        return lat, lon, popis
+    return None, None, None
+
+
 def median(body):
     return statistics.median(y for y, _ in body), statistics.median(x for _, x in body)
 
