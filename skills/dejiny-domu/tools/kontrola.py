@@ -114,6 +114,8 @@ def main():
             err.append(f"zápis {k}: neznámý druh '{z['druh']}' (povolené: {', '.join(sorted(DRUHY))})")
         if c := chyba_odkazu(z.get("odkaz")):
             err.append(f"zápis {k}: {c}")
+        elif re.search(r"\s", str(z.get("odkaz", "")).strip()):   # „…/detail/3888 (snímek 166)“: odkaz pak nikam nevede
+            err.append(f"zápis {k}: odkaz obsahuje mezeru – jen adresa, číslo snímku patří do pole 'snimek'")
         data_v(f"zápis {k}", z.get("datum"))
         if z.get("svazek") and z["svazek"] not in svazky:
             err.append(f"zápis {k}: svazek '{z['svazek']}' není v data/svazky.json")

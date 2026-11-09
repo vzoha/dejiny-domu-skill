@@ -319,6 +319,17 @@ class TestKontrola(Projekt):
         self.assertIn("místo Kaple: odkaz", out)
         self.assertNotIn("místo Mlýn", out)
 
+    def test_odkaz_zapisu_s_cislem_snimku(self):
+        self.napln()
+        with open(self.path("data", "zaznamy.json"), encoding="utf-8") as f:
+            z = json.load(f)
+        z[0]["odkaz"] = "https://www.mza.cz/actapublica/matrika/detail/3888 (snímek 166)"   # Hlína 9. 11.: v PDF nikam nevedl
+        with open(self.path("data", "zaznamy.json"), "w", encoding="utf-8") as f:
+            json.dump(z, f)
+        rc, out = self.kontrola()
+        self.assertEqual(rc, 1)
+        self.assertIn(f"zápis {ZAZNAM['klic']}: odkaz obsahuje mezeru", out)
+
     def test_poloha_bez_lon(self):
         self.napln()
         with open(self.path("data", "domy.py"), "a", encoding="utf-8") as f:
