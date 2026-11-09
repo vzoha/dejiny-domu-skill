@@ -5,7 +5,7 @@ Archivy mění adresy a API bez ohlášení. Nástroj spustí každý nástroj n
 snímek) v dočasné složce – do dat projektu nesahá – a vypíše, co funguje a co ne.
 
 Použití (z kořene projektu i ze složky skillu):
-  zdravi.py                 všechny kontroly (~30 požadavků, asi minuta)
+  zdravi.py                 všechny kontroly (~50 požadavků, pár minut)
   zdravi.py --rychle        bez stahování snímků
   zdravi.py --jen trebon,aron
                             jen vybrané portály (názvy viz výpis)
@@ -51,6 +51,21 @@ KONTROLY = [
     ("kramerius", "fulltext", ["kramerius.py", 'text_ocr:"Chyšky"', "1"], r"^found [1-9]", None),
     ("dnnt", "hledání v tisku", ["dnnt.py", "hledej", 'text_ocr:"Chyšky"', "--max", "1"], r"nalezeno [1-9]", None),
     ("anno", "rakouské noviny", ["anno.py", "Chischka", "1880", "1890", "1"], r"ANNOP_", None),
+    ("pamatky", "památky obce", ["pamatky.py", "Lniště"], r"^  680990 \| boží muka", None),
+    ("pamatky", "detail památky", ["pamatky.py", "detail", "680990"], r"k\. ú\. Mohuřice", None),
+    ("mis", "dokumentace NPÚ", ["mis.py", "hledej", "Lniště"], r"^1618605 \|", None),
+    ("narp", "archivní fondy", ["narp.py", "Slavče", "3"], r"d8e1f538-559e-44e8-b781-b5b3377be52b", None),
+    ("hroby", "hřbitovní pasport", ["hroby.py", "najdi", "Brod nad Dyjí"], r"projekt 353", None),
+    ("esbirky", "předměty obce", ["esbirky.py", "Lniště"], r"^  63291100 \|.*Madona ze Lniště", None),
+    ("esbirky", "detail předmětu", ["esbirky.py", "detail", "63291100"], r"^Název: Madona ze Lniště", None),
+    ("seidel", "zákazníci ateliéru", ["seidel.py", "Slavče"], r"302010301100010120001", None),
+    ("industrial", "průmyslové stavby", ["industrial.py", "Beroun"], r"^  762 \| Měšťanský", None),
+    ("veduty", "veduty obce", ["veduty.py", "Telč"], r"uuid:1dd4cb48-2693-4276-8108-d2228024ec75", None),
+    ("veduty", "mapy podle polohy", ["veduty.py", "mapy", "48.80", "14.62"], r"^Mapy, které místo zakreslují .*: [1-9]", None),
+    ("translokace", "seznam plánů", ["translokace.py", "Bečov nad Teplou"], r"^  1 \| Bečov nad Teplou", None),
+    ("translokace", "detail plánu", ["translokace.py", "detail", "1"], r"^archiv: Národní archiv", None),
+    ("ares", "firmy v domě", ["rejstrik.py", "Holešovice", "1425"], r"^  26480808 \|", None),
+    ("ares", "veřejný rejstřík", ["rejstrik.py", "detail", "26480808"], r"^Stav: AKTIVNI", None),
 ]
 # Portály bez pevného svazku (cestu k obrázku dává jen prohlížeč): jen „server odpovídá“
 DOSTUPNOST = [
