@@ -47,7 +47,7 @@ Osvědčené pořadí:
 3. **Adresní kniha čp. → ulice a č. or.** (Praha: Orientační kniha Velké Prahy 1936/1937) – jaká orientační čísla dům
    tehdy měl. Bez toho nejde hledat v adresářích.
 4. **Adresáře živností** (Adresář Republiky československé 1927–1938, Adresář Prahy 1936, Adressbuch des Protektorates 1939,
-   telefonní seznamy 1950) – obchody v přízemí, řemeslníci, lékaři. Řazené podle oborů – hlavička stránky řekne obor.
+   telefonní seznamy 1950; Brno: adresáře města 1779–1946 v PDF, `portaly.md` → Archiv města Brna) – obchody v přízemí, řemeslníci, lékaři. Řazené podle oborů – hlavička stránky řekne obor.
 5. **Stavební povolení a soutěže:** Stavitelské listy (rubrika „Kde se bude stavěti?“ – stavebník, pozemek, počet pater),
    inzeráty „zadá práce na stavbu…“ v denících (Právo lidu, Národní listy). Stavebníkem bývá družstvo, stavitel nebo firma.
 6. **Ročenky a seznamy členů spolků a zaměstnanců** (s adresami) – bydliště konkrétních lidí po letech; stejná osoba
@@ -200,6 +200,8 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   Portál snímky jen ukazuje, kopírovat je podmínky nedovolují: čte uživatel, ty radíš (`podminky.md`). Na ostatních
   portálech stahuj nástrojem nebo snímek uloží uživatel podle `portaly.md`.
 - Sčítání 1857–1880 nemusí být pro každý soudní okres online, 1890–1921 obvykle ano.
+- **Brno** (město, předměstí, připojené obce) má vlastní sčítání v Archivu města Brna s rejstříkem jmen po domech:
+  `brno_scitani.py dum "Ulice" <číslo>`, `osoby …` (`portaly.md` → Archiv města Brna). 1910 jen v badatelně.
 - **Údaje o domě a obyvatelé bývají na různých snímcích.** 1910: titulní list s vlastníkem domu, na dalším snímku
   osoby; 1921: sběrný arch domovní → prázdný list → sčítací arch. **Vždy stáhni i 1–3 následující snímky.**
   1857: cizí (čeleď, učni, tovaryši z jiných obcí) bývají jen v souhrnné tabulce cizích (Fremden-Tabelle) za souhrny

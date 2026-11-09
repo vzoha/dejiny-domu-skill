@@ -56,6 +56,16 @@
       "nazev": "Archeologická mapa ČR (Digitální archiv AMČR)", "dotazy": true, "obrazky": true, "vyrez": "nekomercne",
       "proc": "data CC BY-NC 4.0 – jen nevýdělečně a s autorem; API komerčně jen s písemnou smlouvou (8. 11. 2026)", "jinak": ""
     },
+    "digiarchiv.brno.cz": {
+      "nazev": "Archiv města Brna (Digitální archiv, sčítání lidu 1850–1921)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "aplikace s API, které volá i web (hledání), bez přihlášení a ochrany, robots.txt nemá (9. 11. 2026); podmínky užití nenalezeny, web města: použití obsahu jen se souhlasem Magistrátu",
+      "jinak": "Operáty a lidi z rejstříku vypíše brno_scitani.py, snímky čte uživatel v prohlížeči (odkaz). Do výstupu přepis a citace, snímek jen se souhlasem archivu."
+    },
+    "archiv.brno.cz": {
+      "nazev": "Archiv města Brna (adresáře města Brna 1779–1946, PDF)", "dotazy": true, "obrazky": true, "vyrez": "souhlas",
+      "proc": "PDF ke stažení bez ochrany, robots.txt zakazuje jen */rest/* (9. 11. 2026); patička: použití obsahu jen se souhlasem Magistrátu",
+      "jinak": "PDF stáhni a čti stránky jako obrázky (textovou vrstvu nemají). Do výstupu zjištění s citací (ročník, strana), obrázek jen se souhlasem."
+    },
     "fotobanka.seidel.cz": {
       "nazev": "Fotobanka Musea Fotoateliér Seidel (Regionální muzeum v Českém Krumlově)", "dotazy": true, "obrazky": true, "vyrez": "souhlas",
       "proc": "aplikace s veřejným API bez přihlášení a ochrany, robots.txt nemá; podmínky užití ani licence nenalezeny, muzeum prodává jen tisky (8. 11. 2026); fotky Františka Seidela († 1997) chráněné autorským právem",

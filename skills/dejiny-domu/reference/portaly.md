@@ -104,6 +104,23 @@ hledá jen podle názvu, IČO nebo spisové značky, proto nástroj jde přes AR
   smlouvy) je u výpisu, otevře ji uživatel.
 - Limit ARES: nejvýš 500 dotazů za minutu, neposílat opakovaně stejné dotazy. Nástroj na dům pošle 3–10 dotazů.
 
+## Archiv města Brna (digiarchiv.brno.cz, archiv.brno.cz) – `tools/brno_scitani.py`
+Brno, předměstí a připojené obce. Sčítání lidu 1850, 1857, 1870, 1880, 1890, 1900, 1921 (1910 jen v badatelně AMB)
+po domech, s vytěženým jmenným rejstříkem; adresáře města 1779–1946 v PDF.
+- `python3 -I tools/brno_scitani.py ulice "Křen"` → tehdejší názvy ulic v operátech: do 1900 **německy** („Kröna“,
+  „Adlergasse“, předměstí s číslem domu „Altbrünn 143“), 1921 česky, připojené obce „Královo Pole-Luční“. Starý název
+  ulice najdi v Encyklopedii dějin města Brna (encyklopedie.brna.cz, ulice s názvy v čase).
+- `python3 -I tools/brno_scitani.py dum "Kröna" 75` → operáty domu po letech (počet osob, je-li snímek, odkaz do
+  prohlížeče). Číslo hledá přesně, jak je v operátu.
+- `python3 -I tools/brno_scitani.py osoby "Kröna" 75 [rok]` → lidé z rejstříku po letech s citací (svazek, strana,
+  řádek). Řádky bez čitelného jména dočti ze snímků. Rejstřík píše jména jako operát (Novak, Chafranek).
+- `python3 -I tools/brno_scitani.py hledej "Příjmení" [jméno] [rok]` → kde člověk bydlel (rok, ulice, číslo).
+- Snímky nástroj nestahuje, uživatel je otevře odkazem. Do výstupu přepis a citace, snímek jen se souhlasem AMB.
+- **Adresáře města Brna 1779–1946** (archiv.brno.cz › Digitální badatelna › Adresáře): PDF po ročnících, bez textové
+  vrstvy – stáhni ročník a stránky čti jako obrázky (`pdftoppm -f N -l N -r 150`). Velké (ročník 1903: 400 MB), stahuj
+  jen potřebné. Archivní fondy AMB: Archivní Vademecum (archivalie.brno.cz/vademecum), robots.txt zakazuje vše → jen
+  ručně v prohlížeči; fondy najde i `narp.py`.
+
 ## Fotoateliér Seidel, Český Krumlov (fotobanka.seidel.cz) – `tools/seidel.py`
 Negativy Josefa (do 1935) a Františka Seidela (do 1970) a sbírka pohlednic R. Finka: Krumlovsko, Šumava, Pošumaví,
 českorakouské pomezí. Fotobanka se 8. 11. 2026 teprve plní („testovací provoz“), co dnes chybí, může přibýt.
