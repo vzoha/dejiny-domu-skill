@@ -148,6 +148,23 @@ Negativy Josefa (do 1935) a Františka Seidela (do 1970) a sbírka pohlednic R. 
 - `python3 -I tools/seidel.py detail <id>` → datum, zákazník, adresa, popisek na desce, číslo negativu, technika,
   odkaz a citace. Fotku otevře uživatel odkazem; do výstupu jen se souhlasem muzea.
 
+## Pohlednice AKON, Rakouská národní knihovna (akon.onb.ac.at) – `tools/akon.py`
+Ansichtskarten Online: pohlednice 1896–1925 z celé monarchie, Čechy, Morava a Slezsko hlavně německy (Krummau,
+Prachatitz, Komotau). Otevřená data ÖNB Labs mají 34 846 pohlednic ve volném díle, z Česka asi 1 700 (391 míst:
+města, lázně, hrady, hory; vesnice výjimečně). Plný AKON je asi dvakrát větší, ale jen jako mapová aplikace.
+- `python3 -I tools/akon.py "Prachatice"` → pohlednice do 3 km od středu obce (RÚIAN) a s obcí v názvu: id | datace |
+  název | vzdálenost | vydavatel | odkaz. `--km 1` zúží okruh (město), druhý argument roky (`akon.py "Telč" 1900-1910`).
+  Spouštět ze složky projektu (střed obce z RÚIAN); obec mimo ČR nebo německý název: hledá jen podle názvu.
+  Data (2 MB) stáhne poprvé do `~/.cache/dejiny-domu/akon/`, obnoví po půl roce.
+- Poloha je střed místa podle GeoNames, ne místo záběru: pohlednice z okruhu může ukazovat sousední obec, a naopak
+  pohlednice vsi bývá přiřazená k blízkému městu (Grundthale u Chomutova = „Komotau“). Rozhoduje název.
+- Datace: „odesláno 1905“ = poštovní razítko, „před 1907“ = nejpozději; vydání bývá o pár let dřív.
+- `python3 -I tools/akon.py detail <id>` → název, datace, budova, vydavatel, fotograf, signatura, odkaz na obrázek
+  v plném rozlišení (IIIF) a citace. **Obrázek je volné dílo (Public Domain Mark), smí i do placeného výstupu s citací.**
+- Plný AKON: nástroj vypíše odkaz na mapu u obce (`#center=<geohash>&zoom=13`), uživatel klikne na značku. Pohlednice
+  jen z mapy nejsou v otevřených datech: do výstupu popis a odkaz, obrázek se souhlasem ÖNB (akon@onb.ac.at).
+  Trvalý odkaz pohlednice: `http://data.onb.ac.at/AKON/<id>`.
+
 ## Sbírky muzeí a galerií (eSbírky, www.esbirky.cz) – `tools/esbirky.py`
 Portál Národního muzea se sbírkami desítek muzeí a galerií: fotografie a skleněné negativy (Etnografický archiv NM,
 krajská muzea), pohlednice, kresby, obrazy, mapy, předměty. Ochranu ani podmínky užití nemá, licence je u předmětu.

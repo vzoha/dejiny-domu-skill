@@ -184,6 +184,21 @@
       "nazev": "ANNO (ÖNB)", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""
     },
+    "labs.onb.ac.at": {
+      "nazev": "ÖNB Labs (otevřená data AKON, pohlednice 1896–1925)", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "otevřená data: metadata CC0, obrázky volné dílo (Public Domain Mark v manifestu IIIF); robots.txt zakazuje * jen cesty GitLabu (i /raw), Claude-User nejmenuje (9. 11. 2026)",
+      "jinak": ""
+    },
+    "iiif.onb.ac.at": {
+      "nazev": "ÖNB IIIF (obrázky AKON a dalších sbírek)", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "pohlednice z otevřených dat AKON jsou volné dílo (Public Domain Mark v manifestu); u jiných sbírek ÖNB platí licence v manifestu; robots.txt nemá (9. 11. 2026)",
+      "jinak": ""
+    },
+    "akon.onb.ac.at": {
+      "nazev": "AKON – Ansichtskarten Online (ÖNB), mapová aplikace", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "stavová aplikace JSF s mapou, robots.txt vše povoluje (9. 11. 2026); pohlednice mimo otevřená data nemají licenci volného díla",
+      "jinak": "Pohlednice z otevřených dat vypíše akon.py. Plný AKON otevře uživatel odkazem na mapu z akon.py; obrázek mimo otevřená data do výstupu jen se souhlasem ÖNB (akon@onb.ac.at), jinak popis a odkaz."
+    },
     "data.onb.ac.at": {
       "nazev": "ANNO (ÖNB), obrázky stran (anno_snap.py)", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""

@@ -63,6 +63,7 @@ KONTROLY = [
     ("esbirky", "detail předmětu", ["esbirky.py", "detail", "63291100"], r"^Název: Madona ze Lniště", None),
     ("seidel", "zákazníci ateliéru", ["seidel.py", "Slavče"], r"302010301100010120001", None),
     ("industrial", "průmyslové stavby", ["industrial.py", "Beroun"], r"^  762 \| Měšťanský", None),
+    ("akon", "pohlednice obce", ["akon.py", "Prachatice", "--km", "1"], r"^  AK010_332 \|", None),
     ("veduty", "veduty obce", ["veduty.py", "Telč"], r"uuid:1dd4cb48-2693-4276-8108-d2228024ec75", None),
     ("veduty", "mapy podle polohy", ["veduty.py", "mapy", "48.80", "14.62"], r"^Mapy, které místo zakreslují .*: [1-9]", None),
     ("translokace", "seznam plánů", ["translokace.py", "Bečov nad Teplou"], r"^  1 \| Bečov nad Teplou", None),
