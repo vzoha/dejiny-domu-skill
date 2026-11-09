@@ -277,6 +277,16 @@ class SlusneTest(unittest.TestCase):
             self.assertIn("Použití:", p.stdout)
         self.assertFalse([f for f in os.listdir(self.tmp) if f.endswith(".dotaz")])
 
+    def test_napoveda_ne_pro_ciziho_volajiciho(self):
+        # program mimo tools/, který nástroj importuje (unittest -h), si -h zpracuje sám
+        skript = os.path.join(self.tmp, "cizi.py")
+        with open(skript, "w") as f:
+            f.write(f'"""Cizí program."""\nimport sys\nsys.path.insert(0, {TOOLS!r})\nimport industrial\nprint("dal")\n')
+        p = subprocess.run([sys.executable, "-I", skript, "-h"], capture_output=True, text=True,
+                           env=dict(os.environ, SLUSNE_DIR=self.tmp))
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertEqual(p.stdout.strip(), "dal")
+
     def test_skript_pres_slusne(self):
         skript = os.path.join(self.tmp, "s.py")
         with open(skript, "w") as f:

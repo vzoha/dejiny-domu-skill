@@ -296,9 +296,12 @@ _instalovano = False
 
 
 def _napoveda():
-    """Bez toho by nástroj „--help“ hledal jako název obce."""
+    """Bez toho by nástroj „--help“ hledal jako název obce. Jen u nástroje vedle slusne.py: cizí program,
+    který nástroj importuje (unittest -h), si nápovědu vypíše sám."""
     hlavni = sys.modules.get("__main__")
-    if sys.argv[1:2] in (["-h"], ["--help"]) and hlavni is not sys.modules[__name__] and getattr(hlavni, "__doc__", None):
+    soubor = getattr(hlavni, "__file__", None)
+    if (sys.argv[1:2] in (["-h"], ["--help"]) and hlavni is not sys.modules[__name__] and getattr(hlavni, "__doc__", None)
+            and soubor and os.path.dirname(os.path.abspath(soubor)) == os.path.dirname(os.path.abspath(__file__))):
         print(hlavni.__doc__)
         sys.exit(0)
 
