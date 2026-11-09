@@ -66,6 +66,7 @@ KONTROLY = [
     ("translokace", "detail plánu", ["translokace.py", "detail", "1"], r"^archiv: Národní archiv", None),
     ("ares", "firmy v domě", ["rejstrik.py", "Holešovice", "1425"], r"^  26480808 \|", None),
     ("ares", "veřejný rejstřík", ["rejstrik.py", "detail", "26480808"], r"^Stav: AKTIVNI", None),
+    ("brno", "sčítání Brna", ["brno_scitani.py", "dum", "Kröna", "75", "1880"], r"^1880 \| Kröna 75 \| osob 32", None),
 ]
 # Portály bez pevného svazku (cestu k obrázku dává jen prohlížeč): jen „server odpovídá“
 DOSTUPNOST = [
