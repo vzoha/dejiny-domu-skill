@@ -6,7 +6,7 @@ fotky, pohlednice, kresby a mapy. České památky z NPÚ najde i mis.py, Deutsc
 Europeana přidá hlavně rakouská, maďarská a další zahraniční muzea a Mapovou sbírku PřF UK.
 
 Použití:
-  europeana.py "<obec>" ["<německý název>" …] [od-do] [--km 2] [--volne] [--npu]
+  europeana.py "<obec>" | "<Ulice čp, Obec>" | <šířka,délka> ["<německý název>" …] [od-do] [--km 2] [--volne] [--npu]
       – id | rok | název | instituce | licence | odkaz; --volne = jen licence pro placený výstup,
         --npu = i fotky a evidenční listy NPÚ (jinak je vynechá, podrobněji je ukáže mis.py)
   europeana.py detail <id>      – popis, místo, datace, autor, instituce, licence, obrázek, citace
@@ -25,6 +25,8 @@ KLIC = os.path.join(os.path.expanduser("~"), ".config", "europeana", "api-key")
 VYCHOZI_KM = 2
 NPU = "The National Heritage Institute"   # památky NPÚ (MIS) najde podrobněji mis.py, v Europeaně zahltí okolí
 NEJVIC = 100
+PRIRODOVEDNE = '-what:(specimen OR herbarium OR "preserved specimen" OR botany OR zoology OR geology OR mineral)'   # herbáře a nerosty se souřadnicemi sběru zahltí hledání podle polohy
+SOURADNICE = re.compile(r"-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?")
 VOLNE = re.compile(r"publicdomain|/by/|/by-sa/|NoC-")          # PDM, CC0, CC BY, CC BY-SA, bez autorských práv
 NEKOMERCNI = re.compile(r"-nc|NoC-NC")
 
@@ -51,7 +53,7 @@ def api(cesta, parametry):
 
 def dotaz(nazvy, lat=None, lon=None, polomer=VYCHOZI_KM):
     """Lucene dotaz: některý z názvů nebo souřadnice místa v obdélníku kolem středu obce."""
-    casti = [f'"{n}"' for n in nazvy]
+    casti = [f'"{n}"' for n in nazvy if not SOURADNICE.fullmatch(n)]   # souřadnice nejsou název
     if lat is not None:
         dlat = polomer / 111.32
         dlon = dlat / math.cos(math.radians(lat))
@@ -61,7 +63,7 @@ def dotaz(nazvy, lat=None, lon=None, polomer=VYCHOZI_KM):
 
 
 def filtry(roky=None, jen_volne=False, s_npu=False):
-    f = [("qf", "TYPE:IMAGE")]
+    f = [("qf", "TYPE:IMAGE"), ("qf", PRIRODOVEDNE)]
     if not s_npu:
         f.append(("qf", f'-DATA_PROVIDER:"{NPU}"'))
     if roky:
@@ -192,7 +194,8 @@ def main(argv):
     import mista   # střed obce z RÚIAN; jen v projektu (mista.py jinde skončí)
     lat, lon, popis = mista.obec_nebo_poloha(nazvy[0])
     predmety, celkem = hledej(nazvy, lat, lon, a.km, roky, a.volne, a.npu)
-    print(f"Okolí {a.km:g} km od: {popis} ({lat:.5f},{lon:.5f}) a názvy {', '.join(nazvy)}." if popis else
+    jmena = [n for n in nazvy if not SOURADNICE.fullmatch(n)]
+    print(f"Okolí {a.km:g} km od: {popis} ({lat:.5f},{lon:.5f})" + (f" a názvy {', '.join(jmena)}." if jmena else ".") if popis else
           f"RÚIAN „{nazvy[0]}“ nezná, hledám jen podle názvů {', '.join(nazvy)}.")
     if not predmety:
         print("Europeana nemá obrázky. Zkus německý název obce nebo větší --km.")

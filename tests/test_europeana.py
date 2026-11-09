@@ -27,11 +27,14 @@ class EuropeanaTest(unittest.TestCase):
         self.assertTrue(q.startswith('"Rumburk" OR "Rumburg" OR (pl_wgs84_pos_lat:[49.9820 TO 50.0180] AND '
                                      'pl_wgs84_pos_long:[13.97'), q)
         self.assertEqual(europeana.dotaz(["Telč"]), '"Telč"')
+        # souřadnice místo názvu se nehledají jako text (Praha 7: vracelo jen herbáře)
+        self.assertTrue(europeana.dotaz(["50.1049,14.4521"], 50.1049, 14.4521, 1).startswith("(pl_wgs84_pos_lat:"))
 
     def test_filtry(self):
-        self.assertEqual(europeana.filtry(), [("qf", "TYPE:IMAGE"), ("qf", '-DATA_PROVIDER:"The National Heritage Institute"')])
+        zaklad = [("qf", "TYPE:IMAGE"), ("qf", europeana.PRIRODOVEDNE)]
+        self.assertEqual(europeana.filtry(), zaklad + [("qf", '-DATA_PROVIDER:"The National Heritage Institute"')])
         self.assertEqual(europeana.filtry((1900, 1910), True, True),
-                         [("qf", "TYPE:IMAGE"), ("qf", "YEAR:[1900 TO 1910]"), ("reusability", "open")])
+                         zaklad + [("qf", "YEAR:[1900 TO 1910]"), ("reusability", "open")])
 
     def test_licence(self):
         self.assertEqual(europeana.zkratka_licence("http://creativecommons.org/licenses/by-nc/4.0/"), "CC BY-NC")
