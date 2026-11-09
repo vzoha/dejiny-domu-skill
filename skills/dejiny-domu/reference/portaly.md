@@ -449,6 +449,20 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
   shoda jména s obyvatelem je vodítko, ověř ji. Fotky náhrobků jen odkazem, jména zemřelých za posledních ~50 let
   na veřejný web jen se souhlasem rodiny. Jiné mapové portály obcí hledej na webu obce („mapa hřbitova“).
 
+## Ortofota po letech (ČÚZK a kraje) – `tools/ortofota.py`
+- `python3 -I tools/ortofota.py serie "Osada čp" 100 --zapsat dum` → ročníky do `pracovni/ortofota/`, výřezy a `mapy.json`
+  (jen ČÚZK); `ortofota.py vrstvy` = seznam. Série = ~30 požadavků, prázdné ročníky (tam se ten rok nesnímkovalo) vynechá.
+- ČÚZK: WMS `https://geoportal.cuzk.gov.cz/geoserver/wms_ortofoto_archiv/wms`, vrstva = rok (`1998`…`2023`), EPSG:5514.
+  Stará adresa `WMS_ORTOFOTO_ARCHIV` na ags.cuzk.cz je zrušená. Dnešní ortofoto: `ags.cuzk.gov.cz/arcgis1/rest/services/ORTOFOTO`.
+- Kraje (ArcGIS `…/MapServer/export`, S-JTSK), nástroj se ptá jen kraje domu a jen na roky, které ČÚZK nemá:
+  Jihočeský `gis.kraj-jihocesky.cz/arcgis/rest/services/podkladove/orto<rok>` (2003–2025), Plzeňský
+  `mapy.kr-plzensky.cz/arcgis/rest/services/PODKLAD/ortofoto<rok>` (2005, 2008, 2011), Jihomoravský
+  `gis.jmk.cz/arcgis/rest/services/Ortofoto_<rok>` (okresní `Ortofoto_Brno_1996`, `_Znojmo_1998`, `_Hodonin_1999`,
+  `_Blansko_2000`, `_Vyskov_2000`, `_Breclav_2001`, pak 2003–2018), Zlínský `mapy.kr-zlinsky.cz/arcgis/rest/services/ortofoto_<rok>`
+  (2002, 2005, 2008, 2014; ve snímku vodoznak GEODIS). Moravskoslezský (`gis2.msk.cz`, 2000–2024) jen dlaždice a kraj
+  použití ortofota dřív odmítl – nepoužívat. Ostatní kraje veřejný archiv ortofot nemají (stav 9. 11. 2026).
+- Snímky 1952–56 krajů jsou stejné jako CENIA (`cuzk_archiv.py mapa cenia50`).
+
 ## IPR Praha – staré plány a letecké snímky Prahy (gs-pub.praha.eu) – `tools/ipr_praha.py`, bez tokenu
 Pro Prahu výrazně lepší než Archiv ČÚZK (jeho spojené vrstvy stabilního katastru Prahu nepokrývají). Vše georeferencované
 v S-JTSK (EPSG 5514) → stejný výřez pro celou sérii = prolínání map na webu (`mapy.json`, stejná `skupina`).

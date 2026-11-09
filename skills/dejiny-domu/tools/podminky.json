@@ -224,6 +224,11 @@
         {"obsahuje": "vojenske_mapovani", "vyrez": "souhlas", "proc": "u vojenských mapování na geoportálu CENIA si podmínky odporují – stejnou mapu vezmi z Geolabu"}
       ]
     },
+    "geoportal.cuzk.gov.cz": {"nazev": "ČÚZK, archivní ortofoto ČR", "dotazy": true, "obrazky": true, "vyrez": "ano", "proc": "ortofoto ČR je od 7/2023 otevřená data pod CC BY 4.0, uvést „ČÚZK, <rok snímku>“", "jinak": ""},
+    "gis.kraj-jihocesky.cz": {"nazev": "Jihočeský kraj, mapové služby", "dotazy": true, "obrazky": true, "vyrez": "souhlas", "proc": "licence ortofot kraje není zveřejněná (výdej dat podle licenčních podmínek se schválením kraje) – ke čtení ano, do výstupu se souhlasem kraje", "jinak": "ortofota.py vezme stejný rok z ČÚZK, když ho má"},
+    "mapy.kr-plzensky.cz": {"nazev": "Plzeňský kraj, mapové služby", "dotazy": true, "obrazky": true, "vyrez": "souhlas", "proc": "licence ortofot kraje není zveřejněná – ke čtení ano, do výstupu se souhlasem kraje (gis@plzensky-kraj.cz)", "jinak": "ortofota.py vezme stejný rok z ČÚZK, když ho má"},
+    "gis.jmk.cz": {"nazev": "Jihomoravský kraj, mapové služby", "dotazy": true, "obrazky": true, "vyrez": "souhlas", "proc": "k mapovým službám kraj licenci neuvádí, data patří GEODIS, ČÚZK a TopGis, výdej souborů jen nekomerčně – ke čtení ano, do výstupu se souhlasem kraje", "jinak": "ortofota.py vezme stejný rok z ČÚZK, když ho má"},
+    "mapy.kr-zlinsky.cz": {"nazev": "Zlínský kraj, mapové služby", "dotazy": true, "obrazky": true, "vyrez": "souhlas", "proc": "WMS „bez omezení“, ale mapa kraje „pouze pro navigační a přehledové účely“, data © GEODIS – ke čtení ano, do výstupu se souhlasem kraje", "jinak": "ortofota.py vezme stejný rok z ČÚZK, když ho má"},
     "gs-pub.praha.eu": {
       "nazev": "IPR Praha", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "mapové služby pod CC BY 4.0, uvést „datový podklad © IPR Praha“; u leteckých snímků 1938–1996 před zveřejněním za peníze ověřit", "jinak": ""

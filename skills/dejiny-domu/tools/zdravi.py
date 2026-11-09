@@ -48,6 +48,8 @@ KONTROLY = [
     ("osm", "hledání v OpenStreetMap", ["mista.py", "hledej", "Chyšky, Písek"], r"lat=49\.5", None),
     ("ipr", "starý plán Prahy", ["ipr_praha.py", "serie", "50.0870,14.4207", "80", "300", "--jen", "herget_1791"],
      r"OK\s+herget_1791", "pracovni/ipr/herget_1791_r80_300px_*.jpg"),
+    ("ortofota", "ortofoto ČÚZK", ["ortofota.py", "serie", "48.8300,14.6200", "50", "200", "--jen", "cuzk_2023"],
+     r"OK\s+cuzk_2023", "pracovni/ortofota/cuzk_2023_r50_200px_*.jpg"),
     ("kramerius", "fulltext", ["kramerius.py", 'text_ocr:"Chyšky"', "1"], r"^found [1-9]", None),
     ("dnnt", "hledání v tisku", ["dnnt.py", "hledej", 'text_ocr:"Chyšky"', "--max", "1"], r"nalezeno [1-9]", None),
     ("anno", "rakouské noviny", ["anno.py", "Chischka", "1880", "1890", "1"], r"ANNOP_", None),

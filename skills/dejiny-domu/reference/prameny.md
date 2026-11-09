@@ -8,7 +8,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | Doba | Pramen | Co dá k domu | Kde |
 |---|---|---|---|
 | dnes | katastr nemovitostí, RÚIAN | parcela, k. ú., dnešní obec | `mista.py ruian "Osada čp"` (hned ve Fázi 0 – dnešní obec a k. ú. bývají jiné, než se čeká), nahlizenidokn.cuzk.cz |
-| 1938–dnes | letecké snímky | jak dům a dvůr vypadaly, kdy přibyly a zmizely stavby | ags.cuzk.gov.cz/archiv (Archiv ČÚZK, ročníky vypíše `cuzk_archiv.py lms`), ortofoto CENIA z 50. let (`cuzk_archiv.py mapa cenia50`, smí do PDF), mapy.cz → „Letecká“ s volbou roku |
+| 1938–dnes | letecké snímky | jak dům a dvůr vypadaly, kdy přibyly a zmizely stavby | ags.cuzk.gov.cz/archiv (Archiv ČÚZK, ročníky vypíše `cuzk_archiv.py lms`), ortofoto CENIA z 50. let (`cuzk_archiv.py mapa cenia50`, smí do PDF), ortofota po letech od 1998 (`ortofota.py serie`, ČÚZK smí do PDF), mapy.cz → „Letecká“ s volbou roku |
 | 1880–1950 | pozemkový katastr (mapa ~1900–1950) | parcely a budovy, sedí na dnešní mapu | `cuzk_archiv.py mapa pk` |
 | 1945–1952 | konfiskace a příděly (**hlavně pohraničí, majetek Němců, Maďarů a „zrádců“**) | komu dům vzali a komu ho přidělili, odhad, popis domu a živnosti, žádosti novoosídlenců | fondy Osidlovacího úřadu a Fondu národní obnovy (dům, živnost) a Národního pozemkového fondu (statek, půda) v SOA a SOkA, níže „Konfiskace a příděly 1945–1952“ |
 | 1951–1992 | smlouvy, dědictví, evidence nemovitostí (od 1964) | vlastníci, ale **1951–1964 bez úplné evidence** (níže „Vlastníci po roce 1950“) | majitelé domu, katastrální pracoviště, SOkA |
@@ -193,6 +193,12 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   metrů: porovnávej podle návsi a cest, ne podle souřadnic. Do textu napiš, co je na snímku vidět, s citací
   „Letecký měřický snímek <rok>, VGHMÚř Dobruška © MO ČR, Archiv ČÚZK“. **Výřez nepřikládej** (soubor je placený
   a jen pro vlastní potřebu, `podminky.md`). Obrázek z 50. let do výstupu vezmi z ortofota CENIA (výše).
+- **Ortofota po letech od 1998** (změny domu v posledních desetiletích: přístavby, zbořené stodoly, nové domy):
+  `ortofota.py serie "Osada čp" 100 --zapsat dum` stáhne všechny ročníky archivu ČÚZK nad domem (každý rok se snímkovala
+  jen část republiky, u domu bývá ~10 ročníků, do 2001 černobílé) se stejným výřezem a zapíše je do `mapy.json`
+  (web je prolíná, „ČÚZK, rok“, CC BY 4.0, smí do PDF). Kraje Jihočeský, Plzeňský, Jihomoravský a Zlínský přidají
+  ročníky, které ČÚZK u domu nemá (Jihomoravský okresy od 1996) – **jen ke čtení**, licence krajů není zveřejněná.
+  Do textu napiš, co se mezi ročníky změnilo („mezi 2004 a 2007 zmizela stodola ve dvoře“), s citací snímků.
 - Ulož výřez se vsí a s domem do `dokumenty/`, pak `vyrez.py` a `data/mapy.json` (zdroj „ČÚZK, Archiv ČÚZK,
   <mapa, signatura, list>“, url https://ags.cuzk.gov.cz/archiv/). Na stránce domu se ukáže v galerii, porovnání viz `web.md`.
 - Mapy ÚAZK (stabilní katastr, císařské otisky) se smí zveřejnit bez souhlasu a poplatku s citací „Ústřední archiv

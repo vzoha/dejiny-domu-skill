@@ -57,6 +57,8 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | ÚAZK (stabilní katastr, mapy kolem 1830) | Nástroj | ano | ano | ano | ano | Zveřejnit lze bez souhlasu i poplatku (ceník ÚAZK). Badatelský řád sice komerční využití obecně zpoplatňuje, státní sazebník ale takový poplatek nemá. Uveďte „Ústřední archiv zeměměřictví a katastru“ a signaturu |
 | ČÚZK, dnešní letecké snímky | Nástroj | ano | ano | ano | ano | Uveďte „ČÚZK, rok“ |
 | ČÚZK, archivní letecké snímky | Ručně, soubor objednat | ano | prohlížet ano, soubor souhlas | souhlas | ano | Prohlížení v aplikaci zdarma, popsat, co vidíte, smíte. Soubor 500 Kč a jen pro vlastní potřebu |
+| ČÚZK, archivní ortofoto 1998–2023 (`ortofota.py`) | Nástroj | ano | ano | ano | ano | Otevřená data CC BY 4.0, uveďte „ČÚZK, rok snímku“ |
+| Ortofota krajů (Jihočeský, Plzeňský, Jihomoravský, Zlínský) | Nástroj | ano | prohlížet ano | souhlas | ano | Licence k mapovým službám není zveřejněná (data GEODIS, TopGis, ČÚZK). Popsat, co je vidět, smíte; obrázek se souhlasem kraje |
 | Letecké snímky 50. let (CENIA) | Nástroj | ano | ano | ano | ano | Uveďte celý zdroj: „Historická ortofotomapa ©CENIA 2010 a ©GEODIS BRNO, spol. s r.o. 2010, Podkladové letecké snímky poskytl VGHMÚř Dobruška, ©MO ČR 2009“ |
 | Vojenská mapování (Geolab UJEP) | Nástroj | ano | neřeší | ano | ano | Uveďte Rakouský státní archiv s číslem sekce, Geolab a MŽP |
 | II. vojenské mapování (geoportál CENIA) | Nástroj | ano | prohlížet ano | souhlas | ano | Podmínky si odporují. Obrázky vezměte z Geolabu |

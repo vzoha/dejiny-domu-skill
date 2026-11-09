@@ -36,7 +36,7 @@ LIMITY = {
     "ags.cuzk.gov.cz": (0.5, 0.05), "ags.cuzk.cz": (0.5, 0.05),   # ArcGIS ČÚZK – mapy jsou dotazy na export
     "kramerius5.nkp.cz": (1.0, 0.05), "anno.onb.ac.at": (1.0, 0.05),
     "nominatim.openstreetmap.org": (1.1, 1.1),                       # pravidla OSM: nejvýš 1 dotaz za s
-    "gs-pub.praha.eu": (0.5, 0.05),
+    "gs-pub.praha.eu": (0.5, 0.05), "geoportal.cuzk.gov.cz": (0.5, 0.05),
 }
 BLOKACE = 30 * 60
 ROBOT = "Claude-User"

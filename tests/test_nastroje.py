@@ -917,6 +917,72 @@ ipr_praha.main()
         self.assertIn("mapy.json selhal", out)
 
 
+class TestOrtofota(Projekt):
+    """ortofota.py serie bez sítě: služby ČÚZK a krajů, RÚIAN i volání vyrez.py a zapis.py jsou nahrazené.
+    Snímek = JPEG doplněný nulami nad práh prázdného obrázku, prázdný = holý JPEG."""
+
+    def serie(self, snimky, *args, kraj=35, chyba=None):
+        """snimky = klíče vrstev (cuzk_2004, jc_2003, …), které u domu mají snímek; vrací (kód, výstup)."""
+        p = subprocess.run([sys.executable, "-I", "-X", "utf8", "-c", f"""
+import subprocess, sys; sys.path.insert(0, 'tools'); import ortofota
+JPEG = {JPEG!r}
+SNIMKY = {sorted(snimky)!r}
+ortofota.PRAZDNY_B_NA_PX = len(JPEG) + 1
+ortofota.mista.stred = lambda m: (49.0, 15.0)
+ortofota.mista.sjtsk = lambda lat, lon: (-740000.0, -1040000.0)
+ortofota.kraj = lambda lat, lon: {kraj!r}
+def get(url, params, binary=False):
+    if {chyba!r} and {chyba!r} in url + str(params.get("LAYERS")):
+        return b'<ServiceExceptionReport>chyba</ServiceExceptionReport>'
+    print("DOTAZ", url, params.get("LAYERS", ""))
+    klic = [k for k, v in ortofota.vrstvy().items()
+            if (v.adresy == url.removesuffix("/export") or url.removesuffix("/export") in v.adresy)
+            and (url != ortofota.CUZK_WMS or str(v.rok) == params["LAYERS"])]
+    plny = klic and klic[0] in SNIMKY and (klic[0] != "jmk_2000" or "Vyskov" in url)
+    return JPEG + bytes(len(JPEG) + 10) if plny else JPEG
+ortofota.get = get
+def run(cmd, **kw):
+    if "zapis.py" in cmd[2]:
+        print("ZAPIS", kw.get("input"))
+    return subprocess.CompletedProcess(cmd, 0, "", "")
+ortofota.subprocess.run = run
+sys.argv = ["ortofota.py", "serie", "Horní Lhota 12", "80", "1", *{list(args)!r}]
+ortofota.main()
+"""], cwd=self.root, capture_output=True, text=True, encoding="utf-8")
+        return p.returncode, p.stdout + p.stderr
+
+    def soubory(self):
+        return sorted(f.split("_r80")[0] for f in os.listdir(self.path("pracovni", "ortofota")))
+
+    def test_kraj_jen_roky_ktere_cuzk_nema(self):
+        kod, out = self.serie({"cuzk_2004", "jc_2003", "jc_2004", "jc_2008"})
+        self.assertEqual(kod, 0, out)
+        self.assertEqual(self.soubory(), ["cuzk_2004", "jc_2003", "jc_2008"])
+        self.assertNotIn("orto2004", out)   # rok, který má ČÚZK, se kraje vůbec neptá
+        self.assertNotIn("kr-plzensky", out)   # jiný kraj taky ne
+
+    def test_rok_s_vice_okresy_zkusi_dalsi(self):
+        kod, out = self.serie({"jmk_2000"}, kraj=116)
+        self.assertEqual(kod, 0, out)
+        self.assertEqual(self.soubory(), ["jmk_2000"])
+        self.assertIn("Blansko_2000", out)
+
+    def test_zapise_jen_cuzk_s_citaci(self):
+        kod, out = self.serie({"cuzk_2004", "jc_2003"}, "--zapsat", "dum")
+        self.assertEqual(kod, 0, out)
+        zapisy = [json.loads(r.split("ZAPIS ", 1)[1]) for r in out.splitlines() if r.startswith("ZAPIS ")]
+        self.assertEqual([z["img"] for z in zapisy], ["mapa_dum_cuzk_2004"])
+        self.assertEqual(zapisy[0]["zdroj"], "ČÚZK, 2004, archivní ortofoto ČR (CC BY 4.0)")
+        self.assertEqual(zapisy[0]["vyrez"], {"crs": "EPSG:5514", "bbox": [-740080.0, -1040080.0, -739920.0, -1039920.0]})
+        self.assertIn("nezapsáno jc_2003", out)
+
+    def test_chyba_sluzby_konci_kodem_1(self):
+        kod, out = self.serie({"cuzk_2004"}, chyba="2005")
+        self.assertEqual(kod, 1, out)
+        self.assertIn("CHYBA   cuzk_2005", out)
+        self.assertEqual(self.soubory(), ["cuzk_2004"])
+
+
 class TestMista(Projekt):
     """mista.py okoli/parcely bez sítě: odpovědi RÚIAN podstrčené místo urlopen."""
 
