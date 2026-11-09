@@ -10,7 +10,8 @@ Použití:
       dům podle RÚIAN (ČÚZK, bez klíče; najde i malé osady, které OSM nezná): adresa s dnešní obcí, lat/lon,
       parcela pod domem a katastrální území. Patří do Fáze 0/1 – dnešní obec a k. ú. se často liší od toho,
       co uživatel čeká (osada patří k jiné obci, k. ú. má jméno sousední vsi). Dotaz = "Osada čp", "Ulice čp",
-      "Ulice čp/čo" nebo ve městě i "Ulice čo" (číslo orientační, jak je na domě).
+      "Ulice čp/čo" nebo ve městě i "Ulice čo" (číslo orientační, jak je na domě); obec za čárkou zúží výběr
+      ("Husova 66, Beroun", "Na Kopečku 4, Praha").
   mista.py okoli <"Ulice čp/čo" | lat,lon> [polomer_m=80]
       všechny dnešní adresy v okolí (RÚIAN) seřazené podle čp., do poloměru; adresy jedné budovy (roh) označí; podklad pro tabulku
       adres domu v čase a pro rozlišení domů se stejnou starou adresou (reference/prameny.md → Čísla domů).
@@ -65,28 +66,40 @@ def ruian_q(vrstva, where, pole, geo=False):
         return json.load(r).get("features", [])
 
 
-def adresni_mista(dotaz, pole):
-    """Adresní místa RÚIAN pro „Osada čp“, „Ulice čp“, „Ulice čp/čo“ i „Ulice čo“."""
+def adresni_mista(dotaz, pole, obec=""):
+    """Adresní místa RÚIAN pro „Osada čp“, „Ulice čp“, „Ulice čp/čo“ i „Ulice čo“, jen v obci „obec“ (je-li zadaná).
+    Velikost písmen RÚIAN rozlišuje („Na kopečku“) – bez nálezu hledá znovu bez ní (pomalé, ~7 s na dotaz)."""
     d = dotaz.replace(chr(39), "")
     ulice, _, cislo = d.rpartition(" ")
-    dotazy = [f"adresa LIKE '{d},%'"]
+    vzory = [f"{d},%"]
     if ulice and cislo.isdigit():
-        dotazy += [f"adresa LIKE '{ulice} %/{cislo},%'",   # „Ulice čo“ – v RÚIAN je „Ulice čp/čo, Část obce, …“
-                   # obec bez ulic: „č.p. 29, 39301 Pavlov“; osada pod jinou obcí: „Švihov 47, 53825 Miřetice“
-                   f"adresa LIKE 'č.p. {cislo}, % {ulice}'", f"adresa LIKE 'č.p. {cislo}, % {ulice},%'"]
-    adr, videno = [], set()
-    for q in dotazy:   # všechny tvary, ne jen první: „Hlína 1, Horka“ i „č.p. 1, 66491 Hlína“ jsou různé vsi
-        for a in ruian_q(1, q, pole, True):
-            if a["attributes"].get("adresa", id(a)) not in videno:
-                videno.add(a["attributes"].get("adresa", id(a)))
-                adr.append(a)
-    if not adr and ulice and cislo.isdigit():
-        adr = ruian_q(1, f"adresa LIKE '%{ulice} {cislo}, %'", pole, True)
-    return adr
+        vzory += [f"{ulice} %/{cislo},%",   # „Ulice čo“ – v RÚIAN je „Ulice čp/čo, Část obce, …“
+                  # obec bez ulic: „č.p. 29, 39301 Pavlov“; osada pod jinou obcí: „Švihov 47, 53825 Miřetice“
+                  f"č.p. {cislo}, % {ulice}", f"č.p. {cislo}, % {ulice},%"]
+    for podminka in ("adresa LIKE '{}'", "UPPER(adresa) LIKE UPPER('{}')"):
+        adr, videno = [], set()
+        for vzor in vzory:   # všechny tvary, ne jen první: „Hlína 1, Horka“ i „č.p. 1, 66491 Hlína“ jsou různé vsi
+            for a in ruian_q(1, podminka.format(vzor), pole, True):
+                if a["attributes"].get("adresa", id(a)) not in videno:
+                    videno.add(a["attributes"].get("adresa", id(a)))
+                    adr.append(a)
+        if not adr and ulice and cislo.isdigit():
+            adr = ruian_q(1, podminka.format(f"%{ulice} {cislo}, %"), pole, True)
+        adr = [a for a in adr if not obec or v_obci(a["attributes"]["adresa"], obec)]
+        if adr:
+            return adr
+    return []
+
+
+def adresa_a_obec(misto):
+    """„Ulice čp, Obec“ → („Ulice čp“, „Obec“); bez čárky obec prázdná."""
+    dotaz, _, obec = misto.partition(",")
+    return dotaz.strip(), obec.strip()
 
 
 def ruian(dotaz):
-    adr = adresni_mista(dotaz, "adresa,stavebniobjekt")
+    ulice_cislo, obec = adresa_a_obec(dotaz)
+    adr = adresni_mista(ulice_cislo, "adresa,stavebniobjekt", obec)
     if not adr:
         sys.exit(f"RÚIAN „{dotaz}“ nezná – zkus jiný tvar (\"Osada čp\", \"Ulice čp\") nebo jen \"Osada\" v nahlizenidokn.cuzk.cz")
     if len(adr) > 1:
@@ -106,26 +119,58 @@ def ruian(dotaz):
                   f"k. ú. {ku[0]['attributes']['nazev'] if ku else '?'} ({pa['katastralniuzemi']})")
 
 
+SOUSEDNI_PSC_M = 12000   # PSČ jedné obce (Blíževedly 47104 a 47002, Opava 5 PSČ) mají středy blíž, stejnojmenné obce dál
+
+
 def obec_stred(nazev):
     """Obce a části obce jménem „nazev“ → [(„Část, PSČ Obec“, lat, lon)], střed = medián jejich adresních bodů RÚIAN.
     Adresa v RÚIAN: „Ulice čp, [Část, ]PSČ Obec“ nebo „Část čp, PSČ Obec“ (část bez ulic)."""
     n = nazev.replace(chr(39), "").strip()
-    skupiny = {}
+    body = {}
     for a in ruian_q(1, f"adresa LIKE '% {n}' OR adresa LIKE '%, {n}, %' OR adresa LIKE '{n} %'", "adresa", True):
+        if not a.get("geometry"):   # pár adresních míst RÚIAN nemá polohu
+            continue
         casti = a["attributes"]["adresa"].split(", ")
         psc, _, obec = casti[-1].partition(" ")
         if obec == n or (len(casti) > 2 and casti[-2] == n) or re.fullmatch(rf"{re.escape(n)} \d+[a-z]?", casti[0]):
-            skupiny.setdefault(f"{n}, {psc} {obec}", []).append((a["geometry"]["y"], a["geometry"]["x"]))
-    return [(k, statistics.median(y for y, _ in b), statistics.median(x for _, x in b)) for k, b in skupiny.items()]
+            body.setdefault((obec, psc), []).append((a["geometry"]["y"], a["geometry"]["x"]))
+    skupiny = []   # [obec, [PSČ], body]
+    for (obec, psc), b in sorted(body.items()):
+        stejna = next((g for g in skupiny if g[0] == obec and math.hypot(*odstup(*median(g[2]), *median(b))) < SOUSEDNI_PSC_M), None)
+        if stejna:
+            stejna[1].append(psc)
+            stejna[2] += b
+        else:
+            skupiny.append([obec, [psc], b])
+    return [(f"{n}, {'/'.join(pscs)} {obec}", *median(b)) for obec, pscs, b in skupiny]
+
+
+def median(body):
+    return statistics.median(y for y, _ in body), statistics.median(x for _, x in body)
+
+
+def patri_k_nazvu(cast, obec):
+    """„Praha 8“, „Beroun-Zavadilka“ i „Beroun“ patří k obci „Praha“ / „Beroun“, „Bílá Hlína“ k „Hlína“ ne."""
+    cast, obec = cast.lower(), obec.lower()
+    return cast == obec or cast.startswith((obec + " ", obec + "-"))
+
+
+def v_obci(adresa, obec):
+    """Leží adresa („Ulice čp, [Část, ]PSČ Obec“ nebo „Osada čp, PSČ Obec“) v obci nebo části „obec“?
+    Porovnává celé části adresy, ne podřetězec."""
+    prvni, *dalsi = adresa.split(", ")
+    casti = [re.sub(r" [\d/]+[a-z]?$", "", prvni)] + [re.sub(r"^\d{5} ", "", c) for c in dalsi]
+    return any(patri_k_nazvu(c, obec) for c in casti)
 
 
 def stred(misto):
-    """lat, lon z „lat,lon“, z jediné adresy RÚIAN, nebo z názvu obce či části obce (střed jejích adresních bodů).
-    Víc míst se stejnou adresou nebo stejnojmenných obcí = skončí, ať se nevybere náhodné."""
+    """lat, lon z „lat,lon“, z jediné adresy RÚIAN („Ulice čp“, „Ulice čp, Obec“), nebo z názvu obce či části obce
+    (střed jejích adresních bodů). Víc míst se stejnou adresou nebo stejnojmenných obcí = skončí, ať se nevybere náhodné."""
     if "," in misto and all(c in "0123456789., -" for c in misto):
         return tuple(float(v) for v in misto.split(","))
-    f = adresni_mista(misto, "adresa")
-    if not f and not misto.rstrip()[-1:].isdigit():
+    dotaz, obec = adresa_a_obec(misto)
+    f = [a for a in adresni_mista(dotaz, "adresa", obec) if a.get("geometry")]
+    if not f and not obec and not misto.rstrip()[-1:].isdigit():
         obce = obec_stred(misto)
         if len(obce) > 1:
             sys.exit(f"RÚIAN má {len(obce)} obcí nebo částí jménem „{misto}“ – vyber podle PSČ a okresu a zadej lat,lon:\n"
@@ -135,9 +180,10 @@ def stred(misto):
             print("střed obce:", nazev)
             return lat, lon
     if not f:
-        sys.exit(f"RÚIAN „{misto}“ nezná – zadej „Ulice čp/čo“, název obce nebo lat,lon.")
+        sys.exit(f"RÚIAN „{misto}“ nezná – zadej „Ulice čp/čo“, „Ulice čp, Obec“, název obce nebo lat,lon.")
     if len(f) > 1:
-        sys.exit(f"RÚIAN má {len(f)} míst s adresou „{misto}“ – vyber podle PSČ a okresu a zadej ho jako lat,lon:\n"
+        sys.exit(f"RÚIAN má {len(f)} míst s adresou „{misto}“ – vyber podle PSČ a okresu a zadej ho jako lat,lon\n"
+                 f"nebo „{dotaz}, Obec“:\n"
                  + "\n".join(f"  {a['attributes']['adresa']}   {a['geometry']['y']:.5f},{a['geometry']['x']:.5f}" for a in f))
     print("střed:", f[0]["attributes"]["adresa"])
     return f[0]["geometry"]["y"], f[0]["geometry"]["x"]

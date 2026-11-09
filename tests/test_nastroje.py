@@ -926,7 +926,7 @@ class TestMista(Projekt):
 
     def okoli(self, adresy, rucne):
         kod = (f"import mista, sys\nADR = {adresy!r}\n"
-               "mista.adresni_mista = lambda d, p: [{'attributes': {'adresa': a}, 'geometry': {'y': y, 'x': x}}"
+               "mista.adresni_mista = lambda d, p, o='': [{'attributes': {'adresa': a}, 'geometry': {'y': y, 'x': x}}"
                " for a, y, x, _ in ADR[:2 if d == 'Dvojí 1' else 1]]\n"
                "mista.v_obdelniku = lambda *a: [{'attributes': {'adresa': a, 'stavebniobjekt': so}, 'geometry': {'y': y, 'x': x}} for a, y, x, so in ADR]\n"
                f"sys.argv = ['mista.py', 'okoli', {rucne!r}, '80']; mista.main()")
@@ -951,8 +951,9 @@ class TestMista(Projekt):
 
     def stred(self, adresy, dotaz):
         """mista.stred s podstrčeným RÚIAN: adresy = [(adresa, lat, lon)], adresní místo „dotaz“ RÚIAN nezná."""
-        kod = (f"import mista\nADR = {adresy!r}\nmista.adresni_mista = lambda d, p: []\n"
-               "mista.ruian_q = lambda v, w, p, g=False: [{'attributes': {'adresa': a}, 'geometry': {'y': y, 'x': x}} for a, y, x in ADR]\n"
+        kod = (f"import mista\nADR = {adresy!r}\nmista.adresni_mista = lambda d, p, o='': []\n"
+               "mista.ruian_q = lambda v, w, p, g=False: [{'attributes': {'adresa': a}, 'geometry': {'y': y, 'x': x} if y else None}"
+               " for a, y, x in ADR]\n"
                f"print(mista.stred({dotaz!r}))")
         return self.spust(kod)
 
@@ -974,6 +975,29 @@ class TestMista(Projekt):
         self.assertIn("RÚIAN má 3 obcí nebo částí", p.stderr)
         self.assertIn("Štítina, 53825 Miřetice   50.50000,15.50000", p.stderr)
         self.assertIn("Štítina, 12345 Velkov", p.stderr)
+
+    def test_obec_s_vice_psc_je_jedna_a_bod_bez_polohy_nevadi(self):
+        p = self.stred(self.OBCE[:3] + [("Lesní 1, 74792 Štítina", 49.12, 18.12), ("Polní 9, 74791 Štítina", None, None)],
+                       "Štítina")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertIn("střed obce: Štítina, 74791/74792 Štítina", p.stdout)
+
+    def test_adresa_s_obci_za_carkou_a_velikost_pismen(self):
+        dotazy = ("import mista\nW = []\n"
+                  "def q(v, w, p, g=False):\n    W.append(w)\n    return [] if 'UPPER' not in w else ["
+                  "{'attributes': {'adresa': 'Na kopečku 1283/4, Libeň, 18000 Praha 8'}, 'geometry': {'y': 50.1, 'x': 14.5}},"
+                  "{'attributes': {'adresa': 'Na Kopečku 4, 47101 Bílá Praha'}, 'geometry': {'y': 49.0, 'x': 15.0}}]\n"
+                  "mista.ruian_q = q\nprint(mista.stred('Na Kopečku 4, Praha'))\nprint(any('UPPER' in w for w in W))")
+        p = self.spust(dotazy)
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertIn("střed: Na kopečku 1283/4, Libeň, 18000 Praha 8", p.stdout)   # „Bílá Praha“ není Praha
+        self.assertIn("True", p.stdout)
+
+    def test_osada_bez_ulic_patri_k_obci_podle_nazvu_pred_cislem(self):
+        p = self.spust("import mista\n"
+                       "print(mista.v_obci('Levín 19, 26701 Králův Dvůr', 'Levín'), mista.v_obci('č.p. 1, 29501 Bílá Hlína', 'Hlína'),"
+                       " mista.v_obci('Husova 66, Beroun-Zavadilka, 26601 Beroun', 'Beroun'))")
+        self.assertEqual(p.stdout.split(), ["True", "False", "True"], p.stderr)
 
     def test_neznama_adresa_s_cislem_neni_obec(self):
         p = self.stred(self.OBCE, "Štítina 999")

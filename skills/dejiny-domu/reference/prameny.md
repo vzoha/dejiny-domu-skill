@@ -122,7 +122,9 @@ majetek zkonfiskovaly a stát ho přidělil novým obyvatelům. Úřady se děli
   ministerstva zemědělství. Ve fondech přídělové spisy (žádost, přídělová listina, výměra, budovy).
 - Najdi je: `narp.py "Osidlovací"`, `narp.py "Fond národní obnovy"`, `narp.py "Národní pozemkový fond"` a vyber
   úřadovnu, pod kterou obec patřila (podle okresu). `detail <id>` řekne přístupnost a inventáře. Malé okresní fondy
-  bývají nezpracované, ptej se v archivu. Konfiskaci a příděl řešil i MNV a ONV (fond obce, `narp.py "Obec"`).
+  bývají nezpracované, ptej se v archivu. Úřadovna OsÚ a FNO pro Liberecko, Ústecko a Brno v NARP chybí (11/2026; NPF má pobočku Teplice a Brno):
+  pak MNV a ONV, které konfiskaci a příděl taky řešily (`narp.py "Obec"` → „Místní národní výbor …“ od 1945),
+  a osidlovací komise okresu (Rumburk, Děčín, Kaplice…). Stejnojmenné obce mají MNV v různých archivech (Levín 3×).
 - Nic z toho není online. Spis si vyžádej podle obce a čísla domu, nejlépe se jménem posledního německého
   majitele → `archivni_dotazy.md`. Příděl bývá zapsaný i v pozemkové knize (vklad pro přídělce).
 - **Citlivé:** odsun a konfiskace se týkají rodin, které možná dosud žijí ve vsi nebo v Německu → `soukromi.md`.

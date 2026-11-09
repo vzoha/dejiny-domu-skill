@@ -6,7 +6,7 @@ Archiv ČÚZK je webová aplikace nad službami ArcGIS. Token pro ně vydává v
 nástroj si ho obstará sám a uloží na hodinu do pracovni/.cuzk_token.
 
 Použití (z kořene projektu):
-  cuzk_archiv.py listy "Horní Lhota 12" | "Obec" | lat,lon
+  cuzk_archiv.py listy "Horní Lhota 12" | "Ulice čp, Obec" | "Obec" | lat,lon
       které listy stabilního katastru pokrývají místo: katastrální obec stabilního katastru (často jiná než dnes – malá ves
       bývala součástí sousední), originální mapa (om_SIGN_INV, rok reambulace, listy om_SOUB), císařský otisk
       (cio_SIGN_INV), evidenční mapa (změny 1883–1956, je-li naskenovaná) a indikační skica (S0X = předpona
