@@ -12,7 +12,7 @@ Nástroje na archivy, čtení snímků, výřezy, deník hledání a web jsou sp
 rodokmenu za skvělý základ.
 
 **Aktuální verze: 0.9.0 (listopad 2026), rané vydání.** Skill vznikl při zjišťování dějin jednoho domu a zatím byl
-vyzkoušený jen na něm (Linux). Počítejte s chybami a dejte mi o nich vědět.
+vyzkoušený na několika domech v Čechách (Linux). Počítejte s chybami a dejte mi o nich vědět.
 
 ## Dějiny domu na zakázku
 
@@ -49,6 +49,8 @@ výměnek čp. 30 a statek čp. 1 v Lništi (obec Slavče, okres České Budějo
   dost kreditů; tarif Pro stačí na vyzkoušení.
 - Programy **Python 3, Node.js, ImageMagick a git**. Claude zkontroluje, co chybí, a pomůže s instalací.
 - Volitelně účet na [Netlify](https://www.netlify.com) (zdarma), pokud chcete web zveřejnit.
+- Volitelně osobní klíč [Europeany](https://pro.europeana.eu/page/get-api) (zdarma) na staré obrázky obce
+  z evropských sbírek. Claude vám řekne, kde ho získat.
 
 ## Instalace
 
@@ -86,7 +88,8 @@ Stáhněte repozitář a zkopírujte složku `skills/dejiny-domu` do `~/.claude/
 skills/dejiny-domu/
   SKILL.md           průvodce pro Clauda (fáze, pravidla)
   reference/         návody: prameny k domu a obci, čtení matrik, portály archivů, formát dat, web, texty, soukromí
-  tools/             nástroje v Pythonu (archivy, Archiv ČÚZK, RÚIAN, výřezy, rámečky, kontrola dat, export do webu)
+  tools/             nástroje v Pythonu (archivy, Archiv ČÚZK, RÚIAN, staré obrázky a mapy, výřezy, rámečky,
+                     kontrola dat, export do webu)
   template/          šablona projektu: prázdná data a web (Astro)
 .claude-plugin/      instalace jako plugin
 ```
@@ -101,9 +104,19 @@ Skill je text (návod pro Clauda) a skripty v Pythonu, které si můžete před 
 MCP servery; skripty spouští jen Claude, když je potřebuje, a Claude Code se vás na ně zeptá. Zapisují do složky
 projektu, jen společný limit rychlosti k archivům si drží stav ve `~/.cache/dejiny-domu/`. Do projektu skill zapíše
 hook (`.claude/settings.json` → `tools/hlidac.py`), který Claudovi nedovolí posílat na weby dotazy mimo ten limit –
-archivy po sérii rychlých dotazů blokují IP adresu. Chodí na archivní portály, které to dovolují (ARON, AHMP, MZA Brno – jen hledání,
-SOA Litoměřice a ZA Opava – obrázkový server, Matricula, Archiv ČÚZK, IPR Praha, policejní přihlášky Národního archivu, hřbitovní pasporty obcí na GisOnline.cz), noviny (ANNO, Kramerius), OpenStreetMap a při instalaci webu do registru npm; na Netlify jen
-tehdy, když web sami zveřejníte. Instalujte skilly jen od lidí, kterým věříte.
+archivy po sérii rychlých dotazů blokují IP adresu. Chodí na:
+- archivní portály, které to dovolují (ARON, AHMP, eBadatelna SOA Praha, MZA Brno – jen hledání, SOA Litoměřice
+  a ZA Opava – obrázkový server, Matricula, policejní přihlášky Národního archivu, sčítání Brna, Národní archivní portál),
+- mapy a úřední data (Archiv ČÚZK, ortofota ČÚZK a krajů, RÚIAN, CENIA, Geolab, IPR Praha, OpenStreetMap, ARES
+  a obchodní rejstřík),
+- noviny a knihy (ANNO, Kramerius, Česká digitální knihovna),
+- památky a sbírky (Památkový katalog a MIS NPÚ, eSbírky, Fotobanka Seidel, Industriální topografie,
+  translokační plány ČVUT, Wikimedia Commons, Europeana, Deutsche Digitale Bibliothek, pohlednice AKON
+  Rakouské národní knihovny, zanikleobce.cz),
+- evidence válečných hrobů MO a hřbitovní pasporty obcí na GisOnline.cz,
+- při instalaci webu do registru npm; na Netlify jen tehdy, když web sami zveřejníte.
+
+Instalujte skilly jen od lidí, kterým věříte.
 
 ## Podmínky archivů
 Archivy mají pro své portály různé podmínky: některé snímky dovolují jen prohlížet, jiné zakazují roboty nebo
