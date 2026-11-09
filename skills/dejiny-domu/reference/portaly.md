@@ -290,6 +290,17 @@ Archeologické akce (výzkumy při stavbách), lokality a nálezy po katastrech,
   a přípona bývá i `.JPG` – nástroji dej vždy **celou adresu z HTML**:
   `python3 -I tools/soal_zoomify.py "<adresa>" 2 pracovni/x.jpg` (2 = čtvrtinové rozlišení na orientaci podle záhlaví
   stránek, 0 = plné jen u nalezeného zápisu). Obrázkový server images.archives.cz neomezuje a cookies nepotřebuje.
+- **Co dalšího tam je kromě matrik** (vlevo dlaždice druhu): **Mapy, atlasy, technické výkresy** (~41 tis. záznamů,
+  ~30 tis. se snímky), **Pozemkové knihy** (gruntovnice, purkrechtní registra, knihy kupních smluv, urbáře; od 2012),
+  **Sčítání** 1869–1921 (pole Číslo popisné, u části obcí vytěžená jména), **Kartotéky** (odsunové kartotéky,
+  Volkskartei, domovské právo, **evidenční karty domů s majiteli a obyvateli**), **Kroniky**, **Veduty**, **Fotografie
+  a pohlednice**, **Spolkové spisy**. **Katastry Slezska** najde hledání obce bez filtru druhu (Štítina 9. 11.):
+  josefský katastr (parcelní protokol a kniha pozemnostních archů, protokol **se snímky**, 176), Matrika výnosu
+  pozemků 1820–1842, Stabilní katastr slezský (protokol parcel, pozemnostní archy, popis hranic, **indikační skica**,
+  ta jen v kartonu bez snímků → skicu i originální mapu stáhne `cuzk_archiv.py listy`, Štítina = skici „Sl446“, stejné
+  číslo jako signatura ZAO Sl. 446). Číslo u záznamu = počet snímků, bez čísla jen popis. Staré názvy obcí: Místopisný
+  rejstřík obcí českého Slezska a severní Moravy (Turek, ZAO 2004), odkaz na stránce archivu Digitální badatelna ›
+  Informace.
 - **POZOR na blokování** (jen stránky aplikace, obrázky ne): rychlé dotazy → CAPTCHA, „operace vyhodnoceny jako
   nestandardní“ nebo „Access blocked“ na 30 minut; po desítkách dotazů za den vrací showZoomify „Server Exception“
   (denní limit – pokračuj až další den). Pauza 3–6 s mezi stránkami, dávky do ~80 stránek, žádné rychlé `fetch` hned
