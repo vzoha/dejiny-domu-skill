@@ -7,7 +7,7 @@ Plný AKON má asi dvakrát víc pohlednic, ale jen jako mapovou aplikaci: nást
 (ty v otevřených datech nejsou, obrázek jen se souhlasem ÖNB).
 
 Použití:
-  akon.py "<obec>" [od-do] [--km 3]   – id | rok | název | vzdálenost | vydavatel | odkaz
+  akon.py "<obec>" | "<Ulice čp, Obec>" [od-do] [--km 3]   – id | rok | název | vzdálenost | vydavatel | odkaz
   akon.py <šířka,délka> [od-do] [--km 3]
   akon.py detail <id>                 – vše o pohlednici, obrázek a citace
 Data (2 MB) stáhne poprvé do ~/.cache/dejiny-domu/akon/ a obnoví po půl roce.

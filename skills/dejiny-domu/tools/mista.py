@@ -160,11 +160,20 @@ POLOHA = re.compile(r"\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*")   # „šířka,
 
 
 def obec_nebo_poloha(misto):
-    """(lat, lon, popis) z „šířka,délka“ nebo z názvu obce či části obce v RÚIAN; obec mimo RÚIAN → (None, None, None).
-    Víc stejnojmenných obcí = skončí se seznamem, ať se nevybere náhodná."""
+    """(lat, lon, popis) z „šířka,délka“, z adresy („Ulice čp, Obec“, „Osada čp“) nebo z názvu obce či části obce
+    v RÚIAN; místo mimo RÚIAN → (None, None, None). Víc stejnojmenných obcí nebo adres = skončí se seznamem,
+    ať se nevybere náhodná."""
     if POLOHA.fullmatch(misto):
         lat, lon = (float(x) for x in misto.split(","))
         return lat, lon, misto
+    if re.search(r"\d", misto):   # adresa domu, ne obec
+        dotaz, obec = adresa_a_obec(misto)
+        adresy = [a for a in adresni_mista(dotaz, "adresa", obec) if a.get("geometry")]
+        if len(adresy) > 1:
+            sys.exit(f"RÚIAN má {len(adresy)} míst s adresou „{misto}“ – zadej „{dotaz}, Obec“ nebo šířka,délka:\n"
+                     + "\n".join(f"  {a['attributes']['adresa']}   {a['geometry']['y']:.5f},{a['geometry']['x']:.5f}" for a in adresy))
+        if adresy:
+            return adresy[0]["geometry"]["y"], adresy[0]["geometry"]["x"], adresy[0]["attributes"]["adresa"]
     obce = obec_stred(misto)
     if len(obce) > 1:
         sys.exit(f"RÚIAN má {len(obce)} obcí nebo částí jménem „{misto}“ – vyber podle PSČ a zadej šířka,délka:\n"

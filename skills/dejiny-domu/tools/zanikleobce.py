@@ -5,7 +5,7 @@ Hlavně pohraničí zaniklé po roce 1945, ale i mlýny a dvory ve vnitrozemí. 
 články přispěvatelů (často s čísly domů a jmény majitelů), počty obyvatel a domů a komentáře pamětníků.
 
 Použití:
-  zanikleobce.py "<obec>" [--km 3]   – id | název | druh | vzdálenost | fotky | odkaz (+ začátek popisu)
+  zanikleobce.py "<obec>" | "<Ulice čp, Obec>" [--km 3]   – id | název | druh | vzdálenost | fotky | odkaz (+ začátek popisu)
   zanikleobce.py <šířka,délka> [--km 3]
   zanikleobce.py detail <id>         – údaje o místě, popisky fotek, články, počty obyvatel, komentáře
 Seznam všech míst je na mapě webu: stáhne ho jednou za 30 dní do ~/.cache/dejiny-domu/zanikleobce/ (2,6 MB).
