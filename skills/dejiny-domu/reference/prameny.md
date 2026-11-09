@@ -10,6 +10,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | dnes | katastr nemovitostí, RÚIAN | parcela, k. ú., dnešní obec | `mista.py ruian "Osada čp"` (hned ve Fázi 0 – dnešní obec a k. ú. bývají jiné, než se čeká), nahlizenidokn.cuzk.cz |
 | 1938–dnes | letecké snímky | jak dům a dvůr vypadaly, kdy přibyly a zmizely stavby | ags.cuzk.gov.cz/archiv (Archiv ČÚZK, ročníky vypíše `cuzk_archiv.py lms`), ortofoto CENIA z 50. let (`cuzk_archiv.py mapa cenia50`, smí do PDF), mapy.cz → „Letecká“ s volbou roku |
 | 1880–1950 | pozemkový katastr (mapa ~1900–1950) | parcely a budovy, sedí na dnešní mapu | `cuzk_archiv.py mapa pk` |
+| 1945–1952 | konfiskace a příděly (**hlavně pohraničí, majetek Němců, Maďarů a „zrádců“**) | komu dům vzali a komu ho přidělili, odhad, popis domu a živnosti, žádosti novoosídlenců | fondy Osidlovacího úřadu a Fondu národní obnovy (dům, živnost) a Národního pozemkového fondu (statek, půda) v SOA a SOkA, níže „Konfiskace a příděly 1945–1952“ |
 | 1951–1992 | smlouvy, dědictví, evidence nemovitostí (od 1964) | vlastníci, ale **1951–1964 bez úplné evidence** (níže „Vlastníci po roce 1950“) | majitelé domu, katastrální pracoviště, SOkA |
 | 1870–1950 | pozemkové knihy (vložky) a sbírka listin | vlastníci, kupní a svatební smlouvy, dluhy, výměnky | katastrální pracoviště (do 1950 často SOA / SOkA) – `archivni_dotazy.md` |
 | 1857–1921 | sčítání lidu (1857, 1869, 1880, 1890, 1900, 1910, 1921) | **celá domácnost po číslech domů**: jména, roky a místa narození, vztahy, řemesla, dobytek | SOkA. Jižní Čechy jsou na digi.ceskearchivy.cz (stejný portál jako matriky; snímky jen prohlížet, `podminky.md`) |
@@ -101,6 +102,22 @@ Zdroj: ČÚZK, Historie pozemkových evidencí (cuzk.gov.cz → Katastr nemovito
   vlastnících, od 2014 zápisem). Datum vzniku v `detail <IČO>` („Datum vzniku společenství“) je tedy **zhruba doba
   prodeje bytů**, ne den rozdělení domu. Bytové družstvo v domě bývá vlastníkem domu. Kdo vlastní dnes, řekne list
   vlastnictví.
+
+## Konfiskace a příděly 1945–1952
+Týká se hlavně pohraničí a domů, kde do 1945 žili Němci (také Maďaři a lidé označení za zrádce). Dekrety 1945
+majetek zkonfiskovaly a stát ho přidělil novým obyvatelům. Úřady se dělily podle druhu majetku:
+- **Dům, živnost, firma, rodinný domek, nábytek:** Osidlovací úřad a Fond národní obnovy (FNO, dekret 108/1945),
+  oblastní úřadovny (Plzeň, Karlovy Vary, České Budějovice, Teplice, Pardubice, Opava, Olomouc, Trutnov…) a místní
+  správy národního majetku. Ve fondech spisy o konfiskaci a přídělu, odhady, prodejní spisy; v Plzni i zvláštní
+  řada přídělů rodinných domků.
+- **Statek a zemědělská půda:** Národní pozemkový fond (NPF, dekrety 12 a 28/1945) a okresní osidlovací komise
+  ministerstva zemědělství. Ve fondech přídělové spisy (žádost, přídělová listina, výměra, budovy).
+- Najdi je: `narp.py "Osidlovací"`, `narp.py "Fond národní obnovy"`, `narp.py "Národní pozemkový fond"` a vyber
+  úřadovnu, pod kterou obec patřila (podle okresu). `detail <id>` řekne přístupnost a inventáře. Malé okresní fondy
+  bývají nezpracované, ptej se v archivu. Konfiskaci a příděl řešil i MNV a ONV (fond obce, `narp.py "Obec"`).
+- Nic z toho není online. Spis si vyžádej podle obce a čísla domu, nejlépe se jménem posledního německého
+  majitele → `archivni_dotazy.md`. Příděl bývá zapsaný i v pozemkové knize (vklad pro přídělce).
+- **Citlivé:** odsun a konfiskace se týkají rodin, které možná dosud žijí ve vsi nebo v Německu → `soukromi.md`.
 
 ## Gruntovní knihy – jak na ně
 1. Zjisti **panství**, ke kterému ves (nebo dům!) patřila před 1848. Ves mohla patřit pod dvě panství (část domů
