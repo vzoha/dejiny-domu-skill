@@ -9,12 +9,13 @@ Použití:
   industrial.py detail <id>                              – adresa, datace, dějiny, literatura, osoby, odkaz, citace
 Obsah je chráněný („všechna práva vyhrazena“): do výstupu jen zjištění vlastními slovy s citací a odkaz,
 texty a fotky nepřebírat (reference/podminky.md). Nástroj jen čte: POST posílá výhradně na čtecí cesty …/filter."""
-import html, json, os, re, sys, unicodedata, urllib.request
+import html, json, os, re, sys, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti (slusne.py)
+from nazvy import bez_diakritiky, zminuje_obec   # porovnání názvů obcí (nazvy.py)
 
 API = "https://api.databaze.fa.cvut.cz/apiPublic/industrialni-topografie/"
 WEB = "https://www.industrialnitopografie.cz/cs/structures/"
@@ -51,10 +52,6 @@ def hledej(sloupce):
     return objekty, celkem
 
 
-def bez_diakritiky(s):
-    return unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
-
-
 def odkaz(id_, nazev):
     """Adresa jako v mapě webu: název bez diakritiky s pomlčkami a id („mestansky-novy-pivovar-762“)."""
     slug = re.sub(r"[^a-z0-9]+", "-", bez_diakritiky(nazev)).strip("-")
@@ -86,8 +83,7 @@ def zminuje(o, misto):
     """Fulltext API hledá i uvnitř slov a bez diakritiky („Lniště“ v adrese hrebecskedulnistezky.cz) – ověří slovo v textu."""
     d = detail(o["id"])
     texty = " ".join(str(d.get(k) or "") for k in ("nameOriginal", "descriptionPublic", "literature"))
-    kmen = re.sub(r"[aeiouy]+$", "", bez_diakritiky(misto))   # i v jiném pádě (Berouna, Telči)
-    return re.search(rf"\b{re.escape(kmen)}(?:[aeiouy][a-z]?)?\b", bez_diakritiky(text(texty))) is not None
+    return zminuje_obec(text(texty), misto)
 
 
 def datace(datings):

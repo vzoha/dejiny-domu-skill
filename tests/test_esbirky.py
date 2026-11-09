@@ -27,17 +27,6 @@ def stranka_next(data):
 
 class EsbirkyTest(unittest.TestCase):
 
-    def test_obec_v_nazvu_i_v_jinem_pade(self):
-        self.assertTrue(esbirky.v_nazvu("Madona ze Lniště", "Lniště"))
-        self.assertTrue(esbirky.v_nazvu("Zámek Telč", "telc"))
-        self.assertTrue(esbirky.v_nazvu("Náměstí v Telči", "Telč"))
-        self.assertTrue(esbirky.v_nazvu("[Praha-Holešovice]", "Holešovice"))
-        self.assertFalse(esbirky.v_nazvu("Telčice", "Telč"))
-        self.assertFalse(esbirky.v_nazvu("Lhotka u Prahy", "Lhota"))   # zdrobnělina je jiná obec
-        self.assertTrue(esbirky.v_nazvu("Mlýn pod Lhotou", "Lhota"))
-        self.assertFalse(esbirky.v_nazvu("Sezemice", "Nežetice"))
-        self.assertFalse(esbirky.v_nazvu(None, "Telč"))
-
     def test_vypis_jen_obec(self):
         self.assertEqual(esbirky.vypis([SEZEMICE, MADONA], "Lniště"),
                          ["  63291100 | není upřesněna | Madona ze Lniště | Skleněná deska | Trojrozměrné | CC_BY_NC_SA"])

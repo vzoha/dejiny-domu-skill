@@ -9,12 +9,13 @@ Použití:
   pamatky.py detail <id>                         – vznik, stavební vývoj, popis, literatura, fotky v MIS, odkaz
 Data seznamu památek jsou otevřená (CC BY 4.0): citace „NPÚ, Památkový katalog, katalogové číslo …“.
 Fotky jsou dílo NPÚ – jen odkazem, do výstupu ne (reference/podminky.md)."""
-import json, os, re, sys, unicodedata, urllib.parse, urllib.request
+import json, os, re, sys, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti (slusne.py)
+from nazvy import bez_diakritiky   # porovnání názvů obcí (nazvy.py)
 
 API = "https://pamatkovykatalog.cz/api/"
 WEB = "https://www.pamatkovykatalog.cz/"
@@ -32,10 +33,6 @@ def hledej(text):
                                 "sort": "podle-relevance", "limit": LIMIT})
     d = api(f"search/fulltext?{q}")
     return d.get("results") or [], d.get("count") or 0
-
-
-def bez_diakritiky(s):
-    return unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
 
 
 def odkaz(prvek):

@@ -10,12 +10,13 @@ Použití:
   esbirky.py detail <id>        – popis, místo, instituce, autor, licence, odkaz, citace
 Licence je u každého předmětu: PDM, CC0, CC BY (-SA, -ND) = obrázek smí i do placeného výstupu s uvedením
 autora a instituce; CC BY-NC… = jen nevýdělečně; bez licence = jen se souhlasem instituce. Jinak popis, citace, odkaz."""
-import json, os, re, sys, unicodedata, urllib.error, urllib.parse, urllib.request
+import json, os, re, sys, urllib.error, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti (slusne.py)
+from nazvy import zminuje_obec   # porovnání názvů obcí (nazvy.py)
 
 WEB = "https://www.esbirky.cz"
 STRAN = 5   # 18 předmětů na stranu, řazeno podle shody: dál už skoro jen jiné obce
@@ -36,16 +37,6 @@ def json_za(text, klic):
     """Hodnota JSON za prvním výskytem "klic":."""
     m = re.search(rf'"{re.escape(klic)}"\s*:\s*', text)
     return json.JSONDecoder().raw_decode(text, m.end())[0] if m else None
-
-
-def bez_diakritiky(s):
-    return unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
-
-
-def v_nazvu(nazev, obec):
-    """Obec jako slovo v názvu, i v jiném pádě („Madona ze Lniště“, „Telče“), ne jiná obec („Telčice“)."""
-    kmen = re.sub(r"[aeiouy]+$", "", bez_diakritiky(obec))
-    return re.search(rf"\b{re.escape(kmen)}(?:[aeiouy][a-z]?)?\b", bez_diakritiky(nazev)) is not None
 
 
 def hledej(obec, roky=None):
@@ -77,7 +68,7 @@ def radek(p):
 
 
 def vypis(predmety, obec):
-    return ["  " + radek(p) for p in predmety if v_nazvu(p.get("name"), obec)]
+    return ["  " + radek(p) for p in predmety if zminuje_obec(p.get("name"), obec)]
 
 
 def misto(p):

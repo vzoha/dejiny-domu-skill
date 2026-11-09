@@ -10,12 +10,13 @@ Použití:
   seidel.py "<obec>"       – id | rok | popis | zákazník a adresa | odkaz
   seidel.py detail <id>    – vše o snímku (číslo negativu, popisek na desce, klíčová slova)
 Fotky smí do výstupu jen se souhlasem muzea (prodává jen tisky, licenci nenabízí); jinak popis, citace a odkaz."""
-import json, os, re, sys, unicodedata, urllib.error, urllib.parse, urllib.request
+import json, os, sys, urllib.error, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti (slusne.py)
+from nazvy import zminuje_obec   # porovnání názvů obcí (nazvy.py)
 
 WEB = "https://fotobanka.seidel.cz"
 API = WEB + "/api/collection"
@@ -26,16 +27,6 @@ NEJVIC_DETAILU = 30   # zákazníky hledá v detailu, každý je jeden dotaz
 def cti(adresa):
     with urllib.request.urlopen(adresa, timeout=60) as r:
         return json.load(r)
-
-
-def bez_diakritiky(s):
-    return unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
-
-
-def zminuje(text, obec):
-    """Obec jako začátek slova, i v jiném pádě („Slavče“, „Slavči“); hledání webu je volné (Mohuřice → Moric)."""
-    kmen = re.sub(r"[aeiouy]+$", "", bez_diakritiky(obec))
-    return re.search(rf"\b{re.escape(kmen)}(?:[aeiouy][a-z]?)?\b", bez_diakritiky(text)) is not None
 
 
 def hledej(obec):
@@ -61,9 +52,10 @@ def detail_snimku(id_foto):
 
 def zminka(s, obec):
     """Kde snímek obec zmiňuje: "zakaznik" (adresa zákazníka), "misto" (popis, klíčová slova, popisek na desce), jinak None."""
-    if zminuje(s.get("adresa"), obec):
+    # hledání webu je volné (Mohuřice → Moric), obec ověří slovo v adrese nebo popisu
+    if zminuje_obec(s.get("adresa"), obec):
         return "zakaznik"
-    if zminuje(" ".join([s.get("popis") or "", s.get("text_desk") or ""] + (s.get("keywords") or [])), obec):
+    if zminuje_obec(" ".join([s.get("popis") or "", s.get("text_desk") or ""] + (s.get("keywords") or [])), obec):
         return "misto"
     return None
 

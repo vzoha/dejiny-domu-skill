@@ -9,12 +9,13 @@ Použití:
   translokace.py "<obec>"      – číslo plánu | lokalita (obec, okres) | rok | název | archiv a signatura | odkaz
   translokace.py detail <č.>   – vše o plánu: autor, měřítko, legenda, zakreslené domy a stavby, citace
 Plán i indikační skicu si uživatel prohlédne odkazem. Do výstupu zjištění s citací, obrázek se souhlasem archivu."""
-import html, os, re, sys, unicodedata, urllib.error, urllib.parse, urllib.request
+import html, os, re, sys, urllib.error, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti (slusne.py)
+from nazvy import bez_diakritiky   # porovnání názvů obcí (nazvy.py)
 
 WEB = "https://www.vugtk.cz/plany/cs"
 # sloupce seznamu v pořadí webu (třídy <th>), stav 8. 11. 2026
@@ -33,10 +34,6 @@ def text(kus):
     return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", kus))).strip()
 
 
-def bez_diakritiky(s):
-    return unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower().strip()
-
-
 def plany(stranka):
     """Řádky tabulky seznamu → [{id, lokalita, nazev, …}]."""
     vysledek = []
@@ -49,7 +46,7 @@ def plany(stranka):
 
 def najdi(seznam, obec):
     """Plány, kde obec, německý název nebo lokalita je hledaná obec (bez ohledu na diakritiku a velikost)."""
-    hledam = bez_diakritiky(obec)
+    hledam = bez_diakritiky(obec).strip()
     return [p for p in seznam if hledam in {bez_diakritiky(p[k]) for k in ("obec", "obec_nem", "lokalita")}]
 
 
@@ -107,8 +104,9 @@ def main(argv):
         sys.exit(f"Seznam plánů je prázdný, web se asi změnil ({WEB}/seznam/).")
     nalez = najdi(seznam, obec)
     if not nalez:
-        print(f"Translokační plán pro „{obec}“ není (prošlo {len(seznam)} plánů). Plány jsou jen z obcí, "
-              "kde v letech 1727–1728 žili Židé; zkus i německý název nebo obec, ke které ves patří.")
+        print(f"Ve sbírce VÚGTK ({len(seznam)} plánů) plán pro „{obec}“ není. Plány jsou jen z obcí, kde v letech "
+              "1727–1728 žili Židé, a sbírka nemá všechny (třeba Kolín ani Polnou); zkus i německý název nebo obec, "
+              "ke které ves patří. Chybějící plán může být v Národním archivu nebo MZA.")
         return
     print(f"Translokační plány 1727–1728 pro „{obec}“: {len(nalez)}")
     print("\n".join(radek(p) for p in nalez))

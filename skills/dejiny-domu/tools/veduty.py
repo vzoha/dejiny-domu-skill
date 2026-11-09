@@ -12,12 +12,13 @@ Heslo ukáže, která ze stejnojmenných obcí to je („Pavlov (Břeclav, Česk
 mapy panství, okresů a mapové listy pak najde jen hledání podle polohy (souřadnice z RÚIAN nebo mapy).
 Přístup: public = volně online, onsite = jen v knihovně. Obrázek do výstupu jen volné dílo a podle podmínek knihovny
 (reference/podminky.md, Kramerius MZK = souhlas); jinak popis, citace a odkaz."""
-import json, os, re, sys, unicodedata, urllib.parse, urllib.request
+import json, os, re, sys, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti (slusne.py)
+from nazvy import bez_diakritiky   # porovnání názvů obcí (nazvy.py)
 
 CDK = "https://api.ceskadigitalniknihovna.cz/search/api/client/v7.0/search"
 ODKAZ = "https://www.ceskadigitalniknihovna.cz/uuid/"   # + celé pid „uuid:…“, bez prefixu web skočí na úvod
@@ -56,10 +57,6 @@ def hledej(q):
         if len(zaznamy) >= celkem:
             break
     return zaznamy, celkem
-
-
-def bez_diakritiky(s):
-    return unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
 
 
 def heslo(z, misto):
