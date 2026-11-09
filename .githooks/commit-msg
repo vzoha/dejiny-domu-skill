@@ -2,9 +2,13 @@
 # Kontrola Conventional Commits (viz CLAUDE.md)
 first=$(head -n1 "$1")
 case "$first" in Merge*|Revert*|fixup!*|squash!*) exit 0;; esac
-if ! printf '%s' "$first" | grep -Eq '^(feat|fix|docs|refactor|style|test|chore|release)(\([a-z0-9_-]+\))?!?: .+'; then
+if ! printf '%s' "$first" | grep -Eq '^(feat|fix|docs|refactor|style|test|chore|release)(\((skill|playbook|nastroje|web|readme|plugin)\))?!?: .+'; then
   echo "Commit neodpovídá formátu <typ>(<scope>): <popis>" >&2
-  echo "Typy: feat fix docs refactor style test chore release (viz CLAUDE.md)" >&2
+  echo "Typy: feat fix docs refactor style test chore release, scope: skill playbook nastroje web readme plugin (viz CLAUDE.md)" >&2
   echo "Zpráva: $first" >&2
+  exit 1
+fi
+if [ "$(printf '%s' "$first" | wc -m)" -gt 80 ]; then
+  echo "Předmět commitu má přes 80 znaků (cíl ~72), detaily patří do těla. Zpráva: $first" >&2
   exit 1
 fi
