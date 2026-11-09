@@ -292,6 +292,19 @@ Archeologické akce (výzkumy při stavbách), lokality a nálezy po katastrech,
 - Trvalý odkaz `https://katalog.ahmp.cz/pragapublica/permalink?xid=<XID>&scan=<N>`.
 - Nový portál digi.ahmp.cz má ochranu proti robotům – nepoužívat. Pražské matriky 1890–1940 většinou **nemají rejstříky**
   a farností je mnoho – bez přesného data a farnosti (z úmrtí/sňatku nebo od rodiny) je hledání velmi drahé.
+- **Stavební dokumentace domu** (ahmp.cz › Hledám předky › Stavební dokumentace, 9. 11. 2026): spisy domů
+  stojících dnes předal magistrát koncem 40. a začátkem 50. let **odborům výstavby městských částí** – tam jsou jako
+  „živý spis“ (nahlédne vlastník nebo s plnou mocí; po povodni 2002 někde chybí, kopie nejsou). V AHMP jen torza:
+  NAD 4/21 Magistrát I, Hlavní spisovna – odd. D (stavební řízení 1. pol. 19. stol., ojediněle s plány);
+  NAD 4/36 Magistrát I, Referát III stavební („staré“ spisy, hlavně Nové Město, Holešovice-Bubny, Vinohrady, Břevnov,
+  skoro bez plánů); NAD 5 Magistrát II, Technické presidium (významné projekty a obecní stavby); NAD 1575 Sbírka map
+  a plánů (plány města a vybraných objektů, hledá se v Archivním katalogu). Fondy nejsou úplně zpracované → dotaz
+  badatelně s **přesnou adresou a čp.** (`archivni_dotazy.md`).
+- Technické fondy Magistrátu I (popis fondu na ahmp.cz › Fondy › Magistrát hl. m. Prahy I.): Stavební úřad 1883–1949
+  (regulace a parcelace, obecní budovy, stavební policie 1922–49, obnova po válce 1946–49), agenda komunikací
+  a kanalizace, asanace Josefova, Starého a Nového Města; Hlavní spisovna má **domovní ukazatele 1784–1904**
+  (pomocné knihy k domům). Výchozí literatura: Umělecké památky Prahy (svazky po čtvrtích), stavebně historické
+  průzkumy SÚRPMO v knihovně NPÚ.
 
 ## SOA Litoměřice (severní Čechy) – `tools/soal_zoomify.py`
 - Digitální badatelna digi.soalitomerice.cz má na vstupu automatické ověření (asi 15 s „počítání“) → knihu a snímek

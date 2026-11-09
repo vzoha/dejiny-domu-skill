@@ -54,7 +54,7 @@ Osvědčené pořadí:
    ve dvou ročnících s jinou adresou domu = **vodítko** k přečíslování, ne doklad (mohla se přestěhovat).
 7. **Družstva:** jubilejní sborníky („Dílo družstevní svépomoci“ 1933), výroční brožury – počty domů, sídlo, fotky.
    Nástupce (lidové / stavební bytové družstvo) může mít archiv stavební dokumentace.
-8. **Archiv:** stavební spis (stavební úřad městské části, AHMP), pozemková kniha (katastrální úřad), archiv družstva →
+8. **Archiv:** stavební spis (stavební úřad městské části; v Praze odbor výstavby MČ, v AHMP jen torza → `portaly.md` AHMP), pozemková kniha (katastrální úřad), archiv družstva →
    `archivni_dotazy.md`. **Stojící dům má spis na stavebním úřadu, zbořený v archivu města** (tak to výslovně píše
    Archiv města Ostravy, ten má popisy spisů a plánů s adresou v Digitální badatelně, `portaly.md`; jinde podobně, ověř).
    Spis stojícího domu nahlédne vlastník nebo kdo má jeho plnou moc.
