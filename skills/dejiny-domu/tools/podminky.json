@@ -184,6 +184,21 @@
       "nazev": "ANNO (ÖNB)", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""
     },
+    "www.bildindex.de": {
+      "nazev": "Bildindex der Kunst und Architektur (Foto Marburg)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "ochrana Proof-of-Work proti robotům, robots.txt zakazuje všem kromě Googlu (Claude-User nejmenuje); obrázky Foto Marburg a partnerů s právy u instituce (9. 11. 2026)",
+      "jinak": "Fotky Foto Marburg najde ddb.py (Deutsche Digitale Bibliothek, s licencí, často CC0 nebo CC BY-SA). Bildindex jen když tam něco chybí: hledá uživatel v prohlížeči (nebo Claude in Chrome, ověření řeší uživatel), německý název obce. Obrázek z Bildindexu do výstupu se souhlasem Foto Marburg."
+    },
+    "api.deutsche-digitale-bibliothek.de": {
+      "nazev": "Deutsche Digitale Bibliothek, API", "dotazy": true, "obrazky": true, "vyrez": "neresi",
+      "proc": "veřejné API verze 2 bez klíče (klíče DDB už nevydává, pro2 „wesentliche öffentliche Funktionen ohne API-Key“), metadata CC0, obrázky podle licence předmětu (ddb.py detail); robots.txt API nemá (9. 11. 2026)",
+      "jinak": ""
+    },
+    "www.deutsche-digitale-bibliothek.de": {
+      "nazev": "Deutsche Digitale Bibliothek, web", "dotazy": true, "obrazky": true, "vyrez": "neresi",
+      "proc": "robots.txt zakazuje * jen /search a /searchresults (hledání jde přes API ddb.py), stránky předmětů povolené; licence u předmětu (9. 11. 2026)",
+      "jinak": ""
+    },
     "bildkatalog.herder-institut.de": {
       "nazev": "Herder-Institut Marburg, Bildkatalog (Bildarchiv)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
       "proc": "robots.txt jmenuje Claude-User a zakazuje vše (Disallow: /), web chrání Anubis (nástroji Access Denied); reprodukce jen pro uvedený účel, dalším osobám a k publikaci jen s písemným souhlasem a poplatkem (Vertragsbedingungen für Publikationen, 9. 11. 2026)",

@@ -148,6 +148,23 @@ Negativy Josefa (do 1935) a Františka Seidela (do 1970) a sbírka pohlednic R. 
 - `python3 -I tools/seidel.py detail <id>` → datum, zákazník, adresa, popisek na desce, číslo negativu, technika,
   odkaz a citace. Fotku otevře uživatel odkazem; do výstupu jen se souhlasem muzea.
 
+## Deutsche Digitale Bibliothek (DDB) a Bildindex / Foto Marburg – `tools/ddb.py`
+DDB sdružuje sbírky německých muzeí, archivů a knihoven. Pro české obce hlavně: **Bildarchiv Foto Marburg** (fotky
+památek, kostelů a domů, místa jako „Schweinitz (Kreis Böhmisch Budweis)“), **Deutsche Fotothek** (pohlednice kolem
+1910, PDM), Mediathek Humboldtovy univerzity (diapozitivy), Architekturmuseum TU Berlin (skicáře, plány, CC0).
+- `python3 -I tools/ddb.py "Rumburk" "Rumburg"` → obrázky s názvem v místě nebo popisu: id | rok | název | místo | druh |
+  instituce | licence | odkaz. **Zadej i německý název**, české obce bývají jen pod ním. Druhý až poslední argument
+  roky (`ddb.py "Telč" "Teltsch" 1900-1940`). Nejvýš 100 nejrelevantnějších, seřazené podle roku.
+- Veřejné API verze 2 bez klíče (nové klíče DDB nevydává, registrace na webu je k ničemu). Hledání na webu DDB
+  robots.txt zakazuje, stránky předmětů ne.
+- **Stejnojmenná místa v Německu** (Schweinitz u Jessenu, mince, šlechtici „von Schweinitz“) pozná sloupec místo.
+  Rok je datace předmětu: u fotky stavby bývá rok stavby (kostel 1201), ne snímku.
+- `python3 -I tools/ddb.py detail <id>` → místo, rok, druh, popis, instituce, fotograf a práva, licence, odkaz, citace,
+  co smí do výstupu: PDM a CC0 volně (s institucí a fotografem), CC BY a CC BY-SA s autorem a licencí, NC jen
+  nevýdělečně, „práva vyhrazena“ jen se souhlasem instituce.
+- **Bildindex** (www.bildindex.de) má Foto Marburg celý, ale chrání ho ověření Proof-of-Work a robots.txt pouští jen
+  Google. Většinu najde `ddb.py`; Bildindex jen ručně, když něco chybí.
+
 ## Herder-Institut Marburg, Bildarchiv (bildkatalog.herder-institut.de) – jen ručně
 Asi 800 000 fotek, negativů, diapozitivů, pohlednic a kreseb ze střední a východní Evropy, z Česka větší soubory
 (hlavně německá místa, památky, města), od 16. století, těžiště fotky a pohlednice od konce 19. století. Online
@@ -651,13 +668,19 @@ Nástroje pro ně hotové nejsou. Postupuj takto a výsledek zapiš do `STAV.md`
   `https://ags.cuzk.gov.cz/arcgis/rest/services/Utilities/Geometry/GeometryServer/project` (`inSR=4326`, `outSR=5514`, `transformation=1623`, `transformForward=false` – bez ní ujede o ~10 m,
   `geometries={"geometryType":"esriGeometryPoint","geometries":[{"x":lon,"y":lat}]}`, `f=json`), pak `GetMap` s `BBOX` ±1300 m,
   `WIDTH=1800&HEIGHT=1200`, a `vyrez.py <obrázek> mapa_<obec>_1845_2_vojenske_mapovani 0,0,1,1`. Na jednotlivé domy podrobnost
-  nestačí, ale ukáže ves, cesty a mlýny. Starší adresa `geoportal.gov.cz/ArcGIS/services/CENIA/…` hlásí údržbu a oldmaps.geolab.cz
-  místo stránek vrací zdrojový kód – nepoužívat.
+  nestačí, ale ukáže ves, cesty a mlýny. Starší adresa `geoportal.gov.cz/ArcGIS/services/CENIA/…` hlásí údržbu.
+  CENIA je jen na orientaci (podmínky si odporují), **obrázek do výstupu z Geolabu** (níž).
+- **Geolab UJEP** (`geolab.cz/stare-mapy`, dřív oldmaps.geolab.cz, od 2026 přesměrováno): I. a II. vojenské mapování
+  Čech, Moravy a Slezska, Müllerovo mapování, neúplné III. mapování. Smí do PDF i na web s citací (Rakouský státní archiv
+  s číslem listu, Geolab, MŽP). Listy nejsou georeferencované: `geolab.py klad 2vm-mo klad.jpg` → najdi list podle měst
+  (Morava: sekce = řádek, kolona = sloupec, „O_10_I“ = sekce 10, východní kolona I) → `geolab.py export 2vm-mo O_10_I n.jpg`
+  (náhled listu) → obec najdi v náhledu a vyřízni `export … x0,y0,x1,y1` (podíly 0–1, plné rozlišení). Dlaždice Zoomify
+  `oldmaps.geolab.cz/<dílo>/<list>/zoomify/`, seznam listů s rozměry je ve stránce díla.
 - **3. vojenské mapování (1876–80)**: georeferencované jen jako speciální mapa 1 : 75 000 na CENIA (WMS
   `https://gis.cenia.cz/mapcache/III_vojenske_mapovani/wms`, vrstva `III_vojenske_mapovani`, EPSG:5514;
   `cuzk_archiv.py mapa vm3`) – jen ke čtení (podmínky CENIA u vojenských mapování si odporují). Do výstupu topografická sekce
   1 : 25 000 z ÚAZK (`cuzk_archiv.py rady` → `export nonstable`; klad `toposekce` má sekci a čísla rastrů v `KLD25no`).
-  Geolab má III. mapování jen jako neúplnou sadu listů v prohlížeči (od AOPK), bez mapové služby.
+  Geolab má III. mapování jen jako neúplnou sadu listů (od AOPK, `geolab.py listy 3vm-25`).
 - **Kříže, boží muka, pomníky dnes**: ZABAGED (`https://ags.cuzk.gov.cz/arcgis/rest/services/ZABAGED_POLOHOPIS/MapServer`,
   vrstva 24 „Kříž, sloup kulturního významu“, 25 „Mohyla, pomník, náhrobek“; `query` s `geometry` = obálka kolem obce,
   `inSR=outSR=4326`). Názvy nemají, jen polohu. OpenStreetMap (Overpass, `historic=wayside_cross|wayside_shrine|memorial`)
