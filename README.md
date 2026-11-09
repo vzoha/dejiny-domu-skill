@@ -8,16 +8,18 @@ místa a rozhodujete.
 
 Skill je odvozený ze skillu [**rodokmen**](https://github.com/sarsonj/rodokmen-skill) Jindřicha Šaršona (verze 0.5.0).
 Nástroje na archivy, čtení snímků, výřezy, deník hledání a web jsou společné; rozdíl je v tom, že se data točí kolem
-**čísla popisného** a lidí, kteří v domě v čase žili a vlastnili ho, ne kolem předků jedné osoby. Děkuji autorovi
+**čísla popisného** a lidí, kteří v domě v čase žili a vlastnili ho, ne kolem předků jedné osoby. Díky autorovi
 rodokmenu za skvělý základ.
 
-**Aktuální verze: 0.10.0 (listopad 2026), rané vydání.** Skill vznikl při zjišťování dějin jednoho domu a zatím byl
-vyzkoušený na několika domech v Čechách (Linux). Počítejte s chybami a dejte mi o nich vědět.
+**Aktuální verze: 0.10.0 (listopad 2026), rané vydání.** Skill vznikl při zjišťování dějin jednoho domu
+a autor s ním od té doby zpracoval několik dalších v Čechách i na Moravě (zatím jen na Linuxu). Počítejte s chybami
+a nahlaste je (viz Zpětná vazba).
 
 ## Dějiny domu na zakázku
 
-Nechcete to dělat sami? Dějiny vašeho domu zpracuji na zakázku. Bádám s tímto skillem a nejdůležitější zápisy ověřím
-v originále. Dostanete PDF s odkazy na prameny, od 1 900 Kč. Nejdřív zdarma ověřím, co se k vašemu domu dochovalo.
+Nechcete to dělat sami? Dějiny vašeho domu zpracuje na zakázku autor skillu. Bádá s tímto skillem a nejdůležitější
+zápisy ověří v originále. Dostanete PDF s odkazy na prameny, od 1 900 Kč. Nejdřív zdarma ověří, co se k vašemu domu
+dochovalo.
 
 Ukázky PDF, ceny a jak to probíhá najdete na **[www.historiedomu.cz](https://www.historiedomu.cz/)**. Rovnou se můžete
 [zeptat na svůj dům](https://www.historiedomu.cz/poptavka/?zdroj=github).
