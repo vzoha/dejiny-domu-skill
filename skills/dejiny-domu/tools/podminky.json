@@ -184,6 +184,11 @@
       "nazev": "ANNO (ÖNB)", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""
     },
+    "api.europeana.eu": {
+      "nazev": "Europeana, API", "dotazy": true, "obrazky": true, "vyrez": "neresi",
+      "proc": "oficiální API s osobním klíčem zdarma (formulář pro.europeana.eu), klíč v hlavičce X-Api-Key; metadata CC0, obrázky podle licence předmětu (europeana.py detail); robots.txt API nemá (9. 11. 2026)",
+      "jinak": ""
+    },
     "www.bildindex.de": {
       "nazev": "Bildindex der Kunst und Architektur (Foto Marburg)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
       "proc": "ochrana Proof-of-Work proti robotům, robots.txt zakazuje všem kromě Googlu (Claude-User nejmenuje); obrázky Foto Marburg a partnerů s právy u instituce (9. 11. 2026)",

@@ -165,6 +165,21 @@ památek, kostelů a domů, místa jako „Schweinitz (Kreis Böhmisch Budweis)�
 - **Bildindex** (www.bildindex.de) má Foto Marburg celý, ale chrání ho ověření Proof-of-Work a robots.txt pouští jen
   Google. Většinu najde `ddb.py`; Bildindex jen ručně, když něco chybí.
 
+## Europeana (www.europeana.eu) – `tools/europeana.py`
+Souhrnný katalog evropských muzeí, knihoven a archivů. Pro české obce přidá hlavně to, co jiné nástroje nemají:
+Mapovou sbírku PřF UK (mapy okresů a okolí, CC BY-NC), MAK Vídeň, maďarská a rakouská muzea, lipské muzeum.
+- **API klíč zdarma:** formulář https://pro.europeana.eu/page/get-api (web chrání Cloudflare, vyplní uživatel),
+  klíč přijde e-mailem. Uložit do `~/.config/europeana/api-key` (nebo proměnná `EUROPEANA_API_KEY`). Nástroj ho
+  posílá v hlavičce, ne v adrese. Veřejný klíč `api2demo` je jen na vyzkoušení.
+- `python3 -I tools/europeana.py "Rumburk" "Rumburg"` → obrázky (TYPE:IMAGE) s některým názvem **nebo se souřadnicemi
+  do 2 km od středu obce** z RÚIAN (spouštět ze složky projektu; `--km` změní okruh): id | rok | název | instituce |
+  licence | odkaz. Roky posledním argumentem (`1900-1940`), `--volne` = jen licence pro placený výstup.
+- Fotky a evidenční listy **NPÚ** (z MIS) vynechá, jinak zahltí okolí; podrobněji je ukáže `mis.py`, sem `--npu`.
+  Deutsche Fotothek a Foto Marburg najde i `ddb.py` (licence se mezi portály liší, rozhoduje ta u předmětu).
+- `python3 -I tools/europeana.py detail <id>` → název, popis, datace, autor, místo, druh, instituce, odkaz na web
+  instituce a obrázek, licence, citace a co smí do výstupu (PDM, CC0, CC BY, CC BY-SA ano; NC jen nevýdělečně;
+  „jen vzdělávání“ a „práva vyhrazena“ jen se souhlasem instituce).
+
 ## Herder-Institut Marburg, Bildarchiv (bildkatalog.herder-institut.de) – jen ručně
 Asi 800 000 fotek, negativů, diapozitivů, pohlednic a kreseb ze střední a východní Evropy, z Česka větší soubory
 (hlavně německá místa, památky, města), od 16. století, těžiště fotky a pohlednice od konce 19. století. Online
