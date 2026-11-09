@@ -59,6 +59,11 @@ Osvědčené pořadí:
 9. **Pozůstalost architekta nebo stavitele** (víš-li, kdo dům navrhl: Stavitelské listy, Památkový katalog, spis):
    `narp.py "<příjmení>"` najde jeho fond – často Archiv architektury a stavitelství NTM (výkresy, skici, fotky,
    korespondence). Návrh v pozůstalosti nemusí být postavený, nebo jinak: porovnej s plánem ze spisu a s mapou.
+10. **Dokumentace přípojek u vodárny** (kanalizace, vodovod): plán přípojky s rokem bývá doklad přestavby, přístavby
+   nebo nového bytu, i když chybí stavební spis. Dostane ji **jen vlastník domu** (nebo s jeho plnou mocí), takže o ni
+   požádá on. Praha: PVK, žádost „Poskytnutí kopie z dokumentace přípojky“ na vyjadrovaciportal.cz, jen co
+   bylo předáno do archivu PVK (od kdy, neuvádí), zpoplatněno podle ceníku PVK. Jinde se ptej místní vodárny.
+   Starší plány stokové sítě a kanalizačních přípojek mívá archiv města (Praha: AHMP, technické fondy).
 Většina tisku 1900–1990 je v Krameriu NK **neveřejná, ale v režimu DNNT** – čitelná z domova po přihlášení
 (`portaly.md` → DNNT, nástroj `dnnt.py`: hledání, úryvky, hromadné čtení, `adresa` najde i rozdělená slova).
 Bez přihlášení vidíš jen úryvky ve vyhledávání.
