@@ -332,6 +332,11 @@ Archeologické akce (výzkumy při stavbách), lokality a nálezy po katastrech,
   „Archiv obce …“: knihy pozemkové držby 1787–1879).
   Celé hledání bez filtru ukáže i nedigitalizované archiválie (karton jen v badatelně) a panství obce v popisu map.
 - Podmínky jako u Acta Publica: snímky dál využít jen se souhlasem MZA (`podminky.md`), do výstupu přepis a odkaz.
+- **Lánové rejstříky 1656–1679** (fond D 1, 372 svazků, digitalizované 2013–14): svazek = panství nebo statek, ne obec.
+  Hledej obec s filtrem digitalizátů, ve výsledcích „Lánový rejstřík panství …“ (Hlína → Kounice a Vlasatice, sign. 181).
+  Uvnitř svazku obec po obci, německy (kurent), na konci obce „Extract Dorff …“ se souhrnem (starousedlí, nově
+  osazení, pustky). Čísla domů ještě nejsou: k domu vede až pořadí hospodářů a návaznost jmen na gruntovní knihu.
+  Starší odkazy z webu (aplikace v Silverlightu, inventář v PDF) nehledej, stačí ARON.
 
 ## Pražské policejní přihlášky 1850–1914 (Národní archiv) – `tools/policie_prihlasky.py`
 - **Podmínky:** jen zákaz v robots.txt, podmínky užití ani ochrana nenalezeny (8. 11. 2026, `podminky.md`). Hledej jen
