@@ -26,7 +26,8 @@ Použití (z kořene projektu):
   cuzk_archiv.py mapa <vrstva> "Horní Lhota 12" | lat,lon <vystup.jpg> [polomer_m] [px]
       georeferencovaná (spojená) vrstva kolem místa: pk = pozemkový katastr (~1900–1950, v S-JTSK, sedí na dnešní
       domy), originalni_mapy, cisarske_otisky, cenia50 = ortofoto CENIA z 50. let (většinou 1952–54, vypíše rok
-      a citaci; CC BY, smí i do PDF). Malé obce spojené vrstvy ČÚZK často nepokrývají (bílý obrázek) –
+      a citaci; CC BY, smí i do PDF), vm3 = III. vojenské mapování, speciální mapa 1 : 75 000 (CENIA, jen ke čtení –
+      do výstupu topografická sekce z `rady`). Malé obce spojené vrstvy ČÚZK často nepokrývají (bílý obrázek) –
       pak listy + export. Výchozí poloměr 150 m, 1500 px. Vypíše i dnešní adresní body RÚIAN (čísla domů)
       v pixelech obrázku a s ImageMagickem je zakreslí do <vystup>_adresy.jpg: na které staré stavební parcele
       dnešní číslo stojí (ztotožnění domu, přečíslování). Vypíše „vyrez“ do mapy.json (prolínání na webu).
@@ -56,6 +57,8 @@ if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze 
 REFERER = "https://ags.cuzk.gov.cz/archiv/"
 ARCHIV = "https://ags.cuzk.gov.cz/arcgis4/rest/services/Archiv"
 CENIA = "https://gis.cenia.cz"
+CENIA_WMS = {"cenia50": ("ortofotomapa_historicka", "orto"),   # vrstva mapa → (služba mapcache, vrstva WMS)
+             "vm3": ("III_vojenske_mapovani", "III_vojenske_mapovani")}
 CENIA_CITACE = ("Historická ortofotomapa © CENIA 2010 a © GEODIS BRNO, spol. s r.o. 2010, Podkladové letecké snímky "
                 "poskytl VGHMÚř Dobruška, © MO ČR 2009")
 GEN = "https://ags.cuzk.gov.cz/arcgis2/rest/services/GenerateToken/Token/GPServer/GenerateToken"
@@ -216,12 +219,17 @@ def mapa(vrstva, m, out, polomer=150, px=1500):
     px, r = int(px), float(polomer)
     x, y = mista.sjtsk(*mista.stred(m))
     bbox = (x - r, y - r, x + r, y + r)   # v S-JTSK (ne WGS 84: server by ho převedl bez datumu, ~110 m vedle)
-    if vrstva == "cenia50":
-        img = get(f"{CENIA}/mapcache/ortofotomapa_historicka/wms", {
-            "SERVICE": "WMS", "VERSION": "1.1.1", "REQUEST": "GetMap", "LAYERS": "orto", "STYLES": "", "SRS": "EPSG:5514",
+    if vrstva in CENIA_WMS:
+        sluzba, vrstvy = CENIA_WMS[vrstva]
+        img = get(f"{CENIA}/mapcache/{sluzba}/wms", {
+            "SERVICE": "WMS", "VERSION": "1.1.1", "REQUEST": "GetMap", "LAYERS": vrstvy, "STYLES": "", "SRS": "EPSG:5514",
             "BBOX": obalka(bbox), "WIDTH": px, "HEIGHT": px, "FORMAT": "image/jpeg"}, binary=True)
         save_jpeg(img, out)
-        print(f"{out} – snímek z roku {cenia_rok(x, y)}. Citace: {CENIA_CITACE}")
+        if vrstva == "cenia50":
+            print(f"{out} – snímek z roku {cenia_rok(x, y)}. Citace: {CENIA_CITACE}")
+        else:
+            print(f"{out} – jen ke čtení (podmínky CENIA u vojenských mapování si odporují). Do výstupu topografickou "
+                  "sekci 1 : 25 000 z ÚAZK: rady → export nonstable D1_21__…")
     else:
         img = archiv(f"archiv_spojene_{vrstva}/MapServer/export", {
             "bbox": obalka(bbox), "bboxSR": 5514, "imageSR": 5514,
@@ -288,14 +296,18 @@ def lms(m):
     print(f"Prohlédni v aplikaci: {REFERER}?start=lms (snímky jen prohlížet a popsat, výřez do výstupu ne)")
 
 
-# vrstva kladu → (popis, jak z atributů poskládat část názvu rastru ve službě nonstable)
+# vrstva kladu → (popis, jak z atributů poskládat části názvů rastrů ve službě nonstable)
 RADY = {
     16: ("otisk katastrální mapy",   # klad „c0131-1“, rastr „B3_3C_131-1__2_25“
-         lambda a: f"{a['SIGN']}_{re.sub(r'^c0*', '', a['AEC_CM'])}__{a['cislo_sloz']}_{a['list']}"),
-    7: ("mapa evidence nemovitostí", lambda a: a["SIGN_NOMEN"]),   # Čechy
-    8: ("mapa evidence nemovitostí", lambda a: a["SIGN_NOMEN"]),   # Morava
-    9: ("mapa kultur", lambda a: a["SKENY"].split("|")[0]),
-    10: ("Státní mapa 1 : 5000", lambda a: a["NOMEN"]),
+         lambda a: [f"{a['SIGN']}_{re.sub(r'^c0*', '', a['AEC_CM'])}__{a['cislo_sloz']}_{a['list']}"]),
+    7: ("mapa evidence nemovitostí", lambda a: [a["SIGN_NOMEN"]]),   # Čechy
+    8: ("mapa evidence nemovitostí", lambda a: [a["SIGN_NOMEN"]]),   # Morava
+    9: ("mapa kultur", lambda a: [a["SKENY"].split("|")[0]]),
+    10: ("Státní mapa 1 : 5000", lambda a: [a["NOMEN"]]),
+    # III. vojenské mapování: sekce 1 : 25 000 (klad „4453-4“, rastry „D1_21__4453-5“ a „-6“ = vydání podle KLD25no)
+    5: ("III. vojenské mapování",
+        lambda a: [f"D1_21__{a['KLD75']}-{n}" for n in a["KLD25no"].split("|")]),
+    6: ("III. vojenské mapování", lambda a: [a["SIGN_NOMEN"]]),   # rastry „D1_22__4453_01“ … = vydání
 }
 BEZ_RASTRU = {0, 3, 11}   # letecké snímky (lms), stabilní katastr (listy), sbírka map celých zemí
 
@@ -310,15 +322,20 @@ def rady(m):
         if lid not in RADY:
             drobne.add(r["layerName"].replace("archiv_nespojene_", "").replace("_klady", ""))
             continue
-        nazev = a.get("NAZEV_JEDNOTKY") or a.get("NML") or a.get("MAPNAME") or ""
+        nazev = (a.get("NAZEV_JEDNOTKY") or a.get("NML") or a.get("MAPNAME") or "").strip()
         roky = a.get("ROKY") or a.get("ROZP_DAT") or a.get("DAT_OD") or a.get("meritko") or ""
         print(f"{RADY[lid][0]}: {nazev} {roky}".rstrip())
-        vzor = RADY[lid][1](a)
-        q = archiv("archiv_nespojene_nonstable/ImageServer/query", {
-            "where": f"Name LIKE '%{vzor.replace(chr(39), '')}%'", "outFields": "OBJECTID,Name",
-            "returnGeometry": "false", "f": "json"})
-        nalez = [f"{f['attributes']['OBJECTID']} {f['attributes']['Name']}" for f in q.get("features", [])]
-        print("   → export nonstable " + (" | ".join(nalez[:8]) if nalez else f"rastr „{vzor}“ nenalezen"))
+        try:
+            vzory = RADY[lid][1](a)
+        except KeyError:   # prázdné pole (list bez skenu) výš vypadlo z atributů
+            print("   → list není naskenovaný (prohlédni v aplikaci)")
+            continue
+        nalez = [f"{f['attributes']['OBJECTID']} {f['attributes']['Name']}" for vzor in vzory for f in archiv(
+            "archiv_nespojene_nonstable/ImageServer/query", {
+                "where": f"Name LIKE '%{vzor.replace(chr(39), '')}%'", "outFields": "OBJECTID,Name",
+                "returnGeometry": "false", "f": "json"}).get("features", [])]
+        print("   → export nonstable " + (" | ".join(nalez[:8]) + (f" | … ({len(nalez)})" if len(nalez) > 8 else "")
+                                         if nalez else f"rastr „{' | '.join(vzory)}“ nenalezen"))
     if drobne:
         print("malá měřítka (rastry hledej v aplikaci): " + ", ".join(sorted(drobne)))
     print("Stabilní katastr: listy; letecké snímky: lms.")

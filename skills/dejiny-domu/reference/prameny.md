@@ -38,7 +38,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | 1880–1960 | Fotoateliér Seidel, Český Krumlov (**jen Krumlovsko, Šumava, Pošumaví**) | pohledy na obec a domy, pohlednice; **ateliérové portréty obyvatel se jménem a adresou s čp.** (kniha zakázek) | `seidel.py "Obec"`, `detail <id>`; stejnojmenné obce rozliší pošta v adrese |
 | 1896–1925 | pohlednice AKON (Rakouská národní knihovna, **celá monarchie, hlavně města, lázně, hrady**) | podoba obce, náměstí, ulic, továren a hotelů kolem roku 1900 | `akon.py "Obec"` (okruh 3 km od středu obce, i německý název), `detail <id>`; obrázek volné dílo, smí do PDF s citací; plný AKON (asi 2× víc) odkazem na mapu |
 | 1860–1990 | fotografie, pohlednice, kresby a předměty ve sbírkách muzeí (eSbírky) | podoba domu, ulice, náměstí, slavností; staré negativy Národního a krajských muzeí | `esbirky.py "Obec"`, `detail <id>` (název obce v názvu předmětu); obrázek podle licence předmětu |
-| 1764–1880 | vojenská mapování (1. 1764–68, 2. 1836–52, 3. 1876–80) | vzhled vsi a okolí, cesty, mlýny | 2. mapování: WMS CENIA (`portaly.md` → Staré mapy a drobné památky); oldmaps.geolab.cz (nespolehlivé), mapire.eu (jen prohlížení) |
+| 1764–1880 | vojenská mapování (1. 1764–68, 2. 1836–52, 3. 1876–80) | vzhled vsi a okolí, cesty, mlýny | 3. mapování: topografická sekce 1 : 25 000 v ÚAZK (`cuzk_archiv.py rady`, smí do PDF), orientace `cuzk_archiv.py mapa vm3`; 2. mapování: WMS CENIA (`portaly.md` → Staré mapy a drobné památky); oldmaps.geolab.cz (nespolehlivé), mapire.eu (jen prohlížení) |
 
 ## Městský dům 20. století (činžák, vila, 1890–1990)
 Matriky a sčítání do roku 1921 tu skoro nepomohou (dům často stojí až po 1921; sčítací archy z roku 1930 a pozdější
@@ -156,8 +156,13 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
    (pod každým id) → najdi ves, pak výřez ve velkém (`export stable <id> … x0,y0,x1,y1 5000`, podíly 0–1 jako u
    `vyrez.py`). Jednotlivé listy: `rastry stable <om_SIGN_INV>` a `export stable <id> list.jpg 0,0,1,1 1500`.
 3. Mladší mapy k místu: `cuzk_archiv.py rady "Osada čp"` – otisky katastrálních map (města 1 : 1000, 1. pol.
-   20. stol.: dům i číslo parcely v době, kdy stál), mapa evidence nemovitostí, Státní mapa 1 : 5000 ve více vydáních.
-   Vypíše id rastrů pro `export nonstable <id>`. Čísla popisná v nich zpravidla nejsou, jen parcely.
+   20. stol.: dům i číslo parcely v době, kdy stál), mapa evidence nemovitostí, Státní mapa 1 : 5000 ve více vydáních,
+   **III. vojenské mapování**: topografická sekce 1 : 25 000 (`D1_21__…`, originál 1876–80 i pozdější vydání do 1953)
+   a speciální mapa 1 : 75 000 (`D1_22__…`, ~20 vydání 1875–1952). Vypíše id rastrů pro `export nonstable <id>`.
+   Čísla popisná v nich zpravidla nejsou, jen parcely. Listy vojenských map nejsou georeferencované: okolní názvy
+   ukáže `cuzk_archiv.py mapa vm3 "Osada čp" vm3.jpg 1000 1000` (speciální mapa CENIA, jen ke čtení), ves na listu
+   najdi `prehled`/`export` po částech (podíly 0–1). Sekce je mapa celé vsi s budovami, cestami a mlýny kolem 1880,
+   **do PDF smí z ÚAZK** s citací „Ústřední archiv zeměměřictví a katastru, sign. D1/21, sekce 4453/4“.
 - **Originální mapa** (om) je nejcennější: zeměměřiči do ní **dokreslovali změny při reambulaci 1869–1882 (změny
   červeně)**. Nová stavba nebo rozdělení parcely je tam i s číslem. Rok reambulace vypíše `listy`.
   **Jak číst barvy budov:** růžová = zděná, žlutá = dřevěná (stav při mapování). **Červeně šrafovaná nebo sytě červená

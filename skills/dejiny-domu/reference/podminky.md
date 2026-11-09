@@ -63,6 +63,8 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | Ortofota krajů (Jihočeský, Plzeňský, Jihomoravský, Zlínský) | Nástroj | ano | prohlížet ano | souhlas | ano | Licence k mapovým službám není zveřejněná (data GEODIS, TopGis, ČÚZK). Popsat, co je vidět, smíte; obrázek se souhlasem kraje |
 | Letecké snímky 50. let (CENIA) | Nástroj | ano | ano | ano | ano | Uveďte celý zdroj: „Historická ortofotomapa ©CENIA 2010 a ©GEODIS BRNO, spol. s r.o. 2010, Podkladové letecké snímky poskytl VGHMÚř Dobruška, ©MO ČR 2009“ |
 | Vojenská mapování (Geolab UJEP) | Nástroj | ano | neřeší | ano | ano | Uveďte Rakouský státní archiv s číslem sekce, Geolab a MŽP |
+| III. vojenské mapování, topografické sekce a speciální mapa (ÚAZK) | Nástroj | ano | ano | ano | ano | Jako ostatní archiválie ÚAZK: uveďte „Ústřední archiv zeměměřictví a katastru“, signaturu a číslo sekce |
+| III. vojenské mapování (geoportál CENIA) | Nástroj | ano | prohlížet ano | souhlas | ano | Stejný rozpor podmínek jako u II. mapování. Obrázek vezměte z ÚAZK |
 | II. vojenské mapování (geoportál CENIA) | Nástroj | ano | prohlížet ano | souhlas | ano | Podmínky si odporují. Obrázky vezměte z Geolabu |
 | IPR Praha, mapy a dnešní snímky | Nástroj | ano | ano | ano | ano | Uveďte „datový podklad © IPR Praha“ |
 | IPR Praha, letecké snímky 1938–1996 | Nástroj | ano | ano | ano | ano | Jako mapy IPR. Snímky ale nejspíš pocházejí od armády, před zveřejněním za peníze ověřte |

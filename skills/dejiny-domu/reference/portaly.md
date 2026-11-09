@@ -606,6 +606,11 @@ Nástroje pro ně hotové nejsou. Postupuj takto a výsledek zapiš do `STAV.md`
   `WIDTH=1800&HEIGHT=1200`, a `vyrez.py <obrázek> mapa_<obec>_1845_2_vojenske_mapovani 0,0,1,1`. Na jednotlivé domy podrobnost
   nestačí, ale ukáže ves, cesty a mlýny. Starší adresa `geoportal.gov.cz/ArcGIS/services/CENIA/…` hlásí údržbu a oldmaps.geolab.cz
   místo stránek vrací zdrojový kód – nepoužívat.
+- **3. vojenské mapování (1876–80)**: georeferencované jen jako speciální mapa 1 : 75 000 na CENIA (WMS
+  `https://gis.cenia.cz/mapcache/III_vojenske_mapovani/wms`, vrstva `III_vojenske_mapovani`, EPSG:5514;
+  `cuzk_archiv.py mapa vm3`) – jen ke čtení (podmínky CENIA u vojenských mapování si odporují). Do výstupu topografická sekce
+  1 : 25 000 z ÚAZK (`cuzk_archiv.py rady` → `export nonstable`; klad `toposekce` má sekci a čísla rastrů v `KLD25no`).
+  Geolab má III. mapování jen jako neúplnou sadu listů v prohlížeči (od AOPK), bez mapové služby.
 - **Kříže, boží muka, pomníky dnes**: ZABAGED (`https://ags.cuzk.gov.cz/arcgis/rest/services/ZABAGED_POLOHOPIS/MapServer`,
   vrstva 24 „Kříž, sloup kulturního významu“, 25 „Mohyla, pomník, náhrobek“; `query` s `geometry` = obálka kolem obce,
   `inSR=outSR=4326`). Názvy nemají, jen polohu. OpenStreetMap (Overpass, `historic=wayside_cross|wayside_shrine|memorial`)

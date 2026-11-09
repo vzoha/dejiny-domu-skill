@@ -917,6 +917,29 @@ ipr_praha.main()
         self.assertIn("mapy.json selhal", out)
 
 
+class TestCuzkRady(Projekt):
+    """cuzk_archiv.py rady bez sítě: klady a hledání rastrů jsou podvržené."""
+
+    def test_vojenska_sekce_a_list_bez_skenu(self):
+        klady = {"results": [
+            {"layerId": 5, "layerName": "archiv_nespojene_toposekce_klady", "attributes": {
+                "NAZEV_JEDNOTKY": "Topografická sekce 1 : 25 000", "KLD75": "4453", "KLD25no": "5|6"}},
+            {"layerId": 9, "layerName": "archiv_nespojene_kultury_klady", "attributes": {"SKENY": "Null"}}]}
+        p = subprocess.run([sys.executable, "-I", "-X", "utf8", "-c", f"""
+import sys; sys.path.insert(0, 'tools'); import cuzk_archiv
+cuzk_archiv.mista.stred = lambda m: (49.0, 15.0)
+cuzk_archiv.klady = lambda lat, lon: {klady!r}
+def archiv(cesta, params, binary=False):
+    vzor = params["where"].split("%")[1]
+    return {{"features": [{{"attributes": {{"OBJECTID": 1, "Name": vzor}}}}]}}
+cuzk_archiv.archiv = archiv
+cuzk_archiv.rady("x")
+"""], cwd=self.root, capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertIn("→ export nonstable 1 D1_21__4453-5 | 1 D1_21__4453-6", p.stdout)
+        self.assertIn("mapa kultur:\n   → list není naskenovaný", p.stdout)
+
+
 class TestOrtofota(Projekt):
     """ortofota.py serie bez sítě: služby ČÚZK a krajů, RÚIAN i volání vyrez.py a zapis.py jsou nahrazené.
     Snímek = JPEG doplněný nulami nad práh prázdného obrázku, prázdný = holý JPEG."""
