@@ -15,19 +15,23 @@ Použití (z kořene projektu):
       vypíše ročníky, které nástroj zná (klíč, rok, zdroj)
   ortofota.py serie <"Ulice čp, Obec" | "Obec čp" | lat,lon> [polomer_m=100] [px=1200] [--jen klic1,klic2] [--zapsat skupina]
       stáhne ročníky do pracovni/ortofota/<klic>_r<polomer>_<px>px_<X>_<Y>.jpg (X, Y = střed v S-JTSK bez znaménka);
-      ročníky bez snímku u domu jen vypíše („prázdné“). Krajské vrstvy jen v kraji domu a jen roky, které ČÚZK nemá.
-      --zapsat skupina   výřezy (vyrezy/, zdroje/) mapa_<skupina>_<klic> a položky v data/mapy.json se zdrojem, rokem,
-                         skupinou a výřezem (pole „vyrez“, web prolíná); krajské vrstvy nezapisuje (souhlas kraje).
+      ročníky bez snímku u domu jen vypíše („prázdné“), snímek jen přes část výřezu („neúplné“) nezapíše.
+      Krajské vrstvy jen v kraji domu a jen roky, které ČÚZK nemá.
+      --zapsat skupina   výřezy (vyrezy/, zdroje/) mapa_<skupina bez diakritiky>_<klic> a položky v data/mapy.json
+                         se zdrojem, rokem, skupinou a výřezem (pole „vyrez“, web prolíná); krajské vrstvy
+                         nezapisuje (souhlas kraje).
                          Popis doplň potom (zapis.py mapy <img> … --sloucit).
 Šetři server: série = ~30 požadavků. Dům a dvůr: polomer 60–100 m, ves: 300 m. Jedna série na dům stačí.
 """
-import json, os, subprocess, sys, typing, urllib.parse, urllib.request
+import json, os, re, subprocess, sys, typing, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 from platnost import jpeg_rozmery, vyrez_sjtsk  # noqa: E402
 import mista  # noqa: E402
+from nazvy import bez_diakritiky  # noqa: E402
+from ramecek import magick  # noqa: E402
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -119,8 +123,23 @@ def stahni(v, bbox, px, out):
     return False
 
 
+BEZ_DAT_MAX = 0.1   # větší podíl černé (okraj snímkování) = snímek pokrývá jen část výřezu
+
+
+def podil_bez_dat(out):
+    """Podíl skoro černých pixelů: služba mimo nasnímkované území vrací černou (ČÚZK 1998 i přes půl výřezu)."""
+    p = subprocess.run([magick(), out, "-colorspace", "Gray", "-threshold", "1.5%", "-format", "%[fx:1-mean]", "info:"],
+                       capture_output=True, text=True, check=True)
+    return float(p.stdout)
+
+
 def citace(v):
     return f"ČÚZK, {v.rok}" if v.kraj is None else f"{v.zdroj} {v.rok}"
+
+
+def klic_skupiny(sk):
+    """Skupina do názvu souboru: bez diakritiky, mezer a pomlček („Ves z letadla 1952–dnes“ → ves_z_letadla_1952_dnes)."""
+    return re.sub(r"[^a-z0-9]+", "_", bez_diakritiky(re.sub(r"\W+", " ", sk))).strip("_")
 
 
 def zapsat(hotove, sk, bbox):
@@ -129,7 +148,7 @@ def zapsat(hotove, sk, bbox):
         if v.kraj is not None:
             print(f"nezapsáno {k}: licence kraje není zveřejněná – jen ke čtení, do výstupu se souhlasem kraje")
             continue
-        img = f"mapa_{sk}_{k}"
+        img = f"mapa_{klic_skupiny(sk)}_{k}"
         subprocess.run([sys.executable, "-I", os.path.join(tools, "vyrez.py"), out, img], check=True,
                        stdout=subprocess.DEVNULL)
         polozka = {"img": img, "rok": str(v.rok), "nazev": "Letecký snímek (ortofoto)", "url": CUZK_URL,
@@ -167,7 +186,10 @@ def serie(misto, polomer, px, jen=None, skupina=None):
             print(f"CHYBA   {k:10} {e}")
             chyby += 1
             continue
-        if ulozeno:
+        if ulozeno and (bez_dat := podil_bez_dat(out)) > BEZ_DAT_MAX:
+            print(f"neúplné {k:10} {bez_dat:.0%} výřezu bez snímku (okraj snímkování) – nezapisuji, "
+                  f"jen ke čtení: {os.path.relpath(out, ROOT)}")
+        elif ulozeno:
             print(f"OK      {k:10} {citace(v):34} → {os.path.relpath(out, ROOT)}")
             hotove.append((k, v, out))
             roky.add(v.rok)

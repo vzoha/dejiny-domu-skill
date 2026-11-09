@@ -955,10 +955,11 @@ class TestOrtofota(Projekt):
     """ortofota.py serie bez sítě: služby ČÚZK a krajů, RÚIAN i volání vyrez.py a zapis.py jsou nahrazené.
     Snímek = JPEG doplněný nulami nad práh prázdného obrázku, prázdný = holý JPEG."""
 
-    def serie(self, snimky, *args, kraj=35, chyba=None):
-        """snimky = klíče vrstev (cuzk_2004, jc_2003, …), které u domu mají snímek; vrací (kód, výstup)."""
+    def serie(self, snimky, *args, kraj=35, chyba=None, neuplne=()):
+        """snimky = klíče vrstev (cuzk_2004, jc_2003, …), které u domu mají snímek, neuplne = z nich ty, které pokrývají
+        jen část výřezu (zbytek černý); vrací (kód, výstup)."""
         p = subprocess.run([sys.executable, "-I", "-X", "utf8", "-c", f"""
-import subprocess, sys; sys.path.insert(0, 'tools'); import ortofota
+import os, subprocess, sys; sys.path.insert(0, 'tools'); import ortofota
 JPEG = {JPEG!r}
 SNIMKY = {sorted(snimky)!r}
 ortofota.PRAZDNY_B_NA_PX = len(JPEG) + 1
@@ -976,6 +977,9 @@ def get(url, params, binary=False):
     return JPEG + bytes(len(JPEG) + 10) if plny else JPEG
 ortofota.get = get
 def run(cmd, **kw):
+    if cmd[-1] == "info:":   # podíl černé v ImageMagicku
+        neuplny = any(os.path.basename(cmd[1]).startswith(k + "_") for k in {sorted(neuplne)!r})
+        return subprocess.CompletedProcess(cmd, 0, "0.6" if neuplny else "0", "")
     if "zapis.py" in cmd[2]:
         print("ZAPIS", kw.get("input"))
     return subprocess.CompletedProcess(cmd, 0, "", "")
@@ -1009,6 +1013,14 @@ ortofota.main()
         self.assertEqual(zapisy[0]["zdroj"], "ČÚZK, 2004, archivní ortofoto ČR (CC BY 4.0)")
         self.assertEqual(zapisy[0]["vyrez"], {"crs": "EPSG:5514", "bbox": [-740080.0, -1040080.0, -739920.0, -1039920.0]})
         self.assertIn("nezapsáno jc_2003", out)
+
+    def test_neuplny_snimek_nezapise(self):
+        kod, out = self.serie({"cuzk_2004", "cuzk_2007"}, "--zapsat", "Ves z letadla 1952–dnes", neuplne={"cuzk_2004"})
+        self.assertEqual(kod, 0, out)
+        zapisy = [json.loads(r.split("ZAPIS ", 1)[1]) for r in out.splitlines() if r.startswith("ZAPIS ")]
+        self.assertEqual([z["img"] for z in zapisy], ["mapa_ves_z_letadla_1952_dnes_cuzk_2007"])
+        self.assertEqual(zapisy[0]["skupina"], "Ves z letadla 1952–dnes")
+        self.assertIn("neúplné cuzk_2004", out)
 
     def test_chyba_sluzby_konci_kodem_1(self):
         kod, out = self.serie({"cuzk_2004"}, chyba="2005")
