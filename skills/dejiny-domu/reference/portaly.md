@@ -194,6 +194,18 @@ Bildkatalog popisuje asi třetinu, o zbytku poradí archiv.
   bez souhlasu, publikace na žádost (Publikationsantrag) od 30 € do 1 000 výtisků, kromě výrobních nákladů.
   Bez souhlasu do výstupu jen zjištění, inv. č. a citace „Herder-Institut, Marburg, Bildarchiv, inv. č. …“.
 
+## Obchody a katalogy pohlednic (akpool.de, delcampe.net, ansichtskarten-lexikon.de) – jen ručně
+Sběratelské obchody a aukce mají pohlednice i malých vsí, které ve sbírkách chybí. **Jen vodítko:** že pohled
+na obec, hospodu nebo dům existuje, z kterého roku (razítko „gelaufen 1912“) a co je na něm.
+- **Claude hledání neotevírá:** akpool.de má v robots.txt pro Claude-User zakázané hledání i stránky předmětů,
+  delcampe.net zakazuje hledání všem, ansichtskarten-lexikon.de chrání hledání Cloudflare. Hledá uživatel sám:
+  **český i německý název obce** (Rumburk Rumburg), u delcampe kategorie Pohlednice, Česko. Výsledky ať
+  zkopíruje (Ctrl+A, Ctrl+C) nebo vyfotí obrazovku; ty z nich vybereš roky a pohledy.
+- **Obrázek do výstupu ne:** sken patří prodejci, často s vodoznakem. Do výstupu jen zjištění („pohlednice
+  hostince čp. 12, odeslaná 1912, nabízená v obchodě akpool“), bez odkazu na nabídku (zmizí).
+- Kdo pohlednici koupí, má originál a smí ho naskenovat; obrázek je volné dílo, když autor fotky (fotograf,
+  vydavatel) zemřel před víc než 70 lety, u neznámého autora 70 let od vydání.
+
 ## Zaniklé obce a objekty (www.zanikleobce.cz) – `tools/zanikleobce.py`
 Dobrovolnický portál (Pavel Beran, od 2005): přes 7 600 zaniklých vsí, samot, mlýnů, dvorů, cihelen, továren, kaplí
 a hradů, hlavně v pohraničí vysídleném po 1945, ale i mlýny a dvory ve vnitrozemí. U místa bývají dobové fotky

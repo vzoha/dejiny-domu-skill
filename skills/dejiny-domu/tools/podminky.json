@@ -209,6 +209,21 @@
       "proc": "robots.txt jmenuje Claude-User a zakazuje vše (Disallow: /), web chrání Anubis (nástroji Access Denied); reprodukce jen pro uvedený účel, dalším osobám a k publikaci jen s písemným souhlasem a poplatkem (Vertragsbedingungen für Publikationen, 9. 11. 2026)",
       "jinak": "Bildkatalog prohledá uživatel sám v prohlížeči (Claude ho neotevírá ani v Chromu); ty radíš, co hledat (německý název obce, okres). Skeny objedná u bildarchiv@herder-institut.de: 20 hotových digitalizátů za čtvrtletí zdarma, rešerše 2,50 € + 7,50 €/¼ h; zveřejnění nebo předání zákazníkovi jen se souhlasem (od 30 €)."
     },
+    "www.akpool.de": {
+      "nazev": "akpool (obchod s pohlednicemi)", "dotazy": false, "obrazky": false, "vyrez": "ne",
+      "proc": "robots.txt jmenuje Claude-User a zakazuje hledání (/search, /suchen/) i stránky předmětů (*/detail/); obchod, obrázky jsou skeny prodejce s vodoznakem (9. 11. 2026)",
+      "jinak": "Hledá uživatel v prohlížeči (český i německý název obce). Pohlednice je jen vodítko, že snímek existuje a z kterého roku; do výstupu jen zjištění („pohlednice … kolem 1910, nabízená v obchodě“), obrázek ne."
+    },
+    "www.delcampe.net": {
+      "nazev": "Delcampe (aukce sběratelských předmětů)", "dotazy": false, "obrazky": false, "vyrez": "ne",
+      "proc": "robots.txt zakazuje * hledání (/de/sammlerobjekte/search ap.), Claude-User nejmenuje; obrázky patří prodejcům (9. 11. 2026)",
+      "jinak": "Hledá uživatel v prohlížeči (český i německý název obce, kategorie pohlednice). Jen vodítko, že pohlednice existuje a z kterého roku; obrázek do výstupu ne, nejvýš si ji uživatel koupí."
+    },
+    "www.ansichtskarten-lexikon.de": {
+      "nazev": "Ansichtskarten-Lexikon (katalog pohlednic)", "dotazy": false, "obrazky": false, "vyrez": "ne",
+      "proc": "robots.txt zakazuje ClaudeBot a Claude-Web, Content-Signal ai-train=no; hledání chrání Cloudflare (nástroji 403) (9. 11. 2026)",
+      "jinak": "Hledá uživatel v prohlížeči (německý název obce). Jen vodítko, že pohlednice existuje a z kterého roku; obrázek do výstupu ne."
+    },
     "www.zanikleobce.cz": {
       "nazev": "Zaniklé obce a objekty (zanikleobce.cz)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "dobrovolnický portál P. Berana, příspěvky patří přispěvatelům, licence žádná, web brání kopírování fotek; robots.txt zakazuje * hledání a adresy s ? (web padal na 429), Claude-User nejmenuje; nástroj čte jen mapu (1× za 30 dní) a stránky nalezených míst (9. 11. 2026)",
