@@ -148,6 +148,22 @@ Negativy Josefa (do 1935) a Františka Seidela (do 1970) a sbírka pohlednic R. 
 - `python3 -I tools/seidel.py detail <id>` → datum, zákazník, adresa, popisek na desce, číslo negativu, technika,
   odkaz a citace. Fotku otevře uživatel odkazem; do výstupu jen se souhlasem muzea.
 
+## Zaniklé obce a objekty (www.zanikleobce.cz) – `tools/zanikleobce.py`
+Dobrovolnický portál (Pavel Beran, od 2005): přes 7 600 zaniklých vsí, samot, mlýnů, dvorů, cihelen, továren, kaplí
+a hradů, hlavně v pohraničí vysídleném po 1945, ale i mlýny a dvory ve vnitrozemí. U místa bývají dobové fotky
+a pohlednice, články přispěvatelů, počty obyvatel a domů 1921/1930, odkazy a komentáře pamětníků a potomků.
+- `python3 -I tools/zanikleobce.py "Lniště"` → místa do 3 km od středu obce (RÚIAN) a s obcí v názvu: id | název |
+  druh | vzdálenost | fotky | odkaz + začátek popisu. Spouštět ze složky projektu. `--km` změní okruh.
+  Seznam míst bere z mapy webu (jeden dotaz, `~/.cache/dejiny-domu/zanikleobce/`, obnova po 30 dnech).
+- **Hledání webu a filtry (adresy s `?`) robots.txt zakazuje**, web kvůli robotům padal na 429. Nástroj je nepoužívá,
+  ručně taky jen výjimečně. Limit 1 dotaz za 2 s.
+- `python3 -I tools/zanikleobce.py detail <id>` → názvy (i německý), kdo místo vložil, okres, typ, důvod a období
+  zániku, stav, počty obyvatel a domů, popisky fotek s odkazy (dobové × novodobé), články s autorem a začátkem
+  textu (bývají v nich čísla domů a majitelé: Pleticha „stavení č.p. 96 a 97, patřící rodině Lischka“), počet komentářů.
+- Texty píšou dobrovolníci: údaje ověř v pramenech (matrika, katastr), cituj jako „Zaniklé obce a objekty, místo
+  vložil …, odkaz“. Fotky a texty patří přispěvatelům a web brání jejich kopírování: do výstupu zjištění s citací
+  a odkaz, fotku nebo delší text jen se souhlasem autora přes správce (beran@seznam.cz).
+
 ## Wikimedia Commons (commons.wikimedia.org) – `tools/commons.py`
 Fotky, pohlednice, rytiny, plány a mapy, které nahráli lidé, muzea a knihovny. Jen volné licence: obrázek smí i do
 placeného výstupu (Public domain a CC0 se zdrojem, CC BY a CC BY-SA s autorem a licencí).

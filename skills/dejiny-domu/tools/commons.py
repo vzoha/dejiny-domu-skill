@@ -11,12 +11,13 @@ Použití:
   commons.py detail "<soubor>"                                  – popis, datum, autor, licence, obrázek, citace
 Commons přijímá jen volné licence: obrázek smí i do placeného výstupu, u CC BY a CC BY-SA s autorem a licencí.
 Větší města mají stovky kategorií: nástroj jich projde 60 (asi minuta), víc --kategorii."""
-import argparse, html, json, math, os, re, sys, urllib.parse, urllib.request
+import argparse, html, json, os, re, sys, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti (slusne.py)
+from vzdalenost import km
 
 COMMONS = "https://commons.wikimedia.org"
 WIKIDATA = "https://www.wikidata.org/w/api.php"
@@ -37,10 +38,6 @@ def api(adresa, **parametry):
     parametry.update(format="json", formatversion=2)
     with urllib.request.urlopen(f"{adresa}?{urllib.parse.urlencode(parametry)}", timeout=60) as r:
         return json.load(r)
-
-
-def km(lat, lon, lat2, lon2):
-    return math.hypot((lon2 - lon) * 111.32 * math.cos(math.radians(lat)), (lat2 - lat) * 111.32)
 
 
 def kategorie_obce(obec, stredy):

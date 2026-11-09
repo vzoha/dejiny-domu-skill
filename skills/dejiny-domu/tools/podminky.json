@@ -184,6 +184,11 @@
       "nazev": "ANNO (ÖNB)", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""
     },
+    "www.zanikleobce.cz": {
+      "nazev": "Zaniklé obce a objekty (zanikleobce.cz)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "dobrovolnický portál P. Berana, příspěvky patří přispěvatelům, licence žádná, web brání kopírování fotek; robots.txt zakazuje * hledání a adresy s ? (web padal na 429), Claude-User nejmenuje; nástroj čte jen mapu (1× za 30 dní) a stránky nalezených míst (9. 11. 2026)",
+      "jinak": "Místa u obce a detail vypíše zanikleobce.py. Do výstupu zjištění s citací a odkaz; fotku nebo delší text jen se souhlasem autora přes správce (beran@seznam.cz)."
+    },
     "commons.wikimedia.org": {
       "nazev": "Wikimedia Commons", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "jen volné licence (Public domain, CC0, CC BY, CC BY-SA), komerční užití dovolené s autorem a licencí; API pro roboty, robots.txt zakazuje * /w/, Claude-User nejmenuje (9. 11. 2026)",

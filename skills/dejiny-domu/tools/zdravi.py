@@ -63,6 +63,8 @@ KONTROLY = [
     ("esbirky", "předměty obce", ["esbirky.py", "Lniště"], r"^  63291100 \|.*Madona ze Lniště", None),
     ("esbirky", "detail předmětu", ["esbirky.py", "detail", "63291100"], r"^Název: Madona ze Lniště", None),
     ("seidel", "zákazníci ateliéru", ["seidel.py", "Slavče"], r"302010301100010120001", None),
+    ("zanikleobce", "zaniklá místa u obce", ["zanikleobce.py", "Štítina", "--km", "1"], r"^  4131 \| Štítina \| hrad", None),
+    ("zanikleobce", "detail místa", ["zanikleobce.py", "detail", "9459"], r"č\.p\.96 a 97", None),
     ("commons", "staré obrázky obce", ["commons.py", "Rumburk", "1773-1773", "--kategorii", "3"], r"Eckarth 1773 02 Rumburg\.jpg", None),
     ("akon", "pohlednice obce", ["akon.py", "Prachatice", "--km", "1"], r"^  AK010_332 \|", None),
     ("industrial", "průmyslové stavby", ["industrial.py", "Beroun"], r"^  762 \| Měšťanský", None),

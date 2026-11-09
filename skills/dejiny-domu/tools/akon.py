@@ -12,13 +12,14 @@ Použití:
   akon.py detail <id>                 – vše o pohlednici, obrázek a citace
 Data (2 MB) stáhne poprvé do ~/.cache/dejiny-domu/akon/ a obnoví po půl roce.
 Obrázky jsou volné dílo (Public Domain Mark), smí i do placeného výstupu s citací."""
-import argparse, csv, io, math, os, re, sys, time, urllib.request, zipfile
+import argparse, csv, io, os, re, sys, time, urllib.request, zipfile
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti (slusne.py)
 from nazvy import zminuje_obec   # porovnání názvů obcí (nazvy.py)
+from vzdalenost import km
 
 DATA = "https://labs.onb.ac.at/gitlab/labs-team/raw-metadata/raw/master/akon_postcards_public_domain.zip?inline=false"
 SOUBOR = "akon_postcards_public_domain.csv"
@@ -58,10 +59,6 @@ def geohash(lat, lon, delka=12):
             znaky += GEOHASH[int("".join("1" if b else "0" for b in bity), 2)]
             bity = []
     return znaky
-
-
-def km(lat, lon, lat2, lon2):
-    return math.hypot((lon2 - lon) * 111.32 * math.cos(math.radians(lat)), (lat2 - lat) * 111.32)
 
 
 def rok(k):
