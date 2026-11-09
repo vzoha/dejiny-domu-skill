@@ -64,6 +64,7 @@ KONTROLY = [
     ("esbirky", "detail předmětu", ["esbirky.py", "detail", "63291100"], r"^Název: Madona ze Lniště", None),
     ("seidel", "zákazníci ateliéru", ["seidel.py", "Slavče"], r"302010301100010120001", None),
     ("ddb", "obrázky obce", ["ddb.py", "Rumburk", "Rumburg", "1910-1910"], r"Rumburg\. Markt \| Rumburg \| Postkarte \| Deutsche Fotothek \| PDM", None),
+    ("europeana", "obrázky obce", ["europeana.py", "Rumburk", "Rumburg", "1861-1861"], r"Stadtgeschichtliches_Museum_Leipzig_Z0006673 \| 1861", None),
     ("zanikleobce", "zaniklá místa u obce", ["zanikleobce.py", "Štítina", "--km", "1"], r"^  4131 \| Štítina \| hrad", None),
     ("zanikleobce", "detail místa", ["zanikleobce.py", "detail", "9459"], r"č\.p\.96 a 97", None),
     ("commons", "staré obrázky obce", ["commons.py", "Rumburk", "1773-1773", "--kategorii", "3"], r"Eckarth 1773 02 Rumburg\.jpg", None),
@@ -145,6 +146,9 @@ def main():
             except subprocess.TimeoutExpired:
                 ok, vystup = False, "vypršel čas (180 s)"
             radky = [r for r in vystup.strip().splitlines() if r.strip()]
+            if not ok and "potřebuje API klíč" in vystup:   # klíč si uživatel nevyžádal – to není porucha
+                print(f"—     {portal:13} {popis:28} vynecháno (chybí API klíč, reference/portaly.md)")
+                continue
             if not ok and "PODMÍNKY:" in vystup:   # portál nástrojům stahování nedovoluje (podminky.json) – to není porucha
                 print(f"—     {portal:13} {popis:28} vynecháno (podmínky portálu, reference/podminky.md)")
                 continue

@@ -168,8 +168,8 @@ památek, kostelů a domů, místa jako „Schweinitz (Kreis Böhmisch Budweis)�
 ## Europeana (www.europeana.eu) – `tools/europeana.py`
 Souhrnný katalog evropských muzeí, knihoven a archivů. Pro české obce přidá hlavně to, co jiné nástroje nemají:
 Mapovou sbírku PřF UK (mapy okresů a okolí, CC BY-NC), MAK Vídeň, maďarská a rakouská muzea, lipské muzeum.
-- **API klíč zdarma:** formulář https://pro.europeana.eu/page/get-api (web chrání Cloudflare, vyplní uživatel),
-  klíč přijde e-mailem. Uložit do `~/.config/europeana/api-key` (nebo proměnná `EUROPEANA_API_KEY`). Nástroj ho
+- **Osobní API klíč zdarma:** https://pro.europeana.eu/page/get-api → účet Europeany (web chrání Cloudflare,
+  zařídí uživatel) → v profilu zaškrtnout podmínky a „Request a personal API key“; projektový klíč netřeba. Uložit do `~/.config/europeana/api-key` (nebo proměnná `EUROPEANA_API_KEY`). Nástroj ho
   posílá v hlavičce, ne v adrese. Veřejný klíč `api2demo` je jen na vyzkoušení.
 - `python3 -I tools/europeana.py "Rumburk" "Rumburg"` → obrázky (TYPE:IMAGE) s některým názvem **nebo se souřadnicemi
   do 2 km od středu obce** z RÚIAN (spouštět ze složky projektu; `--km` změní okruh): id | rok | název | instituce |

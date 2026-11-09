@@ -10,7 +10,7 @@ Použití:
       – id | rok | název | instituce | licence | odkaz; --volne = jen licence pro placený výstup,
         --npu = i fotky a evidenční listy NPÚ (jinak je vynechá, podrobněji je ukáže mis.py)
   europeana.py detail <id>      – popis, místo, datace, autor, instituce, licence, obrázek, citace
-Potřebuje API klíč (zdarma): formulář na https://pro.europeana.eu/page/get-api, klíč přijde e-mailem;
+Potřebuje osobní API klíč (zdarma): https://pro.europeana.eu/page/get-api → účet Europeany → Request a personal API key;
 ulož ho do ~/.config/europeana/api-key nebo do proměnné EUROPEANA_API_KEY."""
 import argparse, json, math, os, re, sys, urllib.error, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
@@ -32,8 +32,8 @@ NEKOMERCNI = re.compile(r"-nc|NoC-NC")
 def klic():
     k = os.environ.get("EUROPEANA_API_KEY") or (open(KLIC, encoding="utf-8").read().strip() if os.path.exists(KLIC) else "")
     if not k:
-        sys.exit("Europeana potřebuje API klíč (zdarma): formulář https://pro.europeana.eu/page/get-api, "
-                 f"klíč přijde e-mailem. Ulož ho do {KLIC} nebo do proměnné EUROPEANA_API_KEY.")
+        sys.exit("Europeana potřebuje API klíč (zdarma): https://pro.europeana.eu/page/get-api → účet Europeany → "
+                 f"Request a personal API key. Ulož ho do {KLIC} nebo do proměnné EUROPEANA_API_KEY.")
     return k
 
 
