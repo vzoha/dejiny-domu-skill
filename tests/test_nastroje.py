@@ -920,14 +920,17 @@ ipr_praha.main()
 class TestMista(Projekt):
     """mista.py okoli/parcely bez sítě: odpovědi RÚIAN podstrčené místo urlopen."""
 
+    def spust(self, kod):
+        return subprocess.run([sys.executable, "-I", "-X", "utf8", "-c", "import sys; sys.path.insert(0, 'tools')\n" + kod],
+                              cwd=self.root, capture_output=True, text=True, encoding="utf-8")
+
     def okoli(self, adresy, rucne):
         kod = (f"import mista, sys\nADR = {adresy!r}\n"
                "mista.adresni_mista = lambda d, p: [{'attributes': {'adresa': a}, 'geometry': {'y': y, 'x': x}}"
                " for a, y, x, _ in ADR[:2 if d == 'Dvojí 1' else 1]]\n"
                "mista.v_obdelniku = lambda *a: [{'attributes': {'adresa': a, 'stavebniobjekt': so}, 'geometry': {'y': y, 'x': x}} for a, y, x, so in ADR]\n"
                f"sys.argv = ['mista.py', 'okoli', {rucne!r}, '80']; mista.main()")
-        return subprocess.run([sys.executable, "-I", "-X", "utf8", "-c", "import sys; sys.path.insert(0, 'tools')\n" + kod],
-                              cwd=self.root, capture_output=True, text=True, encoding="utf-8")
+        return self.spust(kod)
 
     ADRESY = [("Dlouhá 12/3, Lhota", 49.0, 15.0, 7), ("Krátká 12/1, Lhota", 49.0001, 15.0, 7),
               ("Polní 14, Lhota", 49.0002, 15.0, 8), ("Daleká 99, Lhota", 49.00096, 15.0, 9)]   # 107 m na sever
@@ -945,6 +948,37 @@ class TestMista(Projekt):
         self.assertNotEqual(p.returncode, 0)
         self.assertIn("RÚIAN má 2 míst", p.stderr)
         self.assertIn("49.00010,15.00000", p.stderr)
+
+    def stred(self, adresy, dotaz):
+        """mista.stred s podstrčeným RÚIAN: adresy = [(adresa, lat, lon)], adresní místo „dotaz“ RÚIAN nezná."""
+        kod = (f"import mista\nADR = {adresy!r}\nmista.adresni_mista = lambda d, p: []\n"
+               "mista.ruian_q = lambda v, w, p, g=False: [{'attributes': {'adresa': a}, 'geometry': {'y': y, 'x': x}} for a, y, x in ADR]\n"
+               f"print(mista.stred({dotaz!r}))")
+        return self.spust(kod)
+
+    OBCE = [("Záhumenní 334, 74791 Štítina", 49.0, 18.0), ("Havlíčkova 297, 74791 Štítina", 49.2, 18.2),
+            ("Opavská 5, 74791 Štítina", 49.1, 18.1),
+            ("Polní 2, 74791 Horní Štítina", 50.0, 15.0),                # jiná obec, končí stejně
+            ("Štítina 7, 53825 Miřetice", 50.5, 15.5),                   # část bez ulic pod jinou obcí
+            ("Hlavní 1, Štítina, 12345 Velkov", 50.7, 15.7)]             # část obce s ulicemi
+
+    def test_stred_obce_podle_adresnich_bodu(self):
+        p = self.stred(self.OBCE[:4], "Štítina")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertIn("střed obce: Štítina, 74791 Štítina", p.stdout)
+        self.assertIn("(49.1, 18.1)", p.stdout)   # medián, Horní Štítina se nepočítá
+
+    def test_stejnojmenne_obce_a_casti_nevybere_nahodne(self):
+        p = self.stred(self.OBCE, "Štítina")
+        self.assertNotEqual(p.returncode, 0)
+        self.assertIn("RÚIAN má 3 obcí nebo částí", p.stderr)
+        self.assertIn("Štítina, 53825 Miřetice   50.50000,15.50000", p.stderr)
+        self.assertIn("Štítina, 12345 Velkov", p.stderr)
+
+    def test_neznama_adresa_s_cislem_neni_obec(self):
+        p = self.stred(self.OBCE, "Štítina 999")
+        self.assertNotEqual(p.returncode, 0)
+        self.assertIn("RÚIAN „Štítina 999“ nezná", p.stderr)
 
 
 class TestNovyProjekt(Projekt):

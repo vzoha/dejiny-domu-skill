@@ -6,7 +6,7 @@ Archiv ČÚZK je webová aplikace nad službami ArcGIS. Token pro ně vydává v
 nástroj si ho obstará sám a uloží na hodinu do pracovni/.cuzk_token.
 
 Použití (z kořene projektu):
-  cuzk_archiv.py listy "Horní Lhota 12" | lat,lon
+  cuzk_archiv.py listy "Horní Lhota 12" | "Obec" | lat,lon
       které listy stabilního katastru pokrývají místo: katastrální obec stabilního katastru (často jiná než dnes – malá ves
       bývala součástí sousední), originální mapa (om_SIGN_INV, rok reambulace, listy om_SOUB), císařský otisk
       (cio_SIGN_INV), evidenční mapa (změny 1883–1956, je-li naskenovaná) a indikační skica (S0X = předpona
@@ -46,6 +46,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 from platnost import vyrez_sjtsk  # noqa: E402
+import mista  # noqa: E402
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -107,20 +108,6 @@ def save_jpeg(img, out):
     open(out, "wb").write(img)
 
 
-def misto(m):
-    """'lat,lon' nebo adresa pro RÚIAN ('Horní Lhota 12') → (lat, lon)."""
-    try:
-        lat, lon = (float(x) for x in m.split(","))
-        return lat, lon
-    except ValueError:
-        f = get(f"{RUIAN}/1/query", {"where": f"adresa LIKE '{m.replace(chr(39), '')},%'", "outFields": "adresa",
-                                     "outSR": 4326, "f": "json"}).get("features", [])
-        if not f:
-            sys.exit(f"RÚIAN „{m}“ nezná – zadej lat,lon (mista.py hledej) nebo jiný tvar adresy")
-        print("místo:", f[0]["attributes"]["adresa"])
-        return f[0]["geometry"]["y"], f[0]["geometry"]["x"]
-
-
 def klady(lat, lon, vrstvy="all"):
     """Klady mapových listů Archivu ČÚZK, které pokrývají bod (vrstva 3 = stabilní katastr)."""
     return archiv("klady/MapServer/identify", {
@@ -130,7 +117,7 @@ def klady(lat, lon, vrstvy="all"):
 
 
 def listy(m):
-    d = klady(*misto(m), "all:3")
+    d = klady(*mista.stred(m), "all:3")
     if not d.get("results"):
         print("stabilní katastr: žádný list (zkus jiné místo)")
     for r in d.get("results", []):
@@ -236,7 +223,7 @@ def obalka(bbox):
 
 def mapa(vrstva, m, out, polomer=150, px=1500):
     px, r = int(px), float(polomer)
-    x, y = sjtsk(*misto(m))
+    x, y = sjtsk(*mista.stred(m))
     bbox = (x - r, y - r, x + r, y + r)   # v S-JTSK (ne WGS 84: server by ho převedl bez datumu, ~110 m vedle)
     if vrstva == "cenia50":
         img = get(f"{CENIA}/mapcache/ortofotomapa_historicka/wms", {
@@ -296,7 +283,7 @@ def adresy(bbox, px, out):
 
 def lms(m):
     """Ročníky leteckých měřických snímků nad místem (katalog, žádné obrázky)."""
-    x, y = sjtsk(*misto(m))
+    x, y = sjtsk(*mista.stred(m))
     d = archiv("LMS_1930_40_50_60s/ImageServer/query", {
         "geometry": json.dumps({"x": x, "y": y, "spatialReference": {"wkid": 5514}}), "geometryType": "esriGeometryPoint",
         "spatialRel": "esriSpatialRelIntersects", "outFields": "Name", "returnGeometry": "false", "f": "json"})
@@ -323,7 +310,7 @@ BEZ_RASTRU = {0, 3, 11}   # letecké snímky (lms), stabilní katastr (listy), s
 
 
 def rady(m):
-    d = klady(*misto(m))
+    d = klady(*mista.stred(m))
     drobne = set()   # malá měřítka (ZM, vojenské, generální) – k domu nic, jen zmínit
     for r in d.get("results", []):
         lid, a = r["layerId"], {k: v for k, v in r["attributes"].items() if v and str(v).strip() not in ("", "Null")}

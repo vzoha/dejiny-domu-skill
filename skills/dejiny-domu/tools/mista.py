@@ -24,7 +24,7 @@ Použití:
       dohledá souřadnice u míst, která je ještě nemají (OpenStreetMap Nominatim, 1 dotaz za sekundu),
       a vypíše seznam. Když bod nesedí, opravte lat/lon v data/mista.json ručně.
 """
-import json, math, os, sys, time, urllib.parse, urllib.request
+import json, math, os, re, statistics, sys, time, urllib.parse, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -106,13 +106,36 @@ def ruian(dotaz):
                   f"k. ú. {ku[0]['attributes']['nazev'] if ku else '?'} ({pa['katastralniuzemi']})")
 
 
+def obec_stred(nazev):
+    """Obce a části obce jménem „nazev“ → [(„Část, PSČ Obec“, lat, lon)], střed = medián jejich adresních bodů RÚIAN.
+    Adresa v RÚIAN: „Ulice čp, [Část, ]PSČ Obec“ nebo „Část čp, PSČ Obec“ (část bez ulic)."""
+    n = nazev.replace(chr(39), "").strip()
+    skupiny = {}
+    for a in ruian_q(1, f"adresa LIKE '% {n}' OR adresa LIKE '%, {n}, %' OR adresa LIKE '{n} %'", "adresa", True):
+        casti = a["attributes"]["adresa"].split(", ")
+        psc, _, obec = casti[-1].partition(" ")
+        if obec == n or (len(casti) > 2 and casti[-2] == n) or re.fullmatch(rf"{re.escape(n)} \d+[a-z]?", casti[0]):
+            skupiny.setdefault(f"{n}, {psc} {obec}", []).append((a["geometry"]["y"], a["geometry"]["x"]))
+    return [(k, statistics.median(y for y, _ in b), statistics.median(x for _, x in b)) for k, b in skupiny.items()]
+
+
 def stred(misto):
-    """lat, lon z „lat,lon“ nebo z jediné adresy RÚIAN. Víc míst se stejnou adresou = skončí, ať se nevybere náhodné."""
+    """lat, lon z „lat,lon“, z jediné adresy RÚIAN, nebo z názvu obce či části obce (střed jejích adresních bodů).
+    Víc míst se stejnou adresou nebo stejnojmenných obcí = skončí, ať se nevybere náhodné."""
     if "," in misto and all(c in "0123456789., -" for c in misto):
         return tuple(float(v) for v in misto.split(","))
     f = adresni_mista(misto, "adresa")
+    if not f and not misto.rstrip()[-1:].isdigit():
+        obce = obec_stred(misto)
+        if len(obce) > 1:
+            sys.exit(f"RÚIAN má {len(obce)} obcí nebo částí jménem „{misto}“ – vyber podle PSČ a okresu a zadej lat,lon:\n"
+                     + "\n".join(f"  {k}   {y:.5f},{x:.5f}" for k, y, x in obce))
+        if obce:
+            nazev, lat, lon = obce[0]
+            print("střed obce:", nazev)
+            return lat, lon
     if not f:
-        sys.exit(f"RÚIAN „{misto}“ nezná – zadej „Ulice čp/čo“ nebo lat,lon.")
+        sys.exit(f"RÚIAN „{misto}“ nezná – zadej „Ulice čp/čo“, název obce nebo lat,lon.")
     if len(f) > 1:
         sys.exit(f"RÚIAN má {len(f)} míst s adresou „{misto}“ – vyber podle PSČ a okresu a zadej ho jako lat,lon:\n"
                  + "\n".join(f"  {a['attributes']['adresa']}   {a['geometry']['y']:.5f},{a['geometry']['x']:.5f}" for a in f))
