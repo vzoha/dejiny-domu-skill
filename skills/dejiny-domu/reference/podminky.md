@@ -49,6 +49,7 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | ANNO (staré noviny, ÖNB) | Nástroj | ano | ano | ano | ano | Kromě skenů od Googlu |
 | ARES a veřejný rejstřík (Ministerstvo financí, Ministerstvo spravedlnosti) | Nástroj | ano | ano | — | ano | Veřejné API, užívat smí každý, nejvýš 500 dotazů za minutu (8. 11. 2026). Údaje jen informativní. Jména podnikajících fyzických osob a statutárů jsou žijící lidé: do výstupu jen se souhlasem |
 | Kohoutí kříž (kohoutikriz.org) | Ručně | ano | číst ano, texty a mapy ne | nevýdělečně, beze změn | ano | Šumavská německá literatura a mapy Šumavy. Licence CC BY-NC-ND: fakta s citací ano, jejich texty a překlady nepřebírat |
+| Filmová místa (filmovamista.cz, místa natáčení filmů a seriálů) | Ručně | ano | prohlížet ano | ne | ano | Cloudflare pouští jen lidi, ověření „nejsem robot“ řešíte vy. Texty webu CC BY-NC-SA 3.0, záběry patří tvůrcům filmu: do výstupu fakta vlastními slovy (film, rok, scéna, adresa) a odkaz, záběry nepřebírat (8. 11. 2026) |
 
 ## Mapy
 | Zdroj | Čtení | Pro sebe | Za peníze | Obrázky | Výsledky | Poznámka |

@@ -192,6 +192,13 @@ Archeologické akce (výzkumy při stavbách), lokality a nálezy po katastrech,
 - Licence CC BY-NC 4.0: jen nekomerčně a s uvedením autora. API (api.aiscr.cz, OAI-PMH na hromadné stahování)
   komerčně jen s písemnou smlouvou – nástroj skill nemá. Citace: „AIS CR: Archeologická mapa České republiky [cit. datum]“.
 
+## Filmová místa – www.filmovamista.cz, ručně
+Databáze míst, kde se točily filmy a seriály, často až na adresu s číslem domu a se záběrem ze scény.
+- Hledá uživatel v prohlížeči (Cloudflare nástroje nepustí): zadá obec, pak i název čtvrti nebo ulice. Výsledky
+  a detail místa zkopíruje (Ctrl+A, Ctrl+C), mapu míst pošle jako screenshot. Adresu ověříš v RÚIAN.
+- Vyplatí se hlavně ve městech. Když není dům, hledej sousedy ze stejné doby: záběr ukáže, jak vypadala ulice nebo dvůr.
+- Do textu film, rok, díl, scénu a odkaz vlastními slovy. Záběry patří tvůrcům filmu, texty webu jsou CC BY-NC-SA 3.0 (`podminky.md`).
+
 ## Národní archivní portál (portal.nacr.cz) – `tools/narp.py`, seznam fondů všech archivů
 Ústřední evidence Národního archivního dědictví: každý fond v každém archivu ČR (i muzea a knihovny), bez snímků.
 Řekne, **co se k obci dochovalo a kde to leží** – než napíšeš archivu, víš název fondu, číslo NAD a jestli je přístupný.

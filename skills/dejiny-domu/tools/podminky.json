@@ -188,6 +188,11 @@
       "nazev": "ANNO (ÖNB), obrázky stran (anno_snap.py)", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "ÖNB s dalším užitím souhlasí (kromě skenů od Googlu)", "jinak": ""
     },
+    "www.filmovamista.cz": {
+      "nazev": "Filmová místa (místa natáčení filmů a seriálů)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "Cloudflare nástrojům vrací 403 a u hledání chce ověření „nejsem robot“ (8. 11. 2026); texty webu CC BY-NC-SA 3.0, záběry patří tvůrcům filmu",
+      "jinak": "Uživatel hledá v prohlížeči (obec i název čtvrti), výsledky a detail místa zkopíruje (Ctrl+A, Ctrl+C), mapu pošle jako screenshot; ty adresu ověříš v RÚIAN. Do výstupu film, rok, scéna a odkaz vlastními slovy, záběr ne."
+    },
     "www.kohoutikriz.org": {
       "nazev": "Kohoutí kříž (JVK)", "dotazy": false, "obrazky": false, "vyrez": "nekomercne",
       "proc": "ochrana proti robotům; licence CC BY-NC-ND",
