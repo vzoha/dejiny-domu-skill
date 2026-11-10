@@ -37,7 +37,7 @@ Data se točí kolem **čísla popisného** a jeho držitelů a obyvatel v čase
 1. Jsi ve složce projektu (existuje `data/STAV.md`)? Přečti `data/STAV.md`, konec `data/research_log.md`
    a pokračuj podle „Rozpracováno“. Krátce shrň, kde jste skončili.
    **Verze:** porovnej `.skill_verze` v projektu se `SKILL_DIR/VERZE`. Liší-li se, nabídni aktualizaci:
-   `python3 -I SKILL_DIR/tools/novy_projekt.py <složka projektu>` (data zůstanou), pak ve `web/` `npm ci`.
+   `python3 -I SKILL_DIR/tools/novy_projekt.py <složka projektu>` (data zůstanou; projekt bez `web/` aktualizuj s `--bez-webu`), pak ve `web/` `npm ci`.
 2. Projekt ještě není → **Fáze 0**.
 
 ## Fáze 0 – Příprava (jednou)
@@ -46,6 +46,7 @@ Data se točí kolem **čísla popisného** a jeho držitelů a obyvatel v čase
    `reference/matriky.md` → Technické pasti. Na Windows místo `python3 -I`
    vždy `python -I -X utf8`. Pravidla zapiš do `CLAUDE.md` projektu.
 2. Zeptej se, kde má projekt být (navrhni `~/<Obec>-<čp>`), a založ ho: `python3 -I SKILL_DIR/tools/novy_projekt.py <složka>`.
+   Chce-li jen data a výstupy bez webu, přidej `--bez-webu` (ušetří ~300 MB `node_modules`).
 3. `git init` a první uložení. Doporuč pokračovat v Claude Code **z této složky**.
 4. **Dnešní obec a katastr ověř hned:** `python3 -I tools/mista.py ruian "Osada čp"` → adresa s dnešní obcí, parcela
    a k. ú. Osada často patří k jiné obci, než uživatel (nebo šablona) čeká, a k. ú. nese jméno sousední vsi.

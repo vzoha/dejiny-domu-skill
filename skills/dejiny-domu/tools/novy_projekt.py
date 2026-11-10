@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Založí nový projekt dějin domu / obce ze šablony skillu.
 
-Použití: python3 <skill>/tools/novy_projekt.py <cílová složka>
+Použití: python3 <skill>/tools/novy_projekt.py <cílová složka> [--bez-webu]
 
-Vytvoří: data/ (prázdné kostry nebo ukázka), web/ (Astro web), tools/ (kopie nástrojů),
+--bez-webu: projekt jen s daty (web/ se nezaloží ani neaktualizuje), třeba když stačí PDF nebo přepisy.
+
+Vytvoří: data/ (prázdné kostry nebo ukázka), web/ (Astro web, ne s --bez-webu), tools/ (kopie nástrojů),
 vyrezy/, zdroje/, dokumenty/, pracovni/, CLAUDE.md, .gitignore, .gitattributes (konce řádků LF i na Windows)
 a .claude/launch.json (náhled v Claude desktop), v .claude/settings.json hook tools/hlidac.py
 (síť k archivům jen přes slusne.py – existující nastavení zůstane).
@@ -28,10 +30,10 @@ def copy(src, out):
     shutil.copy2(src, out)
 
 
-def odkazy_v_cilech(dst):
+def odkazy_v_cilech(dst, s_webem):
     """Složky projektu, do kterých se bude zapisovat a které jsou odkazem jinam (zápis by šel mimo projekt)."""
     cile = [os.path.join(dst, d) for d in ("tools", ".claude")]
-    for sub in ("data", "web"):
+    for sub in ("data", "web") if s_webem else ("data",):
         src = os.path.join(SKILL, "template", sub)
         for base, dirs, _ in os.walk(src):
             dirs[:] = [d for d in dirs if d not in VYNECHAT]
@@ -92,19 +94,23 @@ def pridej_hook(dst):
 
 
 def main():
-    if len(sys.argv) < 2:
+    s_webem = "--bez-webu" not in sys.argv[1:]
+    args = [a for a in sys.argv[1:] if a != "--bez-webu"]
+    if len(args) != 1 or args[0].startswith("-"):
         sys.exit(__doc__)
-    dst = os.path.abspath(os.path.expanduser(sys.argv[1]))
-    odkazy = odkazy_v_cilech(dst)
+    dst = os.path.abspath(os.path.expanduser(args[0]))
+    odkazy = odkazy_v_cilech(dst, s_webem)
     if odkazy:
         sys.exit("Projekt nezměněn: tyhle složky jsou odkazem jinam a zápis by šel mimo projekt:\n"
                  + "\n".join(f"  {os.path.relpath(c, dst)} → {os.path.realpath(c)}" for c in odkazy)
                  + "\nNahraď je skutečnými složkami (obsah zkopíruj) a spusť znovu.")
     os.makedirs(dst, exist_ok=True)
     copy_tree(os.path.join(SKILL, "template", "data"), os.path.join(dst, "data"))
-    web = os.path.join(dst, "web")
-    backup = os.path.join(dst, "pracovni", "zaloha_web_" + time.strftime("%Y%m%d-%H%M%S"))
-    changed = copy_tree(os.path.join(SKILL, "template", "web"), web, backup if os.path.isdir(web) else None)
+    changed = []
+    if s_webem:
+        web = os.path.join(dst, "web")
+        backup = os.path.join(dst, "pracovni", "zaloha_web_" + time.strftime("%Y%m%d-%H%M%S"))
+        changed = copy_tree(os.path.join(SKILL, "template", "web"), web, backup if os.path.isdir(web) else None)
     tools = os.path.join(dst, "tools")
     os.makedirs(tools, exist_ok=True)
     zaloha_nastroju = os.path.join(dst, "pracovni", "zaloha_tools_" + time.strftime("%Y%m%d-%H%M%S"))
