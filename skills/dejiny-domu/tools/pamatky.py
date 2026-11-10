@@ -7,6 +7,8 @@ Když dům v katalogu není, neznamená to, že nemá historickou hodnotu.
 Použití:
   pamatky.py "<obec, část obce nebo ulice>" [číslo]  – objekty (číslo = čp. nebo č. or. v adrese): id | název | adresa | ochrana | anotace
   pamatky.py detail <id>                         – vznik, stavební vývoj, popis, literatura, fotky v MIS, odkaz
+  pamatky.py uan "<Obec čp>" | lat,lon           – leží dům na území s archeologickými nálezy (ÚAN, NPÚ)? kategorie,
+                                                   název území; z projektu (potřebuje tools/mista.py)
 Data seznamu památek jsou otevřená (CC BY 4.0): citace „NPÚ, Památkový katalog, katalogové číslo …“.
 Fotky jsou dílo NPÚ – jen odkazem, do výstupu ne (reference/podminky.md)."""
 import json, os, re, sys, urllib.parse, urllib.request
@@ -19,6 +21,12 @@ from nazvy import bez_diakritiky   # porovnání názvů obcí (nazvy.py)
 
 API = "https://pamatkovykatalog.cz/api/"
 WEB = "https://www.pamatkovykatalog.cz/"
+UAN = "https://geoportal.npu.cz/arcgis/rest/services/Tematicke/CP_UAN/MapServer"
+UAN_VYZNAM = {   # kategorie → co znamená pro dějiny domu a pro majitele (zákon 20/1987 Sb., § 22)
+    "ÚAN I": "nálezy jsou tu prokázané (výzkum, nálezy v zemi)",
+    "ÚAN II": "nálezy se tu předpokládají (stará ves, okolí prokázaného naleziště)",
+    "ÚAN IV": "nálezy už vytěžené (lom, výzkum skončil)",
+}
 LIMIT = 250   # víc katalog na jeden dotaz nevrátí („hledání je příliš obecné“)
 
 
@@ -105,7 +113,46 @@ def popis(d):
     return radky
 
 
+UAN_OKOLI_M = 300   # území v okolí: stará ves nebo naleziště kousek od domu
+
+
+def uan_dotaz(x, y, okoli_m=0):
+    """Území ÚAN (atributy), která zasahují do bodu nebo do okruhu kolem něj."""
+    nalezy = []
+    for vrstva in range(4):   # I, II, II pásmo, IV
+        q = urllib.parse.urlencode({"geometry": f"{x},{y}", "geometryType": "esriGeometryPoint", "inSR": 5514,
+                                    "spatialRel": "esriSpatialRelIntersects", "distance": okoli_m,
+                                    "units": "esriSRUnit_Meter", "outFields": "Nazev,ID_SAS,Kategorie",
+                                    "returnGeometry": "false", "f": "json"})
+        req = urllib.request.Request(f"{UAN}/{vrstva}/query?{q}", headers={"User-Agent": slusne.UA})
+        with urllib.request.urlopen(req, timeout=60) as r:
+            nalezy += [f["attributes"] for f in json.load(r).get("features", [])]
+    return nalezy
+
+
+def uan(misto):
+    """Území s archeologickými nálezy v místě domu (mapa ÚAN, NPÚ). Mimo vymezená území platí ÚAN III."""
+    import mista   # jen tady: potřebuje kořen projektu
+    x, y = mista.sjtsk(*mista.stred(misto))
+    nalezy = uan_dotaz(x, y)
+    if not nalezy:
+        print("Dům neleží na vymezeném území s nálezy → ÚAN III (území, kde lidé žili, nález je možný kdekoli).")
+    for a in nalezy:
+        print(f"{a['Kategorie']}: {a['Nazev']} (č. SAS {a['ID_SAS']}) – {UAN_VYZNAM.get(a['Kategorie'], '')}")
+    v_miste = {a["ID_SAS"] for a in nalezy}
+    for a in uan_dotaz(x, y, UAN_OKOLI_M):
+        if a["ID_SAS"] not in v_miste:
+            print(f"do {UAN_OKOLI_M} m: {a['Kategorie']} {a['Nazev']} (č. SAS {a['ID_SAS']}) – "
+                  f"{UAN_VYZNAM.get(a['Kategorie'], '')}")
+    print("Pro majitele: při výkopech (přístavba, sklep, přípojky) na ÚAN I–III ohlásit záměr archeologům předem "
+          "(zákon 20/1987 Sb., § 22). Nálezy z místa hledej v AMČR (portaly.md). Citace: „NPÚ, Státní archeologický "
+          "seznam ČR (ÚAN)“.")
+
+
 def main(argv):
+    if len(argv) > 2 and argv[1] == "uan":
+        uan(argv[2])
+        return
     if len(argv) > 2 and argv[1] == "detail":
         print("\n".join(popis(api(f"element/{argv[2]}"))))
         return

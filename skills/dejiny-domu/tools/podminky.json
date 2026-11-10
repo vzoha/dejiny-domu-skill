@@ -120,6 +120,10 @@
       "nazev": "Památkový katalog NPÚ", "dotazy": true, "obrazky": false, "vyrez": "neresi",
       "proc": "seznam památek je otevřená data CC BY 4.0, web bez robots.txt a bez ověření (8. 11. 2026); fotky jsou na iispp.npu.cz", "jinak": ""
     },
+    "geoportal.npu.cz": {
+      "nazev": "Geoportál NPÚ (území s archeologickými nálezy)", "dotazy": true, "obrazky": false, "vyrez": "ano",
+      "proc": "ÚAN je otevřená data CC BY-SA 4.0 (metadata NPÚ), veřejná služba ArcGIS bez ověření (10. 11. 2026); nástroj bere jen kategorii a název území", "jinak": ""
+    },
     "iispp.npu.cz": {
       "nazev": "NPÚ – MIS a Carmen (fotky, plány, průzkumy)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "fotky a plány jsou dílo NPÚ: zveřejnit jen se smlouvou, web nejvýš 200×300 px nebo s vodoznakem, v tisku licence od 1 500 Kč (badatelský řád a ceník NPÚ, 8. 11. 2026)",

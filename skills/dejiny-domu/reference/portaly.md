@@ -30,6 +30,9 @@ Kulturní památky a objekty, které památkáři jen evidují (návesní kaple,
   jinde vypíše zvlášť. Víc než 250 výsledků katalog nevrátí – zúžit na část obce nebo ulici.
 - `python3 -I tools/pamatky.py detail <id>` → vznik, autor, stavební vývoj, popis, **literatura o objektu**, fotky v MIS
   (popis + odkaz), odkaz do Carmen (plány, průzkumy), trvalý odkaz a citace.
+- `python3 -I tools/pamatky.py uan "Osada čp"` (z projektu) → území s archeologickými nálezy (ÚAN, Státní archeologický
+  seznam, služba ArcGIS geoportal.npu.cz `Tematicke/CP_UAN`): kategorie a název území v místě domu i do 300 m.
+  Mimo vymezená území platí ÚAN III. Data CC BY-SA 4.0, nástroj bere jen kategorii a název.
 - **Chybějící dům v katalogu neznamená, že nemá historickou hodnotu.** Údaje NPÚ (datace, popis) jsou `lit`, ne doklad.
 - Fotky a plány (MIS, Carmen na iispp.npu.cz) jsou dílo NPÚ: do výstupu jen odkaz (`podminky.md`).
 - **MIS** (`tools/mis.py`): fotky, plány a mapy i u objektů, které v katalogu nejsou. `mis.py hledej "Lniště"` →
