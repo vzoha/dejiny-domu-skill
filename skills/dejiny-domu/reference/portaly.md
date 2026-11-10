@@ -188,6 +188,16 @@ roty wehrmachtu, ADN), vesnice skoro nikdy: Reichenberg 40, Eger 56, Rumburg 11,
   Foto: …“). Zdarma jen soukromě a na nekomerčním webu do 800 px. Fotky z daru Bundesarchivu na Commons
   (CC BY-SA 3.0 DE, „Bundesarchiv Bild …“) smí i do placeného výstupu; najde je `commons.py`.
 
+## Bildarchiv Austria (ÖNB), Polona, Śląska Biblioteka Cyfrowa – jen ručně
+Doplňky pro obce s vazbou na Rakousko a Polsko; hledá uživatel (**německý, polský i český název**), když nic, dál nehledej.
+- **Bildarchiv Austria** (bildarchivaustria.at, Rakouská národní knihovna): fotky a negativy monarchie, hlavně
+  Vídeň a Rakousko; české obce sporadicky. Web picturemaxx bez API, do Europeany fotky českých obcí neposílá.
+  Pohlednice ÖNB najde `akon.py`. Snímek do výstupu jen objednaný (ceník Tarifordnung ÖNB, bildarchiv@onb.ac.at).
+- **Polona** (polona.pl, Polská národní knihovna): pohlednice a grafika, u Česka nejspíš pohraničí s Polskem (neověřeno). Nástrojům
+  spojení odmítá (reset při TLS), Claude ho neotevírá. Licence u každého objektu (volná díla smí do výstupu).
+- **Śląska Biblioteka Cyfrowa** (sbc.org.pl): slezské knihy, noviny a pohlednice, nejspíš i Těšínsko a Opavsko
+  (Teschen, Troppau; neověřeno). Výsledky hledání vykresluje JavaScript; robots.txt zakazuje jen stahování ZIP. Licence u objektu.
+
 ## Deutsche Digitale Bibliothek (DDB) a Bildindex / Foto Marburg – `tools/ddb.py`
 DDB sdružuje sbírky německých muzeí, archivů a knihoven. Pro české obce hlavně: **Bildarchiv Foto Marburg** (fotky
 památek, kostelů a domů, místa jako „Schweinitz (Kreis Böhmisch Budweis)“), **Deutsche Fotothek** (pohlednice kolem

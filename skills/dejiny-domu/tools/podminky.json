@@ -233,6 +233,21 @@
       "proc": "Benutzungsarten: zdarma jen soukromě a na nekomerčním webu do 800 px, publikace jen objednaná s poplatkem (BKMBGebV); bez nástroje, z Česka málo fotek (10. 11. 2026)",
       "jinak": "Uživatel hledá německý název obce v bild.bundesarchiv.de. Snímek do placeného výstupu objedná s poplatkem; fotky Bundesarchivu na Commons (CC BY-SA 3.0 DE) smí bez poplatku s citací."
     },
+    "onb.wg.picturemaxx.com": {
+      "nazev": "Bildarchiv Austria (ÖNB, picturemaxx)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "web picturemaxx bez API se stavem v JavaScriptu; reprodukce jen objednané podle Tarifordnung ÖNB (10. 11. 2026)",
+      "jinak": "Hledá uživatel na bildarchivaustria.at (německý název). Pohlednice ÖNB vypíše akon.py. Snímek do výstupu objednat u bildarchiv@onb.ac.at."
+    },
+    "polona.pl": {
+      "nazev": "Polona (Polská národní knihovna)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "server nástrojům ukončí spojení při TLS (connection reset) – blok, neobcházet (10. 11. 2026)",
+      "jinak": "Hledá uživatel v prohlížeči (polský, německý i český název). Obrázek do výstupu podle licence u objektu (volné dílo ano)."
+    },
+    "sbc.org.pl": {
+      "nazev": "Śląska Biblioteka Cyfrowa", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "výsledky hledání vykresluje JavaScript, nástroj by je nepřečetl; robots.txt zakazuje jen stahování ZIP (10. 11. 2026)",
+      "jinak": "Hledá uživatel v prohlížeči (Teschen, Troppau, polský název). Obrázek do výstupu podle licence u objektu."
+    },
     "api.deutsche-digitale-bibliothek.de": {
       "nazev": "Deutsche Digitale Bibliothek, API", "dotazy": true, "obrazky": true, "vyrez": "neresi",
       "proc": "veřejné API verze 2 bez klíče (klíče DDB už nevydává, pro2 „wesentliche öffentliche Funktionen ohne API-Key“), metadata CC0, obrázky podle licence předmětu (ddb.py detail); robots.txt API nemá (9. 11. 2026)",
