@@ -42,6 +42,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | 1800–1950 | Europeana: sbírky evropských muzeí a knihoven (**rakouská, maďarská, německá muzea, mapy PřF UK**) | podoba obce, kostela, hradu; mapy okresů a okolí | `europeana.py "Obec" "Německý název"` (okolí podle polohy i název), `detail <id>`; potřebuje klíč; licence u předmětu |
 | 1880–1945 | Bildarchiv Herder-Institutu Marburg (**německá místa Čech, Moravy a Slezska**, ~800 tis. fotek, negativů, pohlednic, online třetina) | podoba obce, kostela, náměstí před odsunem; foto dokumentace památek | jen ručně uživatel v Bildkatalogu (Claude ho neotevírá), skeny objednat (`portaly.md`); obrázek jen se souhlasem a poplatkem |
 | 1895–1945 | pohlednice v obchodech a aukcích (akpool.de, delcampe.net, ansichtskarten-lexikon.de; **i malé vsi, hospody, mlýny**) | že pohled na obec nebo dům existuje, rok odeslání, co je na něm | jen ručně uživatel, český i německý název (`portaly.md`); jen vodítko, obrázek do výstupu ne, koupená pohlednice je vlastní originál |
+| 1900–1945 (vydáno po 1950) | Heimatbücher a seznamy domů vysídlených obcí (**jen pohraničí a německé vsi**) | majitelé a obyvatelé domu k 1945, často čp., fotky statků, vzpomínky | `heimatbuch.py "Německý název"` (katalog DNB), brožury vsí a Ortsbetreuer na GenWiki (stránka okresu, uživatel), kniha přes MVS nebo Sudetendeutsche Bibliothek (`portaly.md`); fotky jen se souhlasem |
 | 1850–2000 | zaniklé vsi, samoty, mlýny, dvory a kaple (zanikleobce.cz, **hlavně pohraničí po 1945, mlýny všude**) | co stálo kolem domu a zmizelo, dobové fotky a pohlednice, vzpomínky pamětníků, počty obyvatel a domů | `zanikleobce.py "Obec"` (okruh 3 km), `detail <id>`; příspěvky dobrovolníků, ověř v pramenech; fotky jen se souhlasem autora. Dvojice fotek dřív × dnes z pohraničí má kniha *Zmizelé Sudety* (Antikomplex, 7 vydání; web zmizelesudety.cz zrušen), v knihovnách |
 | 1900–1990 | Fortepan (maďarský fotoarchiv, CC BY-SA; **z Česka hlavně Praha, Brno, lázně**) | amatérské a rodinné fotky ulic a domů | ručně fortepan.hu nebo „Fortepan Obec“ v hledání Commons (`portaly.md`); smí do výstupu s citací |
 | 1700–1960 | Wikimedia Commons: pohlednice, fotky, rytiny, plány, které nahráli lidé a instituce (**hlavně města, hrady, kostely**) | podoba obce a jednotlivých staveb; u měst sbírky pohlednic (Brück & Sohn) | `commons.py "Obec"`, `detail "<soubor>"`; volná licence, smí do PDF s autorem a licencí |
@@ -138,6 +139,8 @@ majetek zkonfiskovaly a stát ho přidělil novým obyvatelům. Úřady se děli
   a osidlovací komise okresu (Rumburk, Děčín, Kaplice…). Stejnojmenné obce mají MNV v různých archivech (Levín 3×).
 - Nic z toho není online. Spis si vyžádej podle obce a čísla domu, nejlépe se jménem posledního německého
   majitele → `archivni_dotazy.md`. Příděl bývá zapsaný i v pozemkové knize (vklad pro přídělce).
+- Jméno posledního německého majitele často dá Heimatbuch obce: seznam domů s čp. a majiteli k 1945
+  (`heimatbuch.py "Německý název"`, řádky s ⌂).
 - **Citlivé:** odsun a konfiskace se týkají rodin, které možná dosud žijí ve vsi nebo v Německu → `soukromi.md`.
 
 ## Gruntovní knihy – jak na ně
@@ -261,6 +264,7 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
 ## Obec
 - Literatura: vlastivědy okresu, dějiny panství (např. „Geschichte der Herrschaft …“), Sedláček (Hrady, zámky a tvrze;
   Místopisný slovník), Profous (Místní jména v Čechách – původ názvu), Statistický lexikon obcí (počty domů a obyvatel).
+  Německé vsi: Heimatbücher, Ortschroniken a Heimatkunde okresu (`heimatbuch.py "Německý název"`, i název okresu).
 - Do `OBEC_UDALOSTI` se stavem `lit` a `zdroj` (kniha, strana). Údaj z literatury, který jde ověřit v prameni,
   ověř a změň na `doc`.
 - Kroniky obce a školy: bývají digitalizované u SOkA (na stejných portálech jako matriky). Čti zápisy o požárech,

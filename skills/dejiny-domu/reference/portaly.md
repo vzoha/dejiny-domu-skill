@@ -151,6 +151,35 @@ Negativy Josefa (do 1935) a Františka Seidela (do 1970) a sbírka pohlednic R. 
 - `python3 -I tools/seidel.py detail <id>` → datum, zákazník, adresa, popisek na desce, číslo negativu, technika,
   odkaz a citace. Fotku otevře uživatel odkazem; do výstupu jen se souhlasem muzea.
 
+## Heimatbücher (katalog Německé národní knihovny) – `tools/heimatbuch.py`
+Vysídlení Němci vydali po 1945 ke stovkám obcí Heimatbücher, Ortschroniken, Häuserbücher a seznamy domů s majiteli
+k 1945, často s fotkami statků a plánkem vsi s čísly domů. Vydávaly je Heimatkreise (spolky okresů) a jednotlivci
+vlastním nákladem, v malých nákladech; české knihovny je mají zřídka, DNB skoro všechny (povinný výtisk).
+- `python3 -I tools/heimatbuch.py "Bleiswedel"` → rok | název | autor | vydavatel | odkaz d-nb.info. **Německý název**
+  obce (víc názvů za sebou), u malé vsi zkus i okres (Kaplitz, Prachatitz) – vsi bývají v knize celého okresu nebo
+  farnosti. Velké město a stejné jméno v Německu (Schweinitz) dají moc nálezů: nástroj pak nechá jen místopisné
+  tituly; co nesedí na Čechy, přeskoč. ⌂ = v názvu domy, majitelé, obyvatelé (Häuserverzeichnis, Hauseigentümer).
+- Katalog DNB (SRU) je zdarma a bez registrace, metadata CC0. Kniha: Knihovny.cz (otevře uživatel), meziknihovní
+  výpůjčka z Německa v místní knihovně, Sudetendeutsche Bibliothek v Mnichově, nebo antikvariát (zvlášť když
+  zákazník bude chtít knihu mít).
+- Do výstupu údaje z knihy s citací (autor, název, rok, strana). Kniha je vydaná po 1950 a autorsky chráněná:
+  fotky a delší úryvky jen se souhlasem vydavatele (Heimatkreis, dědici autora). Údaje o lidech ověř v matrice
+  nebo katastru, psali je pamětníci po letech.
+- **GenWiki (wiki-de.genealogy.net), stránka okresu – jen uživatel:** Anubis odmítá Claude-User, Claude ho neotevírá.
+  Uživatel zadá do hledání GenWiki německý název obce; stránky mají názvy `Bezirk Prachatitz`, `Gerichtsbezirk …`,
+  `Pfarrei …`, vsi `Winterberg (Böhmen)` (stránka jen s názvem vsi často neexistuje). Ať pošle text stránky okresu
+  (Ctrl+A, Ctrl+C). Oddíl **Bibliographie** má i brožury vsí, které DNB nemá (Kubohütten, Sablat u Prachatitz),
+  **Andere Gesellschaften** Heimatkreis a patronátní město (Ingolstadt pro Prachatitz) s Heimatsammlung (muzeum
+  vysídlených). Odkaz „Liste aller … Gemeinden und Dörfer“ dá části obce s německými názvy samot, mlýnů
+  a hospod (Pfefferschlag: Holzmühle, Gasthaus Schmied-Jogl), počty obyvatel a faru.
+- **Heimatkreise zanikají** (pamětníci vymřeli): kontakty na GenWiki bývají staré (Prachatitz: web zrušen,
+  Heimatbrief vycházel 1948–2018). Jestli spolek žije, ověř: web, poslední ročník Heimatbriefu v DNB
+  (`heimatbuch.py` s názvem okresu). Živý Heimatkreis má Ortsbetreuer (správce obce: fotky, plánky, seznamy
+  domů); dotaz napiš uživateli německy (co hledá, čp., jména). Sbírky zaniklých spolků bývají v Heimatsammlung
+  patronátního města, v Sudetendeutsches Museum nebo Sudetendeutsches Archiv (Mnichov): dotaz tam.
+- Weby Heimatkreisů (Ortsbilder, Häuserlisten) najde uživatel i přes vyhledávač („Heimatkreis Kaplitz“,
+  „<německý název> Häuserliste“).
+
 ## Deutsche Digitale Bibliothek (DDB) a Bildindex / Foto Marburg – `tools/ddb.py`
 DDB sdružuje sbírky německých muzeí, archivů a knihoven. Pro české obce hlavně: **Bildarchiv Foto Marburg** (fotky
 památek, kostelů a domů, místa jako „Schweinitz (Kreis Böhmisch Budweis)“), **Deutsche Fotothek** (pohlednice kolem

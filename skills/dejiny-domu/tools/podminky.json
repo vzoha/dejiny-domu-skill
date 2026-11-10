@@ -218,6 +218,16 @@
       "proc": "ochrana Proof-of-Work proti robotům, robots.txt zakazuje všem kromě Googlu (Claude-User nejmenuje); obrázky Foto Marburg a partnerů s právy u instituce (9. 11. 2026)",
       "jinak": "Fotky Foto Marburg najde ddb.py (Deutsche Digitale Bibliothek, s licencí, často CC0 nebo CC BY-SA). Bildindex jen když tam něco chybí: hledá uživatel v prohlížeči (nebo Claude in Chrome, ověření řeší uživatel), německý název obce. Obrázek z Bildindexu do výstupu se souhlasem Foto Marburg."
     },
+    "services.dnb.de": {
+      "nazev": "Deutsche Nationalbibliothek, katalog (SRU)", "dotazy": true, "obrazky": false, "vyrez": "ne",
+      "proc": "SRU „kostenfrei und ohne Registrierung“, metadata CC0; robots.txt zakazuje jen /fize-service; jen popisy knih (10. 11. 2026)",
+      "jinak": "Heimatbücher obce vypíše heimatbuch.py. Knihu půjčí uživatel (MVS, Sudetendeutsche Bibliothek); fotky z knihy jen se souhlasem vydavatele."
+    },
+    "wiki-de.genealogy.net": {
+      "nazev": "GenWiki (Verein für Computergenealogie)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "ochrana Anubis (proof-of-work) – nástroj by ji musel obejít (10. 11. 2026)",
+      "jinak": "Uživatel hledá německý název obce, otevře stránku okresu (Bezirk …) a pošle text (Ctrl+A, Ctrl+C): literatura i brožury vsí mimo DNB, Heimatkreis a Ortsbetreuer obce."
+    },
     "api.deutsche-digitale-bibliothek.de": {
       "nazev": "Deutsche Digitale Bibliothek, API", "dotazy": true, "obrazky": true, "vyrez": "neresi",
       "proc": "veřejné API verze 2 bez klíče (klíče DDB už nevydává, pro2 „wesentliche öffentliche Funktionen ohne API-Key“), metadata CC0, obrázky podle licence předmětu (ddb.py detail); robots.txt API nemá (9. 11. 2026)",
