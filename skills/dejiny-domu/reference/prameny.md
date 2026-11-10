@@ -255,6 +255,8 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   pro hledání v matrikách (roky narození).
 
 ## Matriky podle čísla domu
+- Farnost obce před 1918, když ji archivní portál neukáže: mapa farních hranic Čech, Moravy a Slezska od F. Gundackera
+  (PDF zdarma: felixgundacker.at → Download → Pfarrgrenzen in Tschechien vor 1918; jen k určení fary, do výstupu ne).
 - Od 1784 je u každého zápisu číslo domu. V knize hledej **všechny** zápisy z daného čísla (křty, sňatky, úmrtí).
   Tak poznáš, které rodiny v domě žily a kdy se střídaly (přiženění, prodej).
 - Rejstříky jsou podle jmen. U domu proto nejdřív získej jména ze sčítání nebo z gruntovní knihy, pak teprve rejstřík.
