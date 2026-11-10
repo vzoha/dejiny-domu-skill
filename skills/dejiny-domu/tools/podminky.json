@@ -278,6 +278,11 @@
       "proc": "dobrovolnický portál P. Berana, příspěvky patří přispěvatelům, licence žádná, web brání kopírování fotek; robots.txt zakazuje * hledání a adresy s ? (web padal na 429), Claude-User nejmenuje; nástroj čte jen mapu (1× za 30 dní) a stránky nalezených míst (9. 11. 2026)",
       "jinak": "Místa u obce a detail vypíše zanikleobce.py. Do výstupu zjištění s citací a odkaz; fotku nebo delší text jen se souhlasem autora přes správce (beran@seznam.cz)."
     },
+    "fortepan.hu": {
+      "nazev": "Fortepan (maďarský komunitní fotoarchiv)", "dotazy": true, "obrazky": true, "vyrez": "ano",
+      "proc": "všechny fotky CC BY-SA 3.0 (patička webu), robots.txt nemá; z Česka jen asi 1 250 fotek, hlavně Praha a Brno (10. 11. 2026)",
+      "jinak": "Uveď „Fortepan / dárce, číslo fotky“ a CC BY-SA 3.0. Velká část sbírky je i na Commons („… Fortepan 12345.jpg“)."
+    },
     "commons.wikimedia.org": {
       "nazev": "Wikimedia Commons", "dotazy": true, "obrazky": true, "vyrez": "ano",
       "proc": "jen volné licence (Public domain, CC0, CC BY, CC BY-SA), komerční užití dovolené s autorem a licencí; API pro roboty, robots.txt zakazuje * /w/, Claude-User nejmenuje (9. 11. 2026)",

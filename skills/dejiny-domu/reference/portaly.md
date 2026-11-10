@@ -275,6 +275,14 @@ placeného výstupu (Public domain a CC0 se zdrojem, CC BY a CC BY-SA s autorem 
 - `python3 -I tools/commons.py detail "<soubor>"` → popis, datum, autor, zdroj, licence, odkaz na obrázek a citace.
   Licenci určil ten, kdo soubor nahrál: u starých děl s „Own work“ jde o jeho sken, dílo samo je volné stářím.
 
+## Fortepan (fortepan.hu) – jen ručně
+Maďarský komunitní fotoarchiv (přes 200 000 fotek amatérů a rodin, 1900–1990), vše CC BY-SA 3.0. Z Česka jen asi
+1 250 fotek na 77 místech, hlavně Praha (680) a Brno (200), lázně a výlety 1950–1970; vesnice skoro nikdy (10. 11. 2026).
+- Hledá uživatel na fortepan.hu (místa bývají **maďarsky**: Prága), nebo na Commons: Fortepan tam nahrál velkou část
+  sbírky (soubory „… Fortepan 12345.jpg“), hledání `Fortepan Obec` v Commons najde i soubory bez kategorie obce,
+  které `commons.py` nevidí.
+- Smí do výstupu i za peníze: uveďte „Fortepan / jméno dárce, číslo fotky“ a licenci CC BY-SA 3.0.
+
 ## Pohlednice AKON, Rakouská národní knihovna (akon.onb.ac.at) – `tools/akon.py`
 Ansichtskarten Online: pohlednice 1896–1925 z celé monarchie, Čechy, Morava a Slezsko hlavně německy (Krummau,
 Prachatitz, Komotau). Otevřená data ÖNB Labs mají 34 846 pohlednic ve volném díle, z Česka asi 1 700 (391 míst:
