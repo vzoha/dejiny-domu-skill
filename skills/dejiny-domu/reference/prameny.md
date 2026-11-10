@@ -203,6 +203,11 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
 - **Ortofoto z 50. let** (CENIA, většinou 1952–54): `mapa cenia50 "Osada čp" výstup.jpg` – stejný výřez a čísla domů
   jako u PK, rok snímku a citaci vypíše. Pod CC BY, **smí do PDF i na web** s celou citací. Porovnání PK × ortofoto
   ukáže, co z dvora stálo po válce.
+- **Reliéf terénu z laserového skenování** (DMR 5G, ČÚZK 2009–2013): `mapa relief "Osada čp" výstup.jpg 250` –
+  stínovaný terén bez stromů a domů, stejný výřez a čísla domů jako u PK. Ukáže, co na mapách ani ortofotu není:
+  základy zbořených stavení, zaniklé úvozové cesty, meze a plužiny, hráze vypuštěných rybníků, haldy, i pod lesem.
+  Porovnej s PK a stabilním katastrem: stopa, která sedí na zaniklou stavbu nebo cestu ze staré mapy, je nález.
+  Světlo je od severozápadu, hrany ve stejném směru zmizí. CC BY 4.0, **smí do PDF i na web** („ČÚZK, DMR 5G“).
 - **Letecké měřické snímky** (armáda, 30.–60. léta): `cuzk_archiv.py lms "Osada čp"` vypíše ročníky nad domem
   (třeba 1949, 1952, 1957, 1961). Snímky si uživatel prohlédne v aplikaci Archiv ČÚZK (`?start=lms`). Co hledat:
   kdy přibyla nebo zmizela stavba ve dvoře, sady, a hlavně **kolektivizaci** – úzké pásy polí soukromníků proti

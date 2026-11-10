@@ -27,7 +27,9 @@ Použití (z kořene projektu):
       georeferencovaná (spojená) vrstva kolem místa: pk = pozemkový katastr (~1900–1950, v S-JTSK, sedí na dnešní
       domy), originalni_mapy, cisarske_otisky, cenia50 = ortofoto CENIA z 50. let (většinou 1952–54, vypíše rok
       a citaci; CC BY, smí i do PDF), vm3 = III. vojenské mapování, speciální mapa 1 : 75 000 (CENIA, jen ke čtení –
-      do výstupu topografická sekce z `rady`). Spojené vrstvy ČÚZK často nepokrývají malé obce ani města
+      do výstupu topografická sekce z `rady`), relief = stínovaný reliéf terénu z leteckého laserového skenování
+      (DMR 5G, ČÚZK 2009–2013, CC BY 4.0, smí i do PDF): zaniklé stavby, základy, úvozové cesty, meze, rybníky
+      a hráze, které na mapách ani ortofotu nejsou, i pod lesem. Spojené vrstvy ČÚZK často nepokrývají malé obce ani města
       (Olomouc-město): bílý obrázek nástroj pozná, neuloží ho, vypíše listy stabilního katastru a postup
       rastry → prehled → export. Výchozí poloměr 150 m, 1500 px. Vypíše i dnešní adresní body RÚIAN (čísla domů)
       v pixelech obrázku a s ImageMagickem je zakreslí do <vystup>_adresy.jpg: na které staré stavební parcele
@@ -60,6 +62,8 @@ ARCHIV = "https://ags.cuzk.gov.cz/arcgis4/rest/services/Archiv"
 CENIA = "https://gis.cenia.cz"
 CENIA_WMS = {"cenia50": ("ortofotomapa_historicka", "orto"),   # vrstva mapa → (služba mapcache, vrstva WMS)
              "vm3": ("III_vojenske_mapovani", "III_vojenske_mapovani")}
+DMR5G = "https://ags.cuzk.gov.cz/arcgis2/rest/services/dmr5g/ImageServer/exportImage"
+DMR5G_CITACE = "ČÚZK, DMR 5G (letecké laserové skenování 2009–2013), CC BY 4.0"
 CENIA_CITACE = ("Historická ortofotomapa © CENIA 2010 a © GEODIS BRNO, spol. s r.o. 2010, Podkladové letecké snímky "
                 "poskytl VGHMÚř Dobruška, © MO ČR 2009")
 GEN = "https://ags.cuzk.gov.cz/arcgis2/rest/services/GenerateToken/Token/GPServer/GenerateToken"
@@ -251,6 +255,15 @@ def mapa(vrstva, m, out, polomer=150, px=1500):
         else:
             print(f"{out} – jen ke čtení (podmínky CENIA u vojenských mapování si odporují). Do výstupu topografickou "
                   "sekci 1 : 25 000 z ÚAZK: rady → export nonstable D1_21__…")
+    elif vrstva == "relief":
+        save_jpeg(get(DMR5G, {"bbox": obalka(bbox), "bboxSR": 5514, "imageSR": 5514, "size": f"{px},{px}",
+                              "format": "jpg", "renderingRule": json.dumps({"rasterFunction": "GrayscaleHillshade"}),
+                              "f": "image"}, binary=True), out)
+        mg = magick()
+        if mg:   # služba vrací šedý reliéf s malým kontrastem: roztáhnout, ať jsou vidět terénní stopy po 30–50 cm
+            subprocess.run([mg, out, "-contrast-stretch", "0.5%x0.5%", out], check=True)
+        print(f"{out} – světlo od severozápadu; terénní hrany souběžné se světlem nejsou vidět, porovnej s dnešní mapou "
+              f"a ortofotem. Citace: {DMR5G_CITACE}")
     else:
         img = archiv(f"archiv_spojene_{vrstva}/MapServer/export", {
             "bbox": obalka(bbox), "bboxSR": 5514, "imageSR": 5514,
@@ -280,6 +293,12 @@ def cenia_rok(x, y):
     return next((f["properties"]["rok"] for f in d.get("features", [])), "?")
 
 
+def magick():
+    """Cesta k ImageMagicku, nebo None."""
+    return (shutil.which("magick") or next(iter(glob.glob(r"C:\Program Files\ImageMagick*\magick.exe")), None)
+            or (os.name != "nt" and shutil.which("convert")))   # ImageMagick 6 bez magick; na Windows je convert.exe jiný program
+
+
 def adresy(bbox, px, out):
     """Dnešní adresní body RÚIAN (číslo domovní) v pixelech obrázku: na které staré parcele dnešní číslo stojí."""
     f = get(f"{RUIAN}/1/query", {"geometry": obalka(bbox), "geometryType": "esriGeometryEnvelope",
@@ -294,8 +313,7 @@ def adresy(bbox, px, out):
         return print("adresní body RÚIAN: žádné v obrázku")
     body = [(("ev." if ev else "") + str(c), x, y) for ev, c, x, y in sorted(body)]   # nejdřív čp., pak č. ev.
     print("adresní body RÚIAN (dnešní čp., pixel x,y v obrázku):", ", ".join(f"{c} {x},{y}" for c, x, y in body))
-    mg = (shutil.which("magick") or next(iter(glob.glob(r"C:\Program Files\ImageMagick*\magick.exe")), None)
-          or (os.name != "nt" and shutil.which("convert")))   # ImageMagick 6 bez magick; na Windows je convert.exe jiný program
+    mg = magick()
     if not mg:
         return print("(bez ImageMagicku body nezakreslím, polohy výše)")
     kresba = []
