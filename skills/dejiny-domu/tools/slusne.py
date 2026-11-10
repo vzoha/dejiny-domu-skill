@@ -38,6 +38,7 @@ LIMITY = {
     "nominatim.openstreetmap.org": (1.1, 1.1),                       # pravidla OSM: nejvýš 1 dotaz za s
     "gs-pub.praha.eu": (0.5, 0.05), "geoportal.cuzk.gov.cz": (0.5, 0.05),
     "commons.wikimedia.org": (0.5, 0.05), "www.wikidata.org": (0.5, 0.05),   # API pro roboty, sériové dotazy povoleny
+    "images.archives.cz": (2.0, 0.25),   # ZA Opava: 10. 11. 2026 HTTP 429/503 po několika tisících dlaždic za ~hodinu
 }
 BLOKACE = 30 * 60
 ROBOT = "Claude-User"

@@ -447,7 +447,14 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
   `…/images/<složka>/<uuid>.jpg`. Cesta se u svazků liší (`…/CZ-217000010/NAD-165/dao/images/…`, `…/zao/matriky/dao/images/…`)
   a přípona bývá i `.JPG` – nástroji dej vždy **celou adresu z HTML**:
   `python3 -I tools/soal_zoomify.py "<adresa>" 2 pracovni/x.jpg` (2 = čtvrtinové rozlišení na orientaci podle záhlaví
-  stránek, 0 = plné jen u nalezeného zápisu). Obrázkový server images.archives.cz neomezuje a cookies nepotřebuje.
+  stránek, 0 = plné jen u nalezeného zápisu). Cookies nepotřebuje.
+- **Obrázkový server images.archives.cz omezuje** (10. 11. 2026: HTTP 429 po ~25 celých stránkách v plném rozlišení,
+  pak 503 i po jediném snímku). Celá stránka v plném rozlišení má stovky dlaždic, proto: náhled `2` (~20 dlaždic) →
+  v plném rozlišení jen výřez zápisu `--oblast x0,y0,x1,y1` (podíly stránky 0–1, ~20–50 dlaždic). Nejvýš ~1 500 dlaždic za hodinu
+  (~30–50 výřezů, mezi nimi ~1 min pauza), žádné dávky naslepo; po bloku čekat déle než 30 min a začít pomalu. Nástroj má pro tento server přísnější limit (`slusne.py`) a po 429/503 sám skončí.
+- **Pozemkové knihy** (gruntovní knihy měst): `ImageProperties.xml` vrací 404 → rozměr snímku z HTML
+  `/da/showZoomify/<svazek>/<snímek>` (atribut `zImageProperties` WIDTH a HEIGHT) a nástroji `--rozmer ŠxV`.
+  Na začátku svazku bývá rejstřík jmen s čísly zápisů (písmena po dvou snímcích) – najdi zápis v rejstříku, ne listováním.
 - **Co dalšího tam je kromě matrik** (vlevo dlaždice druhu): **Mapy, atlasy, technické výkresy** (~41 tis. záznamů,
   ~30 tis. se snímky), **Pozemkové knihy** (gruntovnice, purkrechtní registra, knihy kupních smluv, urbáře; od 2012),
   **Sčítání** 1869–1921 (pole Číslo popisné, u části obcí vytěžená jména), **Kartotéky** (odsunové kartotéky,

@@ -13,6 +13,8 @@ Použití (z kořene projektu):
     --rozmer ŠxV  (za výstupem) když ImageProperties.xml vrací 404 (ZA Opava, pozemkové knihy): rozměr z HTML
                 stránky /da/showZoomify/<svazek>/<snímek>, atribut zImageProperties WIDTH a HEIGHT
     zmenseni  = 0 plné rozlišení (na čtení a výřez), 1 poloviční (na orientaci), 2 čtvrtinové
+ŠETŘIT SERVER: celá stránka v plném rozlišení = stovky dlaždic. Nejdřív náhled (zmenseni 2, ~20 dlaždic), podle něj
+zápis vyříznout v plném rozlišení přes --oblast (~20–50 dlaždic). Celou stránku v plném rozlišení jen výjimečně.
 POZOR: aplikace digi.soalitomerice.cz po ~100 rychlých požadavcích (digi.archives.cz v Opavě už po ~75) zablokuje
 přístup na 30 minut. Prohlížečem jen najdi knihu a cestu k obrázkům, snímky pak stahuj tímto nástrojem (obrázkový server
 neomezuje).
