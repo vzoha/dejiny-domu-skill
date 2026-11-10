@@ -11,7 +11,8 @@ Použití:
       parcela pod domem a katastrální území. Patří do Fáze 0/1 – dnešní obec a k. ú. se často liší od toho,
       co uživatel čeká (osada patří k jiné obci, k. ú. má jméno sousední vsi). Dotaz = "Osada čp", "Ulice čp",
       "Ulice čp/čo" nebo ve městě i "Ulice čo" (číslo orientační, jak je na domě); obec za čárkou zúží výběr
-      ("Husova 66, Beroun", "Na Kopečku 4, Praha").
+      ("Husova 66, Beroun", "Na Kopečku 4, Praha"). Vypíše i odkaz do Street View a Mapy.com Panorama (prochází
+      uživatel, snímky do výstupu ne).
   mista.py okoli <"Ulice čp/čo" | lat,lon> [polomer_m=80]
       všechny dnešní adresy v okolí (RÚIAN) seřazené podle čp., do poloměru; adresy jedné budovy (roh) označí; podklad pro tabulku
       adres domu v čase a pro rozlišení domů se stejnou starou adresou (reference/prameny.md → Čísla domů).
@@ -108,6 +109,12 @@ def adresa_a_obec(misto):
     return dotaz.strip(), obec.strip()
 
 
+def odkazy_panorama(lat, lon):
+    """Odkazy na dům ve Street View a Mapy.com – prochází jen uživatel, snímky do výstupu ne (reference/portaly.md)."""
+    return (f"https://www.google.com/maps/@?api=1&map_action=pano&viewpoint={lat:.6f},{lon:.6f}"
+            f"  |  https://mapy.com/cs/zakladni?x={lon:.6f}&y={lat:.6f}&z=19 (tlačítko Panorama)")
+
+
 def ruian(dotaz):
     ulice_cislo, obec = adresa_a_obec(dotaz)
     adr = adresni_mista(ulice_cislo, "adresa,stavebniobjekt", obec)
@@ -118,6 +125,7 @@ def ruian(dotaz):
     for a in adr[:8]:
         at, g = a["attributes"], a["geometry"]
         print(f"{at['adresa']}   lat={g['y']:.5f}, lon={g['x']:.5f}")
+        print(f"   panorama (prochází uživatel): {odkazy_panorama(g['y'], g['x'])}")
         so = ruian_q(3, f"kod={at['stavebniobjekt']}", "identifikacniparcela")
         if not so or not so[0]["attributes"].get("identifikacniparcela"):
             continue

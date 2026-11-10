@@ -244,6 +244,21 @@
       "proc": "robots.txt zakazuje ClaudeBot a Claude-Web, Content-Signal ai-train=no; hledání chrání Cloudflare (nástroji 403) (9. 11. 2026)",
       "jinak": "Hledá uživatel v prohlížeči (německý název obce). Jen vodítko, že pohlednice existuje a z kterého roku; obrázek do výstupu ne."
     },
+    "www.google.com": {
+      "nazev": "Google Maps a Street View", "dotazy": false, "obrazky": false, "vyrez": "ne",
+      "proc": "Geo Guidelines: snímky Street View nesmí do tisku ani PDF a nesmí se screenshotovat „for any purpose“, jen vložit (iframe) nebo odkázat; robots.txt zakazuje * /maps/ (10. 11. 2026)",
+      "jinak": "Street View s časovou osou (ikona hodin, ročníky od ~2009) prochází uživatel sám a slovy popíše, co se na domě změnilo; ty to zapíšeš s rokem snímku. Do PDF jen popis a odkaz (Sdílet → Kopírovat odkaz; ověř, že otevře zvolený ročník), na web i vložené panorama (Sdílet → Vložit mapu)."
+    },
+    "mapy.com": {
+      "nazev": "Mapy.com (Seznam), Panorama a letecké snímky", "dotazy": false, "obrazky": false, "vyrez": "ne",
+      "proc": "Podmínky užití Mapy.com, čl. III.4: screenshot jen mapových podkladů a aktuální Letecké mapy (s logem nebo „Zdroj: Mapy.com“ a copyrightem, tisk do 5 000 ks); Panoramu a starší letecké ročníky ne, Panorama jen odkazem nebo přes API, zakázáno i stahovat a analyzovat obraz Panoramy (10. 11. 2026)",
+      "jinak": "Panorama s volbou roku (Nejnovější → ročník) prochází uživatel sám a slovy popíše změny. Do PDF popis a odkaz, na web iframe s pevným rokem (Nástroje → Sdílet). Starší letecké snímky jen prohlížet; do výstupu ortofota ČÚZK (ortofota.py) nebo CENIA 50. let. Screenshot základní či turistické mapy a aktuální letecké smí s „Zdroj: Mapy.com“ a copyrightem z rohu mapy."
+    },
+    "mapy.cz": {
+      "nazev": "Mapy.cz (= Mapy.com)", "dotazy": false, "obrazky": false, "vyrez": "ne",
+      "proc": "stejné podmínky jako mapy.com (10. 11. 2026)",
+      "jinak": "Viz mapy.com."
+    },
     "www.zanikleobce.cz": {
       "nazev": "Zaniklé obce a objekty (zanikleobce.cz)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "dobrovolnický portál P. Berana, příspěvky patří přispěvatelům, licence žádná, web brání kopírování fotek; robots.txt zakazuje * hledání a adresy s ? (web padal na 429), Claude-User nejmenuje; nástroj čte jen mapu (1× za 30 dní) a stránky nalezených míst (9. 11. 2026)",

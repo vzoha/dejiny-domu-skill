@@ -68,6 +68,8 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | ČÚZK, dnešní letecké snímky | Nástroj | ano | ano | ano | ano | Uveďte „ČÚZK, rok“ |
 | ČÚZK, archivní letecké snímky | Ručně, soubor objednat | ano | prohlížet ano, soubor souhlas | souhlas | ano | Prohlížení v aplikaci zdarma, popsat, co vidíte, smíte. Soubor 500 Kč a jen pro vlastní potřebu |
 | ČÚZK, archivní ortofoto 1998–2023 (`ortofota.py`) | Nástroj | ano | ano | ano | ano | Otevřená data CC BY 4.0, uveďte „ČÚZK, rok snímku“ |
+| Google Street View (i starší ročníky) | Jen číst | ano | prohlížet ano | ne | ano | Snímky nesmí do tisku ani PDF a nesmí se screenshotovat (Geo Guidelines Google). Prochází a popisuje uživatel, do PDF popis a odkaz, na web vložené panorama (10. 11. 2026) |
+| Mapy.com: Panorama a starší letecké snímky | Jen číst | ano | prohlížet ano | ne | ano | Screenshot smí jen u základní, turistické a zeměpisné mapy a aktuální letecké (uveďte „Zdroj: Mapy.com“ a copyright z rohu mapy). Panorama jen odkazem nebo vložením, zakázáno i stahovat a analyzovat její obraz (podmínky Mapy.com, čl. III.4, 10. 11. 2026) |
 | Ortofota krajů (Jihočeský, Plzeňský, Jihomoravský, Zlínský) | Nástroj | ano | prohlížet ano | souhlas | ano | Licence k mapovým službám není zveřejněná (data GEODIS, TopGis, ČÚZK). Popsat, co je vidět, smíte; obrázek se souhlasem kraje |
 | Letecké snímky 50. let (CENIA) | Nástroj | ano | ano | ano | ano | Uveďte celý zdroj: „Historická ortofotomapa ©CENIA 2010 a ©GEODIS BRNO, spol. s r.o. 2010, Podkladové letecké snímky poskytl VGHMÚř Dobruška, ©MO ČR 2009“ |
 | Vojenská mapování (Geolab UJEP) | Nástroj | ano | neřeší | ano | ano | Uveďte Rakouský státní archiv s číslem sekce, Geolab a MŽP |

@@ -8,7 +8,8 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | Doba | Pramen | Co dá k domu | Kde |
 |---|---|---|---|
 | dnes | katastr nemovitostí, RÚIAN | parcela, k. ú., dnešní obec | `mista.py ruian "Osada čp"` (hned ve Fázi 0 – dnešní obec a k. ú. bývají jiné, než se čeká), nahlizenidokn.cuzk.cz |
-| 1938–dnes | letecké snímky | jak dům a dvůr vypadaly, kdy přibyly a zmizely stavby | ags.cuzk.gov.cz/archiv (Archiv ČÚZK, ročníky vypíše `cuzk_archiv.py lms`), ortofoto CENIA z 50. let (`cuzk_archiv.py mapa cenia50`, smí do PDF), ortofota po letech od 1998 (`ortofota.py serie`, ČÚZK smí do PDF), mapy.cz → „Letecká“ s volbou roku |
+| 2009–dnes | Street View s časovou osou (Google, Mapy.com Panorama) | jak dům vypadal zvenku v posledních letech, kdy přibyla okna, omítka, přístavba, co zmizelo | prochází jen uživatel a popíše slovy (`portaly.md`); do PDF popis a odkaz, obrázek ne |
+| 1938–dnes | letecké snímky | jak dům a dvůr vypadaly, kdy přibyly a zmizely stavby | ags.cuzk.gov.cz/archiv (Archiv ČÚZK, ročníky vypíše `cuzk_archiv.py lms`), ortofoto CENIA z 50. let (`cuzk_archiv.py mapa cenia50`, smí do PDF), ortofota po letech od 1998 (`ortofota.py serie`, ČÚZK smí do PDF), mapy.cz → „Letecká“ s volbou roku (jen prohlížet, starší ročníky do výstupu ne) |
 | 1880–1950 | pozemkový katastr (mapa ~1900–1950) | parcely a budovy, sedí na dnešní mapu | `cuzk_archiv.py mapa pk` |
 | 1945–1952 | konfiskace a příděly (**hlavně pohraničí, majetek Němců, Maďarů a „zrádců“**) | komu dům vzali a komu ho přidělili, odhad, popis domu a živnosti, žádosti novoosídlenců | fondy Osidlovacího úřadu a Fondu národní obnovy (dům, živnost) a Národního pozemkového fondu (statek, půda) v SOA a SOkA, níže „Konfiskace a příděly 1945–1952“ |
 | 1951–1992 | smlouvy, dědictví, evidence nemovitostí (od 1964) | vlastníci, ale **1951–1964 bez úplné evidence** (níže „Vlastníci po roce 1950“) | majitelé domu, katastrální pracoviště, SOkA |

@@ -206,6 +206,21 @@ na obec, hospodu nebo dům existuje, z kterého roku (razítko „gelaufen 1912�
 - Kdo pohlednici koupí, má originál a smí ho naskenovat; obrázek je volné dílo, když autor fotky (fotograf,
   vydavatel) zemřel před víc než 70 lety, u neznámého autora 70 let od vydání.
 
+## Street View s časovou osou (Google Maps, Mapy.com Panorama) – jen uživatel
+Jak dům vypadal v posledních ~15 letech, které online archivy nepokrývají: přístavba, nová okna a omítka, zbořená
+stodola, kdy zmizel nápis obchodu. Google má v Česku ročníky asi od 2009 (ikona hodin vlevo nahoře, „Zobrazit další
+data“), Mapy.com Panorama starší jízdy (pole „Nejnovější“ → rok; nejvíc ročníků krajská města, celá ČR 2021–2023).
+- **Snímky nesmí do výstupu ani se screenshotovat:** Google zakazuje Street View v tisku a PDF i snímek obrazovky
+  „for any purpose“, Mapy.com povolují Panoramu jen odkazem nebo přes API a zakazují ji stahovat i analyzovat obraz.
+  Proto **neprochází Claude ani v Chromu a nečte screenshoty**: prochází uživatel a slovy popíše, co se mezi ročníky
+  změnilo („2011 ještě dřevěná okna, 2019 plastová, stodola zbořená mezi 2012 a 2017“). Ty to zapíšeš s roky.
+- Odkaz na dům: `mista.py ruian "Osada čp"` vypíše i odkaz do Street View a Mapy.com na polohu domu.
+- Do PDF popis a odkaz (Google: Sdílet → Kopírovat odkaz; ověř, že otevře zvolený ročník). Na web vložené panorama:
+  Google Sdílet → Vložit mapu, Mapy.com Nástroje → Sdílet s pevným rokem (iframe). Obličeje a SPZ rozmazané,
+  přesto na webu zákazníka jen se souhlasem majitele domu.
+- Starší letecké ročníky na Mapy.com jen prohlížet, screenshot smí jen u aktuální letecké a základní mapy
+  („Zdroj: Mapy.com“ a copyright z rohu). Letecké snímky do výstupu ber z ČÚZK (`ortofota.py`, CENIA 50. let).
+
 ## Zaniklé obce a objekty (www.zanikleobce.cz) – `tools/zanikleobce.py`
 Dobrovolnický portál (Pavel Beran, od 2005): přes 7 600 zaniklých vsí, samot, mlýnů, dvorů, cihelen, továren, kaplí
 a hradů, hlavně v pohraničí vysídleném po 1945, ale i mlýny a dvory ve vnitrozemí. U místa bývají dobové fotky
