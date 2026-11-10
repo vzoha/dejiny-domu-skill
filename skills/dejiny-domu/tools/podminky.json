@@ -56,6 +56,21 @@
       "nazev": "Archeologická mapa ČR (Digitální archiv AMČR)", "dotazy": true, "obrazky": true, "vyrez": "nekomercne",
       "proc": "data CC BY-NC 4.0 – jen nevýdělečně a s autorem; API komerčně jen s písemnou smlouvou (8. 11. 2026)", "jinak": ""
     },
+    "encyklopedie.brna.cz": {
+      "nazev": "Encyklopedie dějin města Brna (Muzeum města Brna)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "podmínky užití neuvedeny, robots.txt nemá (10. 11. 2026); fotky mají autory (Foto …), licence žádná",
+      "jinak": "Ulici a dům vypíše brno_encyklopedie.py, heslo detail. Fakta s citací a odkazem; fotku nebo delší text jen se souhlasem Muzea města Brna."
+    },
+    "encyklopedie.plzen.eu": {
+      "nazev": "Encyklopedie Plzně", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "stejný projekt jako Brno, podmínky neuvedeny, robots.txt nemá; nástroj starší web neumí (10. 11. 2026)",
+      "jinak": "Hledá uživatel (domy, osobnosti, ulice); heslo s odkazem smíš otevřít. Fakta s citací, fotky se souhlasem."
+    },
+    "encyklopedie.ostrava.cz": {
+      "nazev": "Encyklopedie dějin Ostravy", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "stejný projekt jako Brno, podmínky neuvedeny, robots.txt nemá; nástroj starší web neumí (10. 11. 2026)",
+      "jinak": "Hledá uživatel (domy, osobnosti, ulice); heslo s odkazem smíš otevřít. Fakta s citací, fotky se souhlasem."
+    },
     "digiarchiv.brno.cz": {
       "nazev": "Archiv města Brna (Digitální archiv, sčítání lidu 1850–1921)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "aplikace s API, které volá i web (hledání), bez přihlášení a ochrany, robots.txt nemá (9. 11. 2026); podmínky užití nenalezeny, web města: použití obsahu jen se souhlasem Magistrátu",

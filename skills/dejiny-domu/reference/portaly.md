@@ -120,12 +120,24 @@ hledá jen podle názvu, IČO nebo spisové značky, proto nástroj jde přes AR
   smlouvy) je u výpisu, otevře ji uživatel.
 - Limit ARES: nejvýš 500 dotazů za minutu, neposílat opakovaně stejné dotazy. Nástroj na dům pošle 3–10 dotazů.
 
+## Encyklopedie dějin měst (Brno, Plzeň, Ostrava) – `tools/brno_encyklopedie.py`
+Encyklopedie dějin města Brna (Muzeum města Brna, MU): hesla domů a staveb (stavební vývoj, majitelé, fotky),
+objekty (pamětní desky, Kameny zmizelých), události, ulice (názvy v čase) a osobnosti s bydlištěm.
+- `python3 -I tools/brno_encyklopedie.py "Poděbradova" 5` → domy, objekty, události ulice a osobnosti s bydlištěm
+  v domě, každý s odkazem; bez čísla celá ulice. Ulice dnešním názvem. `detail <odkaz>` → text hesla a citace.
+- **Bydliště hledá jako text:** „Poděbradova 5“ najde i Olomouc, Poděbradova 5 (Elise Munková) a „Pekařská 4“ i 40.
+  Bydliště v profilu osoby ověř, než ji k domu přiřadíš.
+- Podmínky užití web neuvádí, robots.txt nemá: fakta s citací ano, fotky a delší text jen se souhlasem Muzea
+  města Brna.
+- **Plzeň** (encyklopedie.plzen.eu) a **Ostrava** (encyklopedie.ostrava.cz) mají stejnou strukturu (domy, osobnosti,
+  ulice), ale starší web, který nástroj neumí: hledá uživatel v prohlížeči, nebo otevři heslo, když máš odkaz.
+
 ## Archiv města Brna (digiarchiv.brno.cz, archiv.brno.cz) – `tools/brno_scitani.py`
 Brno, předměstí a připojené obce. Sčítání lidu 1850, 1857, 1870, 1880, 1890, 1900, 1921 (1910 jen v badatelně AMB)
 po domech, s vytěženým jmenným rejstříkem; adresáře města 1779–1946 v PDF.
 - `python3 -I tools/brno_scitani.py ulice "Křen"` → tehdejší názvy ulic v operátech: do 1900 **německy** („Kröna“,
   „Adlergasse“, předměstí s číslem domu „Altbrünn 143“), 1921 česky, připojené obce „Královo Pole-Luční“. Starý název
-  ulice najdi v Encyklopedii dějin města Brna (encyklopedie.brna.cz, ulice s názvy v čase).
+  ulice najdi v Encyklopedii dějin města Brna (encyklopedie.brna.cz, ulice s názvy v čase; `brno_encyklopedie.py`).
 - `python3 -I tools/brno_scitani.py dum "Kröna" 75` → operáty domu po letech (počet osob, je-li snímek, odkaz do
   prohlížeče). Číslo hledá přesně, jak je v operátu.
 - `python3 -I tools/brno_scitani.py osoby "Kröna" 75 [rok]` → lidé z rejstříku po letech s citací (svazek, strana,

@@ -67,6 +67,7 @@ KONTROLY = [
     ("esbirky", "detail předmětu", ["esbirky.py", "detail", "63291100"], r"^Název: Madona ze Lniště", None),
     ("seidel", "zákazníci ateliéru", ["seidel.py", "Slavče"], r"302010301100010120001", None),
     ("ddb", "obrázky obce", ["ddb.py", "Rumburk", "Rumburg", "1910-1910"], r"Rumburg\. Markt \| Rumburg \| Postkarte \| Deutsche Fotothek \| PDM", None),
+    ("brno_encyklopedie", "Encyklopedie Brna", ["brno_encyklopedie.py", "Poděbradova", "5"], r"Orlovna \| Poděbradova 5/156", None),
     ("heimatbuch", "Heimatbücher obce", ["heimatbuch.py", "Bleiswedel"], r"1966 \| Bleiswedel im Sudetenland : Ein Heimatbuch", None),
     ("europeana", "obrázky obce", ["europeana.py", "Rumburk", "Rumburg", "1861-1861"], r"Stadtgeschichtliches_Museum_Leipzig_Z0006673 \| 1861", None),
     ("zanikleobce", "zaniklá místa u obce", ["zanikleobce.py", "Štítina", "--km", "1"], r"^  4131 \| Štítina \| hrad", None),
