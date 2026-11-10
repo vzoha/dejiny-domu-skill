@@ -10,6 +10,9 @@ Použití (z kořene projektu):
     vstup.json soubor s jedním objektem JSON (napiš ho nástrojem Write do pracovni/), „-“ = ze vstupu
     --sloucit  jen změní / doplní uvedená pole, ostatní pole položky nechá
 Položka se stejným klíčem se nahradí, jinak se přidá na konec. Python skripty ani `sed -i` na data nepoužívej.
+  zapis.py denik "<zdroj>" "<rozsah>" "<hledáno>" "<výsledek>" "<citace>" [--datum "10. 11. 2026"]
+    přidá řádek do deníku data/research_log.md; číslo # přidělí sám (nejvyšší + 1) až pod zámkem těsně před
+    zápisem – dvě session na jedné zakázce si čísla nepřepíšou. Datum výchozí dnes. Řádky deníku piš jen takhle.
 Souběžní pomocníci se střídají přes zámek (pracovni/.zamky/), žádný zápis se neztratí. Ostatní nástroje zapisují
 do data/ přes funkci zapis() odsud.
 """
@@ -132,18 +135,72 @@ def zapis(nazev, klic, obj, sloucit=False):
                     + jako(text, s, e, nove) + text[e:])
         json.loads(text)   # pojistka: výsledek musí být platný JSON
 
-        fd, tmp = tempfile.mkstemp(prefix=f".{nazev}_", suffix=".tmp", dir=os.path.dirname(path))
-        try:
-            with open(fd, "w", encoding="utf-8", newline="\n") as f:
-                f.write(text)
-            os.replace(tmp, path)   # celý soubor naráz – při chybě nezůstane rozepsaný
-        finally:
-            if os.path.exists(tmp):
-                os.remove(tmp)
+        zapis_atomicky(path, text)
         return idx is None
 
 
+def zapis_atomicky(path, text):
+    """Celý soubor naráz přes dočasný soubor – při chybě nezůstane rozepsaný."""
+    fd, tmp = tempfile.mkstemp(prefix=".zapis_", suffix=".tmp", dir=os.path.dirname(path))
+    try:
+        with open(fd, "w", encoding="utf-8", newline="\n") as f:
+            f.write(text)
+        os.replace(tmp, path)
+    finally:
+        if os.path.exists(tmp):
+            os.remove(tmp)
+
+
+RADEK_DENIKU = re.compile(r"^\|\s*(\d+)\s*\|", re.M)
+
+
+def bunka(text):
+    """Text do buňky tabulky Markdownu: bez nových řádků, svislítko escapované."""
+    return re.sub(r"\s+", " ", str(text)).strip().replace("|", "\\|")
+
+
+def dnes():
+    t = time.localtime()
+    return f"{t.tm_mday}. {t.tm_mon}. {t.tm_year}"
+
+
+def zapis_denik(zdroj, rozsah, hledano, vysledek, citace, datum=None):
+    """Přidá řádek do data/research_log.md za poslední řádek tabulky; vrací přidělené číslo."""
+    path = os.path.join(ROOT, "data", "research_log.md")
+    with zamek("research_log"):   # číslo i zápis pod jedním zámkem – souběžná session dostane další číslo
+        try:
+            text = open(path, encoding="utf-8-sig").read()
+        except OSError:
+            sys.exit("data/research_log.md chybí – založ projekt přes novy_projekt.py.")
+        hlavicka = re.search(r"^\|\s*#\s*\|.*\n\|[-| :]+\|[ \t]*$", text, re.M)
+        if not hlavicka:
+            sys.exit("V data/research_log.md chybí tabulka „| # | datum | zdroj | rozsah | hledáno | výsledek | citace |“.")
+        cislo = max((int(c) for c in RADEK_DENIKU.findall(text)), default=0) + 1
+        radky = text[hlavicka.end():].split("\n")
+        konec = hlavicka.end()   # za poslední řádek tabulky (tabulka končí prvním řádkem bez „|“)
+        for r in radky[1:]:
+            if not r.startswith("|"):
+                break
+            konec += len(r) + 1
+        radek = "| " + " | ".join([str(cislo), bunka(datum or dnes())] + [bunka(x) for x in
+                                  (zdroj, rozsah, hledano, vysledek, citace)]) + " |"
+        text = text[:konec] + "\n" + radek + text[konec:] if konec < len(text) else text.rstrip("\n") + "\n" + radek + "\n"
+        zapis_atomicky(path, text)
+    return cislo
+
+
 def main():
+    if sys.argv[1:2] == ["denik"]:
+        a = sys.argv[2:]
+        datum = None
+        if "--datum" in a:
+            i = a.index("--datum")
+            datum = a[i + 1] if i + 1 < len(a) else sys.exit("--datum: chybí hodnota")
+            del a[i:i + 2]
+        if len(a) != 5:
+            sys.exit('Použití: zapis.py denik "<zdroj>" "<rozsah>" "<hledáno>" "<výsledek>" "<citace>" [--datum "10. 11. 2026"]')
+        print(f"data/research_log.md: přidán řádek {zapis_denik(*a, datum=datum)}")
+        return
     args = [a for a in sys.argv[1:] if a != "--sloucit"]
     if len(args) != 3 or args[0] not in {*SEZNAMY, *SLOVNIKY}:
         sys.exit(__doc__)

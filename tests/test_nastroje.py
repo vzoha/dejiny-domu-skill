@@ -208,6 +208,20 @@ class TestSoubeh(Projekt):
         self.assertNotEqual(p.returncode, 0)
         self.assertIn("zapisuje jiný proces", p.stderr)
 
+    def test_denik_cislo_prideli_sam(self):
+        log = self.path("data", "research_log.md")
+        with open(log, "a", encoding="utf-8") as f:   # ručně dopsaný řádek s vyšším číslem
+            f.write("| 7 | 1. 11. 2026 | Matriky | 1800 | křest | nic | M 1 |\n")
+        for zdroj in ("Sčítání 1890", "Kronika"):
+            p = self.nastroj("zapis.py", "denik", zdroj, "celé", "Novák", "nalezeno a|b", "inv. 1")
+            self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        p = self.nastroj("zapis.py", "denik", "Gruntovnice", "1700–1800", "?", "nic", "GK 1", "--datum", "9. 11. 2026")
+        self.assertIn("řádek 10", p.stdout)
+        radky = [r for r in self.text("data", "research_log.md").splitlines() if r.startswith("| ") and r[2].isdigit()]
+        self.assertEqual([r.split(" | ")[0] for r in radky[-3:]], ["| 8", "| 9", "| 10"])
+        self.assertIn("nalezeno a\\|b", radky[-2])
+        self.assertTrue(radky[-1].startswith("| 10 | 9. 11. 2026 | Gruntovnice |"))
+
     def test_svazek_z_nastroje_necha_ostatni_svazky_doslova(self):
         with open(self.path("data", "svazky.json"), "w", encoding="utf-8") as f:
             f.write('{"rucni": {"svazek": "Gruntovní kniha", "popis": "zapsal uživatel"}}\n')

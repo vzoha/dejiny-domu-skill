@@ -233,6 +233,11 @@ placeného výstupu (Public domain a CC0 se zdrojem, CC BY a CC BY-SA s autorem 
 - **Stejnojmenné obce** (Slavče): nástroj vypíše kategorie s nejbližší obcí z RÚIAN a skončí, vyber `--kategorie
   "Slavče (Vrábče)"`. Bez kategorie na Wikidatech najdi kategorii na webu a zadej ji stejně.
 - Větší města mají stovky kategorií: nástroj projde 60 (asi minuta, Rumburk 76 souborů), víc `--kategorii 120`.
+- **Dům ve městě:** v kategorii města je ulice hluboko a 60 kategorií na ni nedojde (Olomouc: „nic“, přitom
+  kategorie Panská a Školní mají fotky domu i Wellnerovu Školní 1926). Zadej adresu, i víc ulic u nárožního domu:
+  `commons.py "Olomouc" --adresa "Panská 11" --adresa "Školní" --adresa "Žerotínovo nám." --cp 183` → projde napřed
+  kategorie „Panská 11 (Olomouc)“ a „Panská (Olomouc)“ (jiný tvar názvu dohledá) a zvlášť vypíše soubory s domem
+  v názvu („Panská 11“, „č.p. 183“) z let všech.
   Vesnice bývá hotová za pár sekund a často nemá nic starého (Lniště, Nežetice, Dobrovítov 0).
 - Kategorie u souboru říká, co na něm je: v kategorii obce bývají i obrazy z muzea, portréty a hrad za vsí
   (Blíževedly = Ronov). Rok je datum vzniku podle Commons („before 1882“ = nejpozději).
@@ -646,6 +651,12 @@ A když osoba „chybí“ v očekávaných matrikách (stěhovala se se službo
 - Kramerius NK ČR (české noviny, ročenky, adresáře): `python3 -I tools/kramerius.py 'text_ocr:"Jan Novák" AND datum_begin:[1900 TO 1910]'`.
   Pozor: filtr `datum_begin` vyřadí část čísel periodik (u některých chybí) – při malém počtu nálezů hledej i bez něj.
   Neveřejné stránky 20. století čti přes DNNT (výše).
+- Kramerius jiné knihovny (VKOL, MZK, UK…): `kramerius.py '<dotaz>' 30 --knihovna vkol` (kód knihovny ukáže
+  `--knihovna vse`) jde přes Českou digitální knihovnu – přímo na kramerius.vkol.cz nástroje nesmí (403 po 4 dotazech).
+  Úryvky ČDK nevrací: okolí slova na veřejné stránce `kramerius.py text <pid> 'Herren.?gasse'`.
+- **Obrázek z Krameria do výstupu** (plán města, veduta): `kramerius.py autori <uuid>` vypíše autory z katalogu s daty
+  a konec ochrany (rok úmrtí posledního + 71). Licence „public“ znamená jen „čitelné“ (plán Olomouce 1946: public,
+  autor † 1974 → chráněný do 2044).
 - Vojenské schematismy: fulltext na archive.org (např. `militrschematis13kriegoog` = 1850).
 - **Rizika:** jména se opakují a fulltext šumí („Winter“ = i zima, „Novák“ = nový obyvatel). Ztotožni jen při shodě víc údajů (bydliště,
   funkce navazující na matriku, časová posloupnost). Zdroj je „J“ (jiný pramen) – vodítko a příběh, ne náhrada matriky.
@@ -713,7 +724,8 @@ Nástroje pro ně hotové nejsou. Postupuj takto a výsledek zapiš do `STAV.md`
   Čech, Moravy a Slezska, Müllerovo mapování, neúplné III. mapování. Smí do PDF i na web s citací (Rakouský státní archiv
   s číslem listu, Geolab, MŽP). Listy nejsou georeferencované: `geolab.py klad 2vm-mo klad.jpg` → najdi list podle měst
   (Morava: sekce = řádek, kolona = sloupec, „O_10_I“ = sekce 10, východní kolona I) → `geolab.py export 2vm-mo O_10_I n.jpg`
-  (náhled listu) → obec najdi v náhledu a vyřízni `export … x0,y0,x1,y1` (podíly 0–1, plné rozlišení). Dlaždice Zoomify
+  (náhled listu) → obec najdi v náhledu a vyřízni `export … x0,y0,x1,y1` (podíly 0–1, plné rozlišení; vadnou dlaždici
+  na serveru obejde nástroj sám polovičním rozlišením, Olomouc 1vm-mo m039). Dlaždice Zoomify
   `oldmaps.geolab.cz/<dílo>/<list>/zoomify/`, seznam listů s rozměry je ve stránce díla.
 - **3. vojenské mapování (1876–80)**: georeferencované jen jako speciální mapa 1 : 75 000 na CENIA (WMS
   `https://gis.cenia.cz/mapcache/III_vojenske_mapovani/wms`, vrstva `III_vojenske_mapovani`, EPSG:5514;

@@ -8,6 +8,10 @@ z historických kategorií (pohlednice bývají bez data).
 
 Použití:
   commons.py "<obec>" [od-do] [--kategorie "Název"] [--kategorii 60]   – rok | soubor | kategorie | licence | odkaz
+  commons.py "<obec>" --adresa "Panská 11" [--adresa "Školní"] [--cp 183]
+      ve městě: projde i kategorie domu a ulic („Panská 11 (Olomouc)“, „Panská (Olomouc)“, „Žerotínovo náměstí
+      (Olomouc)“) a vypíše soubory s domem (podle čísla v názvu, „čp. 183“) bez ohledu na rok – v kategorii obce
+      je ulice hluboko a 60 kategorií na ni nedojde.
   commons.py detail "<soubor>"                                  – popis, datum, autor, licence, obrázek, citace
 Commons přijímá jen volné licence: obrázek smí i do placeného výstupu, u CC BY a CC BY-SA s autorem a licencí.
 Větší města mají stovky kategorií: nástroj jich projde 60 (asi minuta), víc --kategorii."""
@@ -38,6 +42,50 @@ def api(adresa, **parametry):
     parametry.update(format="json", formatversion=2)
     with urllib.request.urlopen(f"{adresa}?{urllib.parse.urlencode(parametry)}", timeout=60) as r:
         return json.load(r)
+
+
+ZKRATKY = ((re.compile(r"\bnám\.?(?=\s|$)", re.I), "náměstí"), (re.compile(r"\btř\.?(?=\s|$)", re.I), "třída"))
+
+
+def adresa_z(text):
+    """„Panská 11“ → („Panská“, „11“); „Žerotínovo nám.“ → („Žerotínovo náměstí“, None)."""
+    text = re.sub(r"\s+", " ", text).strip().strip(",")
+    for vzor, cele in ZKRATKY:
+        text = vzor.sub(cele, text)
+    m = re.fullmatch(r"(.+?)\s+(\d+[a-zA-Z]?)(?:/\d+[a-zA-Z]?)?", text)
+    return (m.group(1), m.group(2)) if m else (text, None)
+
+
+def kategorie_adres(obec, adresy):
+    """Kategorie domů a ulic na Commons, které existují: vzor „Ulice číslo (Obec)“ a „Ulice (Obec)“ (Olomouc 10. 11. 2026),
+    co neexistuje, dohledá hledáním v názvech kategorií. Vrací [(kategorie, druh)], dům napřed."""
+    kandidati = []
+    for ulice, cislo in adresy:
+        if cislo:
+            kandidati.append((f"Category:{ulice} {cislo} ({obec})", "dům"))
+        kandidati.append((f"Category:{ulice} ({obec})", "ulice"))
+    stranky = api(f"{COMMONS}/w/api.php", action="query", titles="|".join(k for k, _ in kandidati))["query"]["pages"]
+    existuji = {p["title"] for p in stranky if not p.get("missing")}
+    nalez = [(k, d) for k, d in kandidati if k in existuji]
+    for ulice, _ in adresy:
+        if not any(k.startswith(f"Category:{ulice} ") for k, _ in nalez):   # jiný tvar názvu („Panská ulice, Olomouc“)
+            r = api(f"{COMMONS}/w/api.php", action="query", list="search", srnamespace=14, srlimit=10,
+                    srsearch=f'intitle:"{ulice}" intitle:"{obec}"')
+            nalez += [(x["title"], "ulice?") for x in r["query"]["search"]
+                      if x["title"].removeprefix("Category:").startswith(ulice) and (x["title"], "ulice?") not in nalez]
+    return nalez
+
+
+def soubory_domu(nalez, adresy, cp=None):
+    """Soubory, v jejichž názvu je dům: „Panská 11“ nebo „čp. 183“, „č.p.183“."""
+    vzory = [rf"\b{re.escape(u)}\W+{c}(?!\d)" for u, c in adresy if c]
+    if cp:
+        vzory.append(rf"\bč\.?\s*p\.?\s*{cp}(?!\d)")
+    if not vzory:
+        return []
+    vzor = re.compile("|".join(vzory), re.I)
+    return sorted(((rok(info), soubor, kategorie, info) for soubor, (kategorie, info) in nalez.items() if vzor.search(soubor)),
+                  key=lambda x: (x[0] or 9999, x[1]))
 
 
 def kategorie_obce(obec, stredy):
@@ -104,10 +152,10 @@ def clenove(kategorie):
         pokracovani = r["continue"]
 
 
-def projdi(koren, nejvic=MAX_KATEGORII):
-    """{soubor: (kategorie, imageinfo)}; do šířky, podkategorie historických kategorií napřed.
-    Vrací i počet prošlých kategorií a zda zbyly neprojité."""
-    fronta, videno, nalez = [(koren, 0, bool(HISTORICKA.search(koren)))], set(), {}
+def projdi(koreny, nejvic=MAX_KATEGORII):
+    """{soubor: (kategorie, imageinfo)}; kořeny v pořadí (dům, ulice, obec), do šířky, podkategorie historických
+    kategorií napřed. Vrací i počet prošlých kategorií a zda zbyly neprojité."""
+    fronta, videno, nalez = [(k, 0, bool(HISTORICKA.search(k))) for k in koreny], set(), {}
     while fronta and len(videno) < nejvic:
         kategorie, hloubka, historicka = fronta.pop(0)
         if kategorie in videno:
@@ -207,8 +255,16 @@ def main(argv):
     p.add_argument("roky", nargs="?")
     p.add_argument("--kategorie")
     p.add_argument("--kategorii", type=int, default=MAX_KATEGORII)
+    p.add_argument("--adresa", action="append", default=[])
+    p.add_argument("--cp")
     a = p.parse_args(argv[1:])
     roky = roky_z(a.roky) if a.roky else (0, DO)
+    adresy = [adresa_z(x) for x in a.adresa]
+    koreny = []
+    if adresy:
+        koreny = kategorie_adres(a.obec, adresy)
+        print("Kategorie domu a ulic: " + ("; ".join(f"{k} ({d})" for k, d in koreny) if koreny else
+              "žádná – zkus název ulice jako na Commons, nebo --kategorie"))
     if a.kategorie:
         kategorie, popis = "Category:" + a.kategorie.removeprefix("Category:"), "zadaná ručně"
     else:
@@ -216,7 +272,12 @@ def main(argv):
         kategorie, popis = kategorie_obce(a.obec, mista.obec_stred(a.obec))
         kategorie = "Category:" + kategorie
     print(f"Kategorie: {kategorie} ({popis}), {odkaz(kategorie)}")
-    nalez, prosel, zbylo = projdi(kategorie, a.kategorii)
+    nalez, prosel, zbylo = projdi([k for k, _ in koreny] + [kategorie], a.kategorii)
+    if adresy or a.cp:
+        dum = soubory_domu(nalez, adresy, a.cp)
+        print(f"\nSoubory s domem v názvu (všechny roky): {len(dum)}")
+        print("\n".join(radek(*v) for v in dum) if dum else "  žádné")
+        print()
     vybrane = vyber(nalez, roky)
     print(f"Prošlé kategorie: {prosel}, soubory: {len(nalez)}"
           f"{f' (další kategorie vynechány, víc: --kategorii {2 * a.kategorii})' if zbylo else ''}.\n"

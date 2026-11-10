@@ -11,11 +11,12 @@ Použití:
   geolab.py listy <dílo>                                   – kódy listů s rozměry
   geolab.py klad <dílo> <klad.jpg>                         – přehled listů (najdi list podle měst)
   geolab.py export <dílo> <list> <výstup.jpg> [x0,y0,x1,y1] [--redukce N]
-      celý list bez výřezu je náhled (redukce 4, asi 700 px); výřez v podílech 0–1 jako u vyrez.py, výchozí plné rozlišení
+      celý list bez výřezu je náhled (redukce 4, asi 700 px); výřez v podílech 0–1 jako u vyrez.py, výchozí plné rozlišení.
+      Vadná dlaždice na serveru (obrázek nejde přečíst) → nástroj sám zkusí poloviční rozlišení (redukce + 1) a řekne to.
 Příklad (Hlína u Ivančic): klad 2vm-mo → list O_10_I (sekce 10, východní kolona I) → náhled → výřez
   geolab.py export 2vm-mo O_10_I hlina.jpg 0.185,0.80,0.32,0.885
 """
-import io, math, os, re, sys, urllib.request
+import io, math, os, re, sys, urllib.error, urllib.request
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
@@ -89,7 +90,7 @@ def export(dilo, base, listy, a):
     """a = <list> <výstup.jpg> [x0,y0,x1,y1] [--redukce N]; celý list bez výřezu je náhled."""
     if len(a) < 2 or a[0] not in listy:
         sys.exit(f"export: neznámý list {a[0] if a else ''} (geolab.py listy {dilo})")
-    from PIL import Image
+    from PIL import Image, UnidentifiedImageError
     list_, vystup, zbytek = a[0], a[1], a[2:]
     ramec = next((x for x in zbytek if re.fullmatch(r"[\d.]+,[\d.]+,[\d.]+,[\d.]+", x)), "0,0,1,1")
     if "--redukce" in zbytek:
@@ -100,11 +101,22 @@ def export(dilo, base, listy, a):
     else:
         redukce = NAHLED if ramec == "0,0,1,1" else 0
     w, h, t, cesta = listy[list_]
-    seznam, velikost = dlazdice(w, h, t, redukce, *(float(v) for v in ramec.split(",")))
-    slusne.strop_dlazdic(len(seznam), f"Geolab {list_}")
-    img = Image.new("RGB", velikost, "white")
-    for c, x, y in seznam:
-        img.paste(Image.open(io.BytesIO(stahni(base + cesta + c))).convert("RGB"), (x, y))
+    while True:
+        seznam, velikost = dlazdice(w, h, t, redukce, *(float(v) for v in ramec.split(",")))
+        slusne.strop_dlazdic(len(seznam), f"Geolab {list_}")
+        img = Image.new("RGB", velikost, "white")
+        try:
+            for c, x, y in seznam:
+                img.paste(Image.open(io.BytesIO(stahni(base + cesta + c))).convert("RGB"), (x, y))
+            break
+        except (UnidentifiedImageError, urllib.error.HTTPError) as e:   # vadná dlaždice (Olomouc 1vm-mo m039, plné rozlišení)
+            if redukce >= len(urovne(w, h, t)) - 1 or (isinstance(e, urllib.error.HTTPError) and e.code != 404):
+                raise   # jen nečitelná nebo chybějící dlaždice; nejmenší úroveň nemá kam ustoupit
+            print(f"Dlaždice {c} (redukce {redukce}) je vadná ({type(e).__name__}) – zkouším redukci {redukce + 1} "
+                  "(poloviční rozlišení).", file=sys.stderr)
+            redukce += 1
+    if redukce:
+        print(f"Výřez má redukci {redukce} (1/{2 ** redukce} plného rozlišení).")
     img.save(vystup, quality=90)
     print(f"{vystup} {velikost[0]}×{velikost[1]}")
     print("Citace: " + citace(dilo, list_))

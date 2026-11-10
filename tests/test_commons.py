@@ -67,7 +67,7 @@ class ProchazeniTest(unittest.TestCase):
 
     def test_historicke_napred_a_vynecha_zastavky(self):
         with mock.patch.object(commons, "clenove", side_effect=self.clenove) as c:
-            nalez, prosel, zbylo = commons.projdi("Category:Rumburk")
+            nalez, prosel, zbylo = commons.projdi(["Category:Rumburk"])
         self.assertEqual([x.args[0] for x in c.call_args_list][:3],
                          ["Category:Rumburk", "Category:History of Rumburk", "Category:Postcards of Rumburk"])
         self.assertNotIn("Category:Bus stops in Rumburk", [x.args[0] for x in c.call_args_list])
@@ -75,12 +75,12 @@ class ProchazeniTest(unittest.TestCase):
 
     def test_limit_kategorii(self):
         with mock.patch.object(commons, "clenove", side_effect=self.clenove):
-            _, prosel, zbylo = commons.projdi("Category:Rumburk", nejvic=2)
+            _, prosel, zbylo = commons.projdi(["Category:Rumburk"], nejvic=2)
         self.assertEqual((prosel, zbylo), (2, True))
 
     def test_vyber_starych(self):
         with mock.patch.object(commons, "clenove", side_effect=self.clenove):
-            nalez, _, _ = commons.projdi("Category:Rumburk")
+            nalez, _, _ = commons.projdi(["Category:Rumburk"])
         vybrane = [(r, s) for r, s, _, _ in commons.vyber(nalez)]
         # nedatovaný plakát z podkategorie muzea ne, nedatovaná pohlednice ano, zvuk vůbec
         self.assertEqual(vybrane, [(1773, "File:Eckarth 1773.jpg"), (1950, "File:Frind.jpg"), (None, "File:Markt.jpg")])
@@ -113,6 +113,33 @@ class MetadataTest(unittest.TestCase):
         with mock.patch.object(commons, "api", return_value={"query": {"pages": [{"missing": True}]}}), \
                 self.assertRaises(SystemExit):
             commons.detail("Neni.jpg")
+
+
+class AdresaTest(unittest.TestCase):
+
+    def test_adresa_z(self):
+        self.assertEqual(commons.adresa_z("Panská 11"), ("Panská", "11"))
+        self.assertEqual(commons.adresa_z("Žerotínovo nám."), ("Žerotínovo náměstí", None))
+        self.assertEqual(commons.adresa_z("Panská 183/11"), ("Panská", "183"))
+
+    def test_kategorie_adres(self):
+        def odpoved(adresa, **p):   # Olomouc 10. 11. 2026: ulice ano, dům ne
+            if p.get("list") == "search":
+                return {"query": {"search": [{"title": "Category:Školní ulice (Olomouc)"}, {"title": "Category:Jiná"}]}}
+            return {"query": {"pages": [{"title": "Category:Panská 11 (Olomouc)", "missing": True},
+                                        {"title": "Category:Panská (Olomouc)"},
+                                        {"title": "Category:Školní (Olomouc)", "missing": True}]}}
+        with mock.patch.object(commons, "api", side_effect=odpoved):
+            self.assertEqual(commons.kategorie_adres("Olomouc", [("Panská", "11"), ("Školní", None)]),
+                             [("Category:Panská (Olomouc)", "ulice"), ("Category:Školní ulice (Olomouc)", "ulice?")])
+
+    def test_soubory_domu(self):
+        nalez = {"File:Olomouc, Panská 11.JPG": ("Category:Panská (Olomouc)", info("2014")),
+                 "File:Olomouc, Panská 110.jpg": ("Category:Panská (Olomouc)", info("2014")),
+                 "File:Měšťanský dům (Olomouc), č.p.183.JPG": ("Category:Panská (Olomouc)", info("")),
+                 "File:Olomouc, Panská 2.jpg": ("Category:Panská (Olomouc)", info("1900"))}
+        self.assertEqual([x[1] for x in commons.soubory_domu(nalez, [("Panská", "11")], "183")],
+                         ["File:Olomouc, Panská 11.JPG", "File:Měšťanský dům (Olomouc), č.p.183.JPG"])
 
 
 if __name__ == "__main__":

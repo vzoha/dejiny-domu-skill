@@ -143,6 +143,8 @@ Viz `web.md`. `hlavni_dum` = čp. domu, o kterém projekt hlavně je (úvodní s
 
 ## Markdown
 - `research_log.md` – tabulka `| # | datum | zdroj | rozsah | hledáno | výsledek | citace |`, i negativní výsledky.
+  Řádek přidávej `zapis.py denik "<zdroj>" "<rozsah>" "<hledáno>" "<výsledek>" "<citace>"`: číslo přidělí pod zámkem
+  (ručně zvolené číslo koliduje, když na zakázce běží dvě session).
 - `zajimavosti.md` – `## Nadpis` + text, odkazy `[čp. 12](/dum/12/)`, `[zápis](/zdroj/<klic>/)`. Od ~10 položek
   seskup: `## Skupina` (dům, ves, rodina) + jedna věta úvodu, položky `###`, ve skupině podle času. Odkaz hned pod
   `## Skupinou` na samostatném řádku (`[Celý příběh domu →](/pribehy/cp12/)`) web ukáže jako tlačítko na konci skupiny.

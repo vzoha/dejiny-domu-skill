@@ -105,13 +105,15 @@ Základní smyčka pro každý pramen:
       přidej `--vyrez <oblast z kroku 3>`) a **prohlédni si** `pracovni/ramecek_<klíč>.jpg`,
    5. přepis a český překlad do `data/prepisy.json` (nejistá místa „(?)“, nečitelná „[…]“),
    6. do `data/domy.py`: událost domu, držitel nebo obyvatelé (`st="doc"`, `r=[klíč]`), případně událost obce.
-5. **Deník** `data/research_log.md`, i neúspěšné hledání, s rozsahem (které roky a snímky). Narazíš-li na souvislost
+5. **Deník** `data/research_log.md`, i neúspěšné hledání, s rozsahem (které roky a snímky):
+   `python3 -I tools/zapis.py denik "<zdroj>" "<rozsah>" "<hledáno>" "<výsledek>" "<citace>"` (číslo a dnešní datum
+   doplní sám, i když na projektu pracuje víc session). Narazíš-li na souvislost
    (stejné příjmení na sousedním čísle, zmínka o domě v jiném zápisu), zapiš ji jako stopu.
 6. `python3 -I tools/kontrola.py` a oprav chyby.
 
 Pravidla kvality:
 - **Než něco ohlásíš jako nové, prohledej** `domy.py`, `zaznamy.json` a `research_log.md`.
-- **Zápis do dat:** JSON jen přes `tools/zapis.py`, `domy.py` a markdown nástrojem pro úpravu souborů. Nikdy `sed -i`
+- **Zápis do dat:** JSON a deník jen přes `tools/zapis.py`, `domy.py` a ostatní markdown nástrojem pro úpravu souborů. Nikdy `sed -i`
   ani skript, který přepíše celý soubor.
 - **`doc` jen to, co jsi četl přímo na snímku.** Literatura je `lit` (i dobrá vlastivěda se plete). Shoda bez dokladu je `prob`.
 - **Číslo domu není totožnost domu.** Před ztotožněním čísla přes přečíslování je údaj `prob` s poznámkou.
@@ -249,7 +251,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | (ručně) Herder-Institut Marburg, Bildkatalog | Fotky, pohlednice a negativy z Čech, Moravy a Slezska (hlavně německá místa), jen ruční hledání uživatelem, obrázky jen objednané a se souhlasem: `reference/portaly.md` |
 | (ručně) obchody a katalogy pohlednic: akpool.de, delcampe.net, ansichtskarten-lexikon.de | Pohlednice i malých vsí, hospod a mlýnů na prodej: jen vodítko (že existuje, rok), hledá uživatel, obrázek do výstupu ne: `reference/portaly.md` |
 | `zanikleobce.py "Obec" [--km 3]`, `zanikleobce.py detail <id>` | Zaniklé obce a objekty: zaniklé vsi, samoty, mlýny, dvory, cihelny a kaple u obce; v detailu popisky dobových fotek, články přispěvatelů (čísla domů, majitelé), počty obyvatel a domů, komentáře pamětníků |
-| `commons.py "Obec" [od-do] [--kategorie X]`, `commons.py detail "<soubor>"` | Wikimedia Commons: staré fotky, pohlednice, rytiny a plány obce do roku 1960 z kategorie obce (přes Wikidata), každý s rokem, licencí a autorem; vše volně i do placeného výstupu |
+| `commons.py "Obec" [od-do] [--kategorie X] [--adresa "Ulice 11" --cp N]`, `commons.py detail "<soubor>"` | Wikimedia Commons: staré fotky, pohlednice, rytiny a plány obce do roku 1960 z kategorie obce (přes Wikidata), každý s rokem, licencí a autorem; ve městě `--adresa` projde i kategorie ulic a domu a vypíše fotky domu; vše volně i do placeného výstupu |
 | `akon.py "Obec" [od-do] [--km 3]`, `akon.py detail <id>` | Pohlednice 1896–1925 z AKON (Rakouská národní knihovna, celá monarchie, hlavně města a lázně): podle polohy i německého názvu, volné dílo smí do výstupu; odkaz na mapu plného AKON |
 | `esbirky.py "Obec" [od-do]`, `esbirky.py detail <id>` | eSbírky (muzea a galerie, Národní muzeum): fotografie, negativy, pohlednice, kresby a předměty s obcí v názvu, detail s popisem, licencí (co smí do výstupu) a citací |
 | `translokace.py "Obec"`, `translokace.py detail <č.>` | Translokační plány židovských obydlí 1727–1728 (~200 měst a vsí v Čechách a na Moravě): plán náměstí nebo vsi sto let před stabilním katastrem, zakreslené domy, synagoga, kostel; návrh přestěhování, ne skutečnost |
@@ -264,16 +266,18 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, ZA Opava, Matricula |
 | `valecne_hroby.py obec "Obec"` / `padli <Příjmení> [Jméno] --obec X` | pomníky padlých a válečné hroby obce se jmény (Evidence válečných hrobů MO) / padlí v 1. sv. válce s domovskou obcí, útvarem a prameny VÚA |
 | `hroby.py najdi / stahni / hledej` | hřbitovní pasporty obcí (GisOnline.cz): zemřelí 20. stol. se jménem a daty (`portaly.md` → Hroby) |
-| `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly; u 20. stol. ukáže DNNT → `portaly.md`) |
+| `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly; u 20. stol. ukáže DNNT → `portaly.md`); `kramerius.py … --knihovna vkol` jiná knihovna přes ČDK, `text <pid> 'výraz'`, `autori <uuid>` = autoři a konec ochrany díla („public“ ≠ volné dílo) |
 | `overit.py <snímek> x0,y0,x1,y1 <prefix>` | zápis na dvě čitelné poloviny – ověření čtení |
 | `vyrez.py <obrázek> <klíč> x0,y0,x1,y1` | výřez do `zdroje/` a `vyrezy/` (i mapy a fotky, celé = `0,0,1,1`) |
 | `zesil_snimek.py <obrázek> [x0,y0,x1,y1] [--zvetsit N]` | vybledlé písmo a tužka: šedý originál a zesílená verze pod sebou (`<jméno>_porovnani.jpg`) |
 | `ramecek.py <klíč> x0,y0,x1,y1 [--vyrez a0,b0,a1,b1]` | rámeček čteného místa (souřadnice výřezu; s `--vyrez` stránky) + kontrolní obrázek |
+| `elipsa.py <mapa.jpg> <klíč> cx,cy,a,b[,úhel] --popisek "čp. 183"` | dům na staré mapě označený elipsou s popiskem a vodicí čarou (pixely, natočení ve stupních) do `zdroje/` a `vyrezy/` |
 | `mista.py ruian "Osada čp"` / `okoli "Ulice čp/čo"` / `parcely "Osada čp"` / `hledej "dotaz"` / `pridej "Název" …` | dům v RÚIAN (obec, parcela, k. ú., poloha; i „Ulice čo“) / všechny dnešní adresy v okolí (rohové domy, přečíslování) / sousední stavební parcely s odstupem (najdi dům na staré mapě) / souřadnice z OSM / body na mapu |
 | `ortofota.py serie <místo> [polomer] [--zapsat skupina]` | letecké snímky domu po letech 1998–2023 (ČÚZK, CC BY) a starší či chybějící ročníky krajů (jen ke čtení), stejný výřez (rovnou do `mapy.json`) |
 | `ipr_praha.py serie <místo> [polomer] [--zapsat skupina]` | Praha: staré plány 1791–1944 a letecké snímky 1938–2002 se stejným výřezem (rovnou do `mapy.json`) |
 | `dnnt.py hledej / kontext / ocr / adresa` | tisk 20. století (adresáře, Stavitelské listy, noviny): úryvky z neveřejných stran, OCR veřejných (i veřejných jen v jiné knihovně), hledání adresy. Neveřejné (DNNT) čte uživatel sám podle čtecího listu |
 | `zapis.py <soubor> <klíč> <vstup.json> [--sloucit]` | přidá / změní položku v `zaznamy`, `svazky`, `prepisy`, `mapy`, `web` (pole nastavení webu)… beze změny formátu |
+| `zapis.py denik "<zdroj>" "<rozsah>" "<hledáno>" "<výsledek>" "<citace>"` | řádek deníku `research_log.md` s číslem a datem (pod zámkem, souběžné session) |
 | `kontrola.py` | kontrola dat, soukromí, kdy psát příběh |
 | `slusne.py <skript.py> …` / `curl …` / `stav` | společný limit rychlosti k archivům a kontrola podmínek; vlastní skripty a curl jen přes něj (hook `hlidac.py` hlídá) |
 | `podminky.py <adresa>` / `obrazky` | co se na portálu smí / které výřezy potřebují souhlas archivu (`reference/podminky.md`) |

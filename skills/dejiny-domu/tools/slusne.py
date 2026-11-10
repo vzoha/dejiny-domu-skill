@@ -41,6 +41,7 @@ LIMITY = {
     "commons.wikimedia.org": (0.5, 0.05), "www.wikidata.org": (0.5, 0.05),   # API pro roboty, sériové dotazy povoleny
     "images.archives.cz": (2.0, 0.25),   # ZA Opava: 10. 11. 2026 HTTP 429/503 i po pár náhledech, když už jednou blokoval
     "digi.archives.cz": (4.0, 0.25),     # ZA Opava, badatelna: po desítkách rychlých dotazů blok 30 min, denní limit
+    "kramerius.vkol.cz": (5.0, 0.5),     # Kramerius VKOL: 10. 11. 2026 HTTP 403 po 4 rychlých dotazech na OCR (nástroje jdou přes ČDK)
 }
 BLOKACE = 30 * 60
 STOPKY = (BLOKACE, 2 * 3600, 8 * 3600)   # blok po 1., 2. a 3. (i každém dalším) odmítnutí webu během OKNO
