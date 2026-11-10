@@ -221,6 +221,19 @@ data“), Mapy.com Panorama starší jízdy (pole „Nejnovější“ → rok; n
 - Starší letecké ročníky na Mapy.com jen prohlížet, screenshot smí jen u aktuální letecké a základní mapy
   („Zdroj: Mapy.com“ a copyright z rohu). Letecké snímky do výstupu ber z ČÚZK (`ortofota.py`, CENIA 50. let).
 
+## NCAP, spojenecké letecké snímky 1939–45 (airphotofinder.ncap.org) – jen uživatel
+National Collection of Aerial Photography (Historic Environment Scotland): snímky průzkumných letů RAF, USAAF a
+dalších spojenců. Česko pokrývá jen asi 35 letů 1943–45 (sbírka ACIU) a část MAPRW, hlavně kolem cílů náletů:
+továrny, rafinerie, nádraží, velká města (přesný seznam letů NCAP nezveřejňuje). Pro dům ve vsi daleko od cílů nejspíš nic; starší
+české letecké snímky (od 1936) má Archiv ČÚZK (`cuzk_archiv.py lms`).
+- **Claude ho neotevírá, ani nástrojem, ani v Chromu:** podmínky webu (čl. 8.1) zakazují jakéhokoli robota
+  a automatizovaný nástroj i jen pro přístup. Hledá uživatel sám v Air Photo Finderu (mapa, posunout na obec,
+  filtr let 1943–1945); ty poradíš, kde a co hledat, a z jeho popisu zapíšeš zjištění (let, datum, snímek).
+- Většina z 30 milionů snímků není digitalizovaná: Scan on Demand podle čísla letu a snímku, placená rešerše
+  NCAP £90 předem (nevratně). Mimo NCAP mají ukořistěné snímky Luftwaffe americké Národní archivy (NARA).
+- **Obrázek do výstupu jen s licencí NCAP:** osobní užití zdarma, do zprávy (report) £15, do knihy od £55 za snímek
+  bez DPH. Bez licence jen zjištění a citace „NCAP, sbírka, let, snímek, datum“.
+
 ## Zaniklé obce a objekty (www.zanikleobce.cz) – `tools/zanikleobce.py`
 Dobrovolnický portál (Pavel Beran, od 2005): přes 7 600 zaniklých vsí, samot, mlýnů, dvorů, cihelen, továren, kaplí
 a hradů, hlavně v pohraničí vysídleném po 1945, ale i mlýny a dvory ve vnitrozemí. U místa bývají dobové fotky

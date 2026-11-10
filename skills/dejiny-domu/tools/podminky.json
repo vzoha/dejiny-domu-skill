@@ -254,6 +254,16 @@
       "proc": "Podmínky užití Mapy.com, čl. III.4: screenshot jen mapových podkladů a aktuální Letecké mapy (s logem nebo „Zdroj: Mapy.com“ a copyrightem, tisk do 5 000 ks); Panoramu a starší letecké ročníky ne, Panorama jen odkazem nebo přes API, zakázáno i stahovat a analyzovat obraz Panoramy (10. 11. 2026)",
       "jinak": "Panorama s volbou roku (Nejnovější → ročník) prochází uživatel sám a slovy popíše změny. Do PDF popis a odkaz, na web iframe s pevným rokem (Nástroje → Sdílet). Starší letecké snímky jen prohlížet; do výstupu ortofota ČÚZK (ortofota.py) nebo CENIA 50. let. Screenshot základní či turistické mapy a aktuální letecké smí s „Zdroj: Mapy.com“ a copyrightem z rohu mapy."
     },
+    "www.ncap.org": {
+      "nazev": "NCAP, National Collection of Aerial Photography (Edinburgh)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "podmínky webu čl. 8.1 zakazují jakéhokoli robota, scraper a automatizovaný nástroj „to access, obtain, copy“ (i Air Photo Finder); obrázky Crown Copyright, licence: osobní zdarma, do zprávy (report) £15, kniha od £55 za snímek bez DPH (10. 11. 2026)",
+      "jinak": "Air Photo Finder (airphotofinder.ncap.org, mapa) prohledá uživatel sám; ty poradíš polohu a roky 1943–45. V Česku jen asi 35 průzkumných letů (ACIU) a MAPRW, hlavně kolem cílů náletů (továrny, rafinerie, nádraží). Snímek do výstupu jen s licencí NCAP; jinak zjištění s citací (sbírka, let, snímek)."
+    },
+    "airphotofinder.ncap.org": {
+      "nazev": "NCAP Air Photo Finder", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "podmínky webu čl. 8.1 zakazují jakéhokoli robota, scraper a automatizovaný nástroj „to access, obtain, copy“ (i Air Photo Finder); obrázky Crown Copyright, licence: osobní zdarma, do zprávy (report) £15, kniha od £55 za snímek bez DPH (10. 11. 2026)",
+      "jinak": "Air Photo Finder (airphotofinder.ncap.org, mapa) prohledá uživatel sám; ty poradíš polohu a roky 1943–45. V Česku jen asi 35 průzkumných letů (ACIU) a MAPRW, hlavně kolem cílů náletů (továrny, rafinerie, nádraží). Snímek do výstupu jen s licencí NCAP; jinak zjištění s citací (sbírka, let, snímek)."
+    },
     "mapy.cz": {
       "nazev": "Mapy.cz (= Mapy.com)", "dotazy": false, "obrazky": false, "vyrez": "ne",
       "proc": "stejné podmínky jako mapy.com (10. 11. 2026)",
