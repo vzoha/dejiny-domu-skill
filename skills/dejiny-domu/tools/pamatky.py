@@ -120,13 +120,18 @@ def uan_dotaz(x, y, okoli_m=0):
     """Území ÚAN (atributy), která zasahují do bodu nebo do okruhu kolem něj."""
     nalezy = []
     for vrstva in range(4):   # I, II, II pásmo, IV
-        q = urllib.parse.urlencode({"geometry": f"{x},{y}", "geometryType": "esriGeometryPoint", "inSR": 5514,
-                                    "spatialRel": "esriSpatialRelIntersects", "distance": okoli_m,
-                                    "units": "esriSRUnit_Meter", "outFields": "Nazev,ID_SAS,Kategorie",
-                                    "returnGeometry": "false", "f": "json"})
-        req = urllib.request.Request(f"{UAN}/{vrstva}/query?{q}", headers={"User-Agent": slusne.UA})
+        q = {"geometry": f"{x},{y}", "geometryType": "esriGeometryPoint", "inSR": 5514,
+             "spatialRel": "esriSpatialRelIntersects", "outFields": "Nazev,ID_SAS,Kategorie",
+             "returnGeometry": "false", "f": "json"}
+        if okoli_m:   # distance=0 služba odmítne chybou
+            q.update(distance=okoli_m, units="esriSRUnit_Meter")
+        req = urllib.request.Request(f"{UAN}/{vrstva}/query?{urllib.parse.urlencode(q)}",
+                                     headers={"User-Agent": slusne.UA})
         with urllib.request.urlopen(req, timeout=60) as r:
-            nalezy += [f["attributes"] for f in json.load(r).get("features", [])]
+            d = json.load(r)
+        if "error" in d:   # ArcGIS hlásí chybu s kódem 200
+            sys.exit(f"Služba ÚAN vrátila chybu: {d['error']}")
+        nalezy += [f["attributes"] for f in d.get("features", [])]
     return nalezy
 
 
