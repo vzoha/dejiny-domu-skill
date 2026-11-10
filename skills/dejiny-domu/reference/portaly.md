@@ -438,6 +438,10 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
 - Hledej obec a vyfiltruj Matriky (ikona, potom znovu lupa). Hledání vrací i civilní matriky (u obce stovky svazků) –
   filtr „Datum od – do“ (podle začátku svazku, např. 1680–1873) nechá jen církevní. Knihy bývají řazené po obcích
   a na konci mají rejstřík. Vedle farních knih bývají i **druhopisy** („T“ v signatuře, viz `matriky.md`).
+- **Svazek otevři trvalým odkazem** `https://digi.archives.cz/da/permalink?xid=<id>` (id = konec odkazu
+  `vysledekDetail/<id>` ve výsledcích) – bez nového hledání, ale jen v prohlížeči, který prošel ověřením. Přímá adresa
+  `vysledekDetail/<id>` ukáže výsledek posledního hledání, ne svazek z adresy. Vždy ověř signaturu a název knihy.
+  Mezi stránkami badatelny aspoň 5 s, po desítkách dotazů za den hlásí showZoomify chybu (denní limit).
 - **Seznam svazků a ID snímků si hned ulož** do `pracovni/<svazek>/` – relace po pár hodinách vyprší a výsledky
   hledání platí jen v ní. Na detailu svazku: entita `document.querySelector('[entityuuid]').getAttribute('entityuuid')`
   (u svazků uložených v jiném archivu nemá tvar UUID – nehledej ji regexem), ID snímků jsou hodnoty
@@ -450,8 +454,9 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
   stránek, 0 = plné jen u nalezeného zápisu). Cookies nepotřebuje.
 - **Obrázkový server images.archives.cz omezuje** (10. 11. 2026: HTTP 429 po ~25 celých stránkách v plném rozlišení,
   pak 503 i po jediném snímku). Celá stránka v plném rozlišení má stovky dlaždic, proto: náhled `2` (~20 dlaždic) →
-  v plném rozlišení jen výřez zápisu `--oblast x0,y0,x1,y1` (podíly stránky 0–1, ~20–50 dlaždic). Nejvýš ~1 500 dlaždic za hodinu
-  (~30–50 výřezů, mezi nimi ~1 min pauza), žádné dávky naslepo; po bloku čekat déle než 30 min a začít pomalu. Nástroj má pro tento server přísnější limit (`slusne.py`) a po 429/503 sám skončí.
+  v plném rozlišení jen výřez zápisu `--oblast x0,y0,x1,y1` (podíly stránky 0–1, ~20–50 dlaždic), mezi snímky pauza, žádné dávky naslepo. Po bloku server
+  toleruje málo (10. 11. 2026 znovu 503 po 6 náhledech): další pokus až další den, nejdřív jediný náhled. Omezovač
+  blokuje web po opakovaném odmítnutí déle (2 h, pak 8 h) – nečekej jen 30 min. Nástroj má pro tento server přísnější limit (`slusne.py`) a po 429/503 sám skončí.
 - **Pozemkové knihy** (gruntovní knihy měst): `ImageProperties.xml` vrací 404 → rozměr snímku z HTML
   `/da/showZoomify/<svazek>/<snímek>` (atribut `zImageProperties` WIDTH a HEIGHT) a nástroji `--rozmer ŠxV`.
   Na začátku svazku bývá rejstřík jmen s čísly zápisů (písmena po dvou snímcích) – najdi zápis v rejstříku, ne listováním.

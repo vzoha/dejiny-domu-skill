@@ -7,14 +7,15 @@ a archivy pak přitvrzují vůči všem. Proto:
 - dotazy (hledání, API, HTML) přísně – výchozí 1 za 2 s; obrázky a dlaždice volněji – 20 za s
   (ban způsobují rychlé dotazy, ne dlaždice jednoho snímku); pauza se počítá od odpovědi, ne od odeslání –
   pomalý server by jinak dostal další dotaz hned po dokončení předchozího,
-- po HTTP 429 nebo 503 (a po 403 na dotaz uprostřed práce) se web zablokuje na 30 minut pro všechny procesy a nástroj hned skončí –
+- po HTTP 429 nebo 503 (a po 403 na dotaz uprostřed práce, po stránce „zablokováno“) se web zablokuje pro všechny
+  procesy a nástroj hned skončí – na 30 minut, při druhém bloku během 24 h na 2 hodiny, při dalším na 8 hodin –
   žádné další pokusy.
 
 Nástroje v tools/ to mají zapnuté samy (`slusne.instaluj()` na začátku). Vlastní skript nebo curl spouštěj takhle:
   python3 -I tools/slusne.py pracovni/muj_skript.py [argumenty]   -> skript běží se stejným limitem (urllib, requests)
   python3 -I tools/slusne.py curl [argumenty curl]                -> curl se stejným limitem
   python3 -I tools/slusne.py stav                                 -> které weby jsou teď zablokované a do kdy
-  python3 -I tools/slusne.py zablokuj <web> [důvod]               -> zablokovat web na 30 min (429/503/403 v prohlížeči)
+  python3 -I tools/slusne.py zablokuj <web> [důvod]               -> zablokovat web (429/503/403 v prohlížeči), délka jako výše
   python3 -I tools/slusne.py odblokuj <web>                       -> zrušit blokaci (jen když víš, že šlo o omyl)
 Před každým požadavkem se navíc kontrolují podmínky portálu (tools/podminky.json, reference/podminky.md):
 portál, který nástrojům stahování nedovoluje, skončí hláškou „PODMÍNKY: …“ s návodem, jak dál.
@@ -23,7 +24,7 @@ skupiny, která jmenuje Claude-User. Zákaz pro ClaudeBota (trénink), Claude-Se
 obecné `User-agent: *` taky ne (reference/podminky.md). robots.txt se stahuje 1× za den do stejné složky.
 Stav je ve ~/.cache/dejiny-domu/slusne/ (jinde: proměnná SLUSNE_DIR).
 """
-import email.utils, http.client, json, os, re, subprocess, sys, threading, time, urllib.parse, urllib.robotparser
+import email.utils, http.client, io, json, os, re, subprocess, sys, threading, time, urllib.parse, urllib.robotparser
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import podminky   # co smí nástroje stahovat (tools/podminky.json)
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8
@@ -38,9 +39,13 @@ LIMITY = {
     "nominatim.openstreetmap.org": (1.1, 1.1),                       # pravidla OSM: nejvýš 1 dotaz za s
     "gs-pub.praha.eu": (0.5, 0.05), "geoportal.cuzk.gov.cz": (0.5, 0.05),
     "commons.wikimedia.org": (0.5, 0.05), "www.wikidata.org": (0.5, 0.05),   # API pro roboty, sériové dotazy povoleny
-    "images.archives.cz": (2.0, 0.25),   # ZA Opava: 10. 11. 2026 HTTP 429/503 po několika tisících dlaždic za ~hodinu
+    "images.archives.cz": (2.0, 0.25),   # ZA Opava: 10. 11. 2026 HTTP 429/503 i po pár náhledech, když už jednou blokoval
+    "digi.archives.cz": (4.0, 0.25),     # ZA Opava, badatelna: po desítkách rychlých dotazů blok 30 min, denní limit
 }
 BLOKACE = 30 * 60
+STOPKY = (BLOKACE, 2 * 3600, 8 * 3600)   # blok po 1., 2. a 3. (i každém dalším) odmítnutí webu během OKNO
+OKNO = 24 * 3600
+BAN_TEXT = {"digi.archives.cz": re.compile(rb"zablokov[a\xc3\xa1]n|byl[a ]+zablokov|blocked|nestandardn", re.I)}   # 200 s textem bloku
 ROBOT = "Claude-User"
 UA = f"Mozilla/5.0 (compatible; {ROBOT}; dejiny-domu skill, on user request; +https://github.com/vzoha/dejiny-domu-skill)"
 ROBOTS_PLATNOST = 24 * 3600
@@ -118,13 +123,23 @@ def blokace(host):
     return b["do"], b.get("proc", "")
 
 
-def zablokuj(host, proc, sekund=BLOKACE):
-    """Zápis přes dočasný soubor a os.replace: souběžný proces nikdy nepřečte napůl zapsanou blokaci."""
-    cil = _soubor(host, "blok")
+def zablokuj(host, proc, sekund=0):
+    """Zablokuje web podle počtu bloků za posledních 24 h (STOPKY), nejméně na `sekund` (Retry-After). Vrací do kdy.
+    Opakovaný blok = server si nás pamatuje; další pokus po 30 min by ho jen prodloužil (ZA Opava 10. 11. 2026).
+    Zápis přes dočasný soubor a os.replace: souběžný proces nikdy nepřečte napůl zapsanou blokaci."""
+    cil, ted = _soubor(host, "blok"), time.time()
+    try:
+        with open(cil, encoding="utf-8") as f:
+            historie = [t for t in json.load(f).get("historie", []) if t > ted - OKNO]
+    except (OSError, ValueError):
+        historie = []
+    historie.append(ted)
+    do = ted + max(sekund, STOPKY[min(len(historie), len(STOPKY)) - 1])
     tmp = f"{cil}.{os.getpid()}.{threading.get_ident()}"
     with open(tmp, "w", encoding="utf-8") as f:
-        json.dump({"do": time.time() + sekund, "proc": proc}, f, ensure_ascii=False)
+        json.dump({"do": do, "proc": proc, "historie": historie}, f, ensure_ascii=False)
     os.replace(tmp, cil)
+    return do
 
 
 def sekund_z_retry_after(hodnota):
@@ -287,10 +302,16 @@ def posoudit(host, co, kod, retry_after=None):
                          "nebo web zablokoval IP adresu (v prohlížeči „Sorry, you have been blocked“ → vypni VPN nebo "
                          "zkus jinou síť). Neopakuj dotaz ve smyčce.")
     if kod in (429, 503) or (kod == 403 and co == "dotaz"):
-        sekund = max(BLOKACE, sekund_z_retry_after(retry_after) or 0)
         proc = f"HTTP {kod}"
-        zablokuj(host, proc, sekund)
-        raise Zablokovano(_hlaska(host, time.time() + sekund, proc))
+        raise Zablokovano(_hlaska(host, zablokuj(host, proc, sekund_z_retry_after(retry_after) or 0), proc))
+
+
+def posoudit_text(host, telo):
+    """Stránka s kódem 200, která hlásí zablokování (ZA Opava) → zablokovat web jako po 429."""
+    vzor = BAN_TEXT.get(host.lower())
+    if vzor and telo and vzor.search(telo):
+        proc = "stránka hlásí zablokování"
+        raise Zablokovano(_hlaska(host, zablokuj(host.lower(), proc), proc))
 
 
 _lokalni = threading.local()
@@ -342,6 +363,10 @@ def instaluj():
         host, co = getattr(_lokalni, "posledni", (self.host, "dotaz"))
         odpovedel(host, co)
         posoudit(host, co, r.status, r.getheader("Retry-After"))
+        if host.lower() in BAN_TEXT and r.status == 200 and "html" in (r.getheader("Content-Type") or ""):
+            telo = r.read()   # přečíst a vrátit zpět, aby volající dostal celé tělo
+            r.fp, r.length, r.chunked, r.will_close = io.BytesIO(telo), len(telo), False, True
+            posoudit_text(host, telo)
         return r
 
     http.client.HTTPConnection.putrequest = putrequest
@@ -419,8 +444,8 @@ def main(a):
             print("Žádný web není zablokovaný.")
     elif a[0] == "zablokuj" and len(a) > 1:
         host = host_z(a[1])
-        zablokuj(host, " ".join(a[2:]) or "ručně")
-        print(f"{host}: zablokováno na {BLOKACE // 60} min")
+        do = zablokuj(host, " ".join(a[2:]) or "ručně")
+        print(f"{host}: zablokováno do {time.strftime('%H:%M', time.localtime(do))}")
     elif a[0] == "odblokuj" and len(a) > 1:
         host = host_z(a[1])
         p = _soubor(host, "blok")
