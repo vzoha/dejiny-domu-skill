@@ -177,8 +177,28 @@
     },
     "www.ceskadigitalniknihovna.cz": {
       "nazev": "Česká digitální knihovna (web)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
-      "proc": "skeny patří knihovně uložení (MZK, UK…), podmínky CDK ani UK nenalezeny – za peníze jako MZK (souhlas) (8. 11. 2026)",
-      "jinak": "Uživatel otevře odkaz z veduty.py a obrázek uloží tlačítkem Export, ty ho přečteš. Nástroje hledají přes API."
+      "proc": "skeny patří knihovně uložení (MZK, UK, VKOL…), podmínky CDK nenalezeny – za peníze jako MZK (souhlas); UK a VKOL viz výjimka (10. 11. 2026)",
+      "jinak": "Uživatel otevře odkaz z veduty.py a obrázek uloží tlačítkem Export, ty ho přečteš. Nástroje hledají přes API.",
+      "vyjimky": [
+        {"obsahuje": "kramerius, volné dílo", "vyrez": "ano",
+         "proc": "veřejné dílo UK nebo VKOL s ověřenými autory (70 let po smrti posledního, data v MODS): podmínky knihoven omezují jen díla po přihlášení; do zdroje napiš „Kramerius, volné dílo“ až po ověření autorů (10. 11. 2026)"}
+      ]
+    },
+    "kramerius.cuni.cz": {
+      "nazev": "Kramerius Univerzity Karlovy", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "podmínky užití omezují jen díla po přihlášení; licence „public“ ještě neznamená volné dílo – ověř autory (10. 11. 2026)",
+      "jinak": "Uživatel volné dílo uloží v prohlížeči, ty ho přečteš. Hledej přes Českou digitální knihovnu.",
+      "vyjimky": [
+        {"obsahuje": "kramerius, volné dílo", "vyrez": "ano", "proc": "veřejné dílo s ověřenými autory (70 let po smrti posledního)"}
+      ]
+    },
+    "kramerius.vkol.cz": {
+      "nazev": "Kramerius Vědecké knihovny v Olomouci", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "podmínky užití omezují jen díla po přihlášení; licence „public“ ještě neznamená volné dílo – ověř autory (Olomouc 1946: „public“, autor † 1974) (10. 11. 2026)",
+      "jinak": "Uživatel volné dílo uloží v prohlížeči, ty ho přečteš. Hledej přes Českou digitální knihovnu.",
+      "vyjimky": [
+        {"obsahuje": "kramerius, volné dílo", "vyrez": "ano", "proc": "veřejné dílo s ověřenými autory (70 let po smrti posledního)"}
+      ]
     },
     "anno.onb.ac.at": {
       "nazev": "ANNO (ÖNB)", "dotazy": true, "obrazky": true, "vyrez": "ano",
