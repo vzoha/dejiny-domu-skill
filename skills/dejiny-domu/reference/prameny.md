@@ -56,7 +56,7 @@ bývají nedostupné – ověř v archivu).
 Osvědčené pořadí:
 1. **Dnešní adresy domu i sousedů** z RÚIAN: `mista.py okoli "Ulice čp/čo" 80`. Rohový dům má dvě adresy.
    Brno: `brno_encyklopedie.py "Ulice" <číslo>` (heslo domu, osobnosti s bydlištěm, desky); Plzeň a Ostrava
-   mají encyklopedii stejně, hledá uživatel (`portaly.md`).
+   mají encyklopedii stejně, hledá uživatel (`portaly.md`). Vila 1900–1945: slavnevily.cz (`portaly.md`).
 2. **Staré plány a letecké snímky stejného výřezu** – kdy na parcele poprvé stojí budova. V Praze IPR (plány 1889, 1909,
    1920, 1938 s čísly popisnými, 1944, ortofota 1938–2006: `ipr_praha.py serie … --zapsat`); jinde `cuzk_archiv.py mapa pk`.
 3. **Adresní kniha čp. → ulice a č. or.** (Praha: Orientační kniha Velké Prahy 1936/1937) – jaká orientační čísla dům

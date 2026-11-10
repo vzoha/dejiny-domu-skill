@@ -132,6 +132,14 @@ objekty (pamětní desky, Kameny zmizelých), události, ulice (názvy v čase) 
 - **Plzeň** (encyklopedie.plzen.eu) a **Ostrava** (encyklopedie.ostrava.cz) mají stejnou strukturu (domy, osobnosti,
   ulice), ale starší web, který nástroj neumí: hledá uživatel v prohlížeči, nebo otevři heslo, když máš odkaz.
 
+## Slavné vily (slavnevily.cz) – ručně, pro vily 1900–1945
+Web k edici knih Slavné vily (Foibos, po krajích): stránka vily má adresu s čp., stavebníka, architekta, roky stavby
+a úvod textu z knihy. Jen vybrané architektonicky cenné vily.
+- Hledání (pole Hledej, obec nebo ulice) běží na serveru; robots.txt ho nezakazuje. Stačí jeden dotaz na dům,
+  pak stránka vily `/vily/<kraj>/<vila>`. Hledá i v textu: „Zlín“ najde i vily jinde, kde se Zlín zmiňuje.
+- Celý text je v knize kraje (citace: autor, Slavné vily … kraje, rok, strana). Do výstupu fakta s citací,
+  fotky (Jiří Podrazil a další) a delší text jen se souhlasem nakladatele.
+
 ## Archiv města Brna (digiarchiv.brno.cz, archiv.brno.cz) – `tools/brno_scitani.py`
 Brno, předměstí a připojené obce. Sčítání lidu 1850, 1857, 1870, 1880, 1890, 1900, 1921 (1910 jen v badatelně AMB)
 po domech, s vytěženým jmenným rejstříkem; adresáře města 1779–1946 v PDF.

@@ -56,6 +56,11 @@
       "nazev": "Archeologická mapa ČR (Digitální archiv AMČR)", "dotazy": true, "obrazky": true, "vyrez": "nekomercne",
       "proc": "data CC BY-NC 4.0 – jen nevýdělečně a s autorem; API komerčně jen s písemnou smlouvou (8. 11. 2026)", "jinak": ""
     },
+    "www.slavnevily.cz": {
+      "nazev": "Slavné vily (Foibos)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
+      "proc": "robots.txt hledání (search.php) a stránky vil nezakazuje; texty a fotky z knih Foibos, licence žádná (10. 11. 2026)",
+      "jinak": "Jeden dotaz v hledání webu (obec, ulice), pak stránka vily. Fakta s citací knihy; fotku nebo delší text jen se souhlasem nakladatele."
+    },
     "encyklopedie.brna.cz": {
       "nazev": "Encyklopedie dějin města Brna (Muzeum města Brna)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "podmínky užití neuvedeny, robots.txt nemá (10. 11. 2026); fotky mají autory (Foto …), licence žádná",
