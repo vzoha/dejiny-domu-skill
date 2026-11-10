@@ -9,6 +9,9 @@ Použití (z kořene projektu):
                 (další snímky téže knihy mají stejnou cestu, liší se jen číslem obrázku)
     adresa    = celá adresa obrázku začínající https:// (s „/ImageProperties.xml“ na konci i bez), např. ZA Opava:
                 https://images.archives.cz/ximage/matriky/zoomify/cz/archives/CZ-217000010/NAD-165/dao/images/<složka>/<uuid>.jpg
+    --oblast x0,y0,x1,y1  (za výstupem) jen dlaždice výřezu v podílech stránky (0–1): šetří server při plném rozlišení
+    --rozmer ŠxV  (za výstupem) když ImageProperties.xml vrací 404 (ZA Opava, pozemkové knihy): rozměr z HTML
+                stránky /da/showZoomify/<svazek>/<snímek>, atribut zImageProperties WIDTH a HEIGHT
     zmenseni  = 0 plné rozlišení (na čtení a výřez), 1 poloviční (na orientaci), 2 čtvrtinové
 POZOR: aplikace digi.soalitomerice.cz po ~100 rychlých požadavcích (digi.archives.cz v Opavě už po ~75) zablokuje
 přístup na 30 minut. Prohlížečem jen najdi knihu a cestu k obrázkům, snímky pak stahuj tímto nástrojem (obrázkový server
@@ -40,7 +43,9 @@ def get(url):
     err = None
     for _ in range(3):
         try:
-            return urllib.request.urlopen(url, timeout=30).read()
+            # images.archives.cz vrací u pozemkových knih bez Refereru 404 (ZA Opava, 10. 11. 2026)
+            ref = {"Referer": "https://digi.archives.cz/"} if "images.archives.cz" in url else {}
+            return urllib.request.urlopen(urllib.request.Request(url, headers=ref), timeout=30).read()
         except Exception as e:
             time.sleep(1)
             err = e
@@ -48,6 +53,11 @@ def get(url):
 
 
 def main():
+    volby = {}   # --rozmer ŠxV (ZAO pozemkové knihy: ImageProperties.xml chybí), --oblast x0,y0,x1,y1 (jen dlaždice výřezu)
+    for k in ("--rozmer", "--oblast"):
+        if k in sys.argv:
+            i = sys.argv.index(k); volby[k] = sys.argv[i + 1]; del sys.argv[i:i + 2]
+    rozmer = volby.get("--rozmer")
     if len(sys.argv) != 4:
         sys.exit(__doc__)
     arg = sys.argv[1].strip().removesuffix("/ImageProperties.xml").strip("/")
@@ -56,8 +66,11 @@ def main():
         sys.exit(f"Adresa musí být https:// na serveru archivu ({', '.join(HOSTS)}), ne {base[:80]}")
     red, out = int(sys.argv[2]), sys.argv[3]
     MAGICK = magick()
-    x = get(base + "/ImageProperties.xml").decode()
-    W, H, T = (int(re.search(fr'{k}="(\d+)"', x).group(1)) for k in ("WIDTH", "HEIGHT", "TILESIZE"))
+    if rozmer:
+        (W, H), T = map(int, rozmer.lower().split("x")), 256
+    else:
+        x = get(base + "/ImageProperties.xml").decode()
+        W, H, T = (int(re.search(fr'{k}="(\d+)"', x).group(1)) for k in ("WIDTH", "HEIGHT", "TILESIZE"))
     dims, w, h = [], W, H   # úrovně Zoomify od nejmenší po plné rozlišení
     while True:
         dims.append((w, h))
@@ -70,7 +83,10 @@ def main():
     w, h = dims[L]
     nx, ny = math.ceil(w / T), math.ceil(h / T)
     start = sum(counts[:L])
-    slusne.strop_dlazdic(nx * ny, base)
+    x0, y0, x1, y1 = map(float, volby.get("--oblast", "0,0,1,1").split(","))   # podíly šířky a výšky stránky
+    tx = range(int(x0 * w) // T, min(nx, math.ceil(x1 * w / T)))
+    ty = range(int(y0 * h) // T, min(ny, math.ceil(y1 * h / T)))
+    slusne.strop_dlazdic(len(tx) * len(ty), base)
     d = tempfile.mkdtemp(dir=os.path.dirname(os.path.abspath(out)))
     try:   # dočasnou složku uklidit i při výpadku sítě nebo chybě ImageMagicku
         def tile(yx):
@@ -79,14 +95,18 @@ def main():
             f = os.path.join(d, f"{y:03d}_{xx:03d}.jpg")
             with open(f, "wb") as fh:
                 fh.write(get(f"{base}/TileGroup{g}/{L}-{xx}-{y}.jpg"))
-        with cf.ThreadPoolExecutor(4) as ex:   # 4 souběžně: několikrát rychlejší, server archivu nezatěžuje víc než 4 prohlížeče
-            list(ex.map(tile, [(y, xx) for y in range(ny) for xx in range(nx)]))
+        # 4 souběžně: několikrát rychlejší, server nezatěžuje víc než 4 prohlížeče; ZA Opava jen 2 (10. 11. 2026 HTTP 429)
+        vlaken = 2 if "images.archives.cz" in base else 4
+        with cf.ThreadPoolExecutor(vlaken) as ex:
+            list(ex.map(tile, [(y, xx) for y in ty for xx in tx]))
         # řádky dlaždic +append, pak řádky pod sebe -append (montage na ImageMagicku 7.1.2 padá bez písma);
         # krátká jména (cwd=d) a po řádcích: celá stránka v jednom příkazu by na Windows přesáhla limit příkazové řádky
         rows = []
-        for y in range(ny):
+        for y in ty:
             rows.append(f"row{y:03d}.miff")   # MIFF zachová vlastnosti JPEG (podvzorkování barev)
-            subprocess.run([MAGICK, *[f"{y:03d}_{xx:03d}.jpg" for xx in range(nx)], "+append", rows[-1]], check=True, cwd=d)
+            subprocess.run([MAGICK, *[f"{y:03d}_{xx:03d}.jpg" for xx in tx], "+append", rows[-1]], check=True, cwd=d)
+        if len(tx) < nx or len(ty) < ny:   # výřez: okraje dlaždic stačí, ořez na celou stránku by nic neudělal
+            w, h = min(w, tx[-1] * T + T) - tx[0] * T, min(h, ty[-1] * T + T) - ty[0] * T
         subprocess.run([MAGICK, *rows, "-append", "-crop", f"{w}x{h}+0+0", "+repage", "-quality", "88",
                         os.path.abspath(out)], check=True, cwd=d)
     finally:
