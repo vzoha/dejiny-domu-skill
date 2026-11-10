@@ -132,6 +132,18 @@ objekty (pamětní desky, Kameny zmizelých), události, ulice (názvy v čase) 
 - **Plzeň** (encyklopedie.plzen.eu) a **Ostrava** (encyklopedie.ostrava.cz) mají stejnou strukturu (domy, osobnosti,
   ulice), ale starší web, který nástroj neumí: hledá uživatel v prohlížeči, nebo otevři heslo, když máš odkaz.
 
+## Místní fotoarchivy měst a spolků – ručně
+Města, muzea a spolky mívají vlastní weby s dobovými fotkami po ulicích a domech, mimo eSbírky a Commons. Každý je
+jiný, nástroj nemá smysl. Hledá uživatel, nebo jeden dotaz vyhledávačem: „Zmizelá <město>“, „Historická <město>
+fotografie“, „<obec> staré fotografie ulice“, „<město> fotoarchiv“. Ověřené příklady (11/2026):
+- Historická Třebíč (historicka.trebic.cz → mapa dobových fotek na gis.trebic.cz), Zmizelá Kutná Hora
+  (zmizelakutnahora.cz, ulice a náměstí), spolek Veselí přátelé historie (veselipratelehistorie.cz, fotoalba po ulicích
+  a měšťanských domech), Olomouc z výšky (UP Olomouc, letecké snímky města 1927–2021).
+- Archivy měst: AHMP Sbírka fotografií (~40 tis., část online v Archivním katalogu, hledej adresu nebo čp.,
+  `portaly.md` → AHMP), AMO Ostrava (Fotografie v Digitální badatelně), okresní archivy (Sbírka fotografií
+  v eBadatelně, Porta fontium – SOkA Cheb, jen nevýdělečně).
+- Do výstupu fakta (co je na fotce, rok) s citací a odkazem; fotku jen se souhlasem majitele webu nebo autora.
+
 ## Slavné vily (slavnevily.cz) – ručně, pro vily 1900–1945
 Web k edici knih Slavné vily (Foibos, po krajích): stránka vily má adresu s čp., stavebníka, architekta, roky stavby
 a úvod textu z knihy. Jen vybrané architektonicky cenné vily.
