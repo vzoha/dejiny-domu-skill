@@ -180,6 +180,14 @@ vlastním nákladem, v malých nákladech; české knihovny je mají zřídka, D
 - Weby Heimatkreisů (Ortsbilder, Häuserlisten) najde uživatel i přes vyhledávač („Heimatkreis Kaplitz“,
   „<německý název> Häuserliste“).
 
+## Bundesarchiv, Digitales Bildarchiv (bild.bundesarchiv.de) – jen ručně
+Fotky, letecké snímky a plakáty německých archivů; z Česka hlavně města v Sudetech 1938–1945 (propagandistické
+roty wehrmachtu, ADN), vesnice skoro nikdy: Reichenberg 40, Eger 56, Rumburg 11, Komotau 4, Prachatitz 0 (11/2026).
+- Hledá uživatel (pole Suche, **německý název**), stačí jednou: když nic, dál nehledej.
+- Do placeného výstupu jen objednaný snímek s poplatkem (publikace přes databázi, „Quelle: Bundesarchiv, Bild …,
+  Foto: …“). Zdarma jen soukromě a na nekomerčním webu do 800 px. Fotky z daru Bundesarchivu na Commons
+  (CC BY-SA 3.0 DE, „Bundesarchiv Bild …“) smí i do placeného výstupu; najde je `commons.py`.
+
 ## Deutsche Digitale Bibliothek (DDB) a Bildindex / Foto Marburg – `tools/ddb.py`
 DDB sdružuje sbírky německých muzeí, archivů a knihoven. Pro české obce hlavně: **Bildarchiv Foto Marburg** (fotky
 památek, kostelů a domů, místa jako „Schweinitz (Kreis Böhmisch Budweis)“), **Deutsche Fotothek** (pohlednice kolem
