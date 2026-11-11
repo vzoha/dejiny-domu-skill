@@ -69,5 +69,16 @@ class BrnoScitaniTest(unittest.TestCase):
         dum.assert_called_once_with("Kröna", "75", "1880")
 
 
+class OtviracTest(unittest.TestCase):
+    def test_mezicertifikat_je_pribaleny_a_neni_kotvou_duvery(self):
+        brno_scitani._otvirac = None
+        with mock.patch("urllib.request.urlopen") as stahovani:
+            otvirac = brno_scitani.otvirac()
+        stahovani.assert_not_called()
+        kontext = next(h for h in otvirac.handlers if hasattr(h, "_context"))._context
+        self.assertFalse(kontext.verify_flags & getattr(brno_scitani.ssl, "VERIFY_X509_PARTIAL_CHAIN", 0))
+        self.assertIn("Thawte TLS RSA CA G1", str(kontext.get_ca_certs()))
+
+
 if __name__ == "__main__":
     unittest.main()

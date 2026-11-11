@@ -24,18 +24,48 @@ API = WEB + "/api/scitacioperaty"
 ROKY = ("1850", "1857", "1870", "1880", "1890", "1900", "1921")
 NEJVIC_ULIC = 100   # víc názvů ulic web nevrátí
 NEJVIC_STRAN = 50   # 10 záznamů na stranu; velký činžák má v jednom roce až ~250 lidí
-# server neposílá mezicertifikát (prohlížeč si ho dotáhne sám podle certifikátu, Python ne)
-MEZICERTIFIKAT = "http://cacerts.thawte.com/ThawteTLSRSACAG1.crt"
+# Server neposílá mezilehlý certifikát (prohlížeč si ho dotáhne sám, Python ne → CERTIFICATE_VERIFY_FAILED).
+# Thawte TLS RSA CA G1 (vydal DigiCert Global Root G2, platí do 2. 11. 2027, SHA-256 4B:CC:5E:23:…:53:EB:20:C2,
+# z http://cacerts.thawte.com/ThawteTLSRSACAG1.crt) je přibalený, nestahuje se. Přidáme ho jen jako článek řetězce:
+# bez PARTIAL_CHAIN se z něj kotva důvěry nestane, ověření pořád musí skončit u systémového kořenového certifikátu.
+THAWTE_TLS_RSA_CA_G1 = """
+-----BEGIN CERTIFICATE-----
+MIIEizCCA3OgAwIBAgIQCQ7oxd5b+mLSri/3CXxIVzANBgkqhkiG9w0BAQsFADBh
+MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3
+d3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBH
+MjAeFw0xNzExMDIxMjI0MjVaFw0yNzExMDIxMjI0MjVaMF4xCzAJBgNVBAYTAlVT
+MRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j
+b20xHTAbBgNVBAMTFFRoYXd0ZSBUTFMgUlNBIENBIEcxMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAxjngmPhVetC0b/ozbYJdzOBUA1sMog47030cAP+P
+23ANUN8grXECL8NhDEF4F1R9tL0wY0mczHaR0a7lYanlxtwWo1s2uGnnyDs6mOCs
+66ew2w3YETr6Tb14xgjpu1gGFtAeewaikO9Fud8hxGJTSwn8xeNkfKVWpD2L4vFN
+36FNgxeilK6aE4ykgGAzNlokTp6hNOLAYpDySdLAPKzuJSQ7JCEZ6O+SDKywIdXL
+oMTnpxuBKGSG88NWTo3CHCOGmQECia2yqdPDjgLqnEiYNjwQL8uMqj8rOvlMgviB
+cHA7xty+7/uYLN6ZS7Vq1/F/lVhVOf5ej6jZdmB85szFbQIDAQABo4IBQDCCATww
+HQYDVR0OBBYEFKWM/jLM6w8s1BnGCLgAJIhdw8W3MB8GA1UdIwQYMBaAFE4iVCAY
+lebjbuYP+vq5Eu0GF485MA4GA1UdDwEB/wQEAwIBhjAdBgNVHSUEFjAUBggrBgEF
+BQcDAQYIKwYBBQUHAwIwEgYDVR0TAQH/BAgwBgEB/wIBADA0BggrBgEFBQcBAQQo
+MCYwJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBCBgNVHR8E
+OzA5MDegNaAzhjFodHRwOi8vY3JsMy5kaWdpY2VydC5jb20vRGlnaUNlcnRHbG9i
+YWxSb290RzIuY3JsMD0GA1UdIAQ2MDQwMgYEVR0gADAqMCgGCCsGAQUFBwIBFhxo
+dHRwczovL3d3dy5kaWdpY2VydC5jb20vQ1BTMA0GCSqGSIb3DQEBCwUAA4IBAQC6
+km0KA4sTb2VYpEBm/uL2HL/pZX9B7L/hbJ4NcoBe7V56oCnt7aeIo8sMjCRWTCWZ
+D1dY0+2KZOC1dKj8d1VXXAtnjytDDuPPf6/iow0mYQTO/GAg/MLyL6CDm3FzDB8V
+tsH/aeMgP6pgD1XQqz+haDnfnJTKBuxhcpnx3Adbleue/QnPf1hHYa8L+Rv8Pi5U
+h4V9FwHOfphdMXOxi14OqmsiTbc5cOs9/uukH+YVsuFdWTna6IVw1qh+tEtyH16R
+vmi7pkqyZYULOPMIE7avrljVVBZuikwARtY8tCVV6Pp9l3VeagBqb2ffgqNJt3C0
+TYNYQI+BXG1R1cABlold
+-----END CERTIFICATE-----
+"""
 _otvirac = None
 
 
 def otvirac():
     global _otvirac
     if _otvirac is None:
-        with urllib.request.urlopen(MEZICERTIFIKAT, timeout=30) as r:
-            pem = ssl.DER_cert_to_PEM_cert(r.read())
         kontext = ssl.create_default_context()
-        kontext.load_verify_locations(cadata=pem)
+        kontext.verify_flags &= ~getattr(ssl, "VERIFY_X509_PARTIAL_CHAIN", 0)
+        kontext.load_verify_locations(cadata=THAWTE_TLS_RSA_CA_G1)
         _otvirac = urllib.request.build_opener(urllib.request.HTTPSHandler(context=kontext))
     return _otvirac
 
