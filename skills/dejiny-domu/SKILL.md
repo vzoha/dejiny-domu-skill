@@ -288,6 +288,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `zapis.py denik "<zdroj>" "<rozsah>" "<hledáno>" "<výsledek>" "<citace>"` | řádek deníku `research_log.md` s číslem a datem (pod zámkem, souběžné session) |
 | `kontrola.py` | kontrola dat, soukromí, kdy psát příběh |
 | `slusne.py <skript.py> …` / `curl …` / `stav` | společný limit rychlosti k archivům a kontrola podmínek; vlastní skripty a curl jen přes něj (hook `hlidac.py` hlídá) |
+| `cache.py stav` | sdílená mezipaměť snímků (`~/.cache/dejiny-domu/snimky`, 5 GB): snímek stažený přes `slusne.py` se příště vezme z disku, i v dalším domě |
 | `podminky.py <adresa>` / `obrazky` | co se na portálu smí / které výřezy potřebují souhlas archivu (`reference/podminky.md`) |
 | `zdravi.py [--rychle] [--jen trebon,aron]` | funguje každý nástroj proti živému portálu? (pevné svazky, dočasná složka, do dat nesahá) |
 | `export_web.py` | data → web (volá ho `npm run data`) |

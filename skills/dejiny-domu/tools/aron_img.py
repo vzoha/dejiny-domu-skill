@@ -4,7 +4,9 @@
 Použití:
   aron_img.py <apu_id> <snimek> [uroven] [vystup.jpg] [x0,y0,x1,y1]
       uroven: 0 = plné rozlišení, 1 = polovina (výchozí), 2 = čtvrtina
-      x0,y0,x1,y1: jen výřez (zlomky 0..1 celé stránky) – stahují se jen potřebné dlaždice
+      x0,y0,x1,y1: jen výřez (zlomky 0..1 celé stránky)
+      Snímek se stahuje celý jedním požadavkem (jako tlačítko „stáhnout“ v ARONu) a uloží se do sdílené mezipaměti
+      (tools/cache.py) – další výřezy a zmenšení téže stránky už na archiv nejdou. Dlaždice jen když sken nejde.
   aron_img.py <apu_id> info          -> název svazku a počet snímků
   aron_img.py <apu_id> link <n>      -> trvalý odkaz na snímek n v prohlížeči ARON (pole "odkaz" v zaznamy.json)
   aron_img.py <apu_id> svazek        -> zapíše svazek do data/svazky.json (klíč = prvních 8 znaků apu_id)
@@ -19,6 +21,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
+import cache  # noqa: E402 – výřez a zmenšení z uloženého skenu
 
 API = "https://aron.vychodoceskearchivy.cz/api/aron"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -126,6 +129,39 @@ def fetch_image(dzi_url, level_offset=1, out="page.jpg", crop=None):
     return out, (W, H)
 
 
+def sken(vol, n):
+    """Adresa celého skenu snímku n (soubor PUBLISHED), nebo None."""
+    for dao in vol.get("digitalObjects", []):
+        for f in dao.get("files", []):
+            if f.get("type") == "PUBLISHED" and f.get("order") == n:
+                return f"{API}/referencedfiles/{f['id']}"
+    return None
+
+
+def fetch_sken(url, level_offset=1, out="page.jpg", crop=None):
+    """Stáhne celý sken (přes mezipaměť) a z disku udělá výřez a zmenšení. Vrátí (out, (W, H)), nebo None (pak dlaždice)."""
+    M = magick()
+    data = get(url, binary=True)
+    if cache.pripona(data) != ".jpg" or not cache.cely(data):
+        return None
+    tmp = f"{out}.{os.getpid()}.sken.jpg"
+    try:
+        with open(tmp, "wb") as f:
+            f.write(data)
+        r = subprocess.run([M, tmp + "[0]", "-format", "%w %h", "info:"], capture_output=True, text=True)
+        W, H = map(int, r.stdout.split())
+        if level_offset == 0 and not crop:
+            os.replace(tmp, out)   # plné rozlišení: původní sken beze změny (bez dalšího ukládání JPEG)
+        elif not cache.odvod(tmp, out, crop, 2 ** level_offset):
+            return None
+    except ValueError:
+        return None
+    finally:
+        if os.path.exists(tmp):
+            os.remove(tmp)
+    return out, (W, H)
+
+
 if __name__ == "__main__":
     apu = sys.argv[1]
     vol = volume(apu)
@@ -155,5 +191,14 @@ if __name__ == "__main__":
     crop = tuple(float(v) for v in sys.argv[5].split(",")) if len(sys.argv) > 5 else None
     if n not in tiles:
         sys.exit(f"Snímek {n} ve svazku není (snímků: {len(tiles)}" + (", svazek není online)" if not tiles else ")"))
-    path, dims = fetch_image(tiles[n], lo, out, crop)
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
+    vysledek, url_skenu = None, sken(vol, n)
+    if url_skenu:
+        try:
+            vysledek = fetch_sken(url_skenu, lo, out, crop)
+        except OSError:
+            pass
+        if not vysledek:
+            print("Celý sken nejde stáhnout – zkouším dlaždice (pomalejší).", file=sys.stderr)
+    path, dims = vysledek or fetch_image(tiles[n], lo, out, crop)
     print(path, "full size", dims)

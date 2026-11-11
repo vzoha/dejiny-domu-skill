@@ -52,7 +52,8 @@ UA = f"Mozilla/5.0 (compatible; {ROBOT}; dejiny-domu skill, on user request; +ht
 ROBOTS_PLATNOST = 24 * 3600
 PRIPONA = re.compile(r"\.(jpe?g|png|gif|webp|tiff?|jp2|dzi)$", re.I)   # jen v cestě: MZA má stránku knihy na …?image=…jp2
 OBRAZEK = re.compile(r"_files/|iipsrv|IIIF=|Deepzoom=|ximage|zoomify|"
-                     r"TileGroup|ImageProperties\.xml|isrv\d*\.cgi|/full/|default\.jpg|/image/|mrimage|/tiles?/", re.I)
+                     r"TileGroup|ImageProperties\.xml|isrv\d*\.cgi|/full/|default\.jpg|/image/|mrimage|/tiles?/|"
+                     r"/referencedfiles/", re.I)   # ARON: celý sken jedním požadavkem
 
 
 MAX_DLAZDIC = 3000   # jeden snímek v plném rozlišení má nejvýš stovky dlaždic; víc = chybná odpověď serveru
@@ -338,26 +339,50 @@ def instaluj():
         return
     _instalovano = True
     _napoveda()
-    put, get = http.client.HTTPConnection.putrequest, http.client.HTTPConnection.getresponse
-    hlavicka = http.client.HTTPConnection.putheader
+    C = http.client.HTTPConnection
+    put, get, hlavicka = C.putrequest, C.getresponse, C.putheader
+    endheaders, send = C.endheaders, C.send   # spojení otevírá až send – bez něj se z disku na archiv nepřipojí
+    PRIMO = (C, http.client.HTTPSConnection)   # odpověď z disku jen pro urllib a http.client (ne urllib3 a spol.)
 
     def putrequest(self, method, url, *a, **k):
+        self._slusne_disk = self._slusne_ulozit = None
         if getattr(_lokalni, "robots", False):
             return put(self, method, url, *a, **k)
         co = druh(url)
         https = isinstance(self, http.client.HTTPSConnection)
-        pockej(self.host, co, adresa=url if "://" in url else f"{'https' if https else 'http'}://{self.host}{url}")
-        zkontroluj_robots(self.host, urllib.parse.urlsplit(url).path if "://" in url else url.split("?", 1)[0],
-                          https, self.port)
+        plna = url if "://" in url else f"{'https' if https else 'http'}://{self.host}{'' if self.port in (None, 80, 443) else f':{self.port}'}{url}"
+        if _mezipamet and method == "GET" and co == "obr" and type(self) in PRIMO and _do_mezipameti(self.host):
+            podminky.zkontroluj_stahovani(plna, co)   # i z disku jen to, co podmínky portálu dovolují
+            ulozeny = _mezipamet.najdi_url(plna)
+            if ulozeny:   # z mezipaměti: na archiv nejde nic, ani čekání brzdy
+                self._slusne_disk = ulozeny
+                return None
+            self._slusne_ulozit = plna
+        pockej(self.host, co, adresa=plna)
+        zkontroluj_robots(self.host, urllib.parse.urlsplit(plna).path, https, self.port)
         _lokalni.posledni = (self.host, co)
         return put(self, method, url, *a, **k)
 
     def putheader(self, header, *values):
+        if getattr(self, "_slusne_disk", None):
+            return None
         if header.lower() == "user-agent" and not getattr(_lokalni, "robots", False):
             values = (UA,)   # i nástroje s vlastní hlavičkou se představí stejně
         return hlavicka(self, header, *values)
 
+    def bez_site(puvodni):
+        return lambda self, *a, **k: None if getattr(self, "_slusne_disk", None) else puvodni(self, *a, **k)
+
     def getresponse(self, *a, **k):
+        ulozeny = getattr(self, "_slusne_disk", None)
+        if ulozeny:
+            self._slusne_disk = None
+            data = open(ulozeny, "rb").read()
+            hlava = (f"HTTP/1.1 200 OK\r\nContent-Length: {len(data)}\r\nX-Dejiny-Domu: mezipamet\r\n\r\n").encode()
+            r = http.client.HTTPResponse(_Soubor(hlava + data), method="GET")
+            r.begin()
+            _mezipamet.zapocti(len(data), z_disku=True)
+            return r
         r = get(self, *a, **k)
         if getattr(_lokalni, "robots", False):
             return r
@@ -368,15 +393,74 @@ def instaluj():
             telo = r.read()   # přečíst a vrátit zpět, aby volající dostal celé tělo
             r.fp, r.length, r.chunked, r.will_close = io.BytesIO(telo), len(telo), False, True
             posoudit_text(host, telo)
+        plna = getattr(self, "_slusne_ulozit", None)
+        if plna and r.status == 200 and not r.getheader("Content-Encoding"):
+            delka = r.getheader("Content-Length")
+            data = r.read()   # obrázek uložit a vrátit volajícímu celý
+            r.fp, r.length, r.chunked, r.will_close = io.BytesIO(data), len(data), False, True
+            if _mezipamet.uloz_url(plna, data, int(delka) if delka and delka.strip().isdigit() else None):
+                _mezipamet.zapocti(len(data), z_disku=False)
         return r
 
-    http.client.HTTPConnection.putrequest = putrequest
-    http.client.HTTPConnection.putheader = putheader
-    http.client.HTTPConnection.getresponse = getresponse
+    C.putrequest, C.putheader, C.getresponse = putrequest, putheader, getresponse
+    C.endheaders, C.send = bez_site(endheaders), bez_site(send)
 
 
-HODNOTOVE = {"-e", "--referer", "-x", "--proxy", "-H", "--header", "-b", "--cookie", "-A", "--user-agent",
-             "-u", "--user", "-d", "--data", "--data-urlencode", "-F", "--form"}   # volby curl, jejichž hodnota může být adresa
+try:   # sdílená mezipaměť obrázků (tools/cache.py); bez ní brzda funguje dál, jen bez úspory
+    import cache as _mezipamet
+except Exception:   # noqa: BLE001 – starší projekt bez cache.py
+    _mezipamet = None
+
+
+class _Soubor:   # „socket“ pro odpověď z mezipaměti
+    def __init__(self, data):
+        self.data = data
+
+    def makefile(self, *a, **k):
+        return io.BytesIO(self.data)
+
+
+def _do_mezipameti(host):
+    """Weby archivů ano; localhost jen v testech (s vlastní složkou DEJINY_SNIMKY), jinak by zaplnil mezipaměť."""
+    return not re.fullmatch(r"localhost|127\.\d+\.\d+\.\d+|\[?::1\]?", host or "") or bool(os.environ.get("DEJINY_SNIMKY"))
+
+
+# volby curl, které berou hodnotu (ta pak není adresa); krátké se dají slučovat („-sSLo soubor“)
+_CURL_HODNOTA = {"--output", "--header", "--user-agent", "--data", "--data-raw", "--data-binary", "--data-urlencode",
+                 "--data-ascii", "--json", "--referer", "--user", "--proxy", "--write-out", "--cookie", "--cookie-jar",
+                 "--request", "--upload-file", "--form", "--form-string", "--max-time", "--range", "--config",
+                 "--connect-timeout", "--retry", "--retry-delay", "--retry-max-time", "--limit-rate", "--continue-at",
+                 "--output-dir", "--resolve", "--connect-to", "--cacert", "--capath", "--cert", "--key", "--dump-header",
+                 "--speed-limit", "--speed-time", "--max-filesize", "--max-redirs", "--time-cond", "--interface",
+                 "--proto", "--proto-redir", "--stderr", "--trace", "--trace-ascii", "--etag-save", "--etag-compare"}
+_CURL_KRATKE = set("oHAdeuxwbcXTFmrKCDEYyz")
+_HOLY_HOST = re.compile(r"(?i)^[a-z0-9-]+(\.[a-z0-9-]+)+\.?(:\d+)?([/?#].*)?$")   # www.mza.cz/… bez https://
+
+
+def _curl_adresy(args):
+    """Adresy v příkazu curl, i bez schématu (curl je bere jako http://) a z --url."""
+    out, i = [], 0
+    while i < len(args):
+        a = args[i]
+        if a == "--url" and i + 1 < len(args):
+            out.append(args[i + 1])
+            i += 2
+            continue
+        if a.startswith("--url="):
+            out.append(a[6:])
+        elif a.startswith("--"):
+            if a in _CURL_HODNOTA:
+                i += 1
+        elif a.startswith("-") and len(a) > 1:
+            for j, c in enumerate(a[1:]):
+                if c in _CURL_KRATKE:
+                    if j == len(a) - 2:
+                        i += 1   # hodnota je další argument, jinak je přilepená („-ofile“)
+                    break
+        elif re.match(r"(?i)https?://", a) or _HOLY_HOST.match(a):
+            out.append(a)
+        i += 1
+    return [u if "://" in u else "http://" + u for u in out]
 
 
 def _bez_user_agentu(args):
@@ -397,9 +481,13 @@ def _bez_user_agentu(args):
 def curl(args, **kw):
     """Spustí curl s limitem: počká podle adresy, po odpovědi posoudí kód webu, kde curl skončil (i po přesměrování).
     Jedna adresa na volání – víc adres by curl stáhl hned po sobě mimo limit. Vrací CompletedProcess (stderr jako text)."""
-    urls = [a for i, a in enumerate(args) if re.match(r"https?://", a) and (i == 0 or args[i - 1] not in HODNOTOVE)]
+    urls = _curl_adresy(args)
     if len(urls) > 1:
         sys.exit("slusne.py curl: jedna adresa na jedno volání (víc adres by šlo mimo limit rychlosti) – spusť curl pro každou zvlášť.")
+    globoff = any(a == "--globoff" or re.fullmatch(r"-[a-zA-Z]*g[a-zA-Z]*", a) for a in args)
+    if urls and not globoff and re.search(r"[\[\]{}]", urls[0]):
+        sys.exit("slusne.py curl: rozsahy [..] a {..} v adrese nejdou (curl by stáhl všechno naráz mimo limit) – "
+                 "stahuj postupně, a je-li závorka v adrese doslova, přidej -g.")
     cil = urllib.parse.urlsplit(urls[0]) if urls else None
     host = cil.hostname if cil else ""
     co = druh(urls[0]) if urls else "dotaz"
@@ -411,12 +499,14 @@ def curl(args, **kw):
     kw.setdefault("text", True)
     kw.setdefault("encoding", "utf-8")
     kw.setdefault("errors", "replace")
-    args, znacka = list(args), "%{stderr}\nSLUSNE %{http_code} %{url_effective}\n"
-    for i, x in enumerate(args[:-1]):
-        if x in ("-w", "--write-out"):   # vlastní -w nechat, značku připojit za něj (curl bere jen poslední -w)
-            args[i + 1] += znacka
-            break
-    else:
+    znacka = "%{stderr}\nSLUSNE %{http_code} %{url_effective}\n"
+    args = [y for x in args for y in (["-w", x[len("--write-out="):]] if x.startswith("--write-out=") else [x])]
+    w = [i for i, x in enumerate(args[:-1]) if x in ("-w", "--write-out")]
+    if w and not args[w[-1] + 1].startswith("@"):   # vlastní -w nechat, značku připojit za něj (curl bere jen poslední -w)
+        args[w[-1] + 1] += znacka
+    else:   # bez -w, nebo -w @soubor (značku do něj nejde přidat, kód odpovědi je přednější)
+        if w:
+            del args[w[-1]:w[-1] + 2]
         args += ["-w", znacka]
     p = subprocess.run(["curl", *args], **kw)
     if host:

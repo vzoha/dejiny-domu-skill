@@ -21,6 +21,7 @@ SIT = re.compile(r"^\s*(?:import|from)\s+(?:urllib(?!\.parse\b)|requests|http\.c
                  r"|\b(?:urllib\.request|requests\.(?:get|post|Session)|http\.client)\b", re.M)
 CURL = re.compile(r"(?:^|[\s;&|(`'\"])(curl|wget)(?=\s)")
 URL = re.compile(r"https?://([^/\s'\"]+)")
+HOLY = re.compile(r"(?:^|\s)['\"]?(?!localhost\b)[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:cz|sk|at|de|eu|org|com|net|pl|hu)(?::\d+)?(?:[/?#]\S*)?['\"]?(?=\s|$)", re.I)
 LOKAL = re.compile(r"^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(:\d+)?$")
 PYTHON = re.compile(r"(?:^|[\s;&|(`/])(?:python3?(?:\.\d+)?|py(?:\s+-3)?)((?:\s+-[A-Za-z]+(?:\s+utf8)?)*)\s+(\S+)")
 NAVOD = ("Síťový přístup k webům archivů jde jen přes tools/slusne.py (společný limit rychlosti – archivy jinak "
@@ -63,6 +64,8 @@ def bash(cmd, cwd):
             continue
         zbytek = re.split(r"[;&|\n]", cmd[m.end():], maxsplit=1)[0]
         if URL.search(zbytek) and not jen_lokalni(zbytek):
+            zamitni(f"{m.group(1)} na web mimo slusne.py")
+        if HOLY.search(zbytek):   # www.mza.cz/… bez https:// (curl ji vezme jako http://)
             zamitni(f"{m.group(1)} na web mimo slusne.py")
         if not URL.search(zbytek) and "$" in zbytek:   # adresa v proměnné – nevíme kam, raději ne
             zamitni(f"{m.group(1)} s adresou v proměnné mimo slusne.py")

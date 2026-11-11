@@ -2,7 +2,7 @@
 
 Bez internetu: odpovědi 200/403/429/503 dává lokální HTTP server. Stav limitu je v dočasné složce (SLUSNE_DIR).
 """
-import email.utils, http.server, json, os, shutil, subprocess, sys, tempfile, threading, time, unittest, urllib.request
+import email.utils, http.server, json, os, shutil, subprocess, sys, tempfile, threading, time, unittest, urllib.error, urllib.request
 
 TOOLS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "skills", "dejiny-domu", "tools")
 sys.path.insert(0, TOOLS)
@@ -36,9 +36,13 @@ class Server(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             return
         kod = next((int(k) for k in ("403", "429", "503") if k in self.path), 200)
+        telo = b"ok"
+        if self.path.split("?")[0].endswith(".jpg") and kod == 200:   # „snímek“: JPEG se značkou konce, zkrácený bez ní
+            telo = b"\xff\xd8\xff" + b"x" * 100 + (b"" if "zkraceny" in self.path else b"\xff\xd9")
         self.send_response(kod)
+        self.send_header("Content-Length", str(len(telo)))
         self.end_headers()
-        self.wfile.write(b"ok")
+        self.wfile.write(telo)
 
     def log_message(self, *a):
         pass
@@ -63,6 +67,9 @@ class SlusneTest(unittest.TestCase):
         slusne.LIMITY["127.0.0.1"] = (0.3, 0.01)
         Server.pocet = 0
         Server.robots = ""
+        os.environ["DEJINY_SNIMKY"] = os.path.join(self.tmp, "snimky")
+        cache = slusne._mezipamet
+        cache.KOREN, cache.STAT = os.environ["DEJINY_SNIMKY"], os.path.join(os.environ["DEJINY_SNIMKY"], "stav.json")
 
     def tearDown(self):
         shutil.rmtree(self.tmp, ignore_errors=True)
@@ -84,6 +91,37 @@ class SlusneTest(unittest.TestCase):
         with self.assertRaises(SystemExit) as e:
             slusne.curl(["-s", self.url + "/ok", "http://localhost/ok"])
         self.assertIn("jedna adresa", str(e.exception.code))
+        self.assertEqual(Server.pocet, 0)
+
+    def test_mezipamet_snimek_jen_jednou(self):
+        prvni = self.get("/snimek/1.jpg?_=1793000000")
+        self.assertEqual(self.get("/snimek/1.jpg"), prvni)   # pojistka proti mezipaměti obsah nemění
+        self.assertEqual(Server.pocet, 1)
+        self.get("/stranka")   # dotazy se neukládají
+        self.get("/stranka")
+        self.assertEqual(Server.pocet, 3)
+
+    def test_mezipamet_neulozi_zkraceny_ani_chybu(self):
+        for path in ("/zkraceny.jpg", "/zkraceny.jpg"):
+            self.get(path)
+        with self.assertRaises(urllib.error.HTTPError):
+            self.get("/403.jpg")
+        self.assertEqual(Server.pocet, 3)
+        self.assertIsNone(slusne._mezipamet.najdi_url(self.url + "/zkraceny.jpg"))
+
+    def test_curl_adresy_i_bez_schematu(self):
+        self.assertEqual(slusne._curl_adresy(["-sSLo", "x.jpg", "www.mza.cz/a"]), ["http://www.mza.cz/a"])
+        self.assertEqual(slusne._curl_adresy(["--url", "digi.archives.cz/x"]), ["http://digi.archives.cz/x"])
+        self.assertEqual(slusne._curl_adresy(["-e", "https://a.cz", "-o", "b.cz", "https://c.cz/d"]), ["https://c.cz/d"])
+        with self.assertRaises(SystemExit):   # holá adresa se počítá – dvě adresy
+            slusne.curl(["-s", self.url + "/ok", "localhost.cz/ok"])
+        self.assertEqual(Server.pocet, 0)
+
+    def test_curl_rozsah_odmitne(self):
+        for u in ("/snimek[1-200].jpg", "/{a,b}.jpg"):
+            with self.assertRaises(SystemExit) as e:
+                slusne.curl(["-s", self.url + u])
+            self.assertIn("rozsahy", str(e.exception.code))
         self.assertEqual(Server.pocet, 0)
 
     @unittest.skipUnless(shutil.which("curl"), "chybí curl")
@@ -260,6 +298,14 @@ class SlusneTest(unittest.TestCase):
         self.assertIn("STOP", p.stderr)
 
     @unittest.skipUnless(shutil.which("curl"), "chybí curl")
+    def test_curl_vlastni_write_out_neobejde_429(self):
+        env = dict(os.environ, SLUSNE_DIR=self.tmp)
+        cmd = [sys.executable, "-I", os.path.join(TOOLS, "slusne.py"), "curl", "-s", "-o", os.devnull]
+        p = subprocess.run(cmd + ["--write-out=kod=%{http_code}", self.url + "/429"], env=env, capture_output=True, text=True)
+        self.assertIn("kod=429", p.stdout)
+        self.assertTrue(slusne.blokace("127.0.0.1"))
+
+    @unittest.skipUnless(shutil.which("curl"), "chybí curl")
     def test_curl_host_podle_cile_ne_refereru(self):
         env = dict(os.environ, SLUSNE_DIR=self.tmp)
         p = subprocess.run([sys.executable, "-I", os.path.join(TOOLS, "slusne.py"), "curl", "-s", "-o", os.devnull,
@@ -332,6 +378,7 @@ class HlidacTest(unittest.TestCase):
     def test_zamitne(self):
         for cmd in ('curl -s "https://www.mza.cz/actapublica/matrika/hledani_obec?obec_id=1"',
                     "cd pracovni && wget https://digi.ceskearchivy.cz/4250/5",
+                    "curl -s -o a.jpg digi.archives.cz/x",
                     'for i in 1 2 3; do curl -s "$U&page=$i"; done',
                     'python3 -c "import urllib.request; urllib.request.urlopen(\'https://www.mza.cz\')"',
                     "python3 -I - <<'E'\nimport requests\nrequests.get('https://www.mza.cz')\nE",
