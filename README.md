@@ -11,7 +11,7 @@ Nástroje na archivy, čtení snímků, výřezy, deník hledání a web jsou sp
 **čísla popisného** a lidí, kteří v domě v čase žili a vlastnili ho, ne kolem předků jedné osoby. Děkuji autorovi
 rodokmenu za skvělý základ.
 
-**Aktuální verze: 0.10.0 (listopad 2026), rané vydání.** Skill vznikl při zjišťování dějin jednoho domu a zatím byl
+**Aktuální verze: 0.11.0 (listopad 2026), rané vydání.** Skill vznikl při zjišťování dějin jednoho domu a zatím byl
 vyzkoušený na několika domech v Čechách i na Moravě (Linux). Počítejte s chybami a dejte mi o nich vědět.
 
 ## Dějiny domu na zakázku
