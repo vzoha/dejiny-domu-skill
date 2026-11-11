@@ -206,8 +206,9 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   mít pozemková parcela jinde ve vsi). Čísla stavebních parcel se často drží od stabilního katastru dodnes. Spojené
   vrstvy `originalni_mapy` a `cisarske_otisky` malé obce ani města (Olomouc) často nepokrývají: bílý obrázek nástroj
   neuloží, vypíše listy a postup `rastry` → `prehled` → `export`.
-  Dům na mapě pro čtenáře označ elipsou: `elipsa.py <mapa.jpg> <klíč> cx,cy,a,b,úhel --popisek "čp. 183"` (pixely
-  mapy, elipsa přes celou parcelu), příkaz s čísly do `poznamka` v `mapy.json`.
+  Dům na mapě pro čtenáře označ elipsou, a to na všech mapách stejně: `elipsa.py <čistá mapa.jpg> <klíč> cx,cy,a,b,úhel`
+  (pixely mapy, elipsa přes celou parcelu, čistou mapu nech v `pracovni/mapy/`), příkaz s čísly do `poznamka` v `mapy.json`,
+  do popisu mapy „Dům je v modré elipse.“
 - **Ortofoto z 50. let** (CENIA, většinou 1952–54): `mapa cenia50 "Osada čp" výstup.jpg` – stejný výřez a čísla domů
   jako u PK, rok snímku a citaci vypíše. Pod CC BY, **smí do PDF i na web** s celou citací. Porovnání PK × ortofoto
   ukáže, co z dvora stálo po válce.

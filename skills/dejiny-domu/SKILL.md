@@ -279,7 +279,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `vyrez.py <obrázek> <klíč> x0,y0,x1,y1` | výřez do `zdroje/` a `vyrezy/` (i mapy a fotky, celé = `0,0,1,1`) |
 | `zesil_snimek.py <obrázek> [x0,y0,x1,y1] [--zvetsit N]` | vybledlé písmo a tužka: šedý originál a zesílená verze pod sebou (`<jméno>_porovnani.jpg`) |
 | `ramecek.py <klíč> x0,y0,x1,y1 [--vyrez a0,b0,a1,b1]` | rámeček čteného místa (souřadnice výřezu; s `--vyrez` stránky) + kontrolní obrázek |
-| `elipsa.py <mapa.jpg> <klíč> cx,cy,a,b[,úhel] --popisek "čp. 183"` | dům na staré mapě označený elipsou s popiskem a vodicí čarou (pixely, natočení ve stupních) do `zdroje/` a `vyrezy/` |
+| `elipsa.py <čistá mapa.jpg> <klíč> cx,cy,a,b[,úhel]` | dům na mapě označený modrou elipsou (pixely, natočení ve stupních) do `zdroje/` a `vyrezy/`; na všech mapách projektu, `--popisek` jen výjimečně |
 | `mista.py ruian "Osada čp"` / `okoli "Ulice čp/čo"` / `parcely "Osada čp"` / `hledej "dotaz"` / `pridej "Název" …` | dům v RÚIAN (obec, parcela, k. ú., poloha; i „Ulice čo“) / všechny dnešní adresy v okolí (rohové domy, přečíslování) / sousední stavební parcely s odstupem (najdi dům na staré mapě) / souřadnice z OSM / body na mapu |
 | `ortofota.py serie <místo> [polomer] [--zapsat skupina]` | letecké snímky domu po letech 1998–2023 (ČÚZK, CC BY) a starší či chybějící ročníky krajů (jen ke čtení), stejný výřez (rovnou do `mapy.json`) |
 | `ipr_praha.py serie <místo> [polomer] [--zapsat skupina]` | Praha: staré plány 1791–1944 a letecké snímky 1938–2002 se stejným výřezem (rovnou do `mapy.json`) |
