@@ -13,6 +13,7 @@ Položka se stejným klíčem se nahradí, jinak se přidá na konec. Python skr
   zapis.py denik "<zdroj>" "<rozsah>" "<hledáno>" "<výsledek>" "<citace>" [--datum "10. 11. 2026"]
     přidá řádek do deníku data/research_log.md; číslo # přidělí sám (nejvyšší + 1) až pod zámkem těsně před
     zápisem – dvě session na jedné zakázce si čísla nepřepíšou. Datum výchozí dnes. Řádky deníku piš jen takhle.
+    Starší deník bez sloupce citace: citace jde do závorky za výsledek („–“ vynechá).
 Souběžní pomocníci se střídají přes zámek (pracovni/.zamky/), žádný zápis se neztratí. Ostatní nástroje zapisují
 do data/ přes funkci zapis() odsud.
 """
@@ -182,8 +183,10 @@ def zapis_denik(zdroj, rozsah, hledano, vysledek, citace, datum=None):
             if not r.startswith("|"):
                 break
             konec += len(r) + 1
-        radek = "| " + " | ".join([str(cislo), bunka(datum or dnes())] + [bunka(x) for x in
-                                  (zdroj, rozsah, hledano, vysledek, citace)]) + " |"
+        bunky = [zdroj, rozsah, hledano, vysledek, citace]
+        if hlavicka.group(0).split("\n")[0].strip().strip("|").count("|") + 1 < 7:   # starší deník bez sloupce citace
+            bunky = bunky[:3] + [vysledek if citace.strip() in ("", "–", "-") else f"{vysledek} ({citace})"]
+        radek = "| " + " | ".join([str(cislo), bunka(datum or dnes())] + [bunka(x) for x in bunky]) + " |"
         text = text[:konec] + "\n" + radek + text[konec:] if konec < len(text) else text.rstrip("\n") + "\n" + radek + "\n"
         zapis_atomicky(path, text)
     return cislo

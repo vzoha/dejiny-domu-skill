@@ -222,6 +222,16 @@ class TestSoubeh(Projekt):
         self.assertIn("nalezeno a\\|b", radky[-2])
         self.assertTrue(radky[-1].startswith("| 10 | 9. 11. 2026 | Gruntovnice |"))
 
+    def test_denik_bez_sloupce_citace_da_citaci_k_vysledku(self):
+        with open(self.path("data", "research_log.md"), "w", encoding="utf-8") as f:
+            f.write("| # | datum | zdroj | rozsah | hledáno | výsledek |\n|---|---|---|---|---|---|\n")
+        for citace in ("GK 1", "–"):
+            p = self.nastroj("zapis.py", "denik", "Gruntovnice", "celá", "Novák", "nic", citace)
+            self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        radky = self.text("data", "research_log.md").splitlines()[-2:]
+        self.assertTrue(radky[0].endswith("| Novák | nic (GK 1) |"))
+        self.assertTrue(radky[1].endswith("| Novák | nic |"))
+
     def test_svazek_z_nastroje_necha_ostatni_svazky_doslova(self):
         with open(self.path("data", "svazky.json"), "w", encoding="utf-8") as f:
             f.write('{"rucni": {"svazek": "Gruntovní kniha", "popis": "zapsal uživatel"}}\n')
