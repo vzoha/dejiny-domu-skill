@@ -163,6 +163,8 @@ def fetch_sken(url, level_offset=1, out="page.jpg", crop=None):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) < 3 or sys.argv[1] in ("-h", "--help"):   # nápověda místo pádu
+        sys.exit(__doc__)
     apu = sys.argv[1]
     vol = volume(apu)
     tiles = tiles_by_order(vol)

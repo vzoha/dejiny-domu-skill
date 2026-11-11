@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# Matriky AHMP (Praha) – stáhne snímek slepením dlaždic Zoomify.
-# Použití: ahmp_scan.py XID SCAN OUT.jpg [down] [x0,y0,x1,y1]   (down=0 plné rozlišení, 1 = poloviční…; oblast ve zlomcích)
-# XID svazku vypíše ahmp_search.sh. Trvalý odkaz: https://katalog.ahmp.cz/pragapublica/permalink?xid=<XID>&scan=<N>
+"""Matriky AHMP (Praha) – stáhne snímek slepením dlaždic Zoomify.
+Použití: ahmp_scan.py XID SCAN OUT.jpg [down] [x0,y0,x1,y1]   (down=0 plné rozlišení, 1 = poloviční…; oblast ve zlomcích)
+XID svazku vypíše ahmp_search.sh. Trvalý odkaz: https://katalog.ahmp.cz/pragapublica/permalink?xid=<XID>&scan=<N>"""
 import glob,shutil,sys,re,math,subprocess,urllib.request,os,tempfile
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
@@ -13,6 +13,8 @@ def magick():  # když ImageMagick chybí, skončí hned (před stahováním) sr
     if not m: sys.exit("Chybí ImageMagick (příkaz magick). Nainstaluj ho (macOS: brew install imagemagick, Windows: winget install ImageMagick.ImageMagick a restart Claude Code) a spusť nástroj znovu.")
     return m
 MAGICK=magick()
+if len(sys.argv) < 4 or sys.argv[1] in ("-h", "--help"):   # nápověda místo pádu
+    sys.exit(__doc__)
 xid,scan,out=sys.argv[1],int(sys.argv[2]),sys.argv[3]
 down=int(sys.argv[4]) if len(sys.argv)>4 else 0
 reg=[float(v) for v in sys.argv[5].split(',')] if len(sys.argv)>5 else [0,0,1,1]  # x0,y0,x1,y1 zlomky

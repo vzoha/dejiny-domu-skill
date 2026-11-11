@@ -79,7 +79,7 @@ def zkontroluj_stahovani(adresa, co):
 def _jload(root, name, default):
     p = os.path.join(root, "data", name)
     try:
-        with open(p, encoding="utf-8") as f:
+        with open(p, encoding="utf-8-sig") as f:
             return json.load(f)
     except (OSError, ValueError):
         return default

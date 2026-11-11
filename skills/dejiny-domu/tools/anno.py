@@ -16,6 +16,8 @@ def get(path, params):
     u=B+path+'?'+urllib.parse.urlencode(params)
     with urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':slusne.UA}),timeout=90) as r:
         return json.load(r)
+if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):   # nápověda místo pádu
+    sys.exit(__doc__)
 args=[a for a in sys.argv[1:] if a!='--snip']; snip='--snip' in sys.argv
 q=args[0]; yf=args[1] if len(args)>1 else ''; yt=args[2] if len(args)>2 else ''
 maxp=int(args[3]) if len(args)>3 else 1

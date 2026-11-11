@@ -8,6 +8,8 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
         _s.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
+if len(sys.argv) < 4 or sys.argv[1] in ("-h", "--help"):   # nápověda místo pádu
+    sys.exit(__doc__)
 doc,q,out=sys.argv[1:4]; page=sys.argv[4] if len(sys.argv)>4 else None
 mode=sys.argv[5] if len(sys.argv)>5 else 'ctx'; w=sys.argv[6] if len(sys.argv)>6 else '1400'
 u='https://anno.onb.ac.at/anno-suche/rest/search/snippet?'+urllib.parse.urlencode({'documentId':doc,'query':q})

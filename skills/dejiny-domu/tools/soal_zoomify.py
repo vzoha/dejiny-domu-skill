@@ -19,7 +19,7 @@ POZOR: aplikace digi.soalitomerice.cz po ~100 rychlých požadavcích (digi.arch
 přístup na 30 minut. Prohlížečem jen najdi knihu a cestu k obrázkům, snímky pak stahuj tímto nástrojem (obrázkový server
 neomezuje).
 """
-import glob, math, os, re, shutil, subprocess, sys, tempfile, time, urllib.parse, urllib.request
+import glob, math, os, re, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.parse, urllib.request
 import concurrent.futures as cf
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
@@ -48,6 +48,14 @@ def get(url):
             # images.archives.cz vrací u pozemkových knih bez Refereru 404 (ZA Opava, 10. 11. 2026)
             ref = {"Referer": "https://digi.archives.cz/"} if "images.archives.cz" in url else {}
             return urllib.request.urlopen(urllib.request.Request(url, headers=ref), timeout=30).read()
+        except urllib.error.HTTPError as e:
+            if e.code in (403, 429, 503):   # odmítnutí archivu: další pokus by blokaci jen prodloužil (ZA Opava)
+                host = urllib.parse.urlsplit(url).hostname
+                slusne.zablokuj(host, f"HTTP {e.code} na snímek")
+                sys.exit(f"{host} odmítl snímek (HTTP {e.code}) – stahování zastaveno a web v brzdě zablokován "
+                         "(python3 -I tools/slusne.py stav). Nezkoušej to znovu ani jinak, řekni to uživateli.")
+            time.sleep(1)
+            err = e
         except Exception as e:
             time.sleep(1)
             err = e

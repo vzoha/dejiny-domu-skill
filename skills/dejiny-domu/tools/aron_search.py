@@ -100,6 +100,8 @@ def scitani(obec):
         print(f"Sčítání pro „{obec}“ v ARONu nenalezeno. Zkus obec, ke které osada tehdy patřila, nebo okresní archiv.")
 
 if __name__ == "__main__":
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):   # nápověda místo pádu
+        sys.exit(__doc__)
     if len(sys.argv) > 2 and sys.argv[1] == "scitani":
         scitani(sys.argv[2])
         sys.exit()

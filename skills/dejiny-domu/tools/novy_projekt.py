@@ -80,7 +80,7 @@ def pridej_hook(dst):
         print(f"POZOR: {path} je odkaz jinam – hook hlidac.py nepřidán (přidej ho tam ručně)")
         return
     try:
-        cfg = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
+        cfg = json.load(open(path, encoding="utf-8-sig")) if os.path.exists(path) else {}
     except ValueError:
         print(f"POZOR: {path} není platný JSON – hook hlidac.py nepřidán (oprav soubor a spusť znovu)")
         return

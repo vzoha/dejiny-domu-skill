@@ -36,7 +36,7 @@ def jload(name, default):
     path = os.path.join(DATA, name)
     if not os.path.exists(path):
         return default
-    with open(path, encoding="utf-8") as f:
+    with open(path, encoding="utf-8-sig") as f:
         return json.load(f)
 
 
@@ -71,7 +71,10 @@ def over_data(OBEC, D, maps_cfg):
 
 def load_houses():
     ns = {}
-    exec(open(os.path.join(DATA, "domy.py"), encoding="utf-8").read(), ns)
+    try:
+        exec(open(os.path.join(DATA, "domy.py"), encoding="utf-8-sig").read(), ns)
+    except OSError as e:
+        sys.exit(f"CHYBA: data/domy.py nejde načíst ({e.strerror}) – spouštěj z kořene projektu: python3 -I tools/export_web.py")
     for name, default in (("OBEC", {}), ("OBEC_UDALOSTI", []), ("D", {}), ("ISSUES", [])):
         ns.setdefault(name, default)
     return ns
@@ -212,6 +215,8 @@ def event(e, recs):
 
 
 def main():
+    if sys.argv[1:2] in (["-h"], ["--help"]):
+        sys.exit(__doc__)
     ns = load_houses()
     OBEC, D, ISSUES = ns["OBEC"], ns["D"], ns["ISSUES"]
     cfg = jload("web.json", {})
@@ -314,7 +319,7 @@ def main():
         m = re.match(r"pribeh_([a-z0-9-]+)\.md$", fn)
         if not m:
             continue
-        text = strip_comments(open(os.path.join(DATA, fn), encoding="utf-8").read())
+        text = strip_comments(open(os.path.join(DATA, fn), encoding="utf-8-sig").read())
         fm = dict(re.findall(r"^(title|lead|poradi|obdobi|obrazek):\s*(.*)$", text.split("---")[1] if text.startswith("---") else "", re.M))
         extra_stories.append(dict(slug=m.group(1), title=fm.get("title", m.group(1)).strip().strip("'\""),
                                   lead=fm.get("lead", "").strip().strip("'\""), text=text,
@@ -337,11 +342,11 @@ def main():
     gen_dir = os.path.join(WEB, "src", "generated")
     for src, dst in (("archivni_dotazy.md", "dotazy.md"), ("research_log.md", "denik.md"), ("zajimavosti.md", "zajimavosti.md")):
         path = os.path.join(DATA, src)
-        text = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
+        text = open(path, encoding="utf-8-sig").read() if os.path.exists(path) else ""
         text = strip_comments(re.sub(r"^# .*\n", "", text, count=1))
         write(os.path.join(gen_dir, dst), group_buttons(text) if src == "zajimavosti.md" else text)
     story = os.path.join(DATA, "pribeh.md")
-    write(os.path.join(gen_dir, "pribeh.md"), strip_comments(open(story, encoding="utf-8").read()) if has_story else "---\ntitle: Příběh\nlead: ''\n---\n")
+    write(os.path.join(gen_dir, "pribeh.md"), strip_comments(open(story, encoding="utf-8-sig").read()) if has_story else "---\ntitle: Příběh\nlead: ''\n---\n")
     stories_dir = os.path.join(gen_dir, "pribehy")
     os.makedirs(stories_dir, exist_ok=True)
     for old in os.listdir(stories_dir):

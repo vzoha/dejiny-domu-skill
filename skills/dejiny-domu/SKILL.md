@@ -36,8 +36,10 @@ Data se točí kolem **čísla popisného** a jeho držitelů a obyvatel v čase
 ## Na začátku každé konverzace
 1. Jsi ve složce projektu (existuje `data/STAV.md`)? Přečti `data/STAV.md`, konec `data/research_log.md`
    a pokračuj podle „Rozpracováno“. Krátce shrň, kde jste skončili.
-   **Verze:** porovnej `.skill_verze` v projektu se `SKILL_DIR/VERZE`. Liší-li se, nabídni aktualizaci:
-   `python3 -I SKILL_DIR/tools/novy_projekt.py <složka projektu>` (data zůstanou; projekt bez `web/` aktualizuj s `--bez-webu`), pak ve `web/` `npm ci`.
+   **Verze:** spusť `python3 -I SKILL_DIR/tools/verze.py <složka projektu>` a řiď se řádkem „→“: `NOVA_VERZE_SKILLU` →
+   jednou větou řekni, že vyšla nová verze skillu, a poraď, jak ho aktualizovat (vypíše jak); `AKTUALIZUJ_PROJEKT` →
+   nabídni aktualizaci projektu (příkaz vypíše, data zůstanou); `PROJEKT_NOVEJSI` → projekt neměň; `AKTUALNI` → nic.
+   GitHubu se ptá nejvýš jednou denně, bez sítě ho vynechá.
 2. Projekt ještě není → **Fáze 0**.
 
 ## Fáze 0 – Příprava (jednou)
@@ -288,6 +290,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `zapis.py denik "<zdroj>" "<rozsah>" "<hledáno>" "<výsledek>" "<citace>"` | řádek deníku `research_log.md` s číslem a datem (pod zámkem, souběžné session) |
 | `kontrola.py` | kontrola dat, soukromí, kdy psát příběh |
 | `slusne.py <skript.py> …` / `curl …` / `stav` | společný limit rychlosti k archivům a kontrola podmínek; vlastní skripty a curl jen přes něj (hook `hlidac.py` hlídá) |
+| `verze.py <projekt>` | nová verze skillu na GitHubu, aktualizace projektu (začátek konverzace) |
 | `cache.py stav` | sdílená mezipaměť snímků (`~/.cache/dejiny-domu/snimky`, 5 GB): snímek stažený přes `slusne.py` se příště vezme z disku, i v dalším domě |
 | `podminky.py <adresa>` / `obrazky` | co se na portálu smí / které výřezy potřebují souhlas archivu (`reference/podminky.md`) |
 | `zdravi.py [--rychle] [--jen trebon,aron]` | funguje každý nástroj proti živému portálu? (pevné svazky, dočasná složka, do dat nesahá) |

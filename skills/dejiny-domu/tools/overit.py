@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# Ověření čtení (např. po pomocníkovi): výřez zápisu rozdělený na dvě poloviny 1900 px. Použití: overit.py <snímek.jpg> x0,y0,x1,y1 <prefix> [v]  (v = dělit vodorovně)
+"""Ověření čtení (např. po pomocníkovi): výřez zápisu rozdělený na dvě poloviny 1900 px.
+Použití: overit.py <snímek.jpg> x0,y0,x1,y1 <prefix> [v]  (v = dělit vodorovně)"""
 import glob,os,shutil,sys,subprocess
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
@@ -9,6 +10,8 @@ def magick():  # když ImageMagick chybí, skončí hned (před stahováním) sr
     if not m: sys.exit("Chybí ImageMagick (příkaz magick). Nainstaluj ho (macOS: brew install imagemagick, Windows: winget install ImageMagick.ImageMagick a restart Claude Code) a spusť nástroj znovu.")
     return m
 MAGICK=magick()
+if len(sys.argv) < 4 or sys.argv[1] in ("-h", "--help"):   # nápověda místo pádu
+    sys.exit(__doc__)
 f,box,pre=sys.argv[1:4]; mode=sys.argv[4] if len(sys.argv)>4 else 'h'
 r=subprocess.run([MAGICK,f+'[0]','-format','%w %h','info:'],capture_output=True,text=True)
 if r.returncode or len(r.stdout.split())!=2: sys.exit(f'{f}: ImageMagick snímek nepřečetl ({r.stderr.strip()[:200]})')

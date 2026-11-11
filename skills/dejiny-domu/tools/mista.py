@@ -308,7 +308,7 @@ def main():
         print(f"lat={g[0]}, lon={g[1]}   {g[2]}" if g else "NENALEZENO – zkus jiný dotaz nebo polohu z mapy")
         return
     import zapis
-    cache = json.load(open(OUT, encoding="utf-8")) if os.path.exists(OUT) else {}
+    cache = json.load(open(OUT, encoding="utf-8-sig")) if os.path.exists(OUT) else {}
     zmenena = set()
     if len(sys.argv) > 2 and sys.argv[1] == "pridej":
         name = sys.argv[2]

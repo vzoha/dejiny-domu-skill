@@ -3,6 +3,8 @@ import re,sys,html
 for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (cp1250 neumí třeba „→“)
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
+if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):   # nápověda místo pádu
+    sys.exit(__doc__)
 t=open(sys.argv[1],encoding='utf-8').read()
 for blk in t.split('class="navigatorLine listArticle')[1:]:
     crumbs=re.findall(r'class="crumb">\s*<a[^>]*>([^<]*)</a>',blk)

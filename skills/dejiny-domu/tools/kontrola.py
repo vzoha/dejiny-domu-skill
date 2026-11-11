@@ -23,14 +23,16 @@ DRUHY = set("NOZISGKMCLJ")
 
 def jload(name, default):
     p = os.path.join(DATA, name)
-    return json.load(open(p, encoding="utf-8")) if os.path.exists(p) else default
+    return json.load(open(p, encoding="utf-8-sig")) if os.path.exists(p) else default
 
 
 def main():
+    if sys.argv[1:2] in (["-h"], ["--help"]):
+        sys.exit(__doc__)
     err, warn = [], []
     ns = {}
     try:
-        exec(open(os.path.join(DATA, "domy.py"), encoding="utf-8").read(), ns)
+        exec(open(os.path.join(DATA, "domy.py"), encoding="utf-8-sig").read(), ns)
     except Exception as e:  # noqa: BLE001
         sys.exit(f"CHYBA: data/domy.py nejde načíst: {e}")
     OBEC, D = ns.get("OBEC", {}), ns.get("D", {})
@@ -203,7 +205,7 @@ def main():
                     + (" Na otevřeném webu je u nich jen přepis a odkaz." if otevreny else " Až web otevřeš, bude u nich jen přepis a odkaz."))
 
     log = os.path.join(DATA, "research_log.md")
-    rows = sum(1 for l in open(log, encoding="utf-8") if re.match(r"^\| \d+ \|", l)) if os.path.exists(log) else 0
+    rows = sum(1 for l in open(log, encoding="utf-8-sig") if re.match(r"^\| \d+ \|", l)) if os.path.exists(log) else 0
     print(f"{len(D)} domů, {len(ns.get('OBEC_UDALOSTI', []))} událostí obce, {len(zaz)} zápisů, {len(svazky)} svazků, {rows} řádků deníku")
     for e in err:
         print("CHYBA:", e)
