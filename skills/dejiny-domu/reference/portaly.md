@@ -507,6 +507,8 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
 ## SOA Praha (eBadatelna, ebadatelna.soapraha.cz) – `tools/ebadatelna.py`
 - **Podmínky:** robots.txt zakazuje ClaudeBota (trénink modelů), GPTBota a robota „rodokmen“, Claude-User ne (8. 11. 2026).
   Ostatním robotům zakazuje digitalizáty (`/d/`, `/a/`) – nástroj stahuje jen snímky, které čteš, nic dvakrát.
+  Portál vrací HTTP 403 každému User-Agentu se slovem „rodokmen“ (i úvodní stránku), ostatním ne (11. 11. 2026).
+  Při 403 nic neobcházej, čti v prohlížeči (stránka `/d/<id>/<snímek>` načte celý snímek, výřez zvětši a vyfoť obrazovku).
 - **Celá kniha:** uživatel se zaregistruje (zdarma), otevře knihu, na záložce „Popis knihy“ vlevo dole klikne
   „Stáhnout knihu jako ZIP“ a rozbalí ho do `pracovni/<kniha>/`. U knihy, kterou čteš celou, šetrnější než snímek po snímku.
 - `ebadatelna.py hledat "Obec"` → celé názvy lokalit („Lhota - obec X - okres Y“); `matriky "Obec"` (nebo celý název)

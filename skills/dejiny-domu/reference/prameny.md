@@ -17,7 +17,7 @@ Kde něco nevíš jistě (adresa portálu, co je digitalizované), ověř to. Co
 | 1870–1950 | pozemkové knihy (vložky) a sbírka listin | vlastníci, kupní a svatební smlouvy, dluhy, výměnky | katastrální pracoviště (do 1950 často SOA / SOkA) – `archivni_dotazy.md` |
 | 1857–1921 | sčítání lidu (1857, 1869, 1880, 1890, 1900, 1910, 1921) | **celá domácnost po číslech domů**: jména, roky a místa narození, vztahy, řemesla, dobytek | SOkA. Jižní Čechy jsou na digi.ceskearchivy.cz (stejný portál jako matriky; snímky jen prohlížet, `podminky.md`) |
 | 1784–1900 | matriky (od 1784 se v nich uvádí číslo domu) | kdo v domě bydlel při křtu, sňatku a úmrtí. **Čti podle čísla domu, ne podle jména.** Číslo je bydliště, ne vždy místo události (svatba v kostele, smrt v nemocnici, ženich z jiného domu) | `matriky.md`, `portaly.md` |
-| 1824–1843 | stabilní katastr: císařské otisky, indikační skici, písemný operát | půdorys domu a dvora, číslo domu, parcely. **Indikační skica má u parcel i jméno držitele** | `cuzk_archiv.py` (Archiv ČÚZK: originální mapy s reambulací, otisky, skici), písemný operát (parcelní protokoly): Čechy Národní archiv, Morava MZA, Slezsko ZA Opava |
+| 1824–1843 | stabilní katastr: císařské otisky, indikační skici, písemný operát | půdorys domu a dvora, číslo domu, parcely. **Indikační skica má u parcel i držitele** – jméno, nebo jen „N° X“ = čp. jeho domu (níže) | `cuzk_archiv.py` (Archiv ČÚZK: originální mapy s reambulací, otisky, skici), písemný operát (parcelní protokoly): Čechy Národní archiv, Morava MZA, Slezsko ZA Opava |
 | 1785–1789 | josefský katastr | držitel, výměra pozemků, číslo domu | Čechy Národní archiv (fond Josefský katastr), Morava MZA, Slezsko ZA Opava (fond Josefský katastr: jen písemný operát, parcelní protokol a kniha pozemnostních archů po berních obcích, mezery hlavně Těšínsko; protokoly bývají v Digitální badatelně ZAO se snímky). Jinde často jen badatelna |
 | 1748–1757 | tereziánský katastr (**Čechy, Morava**) | usedlíci podle kategorie (sedlák, chalupník), výměra | Čechy Národní archiv, Morava MZA. Slezsko má místo něj karolinský katastr. Výtahy bývají v regionální literatuře |
 | 1550–1850 | **gruntovní knihy** (pozemkové knihy vrchnosti) | **všichni držitelé gruntu za sebou**: koupě, dědictví, cena, splátky, výminky, sirotci | fond velkostatku (panství) v SOA. Některé jsou digitalizované na portálech SOA |
@@ -94,8 +94,11 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
   seznam čísel, vyhláška obce s datem, tentýž dům nebo parcela na mapě či v pozemkové knize pod oběma čísly,
   nebo totéž posunutí u **několika** sousedních domů naráz. Dokud to nemáš, zapiš obě možnosti (přečíslování ×
   přestěhování). Adresáře a OCR opisující tentýž zdroj nejsou dva nezávislé doklady.
+- **Matriky v roce přečíslování:** farář někdy chvíli psal u domu obě čísla („starý 12 / nový 31“), pak už jen nová
+  (Zruč nad Sázavou 1813, narození únor–říjen). To je doklad o domu, ne o osobě: projdi knihy v roce přečíslování
+  a vypiš všechny dvojice, vznikne převodní tabulka.
 - Jak to poznat: stejná rodina pod dvěma čísly v blízkých letech (matrika ↔ sčítání) jako vodítko, stabilní katastr (číslo
-  z doby mapování obce + půdorys = dnešní parcela), indikační skica (jméno držitele). Do `cisla` u domu zapiš všechna čísla s roky
+  z doby mapování obce + půdorys = dnešní parcela), indikační skica (držitel: jméno nebo „N° X“). Do `cisla` u domu zapiš všechna čísla s roky
   a **doklad** (klíč zápisu).
 - Nový dům na parcele starého (vyhořel, rozdělení gruntu) dostává často nové číslo. Rozdělený grunt má dvě čísla.
 - Do ztotožnění starého a nového čísla je všechno starší `prob`, s poznámkou proč.
@@ -196,6 +199,10 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   u budovy jen černé číslo parcely, červená čísla tam znamenají reambulaci). Při záměně čteš celou ves obráceně; ověř
   přes `mapa pk` s adresními body (níže). Čti z ní (čísla domů, držitelé), ale výřez nepřikládej do e-mailu, PDF ani
   na web bez souhlasu archivu (`podminky.md`). Přikládej originální mapu nebo pozemkový katastr.
+  **Držitel** bývá jménem i číslem („Brabetz … N 11“, Lniště 1827), na vsi i ve městě ale často **jen číslem:
+  „N° 22“ = patří majiteli domu čp. 22** (Zruč nad Sázavou 1838 celé náměstí bez jmen). Jméno pak dá písemný operát
+  (parcelní protokol), nebo matriky a gruntovní kniha podle čp. **Číslo bez „N°“ (N., N) je číslo parcely**, ne čp.:
+  pozemková parcela 29 může ležet vedle „N° 29“ a zahrady 22–18 za domy čp. 76–80 (Zruč) vypadají jako „patří čp. 22“.
 - **Pozemkový katastr** (`mapa pk "Osada čp" výstup.jpg`) je georeferencovaný v S-JTSK: sedí na dnešní mapu, takže
   přes RÚIAN budovy jde ztotožnit starou parcelu s dnešním domem, zpravidla do pár metrů. (Posun 60–100 m k SV, který
   tu dřív stál, byl chybou nástroje: výřez se zadával ve WGS 84 a server ho do S-JTSK převedl bez transformace datumu.
