@@ -135,5 +135,3 @@ veřejné – nepište do nich údaje o žijících lidech. Claude si během pr�
 
 ## Licence
 [MIT](LICENSE) – smíte skill volně používat, upravovat a šířit, jen zachovejte uvedení autorů (včetně autora rodokmenu).
-Výjimkou je metodická příručka `skills/dejiny-domu/reference/playbook.md` převzatá z rodokmenu; licence MIT se na ni
-nevztahuje (podrobnosti na začátku souboru).

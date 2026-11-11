@@ -20,9 +20,9 @@ Data se točí kolem **čísla popisného** a jeho držitelů a obyvatel v čase
 - `reference/data.md` – formát dat, `reference/web.md` – web, `reference/pribehy.md` – zajímavosti a příběh domu,
   `reference/texty.md` – **jak psát texty na web** (krátce, bez žargonu, pro hosta; platí pro vše, co jde na web),
   `reference/soukromi.md` – soukromí
-- `reference/playbook.md` – profesionální genealogická metodika (EN, 700 řádků – čti jen potřebnou kapitolu podle
-  obsahu nahoře): když běžný postup nestačí – zákonné lhůty přístupu k matrikám a sčítání (§4), archivy na Slovensku,
-  v Rakousku, Polsku a Německu (§2), paleografie a slovník starých výrazů (§6), ztotožnění osob a mrtvý bod (§5.3–5.5, §9)
+- `reference/metodika.md` – když běžný postup nestačí: čím spojit zápisy domu a lidí v čase, kdy zápis patří
+  k tomuto domu a kdy jde o tutéž osobu, typické chyby, mrtvé body (vznik domu, staré číslo, před 1770, 20. století),
+  prameny a lhůty mimo ČR
 
 ## Jak mluvit s uživatelem
 - **Česky, stručně, lidsky.** Žádný žargon bez vysvětlení (grunt, vejrunk, emfyteuze, indikační skica). Místo „commitnu“ „uložím“.

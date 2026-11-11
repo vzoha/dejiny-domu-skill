@@ -10,7 +10,7 @@
 
 Další prameny: sčítání lidu (1857–1921; domácnosti s daty narození), soupis poddaných 1651 (Čechy; rodiny s věkem,
 děti ne všude všechny – chybějící dítě není důkaz úmrtí), berní rula 1654 (Čechy, jen hospodáři), gruntovní/pozemkové knihy (kdo vlastnil který dům – propojí generace přes dům),
-vojenské záznamy, domovské listy, parte. Viz `portaly.md` a `playbook.md` §2.
+vojenské záznamy, domovské listy, parte. Viz `portaly.md` a `metodika.md` (mrtvé body, prameny mimo ČR).
 
 ## Lhůty (zákon 301/2000 Sb.)
 Dvě různé lhůty, nepleť je ([MV](https://mv.gov.cz/nahlizeni-do-matricnich-knih-a-sbirky-listin)):
@@ -116,7 +116,7 @@ jednoznačně určuje. Údaj z cizího stromu na internetu (MyHeritage, Geni) je
 - Stejné jméno ve dvou domech nebo dvou generacích (otec a syn, bratranci) – rozliš je podle věku, manželky a domu,
   než je spojíš v jednu osobu.
 - Index nenašel ≠ zápis neexistuje. Zapiš, co přesně jsi prošel.
-- Pomocníci (subagenti) a OCR/AI čtou historické písmo chybně – vždy ověř sám (viz `playbook.md` §1 bod 10).
+- Pomocníci (subagenti) a OCR/AI čtou historické písmo chybně – vždy ověř sám.
 - **Nenačtený snímek není „nenalezeno“.** Když konverzace narazí na limit obrázků, snímky se tiše zahodí („media removed“)
   a pomocník vrátí prázdný výsledek. Dej pomocníkovi nejvýš asi 10 snímků, ať je čte po jednom, průběžně si zapisuje
   poznámky do souboru a na konci vypíše snímky, které neviděl. Ty přečti znovu, jinak je nepočítej jako prošlé.
