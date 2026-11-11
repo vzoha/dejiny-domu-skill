@@ -18,10 +18,10 @@ class ElipsaTest(unittest.TestCase):
 
     def test_kresli_elipsu_i_popisek(self):
         im = elipsa.oznac(Image.new("RGBA", (600, 400), (128, 128, 128, 255)), 200, 200, 100, 40, 20, "čp. 183")
-        cervene = lambda box: any(p[0] > 200 and p[1] < 40 for p in im.crop(box).getdata())
-        self.assertTrue(cervene((290, 150, 320, 250)))    # pravý okraj elipsy
-        self.assertFalse(cervene((180, 180, 220, 220)))   # střed elipsy zůstal
-        self.assertTrue(cervene((300, 0, 600, 150)))      # popisek vpravo nahoře
+        modre = lambda box: any(p[2] > 120 and p[0] < 60 for p in im.crop(box).getdata())
+        self.assertTrue(modre((290, 150, 320, 250)))    # pravý okraj elipsy
+        self.assertFalse(modre((180, 180, 220, 220)))   # střed elipsy zůstal
+        self.assertTrue(modre((300, 0, 600, 150)))      # popisek vpravo nahoře
 
 
 if __name__ == "__main__":
