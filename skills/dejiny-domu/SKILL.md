@@ -89,7 +89,10 @@ obce je u listu) → josefský 1785 a tereziánský katastr 1748 → **gruntovn�
 
 Základní smyčka pro každý pramen:
 1. **Vyber cíl:** nejmladší neznámé období domu, nebo konkrétní otázku („kdo byl držitel před Nováky?“).
-2. **Najdi svazek:** sčítání a matriky jsou na stejných portálech (ARON `aron_search.py`, Acta Publica `mza.py`,
+2. **Najdi svazek:** u matrik se nejdřív zeptej sdílené mapy a indexu – `python3 -I tools/sdileni.py najdi "Obec" rok N`
+   (kde v knize začíná rok či ves, kolik zápisů už někdo přečetl; jen vodítko, čte se vždy ze snímku;
+   `reference/sdileni.md`, tam i jednorázový dotaz na sdílení zpět). Jinak:
+   sčítání a matriky jsou na stejných portálech (ARON `aron_search.py`, Acta Publica `mza.py`,
    AHMP, Litoměřice a Opava přes `soal_zoomify.py`…). Gruntovní knihy hledej ve fondu velkostatku.
    **Než sáhneš na portál, podívej se do `reference/podminky.md`.** Kde nástroj nesmí (Třeboň, Porta fontium,
    Digitální badatelna NA, snímky MZA), snímek uloží uživatel do `pracovni/` a ty ho přečteš, nebo čte sám a ty radíš.
@@ -272,6 +275,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `ebadatelna.py …` | SOA Praha: matriky a archiválie, snímky jen ty, které čteš (celá kniha: ZIP po registraci) |
 | `portafontium.py …` | SOA Plzeň. **Stojí:** firewall; snímky uloží uživatel |
 | `ahmp_search.sh`, `ahmp_scan.py`, `policie_prihlasky.py` | Praha (matriky; policejní přihlášky 1850–1914 z Národního archivu) |
+| `sdileni.py najdi / kniha / prehled / souhlas / odeslat` | Mapa matrik a index matrik: kde v knize začíná rok či ves, co už někdo přečetl (jen vodítko); sdílení zpět jen se souhlasem (`reference/sdileni.md`) |
 | `mza.py hledat / matriky / scitani` | MZA Brno (jižní Morava, Acta Publica): knihy obce, sčítací operáty obce. Stránku knihy a snímky chrání ALTCHA – otevře uživatel (`info`, `link`, `svazek`, `snimek` stojí) |
 | `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, ZA Opava, Matricula |
 | `valecne_hroby.py obec "Obec"` / `padli <Příjmení> [Jméno] --obec X` | pomníky padlých a válečné hroby obce se jmény (Evidence válečných hrobů MO) / padlí v 1. sv. válce s domovskou obcí, útvarem a prameny VÚA |

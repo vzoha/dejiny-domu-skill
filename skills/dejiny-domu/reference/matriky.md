@@ -30,7 +30,8 @@ do archivu kniha půjde až 2035. Dotaz na úřad zapiš do `archivni_dotazy.md`
    Hledej obec v popisu svazku (`aron_search.py "Obec"`), ne jen v názvu – a hledej i podle obce, ne jen podle fary
    z pozdějšího zápisu: obec mohla mít vlastní matriku (filiální kostel, lokálie), i když list vydala mateřská fara.
    Obec rozdělená mezi dvě fary má dvě řady knih, každou jen pro „svá“ čísla domů.
-2. **Svazek podle roku a druhu.** Pozor na překryvy: jedna kniha pro více obcí, zvláštní knihy pro jednotlivé obce.
+2. **Svazek podle roku a druhu.** Nejdřív `tools/sdileni.py najdi "Obec" rok N` (Mapa matrik a index matrik,
+   `sdileni.md`): ukáže knihu, odhad snímku a co už někdo přečetl. Pozor na překryvy: jedna kniha pro více obcí, zvláštní knihy pro jednotlivé obce.
    **Druhopisy** (duplikáty pro děkanát nebo úřad, např. „T“ svazky v ZA Opava) mívají N, O a Z jednoho roku u sebe –
    hodí se, když originál chybí, je nečitelný nebo velký.
 3. **Index, pak kniha.** Index řazený po písmenech a letech dá stránku/folio; snímek odhadni (snímek ≈ folio × 1 až 2) a dolaď.

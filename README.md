@@ -94,6 +94,14 @@ skills/dejiny-domu/
 .claude-plugin/      instalace jako plugin
 ```
 
+## Komunitní sdílení (volitelné)
+Spousta lidí čte tytéž matriky. Claude se proto před otevřením knihy podívá do dvou otevřených projektů:
+[Mapa matrik](https://github.com/ondrnovy/mapa-matrik) (kde v knize začíná který rok nebo ves, bez jmen) a
+[index matrik](https://github.com/pe-pan/matriky-index) (zápisy, které už někdo přečetl). Ušetří to hledání, kredity
+i servery archivů. Co v indexu je, bere jen jako vodítko a vždy si to přečte na snímku. Po prvním kole se vás
+**jednou** zeptá, jestli může na oplátku sdílet, co sám přečetl: jen mapu (bez jmen), mapu i přepisy, nebo nic.
+Bez vašeho souhlasu nic neodešle. Nástroj převzatý ze skillu Rodokmen (díky ondrnovy).
+
 ## Soukromí
 Projekt zůstává na vašem počítači. Claude má pokyn nedávat na web údaje o žijících lidech a dnešních majitelích bez
 souhlasu a před zveřejněním s vámi projít, co web říká – rozhodnutí je ale na vás. Pokud projekt zálohujete na GitHub,
