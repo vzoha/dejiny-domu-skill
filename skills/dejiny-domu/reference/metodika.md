@@ -9,7 +9,7 @@ domů a přečíslování), čtení matrik, lhůty v ČR a slovníček: `matriky
 
 ## Spojování záznamů – čím propojit dům a lidi v čase
 - **Číslo popisné** je hlavní klíč od konskripce 1770/71. Jan Novák v čp. 12 v úmrtí 1820 (70 let) a Jan Novák
-  v čp. 12 v oddacím zápisu 1788 = nejspíš tatáž usedlost. **Ves se přečíslovávala** a jeden dům mívá v čase víc
+  v čp. 12 v oddacím zápisu 1788 = nejspíš tatáž usedlost. **Domy se přečíslovávaly** (města skoro vždy, vsi méně často) a jeden dům mívá v čase víc
   čísel – než spojíš zápisy pod různými čísly, projdi `prameny.md` → Čísla domů.
 - **Grunt a posloupnost držitelů.** Před čísly (a vedle nich) drží dům pohromadě **jméno gruntu a řada držitelů**
   v gruntovní knize: „grunt po Jiříkovi Kubátovi“ → Kubát → zeť → … Tahle řada je páteř dějin domu, matriky ji

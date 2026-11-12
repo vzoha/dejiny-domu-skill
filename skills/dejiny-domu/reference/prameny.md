@@ -87,8 +87,36 @@ Většina tisku 1900–1990 je v Krameriu NK **neveřejná, ale v režimu DNNT**
 Bez přihlášení vidíš jen úryvky ve vyhledávání.
 
 ## Čísla domů – největší past
-- Čísla popisná zavedla konskripce 1770–1771. **Ves se pak často přečíslovala** (typicky kolem 1805–1830 a znovu
-  po 1900). Dnešní čp. 12 může být v roce 1800 jiné číslo.
+- Čísla popisná zavedla konskripce 1770–1771 (patent 10. 3. 1770), nový dům dostal další volné číslo. Dnešní
+  čp. 12 může být v roce 1800 jiné číslo. **Kdy se přečíslovávalo** (vodítka, kde hledat; rok vždy ověř v obci):
+  - **1785–1789 josefínský katastr**: místy nové číslování (Tábor 1785).
+  - **1804–1815 první vlna, hlavně města** (konskripční patent 25. 10. 1804): Praha 1805 (každá čtvrť I–IV
+    zvlášť, odtud „27/I“), Brno 1806, Tábor 1804. **Vsi** většinou drží řadu z 1770–71, ale přečíslovat se mohly.
+  - **Kolem sčítání 1869–1910**: zákon o sčítání z 1869 ukládal před každým sčítáním (1869, 1880, 1890, 1900,
+    1910) číslování obce zkontrolovat a doplnit, místní přečíslování proto hledej hlavně v těchto letech
+    (Tábor 1880, Varnsdorf 1870 po povýšení na město). Usnesení o přečíslování se někdy neprovedlo (Pardubice 1880).
+  - **Pozemkové knihy** (zákony 1871/1874, zakládány obec po obci do 80. let 19. stol.) čp. ustálily. Pozemková
+    kniha a katastr znají jen čp., nikdy čísla po ulicích, takže jsou nejlepší kotvou.
+  - **Od 1961 se čísluje za osadu / část obce** (vyhl. 97/1961, dřív zpravidla za celou obec): stejné čp. může
+    být v jedné obci dvakrát, v různých osadách. Kde dřív běžela jedna řada za obec, mohlo se přečíslovat; zánik
+    nebo vznik části obce přečíslování vynutí (České Budějovice 1970: sedm nových řad čp. pro části 1–7 včetně
+    připojených vsí, 1978–79 sjednocení). Starší čp. pak bývá jen v archivu obce (SOkA, fond MNV).
+- **Pasti, které vypadají jako stejný nebo jiný dům:**
+  - Čp. zbořeného domu směla obec dát novému domu **až do 1. 7. 2010** (od novely 227/2009 zakázáno). Stejné čp.
+    v různých letech může být jiný dům, i na jiném místě. Ověř přes parcelu.
+  - Sloučené domy nesly víc čísel naráz (zákon 266/1920, dodnes Brno), rozdělený grunt má dvě čísla.
+  - Židovské domy měly do 70. let 19. stol. vlastní řadu římskými čísly (Turnov do 1875, místy déle):
+    „II“ není čp. 2.
+  - Evidenční čísla (od 1961, chaty a dočasné stavby) jsou samostatná řada: čp. 5 a ev. č. 5 jsou dva domy.
+  - **Číslo v hlavičce gruntovní knihy** bývá dopsané později, někdy staré i nové naráz (Olomouc 1755 „N. 431“
+    i „N. 183“). Nedokládá, že dům to číslo měl v roce zápisu; číslo k roku ber z matriky nebo soupisu té doby.
+  - **Římská číslice u čp.** = část obce nebo předměstí („288-IV“). Změní se i bez změny domu a písaři ji pletli:
+    Beroun čp. 288 v matrikách 1900–1931 střídavě „IV“ a „II“ (IV převažuje do 1922, II od 1925), pak při vzniku
+    části Zavadilka 1980 nové čp. 66. Stejné číslo s jinou číslicí ztotožni přes osoby a dobu, jiné číslo se
+    stejnou číslicí je jiný dům.
+- **Orientační čísla** (podle ulic, patent z 23. 3. 1857; Brno 1867, Praha 60. léta, České Budějovice 1875)
+  **nejsou přečíslování**: čp. platí dál a v matrikách i pozemkové knize se dům hledá podle čp. Adresa „ulice
+  č.“ ze starého tisku je orientační číslo, ne čp.; v polovině 20. stol. se jim říkalo i „nová čísla“.
 - **Stejná osoba pod dvěma čísly je jen vodítko.** Mohla se přestěhovat, mít dva domy nebo provozovny, starý údaj
   se mohl opisovat dál, nebo jde o jmenovce. Přečíslování dolož něčím, co se týká domu, ne osoby: srovnávací
   seznam čísel, vyhláška obce s datem, tentýž dům nebo parcela na mapě či v pozemkové knize pod oběma čísly,
@@ -97,9 +125,18 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
 - **Matriky v roce přečíslování:** farář někdy chvíli psal u domu obě čísla („starý 12 / nový 31“), pak už jen nová
   (Zruč nad Sázavou 1813, narození únor–říjen). To je doklad o domu, ne o osobě: projdi knihy v roce přečíslování
   a vypiš všechny dvojice, vznikne převodní tabulka.
-- Jak to poznat: stejná rodina pod dvěma čísly v blízkých letech (matrika ↔ sčítání) jako vodítko, stabilní katastr (číslo
-  z doby mapování obce + půdorys = dnešní parcela), indikační skica (držitel: jméno nebo „N° X“). Do `cisla` u domu zapiš všechna čísla s roky
-  a **doklad** (klíč zápisu).
+- **Jak přečíslování poznat** (od nejlevnějšího):
+  - **Hromadná změna v matrikách:** v jednom roce „se přestěhuje“ víc rodin naráz a pořadí sousedů zůstane =
+    přečíslování; mění-li číslo jen jedna rodina, je to spíš stěhování. Dvě nezávislé rodiny posunuté podle
+    stejného pravidla (o konstantu, jeden konec vsi) přečíslování potvrdí.
+  - **Počet domů proti nejvyššímu čp.:** počty domů ze sčítání (ČSÚ od 1869, Sommer 1833–49, Schaller 1785–91)
+    proti nejvyššímu čp. v matrice; skok bez výstavby nebo čp. vysoko nad počtem domů = podezření. Jen vodítko.
+  - **Kotva na mapě:** čp. z indikační skicy (držitel jménem nebo „N° X“) → stavební parcela → dnešní parcela
+    (`mapa pk`, RÚIAN). Dvě kotvy se stejným posunem převod potvrdí.
+  - **Sčítání po domech** (1869 × 1880 …): posun celé řady čp.; pražské sčítání 1869 má čp. i orientační číslo.
+  - **Převodní seznamy** (staré → nové čp.) bývají jen v SOkA (archiv obce, MNV, ONV) a u katastrálního úřadu:
+    dotaz e-mailem, online zřídka.
+- Do `cisla` u domu zapiš všechna čísla s roky a **doklad** (klíč zápisu); převod jen z heuristiky je `prob`.
 - Nový dům na parcele starého (vyhořel, rozdělení gruntu) dostává často nové číslo. Rozdělený grunt má dvě čísla.
 - Do ztotožnění starého a nového čísla je všechno starší `prob`, s poznámkou proč.
 - **Města: orientační čísla se měnila** (i ve 20. století, celé ulice najednou) a rohové domy mají dvě adresy.
