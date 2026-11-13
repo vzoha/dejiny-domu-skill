@@ -73,6 +73,11 @@ do archivu kniha půjde až 2035. Dotaz na úřad zapiš do `archivni_dotazy.md`
 - Kurent: dlouhé „ſ“ vypadá jako „f“, „e“ jako „n“, „h“ s kličkou dolů. Při nejistotě porovnej se stejným písmenem
   jinde na stránce stejné ruky – i u „divného“ příjmení (koncové „k“ psané skoro jako „r“: „-ek“ vypadá jako „-er“).
   Slovo rozdělené přes konec řádku („Urlau-“ / „ber“) dočti na začátku dalšího řádku.
+  Čárka nad „m“ / „n“ = písmeno dvakrát („kom̄en“ = kommen).
+- Měsíce číslicí: 7ber = září, 8ber = říjen, 9ber = listopad, 10ber / Xber = prosinec (ne červenec–říjen).
+  Číslice před „-ber“ se snadno spletou (7, 8, 9 i X). Měsíc ověř pořadím zápisů nebo jiným pramenem.
+- Český pravopis do ~1850: g = j, j = í, w = v, au = ou („Gan“ = Jan, „Wáclaw“ = Václav, „kaupil“ = koupil).
+  V německém zápisu č = tsch/cz, š = sch, v = w, ě = ie („Tschermak“ = Čermák, „Matieg“ = Matěj, ne Matyáš) – hledej i tyto varianty.
 - Daty bývají svátky (*Dominica*, *festum S. Joannis*) – v nejasných případech dopočítej.
 
 ### Slovníček (lat. / něm. → česky)
