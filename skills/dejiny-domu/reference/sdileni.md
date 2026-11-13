@@ -97,5 +97,10 @@ Mapa slučuje datové PR automaticky, index ručně správcem. Co už odešlo, j
 
 ## Podporované archivy
 
-Mapa: SOA Plzeň (Porta fontium), SOA Praha (eBadatelna). Index: navíc AHMP. Ostatní knihy `prehled` vypíše a vynechá
-– u nich zatím jen čtení (mapa a index je mohou mít od jiných přispěvatelů).
+Mapa: SOA Plzeň (Porta fontium), SOA Praha (eBadatelna), SOA Zámrsk (ARON), SOA Třeboň, SOA Litoměřice, ZA Opava
+(digitální badatelny), MZA (Acta Publica) a AHMP. Index: SOA Plzeň, SOA Praha a AHMP; zápisy z ostatních archivů do indexu
+nejdou, jejich orientační body do mapy ano. Knihy z dalších archivů `prehled` vypíše a vynechá – u nich zatím jen čtení
+(mapa a index je mohou mít od jiných přispěvatelů).
+
+S bodem jde do mapy i rozsah let knihy z popisu svazku (`Beroun 52, N 1900–1905`), aby ji mapa nabídla pro celý rozsah,
+ne jen pro roky přečtených bodů. Nejednoznačný popis (víc rozsahů, druh neuvedený) se nepošle.

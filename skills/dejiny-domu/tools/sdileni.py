@@ -17,10 +17,10 @@ Použití (z kořene projektu `python3 -I tools/sdileni.py …`):
 
 Čtení jde přes brzdu (tools/slusne.py) a ukládá se na den do ~/.cache/dejiny_domu_sdileni/. Ven jde jen to, co uživatel
 schválí: orientační body (bez jmen) a přepisy zápisů starších zákonných lhůt (narození 100 let, sňatky a úmrtí 75 let),
-bez výřezů, fotek a závěrů o domě a lidech. Podporované archivy: SOA Plzeň (Porta fontium) a SOA Praha (eBadatelna) pro mapu,
-k tomu AHMP pro index; ostatní nástroj vynechá a řekne to.
+bez výřezů, fotek a závěrů o domě a lidech. Podporované archivy: mapa SOA Plzeň, Praha, Zámrsk, Třeboň, Litoměřice,
+ZA Opava, MZA a AHMP; index SOA Plzeň, Praha a AHMP. Ostatní nástroj vynechá a řekne to.
 """
-import datetime, json, os, re, shutil, subprocess, sys, tempfile, time, unicodedata, urllib.error, urllib.request
+import collections, datetime, json, os, re, shutil, subprocess, sys, tempfile, time, unicodedata, urllib.error, urllib.request
 import os as _os, sys as _sys; _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))); import slusne  # noqa: E402 – brzda (tools/slusne.py)
 
 MAPA = "https://ondrnovy.github.io/mapa-matrik/v1"
@@ -83,16 +83,68 @@ def slug(text):
 
 # ---------- kniha v projektu -> mapa a index ----------
 
+# Archivy mapy (tabulka ARCHIVY_MAPY sběrné schránky): portál a adresy svazku -> id knihy. Archiv indexu jen u těch,
+# které index matrik zná (ARCHIVY_INDEXU schránky). AHMP má v indexu id z prvních 8 znaků xid, mapa stejné kvůli párování.
+Archiv = collections.namedtuple("Archiv", "portal index vzory")
+ARCHIVY = {k: Archiv(*v) for k, v in {
+    "soa-plzen": ("portafontium", "portafontium", (r"portafontium\.eu/register/soap-pn/([a-z0-9-]+)",
+                                                   r"portafontium\.eu/iipimage/\d+/([a-z0-9-]+)_\d")),
+    "soa-praha": ("ebadatelna", "soapraha", (r"ebadatelna\.soapraha\.cz/(?:d/|pages/MatrikaPage/matrikaId/)(\d+)",)),
+    "soa-zamrsk": ("aron", None, (r"aron\.vychodoceskearchivy\.cz/apu/([0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12})",)),
+    "soa-trebon": ("digi-ceskearchivy", None, (r"digi\.ceskearchivy\.cz/(\d+)(?:[/?#]|$)", r"digi\.ceskearchivy\.cz/DA\?.*?\bid=(\d+)")),
+    "soa-litomerice": ("digi-soalitomerice", None, (r"digi\.soalitomerice\.cz/.*?[?&]xid=([0-9a-fA-F]{8}-?(?:[0-9a-fA-F]{4}-?){3}[0-9a-fA-F]{12})",)),
+    "za-opava": ("digi-archives", None, (r"digi\.archives\.cz/.*?[?&]xid=([0-9a-fA-F]{8}-?(?:[0-9a-fA-F]{4}-?){3}[0-9a-fA-F]{12})",)),
+    "mza-brno": ("actapublica", None, (r"mza\.cz/actapublica/matrika/detail/(\d+)",)),
+    "ahmp": ("pragapublica", "ahmp", (r"ahmp\.cz/.*?xid=([0-9a-fA-F]{8})",)),
+}.items()}
+
+
 def kniha_z_url(url):
-    """(archiv mapy, archiv indexu, kniha) z adresy svazku; None pro archivy, které zatím nepodporujeme."""
-    url = url or ""
-    if m := re.search(r"portafontium\.eu/register/soap-pn/([a-z0-9-]+)", url) or re.search(r"portafontium\.eu/iipimage/\d+/([a-z0-9-]+)_\d", url):
-        return "soa-plzen", "portafontium", m.group(1)
-    if m := re.search(r"ebadatelna\.soapraha\.cz/(?:d/|pages/MatrikaPage/matrikaId/)(\d+)", url):
-        return "soa-praha", "soapraha", m.group(1)
-    if m := re.search(r"ahmp\.cz/.*?xid=([0-9A-Fa-f]{8})", url):
-        return None, "ahmp", m.group(1).lower()
+    """(archiv mapy, archiv indexu nebo None, kniha) z adresy svazku; None pro archivy, které zatím nepodporujeme."""
+    for kod, archiv in ARCHIVY.items():
+        for vzor in archiv.vzory:
+            if m := re.search(vzor, url or ""):
+                return kod, archiv.index, uuid_s_pomlckami(m.group(1).lower())
     return None
+
+
+def uuid_s_pomlckami(kniha):
+    """Xid digitálních badatelen (Opava, Litoměřice) je v adresách s pomlčkami i bez; mapa má knihy pod tvarem s nimi."""
+    if re.fullmatch(r"[0-9a-f]{32}", kniha):
+        return "-".join((kniha[:8], kniha[8:12], kniha[12:16], kniha[16:20], kniha[20:]))
+    return kniha
+
+
+def podpis_knihy(popis):
+    """Podpis knihy pro mapu ve tvaru „Farnost číslo“: schránka z něj odvodí farnost (ořízne číslo na konci).
+    Popis svazku bývá „Beroun 52, N 1900–1905“ i „Matrika narozených Rynárec 1842–1857, kniha 6 (Pavlov …)“."""
+    popis = re.sub(r"^Matrika\s+(?=[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ]\w)", "", popis or "")
+    bez_let = re.sub(r"\s*(?<!\d)1[5-9]\d\d(?:\s*[–-]\s*\d{4})?(?!\d)", " ", popis)
+    hlava = bez_let.split(",")[0].strip()
+    if re.fullmatch(r"[^\d,()]+ \d+[a-zA-Z]?", hlava):
+        return hlava
+    cislo = re.search(r"\bkniha (\d+)\b", popis)
+    text = re.sub(r"\([^)]*\)|\b(?:sn|s)\.\s*[\d–-]+|\boddíl\b.*|\bkniha \d+\b", " ", bez_let)
+    slova = [w for w in re.split(r"[\s,]+", text) if w and not re.fullmatch(
+        r"(?i)matrik[ay]|[noz]|a|narozen\w*|oddan\w*|zemřel\w*|sňat\w*|úmrt\w*|rejstřík\w*|index\w*", w)]
+    farnost = " ".join(w for w in slova if w[0].isupper())
+    if not farnost:
+        return hlava
+    return f"{farnost} {cislo.group(1)}" if cislo else farnost
+
+
+def rozsah_knihy(popis):
+    """Rozsah let knihy z popisu svazku („Beroun 52, N 1900–1905“ -> {"N": "1900–1905"}) pro records v mapě.
+    Jen jednoznačný popis: jeden rozsah let a aspoň jeden druh (N, O, Z nebo slovy); jinak {}."""
+    popis = popis or ""
+    druhy = set(re.findall(r"(?<![\w.])([NOZ])(?![\w.])", popis))
+    for druh, slovo in (("N", r"naroz"), ("O", r"odda|sňat"), ("Z", r"zemř|úmrt")):
+        if re.search(slovo, popis, re.I):
+            druhy.add(druh)
+    roky = re.findall(r"(?<!\d)(1[5-9]\d\d)\s*[–-]\s*(1[5-9]\d\d|20\d\d)(?!\d)", popis)
+    if not druhy or len(roky) != 1 or int(roky[0][0]) > int(roky[0][1]) or int(roky[0][1]) > datetime.date.today().year:
+        return {}
+    return {d: f"{roky[0][0]}–{roky[0][1]}" for d in sorted(druhy)}
 
 
 def svazky():
@@ -175,8 +227,8 @@ def najdi(obec, rok=None, druh=None):
             print(f"  → začni na sn. {o[0]} ({o[1]})")
         for n in vol.get("notes") or []:
             print(f"  pozn.: {n}")
-        archiv_idx = {"soa-plzen": "portafontium", "soa-praha": "soapraha"}.get(ref["archive"])
-        k = idx.get(f"{archiv_idx}/{ref['portal_id']}")
+        archiv_idx = ARCHIVY[ref["archive"]].index if ref["archive"] in ARCHIVY else None
+        k = archiv_idx and idx.get(f"{archiv_idx}/{ref['portal_id']}")
         if k:
             print(f"  v indexu matrik: {k.get('precteno', '?')} přečtených zápisů{', OCR ' + str(k['ocr_stran']) + ' stran' if k.get('ocr_stran') else ''} "
                   f"(sdileni.py kniha {vol.get('url') or ref['portal_id']})")
@@ -199,6 +251,9 @@ def kniha(klic_nebo_url):
             print(f"  sn. {b['scan']}: {co}")
     else:
         print("Mapa matrik knihu zatím nemá.")
+    if not archiv_idx:
+        print("Index matrik tenhle archiv zatím nemá.")
+        return 0
     radky = precteno_knihy(archiv_idx, kn)
     print(f"Index matrik: {len(radky)} přečtených zápisů" + (":" if radky else " – po přečtení je nasdílej (sdileni.py prehled)."))
     for r in radky:
@@ -260,7 +315,7 @@ def nove(n=None):
             continue   # jen matriky a snímek jako číslo („35–36“, „A03B“ do mapy nejde)
         if k[0] and rok and z.get("snimek"):
             body.append({"svazek": z["svazek"], "scan": int(z["snimek"]), "type": z.get("druh"), "year": rok})
-        if z["klic"] in prepisy and rok and rok <= datetime.date.today().year - LHUTA.get(z.get("druh"), 100):
+        if k[1] and z["klic"] in prepisy and rok and rok <= datetime.date.today().year - LHUTA.get(z.get("druh"), 100):
             zapisy.append(z)
     if os.path.exists(FRONTA):
         body += [json.loads(l) for l in open(FRONTA, encoding="utf-8") if l.strip()]
@@ -379,8 +434,8 @@ def odeslat_mapu(body, klic):
         if os.path.exists(path):
             vol = json.load(open(path, encoding="utf-8"))
         else:
-            podpis = (s.get("svazek") or k[2]).split(",")[0].strip()
-            vol = {"schema": 1, "archive": k[0], "portal": {"soa-plzen": "portafontium", "soa-praha": "ebadatelna"}[k[0]],
+            podpis = podpis_knihy(s.get("svazek")) or k[2]
+            vol = {"schema": 1, "archive": k[0], "portal": ARCHIVY[k[0]].portal,
                    "portal_id": k[2], "url": s.get("url"), "signature": podpis,
                    "parish": re.sub(r"\s+\d+\w*$", "", podpis) or podpis, "records": {}, "points": [],
                    "sources": [{"by": login, "date": datetime.date.today().isoformat()}]}
@@ -393,9 +448,12 @@ def odeslat_mapu(body, klic):
             continue
         vol["points"].append(p)
         vol["points"].sort(key=lambda q: q["scan"])
-        if p.get("type") in ("N", "O", "Z") and p.get("year"):   # rozsah knihy aspoň podle přečtených bodů
-            roky = [int(r) for r in re.findall(r"\d{4}", vol["records"].get(p["type"], ""))] + [p["year"]]
-            vol["records"][p["type"]] = f"{min(roky)}–{max(roky)}" if min(roky) != max(roky) else str(min(roky))
+        rozsah = rozsah_knihy(s.get("svazek"))   # rozsah z katalogu, aby kniha byla v mapě i pro roky bez bodů
+        if p.get("type") in ("N", "O", "Z") and p.get("year"):   # i rok bodu, kdyby byl mimo katalog
+            rozsah[p["type"]] = f'{rozsah.get(p["type"], "")} {p["year"]}'
+        for druh, roky_druhu in rozsah.items():   # existující rozsah se jen rozšíří (jako ve schránce)
+            roky = [int(r) for r in re.findall(r"\d{4}", vol["records"].get(druh, "") + " " + roky_druhu)]
+            vol["records"][druh] = f"{min(roky)}–{max(roky)}" if min(roky) != max(roky) else str(min(roky))
         with open(path, "w", encoding="utf-8") as f:
             json.dump(vol, f, ensure_ascii=False, indent=1)
             f.write("\n")
@@ -485,9 +543,11 @@ def odeslat_schrankou(n, body, klic, se_zapisy):
         if not k or not k[0]:
             continue
         p = {x: b[x] for x in ("scan", "type", "year", "year_to", "months", "page", "place", "letters", "note") if b.get(x) not in (None, "")}
-        p.update(archive=k[0], portal_id=k[2], signature=(s.get("svazek") or k[2]).split(",")[0].strip()[:120], url=s.get("url"))
+        p.update(archive=k[0], portal_id=k[2], signature=(podpis_knihy(s.get("svazek")) or k[2])[:120], url=s.get("url"))
         if str(s.get("snimku", "")).isdigit():
             p["scans"] = int(s["snimku"])
+        if rozsah := rozsah_knihy(s.get("svazek")):
+            p["records"] = rozsah
         data["body"].append(p)
         poslane_body.append(klic(b))
     poslane_zapisy = []
