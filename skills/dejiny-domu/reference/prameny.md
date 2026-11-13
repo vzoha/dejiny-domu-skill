@@ -224,11 +224,13 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   stavební z reambulace. **Červené číslo tedy reambulaci neznamená.** Z reambulace jsou zlomky (106/1), nová vysoká
   čísla a přeškrtnutá čísla (zrušená parcela), rumělkové čáry a dvě čárky přes zrušenou hranici. Číslo stavební parcely
   vyšší než ostatní ve vsi = zpravidla pozdější dům (čísla šla od nejstarších).
-  **Budovy:** růžová = nespalná (zpravidla zděná), žlutá = spalná (dřevo, došky), stav při mapování. Na originální mapě
-  jsou nespalné budovy i hustě červeně šrafované přes výplň – to **není** novostavba (Hlína: myslivna i kostel z roku
-  1794). **Řídké červené šrafy bez výplně = stavba přibyla při reambulaci** (Hlína: škola 1872); pak nepiš „dům tu stál
-  už v roce [mapování]“, ale „budova je do mapy dokreslená při opravě v roce [reambulace]“. **Vždy porovnej se stejným
-  výřezem císařského otisku** (`export stable <id> … x0,y0,x1,y1`): co je na otisku, stálo při mapování.
+  **Budovy:** růžová = nespalná (zpravidla zděná), žlutá = spalná (dřevo, došky), stav při mapování; tmavě karmínová =
+  kostel a významné (veřejné, panské) budovy. Červené šrafy na originální mapě = zděná budova zakreslená nebo ověřená
+  při reambulaci. **Hustota šraf ani výplň stáří neurčí** – husté šrafy přes výplň mají budovy stojící už při mapování
+  (Hlína: myslivna, kostel 1794) i novostavby (Lniště 74, 75 na zahradě z roku 1827); šrafy přes budovu, která byla
+  na otisku žlutá, = nejspíš dřevěná stavba nahrazená zděnou. **Rozhoduje jen srovnání se stejným výřezem císařského
+  otisku** (`export stable <id> … x0,y0,x1,y1`): co je na otisku, stálo při mapování; co tam není, nepiš „dům tu stál
+  už v roce [mapování]“, ale „budova je do mapy dokreslená při opravě v roce [reambulace]“.
 - **Císařský otisk** (cio, barevný, 1824–43) = podoba vsi při mapování. Budovy nespalné růžově, spalné žlutě,
   v budovách **čísla stavebních parcel, ne čísla popisná** (Lniště, Hlína, Nežetice). U části listů barvy a čísla chybí.
 - **Evidenční mapa** (sign. B2/a/14C, služba `nonstable`, vzor vypíše `listy`, když je naskenovaná) = pokračování

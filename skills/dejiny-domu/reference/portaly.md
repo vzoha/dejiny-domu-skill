@@ -641,7 +641,12 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
 - **Lánové rejstříky 1656–1679** (fond D 1, 372 svazků, digitalizované 2013–14): svazek = panství nebo statek, ne obec.
   Hledej obec s filtrem digitalizátů, ve výsledcích „Lánový rejstřík panství …“ (Hlína → Kounice a Vlasatice, sign. 181).
   Uvnitř svazku obec po obci, německy (kurent), na konci obce „Extract Dorff …“ se souhrnem (starousedlí, nově
-  osazení, pustky). Čísla domů ještě nejsou: k domu vede až pořadí hospodářů a návaznost jmen na gruntovní knihu.
+  osazení, pustky; **osedlí = starousedlí + nově osazení**, „Latus“ je jen mezisoučet strany). Svazky jsou druhá
+  vizitace 1669–79: zápis „X vor Y“ = X držitel k roku svazku, Y z první vizitace 1656/57 – datuj podle roku svazku,
+  ne podle rozsahu „1656–1674“ v ARON. Pořadí jde po oddílech (starousedlí, nově osazení, nové pustky, staré pustky)
+  a v nich od největšího gruntu, **není to pořadí domů ve vsi**; u staré pustky stojí jméno posledního držitele před
+  1656, ne obyvatele. Rejstřík je jen poddanská půda: panský dům, mlýn ani fara v něm být nemají. Čísla domů ještě
+  nejsou: k domu vede návaznost jmen (u nově osazeného stojí, čí pustku a kdy vzal) na gruntovní knihu.
   Starší odkazy z webu (aplikace v Silverlightu, inventář v PDF) nehledej, stačí ARON.
 
 ## Pražské policejní přihlášky 1850–1914 (Národní archiv) – `tools/policie_prihlasky.py`
