@@ -200,6 +200,10 @@ majetek zkonfiskovaly a stát ho přidělil novým obyvatelům. Úřady se děli
    začne až čp. 2) a v tereziánském katastru chybí v rustikálu. Hledej ho pod vrchností: dominikál, fase vrchnosti
    a farářů, josefinský katastr „Der Obrigkeit“ (bez čísla domu), urbáře, účty velkostatku. Chybějící dům v poddanské
    knize ještě neznamená, že nestál.
+   Po zavedení pozemkových knih (od ~1870) je panský majetek (velkostatek, dvůr, myslivna) zapsaný v **zemských
+   deskách**, ne v pozemkové knize obce (Čechy: Národní archiv, Morava: MZA). Parcely se ale mezi deskami a knihou obce
+   převáděly, takže panský dům nebo jeho pozemek může být i ve vložce obce. Hledej v obou. Železniční domek bývá
+   v železniční knize.
 5. Online nejsou všechny. Co není, zapiš do `archivni_dotazy.md` (fond, signatura, roky) a navrhni návštěvu badatelny.
    Ve kterém archivu fond velkostatku leží a jak se přesně jmenuje: `narp.py "Velkostatek <panství>"`.
 
