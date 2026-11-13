@@ -194,7 +194,7 @@ majetek zkonfiskovaly a stát ho přidělil novým obyvatelům. Úřady se děli
    registra, kroniky. Portál smí uživatel jen prohlížet (`podminky.md`), ty radíš, kde hledat.
    MZA Brno (jižní Morava, Vysočina): gruntovní a pozemkové knihy jsou v **ARON MZA** (www.mza.cz/aron), ne v Acta
    Publica (ta má jen matriky). Postup v `portaly.md`, oddíl MZA.
-3. Zápis o gruntu: „grunt N. N. … prodán … za … kop / zlatých“, splátky (vejrunky), výměnek pro rodiče, podíly
+3. Zápis o gruntu: „grunt N. N. … prodán … za … kop / zlatých“, splátky (vejrunky, německy „Wehrung/Wöhrung“ – v kurentu se plete s „Wohnung“ i „Waisen“, rozhoduje „-ehr-/-öhr-“), výměnek pro rodiče, podíly
    sourozenců. Postupně ho čti od posledního držitele zpátky. U každé změny držitele vznikne řádek v `drzitele`.
 4. **Vrchnostenský dům** (myslivna, fara, dvůr, mlýn, hospoda, zámek) v poddanské gruntovní knize často není (kniha
    začne až čp. 2) a v tereziánském katastru chybí v rustikálu. Hledej ho pod vrchností: dominikál, fase vrchnosti
