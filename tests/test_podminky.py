@@ -39,6 +39,13 @@ class PodminkyTest(unittest.TestCase):
                 with self.assertRaises(podminky.Zakazano):
                     slusne.pockej(host, co)
 
+    def test_soa_praha_hledani_ano_snimky_ne(self):   # 11/2026 archiv omezil nástroje, stránka snímku /d/ ani /a/ ne
+        slusne.pockej("https://ebadatelna.soapraha.cz/pages/MatrikaPage/matrikaId/1", "dotaz")   # neskončí
+        for url, co in (("https://ebadatelna.soapraha.cz/d/1/2", "dotaz"), ("https://ebadatelna.soapraha.cz/a/1/2", "dotaz"),
+                        ("https://ebadatelna.soapraha.cz/scan/1.jpg", "obr")):
+            with self.assertRaises(podminky.Zakazano):
+                slusne.pockej(url, co)
+
     def test_mza_dotazy_ano_snimky_ne(self):
         slusne.pockej("www.mza.cz", "dotaz")   # neskončí
         with self.assertRaises(podminky.Zakazano):

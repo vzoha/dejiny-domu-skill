@@ -6,7 +6,7 @@ Matriky jsou online u osmi státních archivů – podle toho, **kde dům stojí
 | Archiv | Oblast | Portál s matrikami | Vyzkoušeno se skillem |
 |---|---|---|---|
 | SOA Zámrsk | východní Čechy (Hradecký a Pardubický kraj) | ARON – aron.vychodoceskearchivy.cz | **ano – hotové nástroje** |
-| SOA Praha | střední Čechy | eBadatelna – ebadatelna.soapraha.cz | **ano** – `ebadatelna.py` (celá kniha i jako ZIP po registraci) |
+| SOA Praha | střední Čechy | eBadatelna – ebadatelna.soapraha.cz | **částečně** – `ebadatelna.py` hledá knihy a obsah, snímky uloží uživatel v prohlížeči (celá kniha jako ZIP po registraci) |
 | SOA Plzeň | západní Čechy | Porta fontium – portafontium.eu | **ručně** – snímek uloží uživatel (firewall proti skriptům, jen nevýdělečně) |
 | SOA Třeboň | jižní Čechy | digi.ceskearchivy.cz | **jen číst** – snímky jen k prohlížení online, čte uživatel |
 | SOA Litoměřice | severní Čechy | Digitální badatelna – digi.soalitomerice.cz | **částečně – `soal_zoomify.py`** (knihu najdi v prohlížeči) |
@@ -505,8 +505,13 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
   (`*i`, `ooi`, `+i` v seznamu knih fary).
 
 ## SOA Praha (eBadatelna, ebadatelna.soapraha.cz) – `tools/ebadatelna.py`
+- **Archiv v listopadu 2026 oznámil**, že automatizované nástroje eBadatelnu přetěžují, a dočasně zavedl limity
+  provozu; hledá řešení, jak je do budoucna pustit. Do té doby nástroj jen hledá knihy a čte jejich obsah (pár dotazů),
+  **snímky nestahuje** – brzda ho na `/d/` a `/a/` zastaví (`podminky.json`). Snímky otevře uživatel v prohlížeči
+  (odkaz z `link` / `a-link`) a uloží je do `pracovni/`, nebo stáhne celou knihu jako ZIP (níže). Narazí-li i prohlížeč
+  na omezení nebo „Forbidden“, skonči a řekni to uživateli.
 - **Podmínky:** robots.txt zakazuje ClaudeBota (trénink modelů), GPTBota a robota „rodokmen“, Claude-User ne (8. 11. 2026).
-  Ostatním robotům zakazuje digitalizáty (`/d/`, `/a/`) – nástroj stahuje jen snímky, které čteš, nic dvakrát.
+  Ostatním robotům zakazuje digitalizáty (`/d/`, `/a/`).
   Portál vrací HTTP 403 každému User-Agentu se slovem „rodokmen“ (i úvodní stránku), ostatním ne (11. 11. 2026).
   Při 403 nic neobcházej, čti v prohlížeči (stránka `/d/<id>/<snímek>` načte celý snímek, výřez zvětši a vyfoť obrazovku).
 - **Celá kniha:** uživatel se zaregistruje (zdarma), otevře knihu, na záložce „Popis knihy“ vlevo dole klikne
@@ -517,14 +522,13 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
   1–30 Ves C …“ – každá ves může mít vlastní stránkování) – u takových knih neodhaduj snímek podle roku, ale podle stran
   dané vsi (číslo strany je nahoře na snímku). Takové knihy bývají řazené po vsích, ne chronologicky – je-li rejstřík,
   začni jím.
-- `ebadatelna.py snimek <matrikaId> <snímek> pracovni/x.jpg [nahled] [x0,y0,x1,y1]`; `link`, `svazek` (klíč `ebad_<id>`).
+- `ebadatelna.py link <matrikaId> <snímek>` (odkaz pro uživatele i do `odkaz`), `svazek` (klíč `ebad_<id>`); `snimek` teď nejde (výše).
 - **Archiválie** (urbáře, gruntovní a pozemkové knihy velkostatků – most přes 17. století): `a-info <archivalieId>`,
-  `a-snimek`, `a-link`, `a-svazek` (klíč `ebad_a_<id>`). Archiválii nástroj nehledá – najdi ji na portálu v prohlížeči;
+  `a-link`, `a-svazek` (klíč `ebad_a_<id>`; `a-snimek` teď nejde). Archiválii nástroj nehledá – najdi ji na portálu v prohlížeči;
   id je v adrese `…/pages/ArchivaliePage/archivalieId/<id>`.
 - Starší snímky bývají z mikrofilmu nebo silně vybledlé – čti ze zesílené verze:
   `python3 -I tools/zesil_snimek.py x.jpg [x0,y0,x1,y1]` (výřez pro web pak dělej z originálu).
-- Portál dává vždy celý snímek (nedlaždicuje); náhled a výřez dělá nástroj po stažení přes ImageMagick (`magick`).
-  Denní údržba kolem 4:44 (asi 2 minuty).
+- Denní údržba kolem 4:44 (asi 2 minuty).
 
 ## AHMP Praha – `tools/ahmp_search.sh`, `tools/ahmp_scan.py`
 - `bash tools/ahmp_search.sh "Smíchov"` → svazky Sbírky matrik: popis | farnost | (XID, id, počet snímků).

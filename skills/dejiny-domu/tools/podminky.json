@@ -12,9 +12,13 @@
       "jinak": "Pro soukromé bádání: uživatel snímek uloží v prohlížeči do pracovni/ a ty ho přečteš. Za peníze portál použít nejde – jen badatelna nebo objednané skeny."
     },
     "ebadatelna.soapraha.cz": {
-      "nazev": "SOA Praha (eBadatelna)", "dotazy": true, "obrazky": true, "vyrez": "neresi",
-      "proc": "robots.txt zakazuje ClaudeBota (trénink), GPTBota a „rodokmen“, Claude-User ne; ostatním robotům /d/ a /a/ – na dotaz uživatele jen čtené snímky (8. 11. 2026)",
-      "jinak": ""
+      "nazev": "SOA Praha (eBadatelna)", "dotazy": true, "obrazky": false, "vyrez": "neresi",
+      "proc": "archiv v listopadu 2026 oznámil, že automatizované nástroje přetěžují eBadatelnu, a dočasně zavedl limity; robots.txt zakazuje robotům snímky (/d/, /a/). Hledání a obsah knih nástroj smí, snímky ne",
+      "jinak": "Snímky otevře uživatel v prohlížeči (odkaz z ebadatelna.py link / a-link) a uloží je do pracovni/, celou knihu stáhne jako ZIP po přihlášení; ty je přečteš (reference/portaly.md, SOA Praha).",
+      "vyjimky": [
+        {"obsahuje": "ebadatelna.soapraha.cz/d/", "dotazy": false},
+        {"obsahuje": "ebadatelna.soapraha.cz/a/", "dotazy": false}
+      ]
     },
     "digi.nacr.cz": {
       "nazev": "Národní archiv (konskripce, policejní přihlášky)", "dotazy": true, "obrazky": true, "vyrez": "neresi",

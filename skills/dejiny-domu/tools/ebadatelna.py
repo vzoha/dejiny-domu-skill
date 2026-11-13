@@ -9,19 +9,21 @@ Použití (z kořene projektu):
                                             (u víc stejných jmen vypíše možnosti – zadej celý název s okresem)
   ebadatelna.py info <matrikaId>          -> kniha, fara (původce), okres, druhy a roky, obsah, lokality, počet snímků
   ebadatelna.py snimek <matrikaId> <snímek> <vystup.jpg> [nahled] [x0,y0,x1,y1]
-                                         -> stáhne snímek v plném rozlišení (portál dává celý snímek jedním
-                                            požadavkem, nedlaždicuje); "nahled" = 1/4 rozlišení; x0,y0,x1,y1 = výřez
-                                            jako zlomky šířky/výšky (0–1), např. 0.5,0,1,0.5 = pravá horní čtvrtina
+                                         -> TEĎ NEJDE: SOA Praha od listopadu 2026 omezuje automatizované nástroje,
+                                            snímky otevře uživatel v prohlížeči (odkaz z „link“) a uloží do pracovni/
+                                            (tools/podminky.json). Až archiv nástroje pustí: snímek v plném rozlišení,
+                                            "nahled" = 1/4 rozlišení, x0,y0,x1,y1 = výřez jako zlomky šířky/výšky (0–1)
   ebadatelna.py link <matrikaId> <snímek> -> trvalý odkaz na snímek (pole "odkaz" v data/zaznamy.json)
   ebadatelna.py svazek <matrikaId>        -> zapíše svazek do data/svazky.json (klíč ebad_<matrikaId>)
   ebadatelna.py a-info <archivalieId>     -> totéž pro archiválie (urbáře, gruntovní knihy …)
-  ebadatelna.py a-snimek <archivalieId> <snímek> <vystup.jpg> [nahled] [x0,y0,x1,y1]
+  ebadatelna.py a-snimek <archivalieId> <snímek> <vystup.jpg> [nahled] [x0,y0,x1,y1]   (teď nejde, viz snimek)
   ebadatelna.py a-link <archivalieId> <snímek>
   ebadatelna.py a-svazek <archivalieId>   -> klíč ebad_a_<archivalieId>
 Trvalé odkazy: matrika https://ebadatelna.soapraha.cz/d/<matrikaId>/<snímek>,
                archiválie https://ebadatelna.soapraha.cz/a/<archivalieId>/<snímek>
 Snímky se číslují od 1 (jako v prohlížeči portálu). Na výřez a náhled je potřeba ImageMagick (magick).
-Portál má denní údržbu kolem 4:44 (asi 2 minuty). Ber ohled na server: stahuj jen snímky, které čteš.
+Portál má denní údržbu kolem 4:44 (asi 2 minuty). Archiv dočasně omezuje automatizovaný provoz: jen hledání,
+která potřebuješ, žádné dávky.
 """
 import glob, html, http.client, http.cookiejar, json, os, re, shutil, subprocess, sys, tempfile, time, unicodedata
 import urllib.error, urllib.parse, urllib.request

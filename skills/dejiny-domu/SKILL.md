@@ -272,7 +272,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `rejstrik.py "Část obce" <čp>`, `rejstrik.py detail <IČO>` | ARES a veřejný rejstřík: firmy, družstva a společenství vlastníků se sídlem v domě (všechny adresy domu), detail s historií názvů a sídel a datem vzniku SVJ; podnikající fyzické osoby jen počet |
 | `narp.py "Obec"`, `narp.py detail <id>` | Národní archivní portál: fondy obce ve všech archivech ČR (archiv obce, MNV, škola, JZD, velkostatek, firmy) s číslem NAD a přístupností, bez snímků – podklad pro dotaz archivu |
 | `aron_search.py "Obec" ["fond"]`, `aron_search.py scitani "Obec"`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |
-| `ebadatelna.py …` | SOA Praha: matriky a archiválie, snímky jen ty, které čteš (celá kniha: ZIP po registraci) |
+| `ebadatelna.py …` | SOA Praha: hledá matriky a obsah knih; snímky teď uloží uživatel v prohlížeči (celá kniha: ZIP po registraci) |
 | `portafontium.py …` | SOA Plzeň. **Stojí:** firewall; snímky uloží uživatel |
 | `ahmp_search.sh`, `ahmp_scan.py`, `policie_prihlasky.py` | Praha (matriky; policejní přihlášky 1850–1914 z Národního archivu) |
 | `sdileni.py najdi / kniha / prehled / souhlas / odeslat` | Mapa matrik a index matrik: kde v knize začíná rok či ves, co už někdo přečetl (jen vodítko); sdílení zpět jen se souhlasem (`reference/sdileni.md`) |
