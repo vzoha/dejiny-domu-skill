@@ -220,26 +220,35 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
    **do PDF smí z ÚAZK** s citací „Ústřední archiv zeměměřictví a katastru, sign. D1/21, sekce 4453/4“.
 - **Originální mapa** (om) je nejcennější: zeměměřiči do ní **dokreslovali změny při reambulaci 1869–1882 (změny
   červeně)**. Nová stavba nebo rozdělení parcely je tam i s číslem. Rok reambulace vypíše `listy`.
-  **Jak číst barvy budov:** růžová = zděná, žlutá = dřevěná (stav při mapování). **Červeně šrafovaná nebo sytě červená
-  budova a červená čísla = dokresleno při reambulaci** – stavba nebo přestavba až po mapování. Nepiš pak „dům tu stál
-  už v roce [mapování]“, ale „budova je do mapy dokreslená při opravě v roce [reambulace]“. Přeškrtnuté číslo = zrušená
-  parcela. Číslo stavební parcely vyšší než ostatní ve vsi = zpravidla pozdější dům (čísla šla od nejstarších).
-- **Císařský otisk** (cio, barevný, 1824–43) = podoba vsi. Domy zděné červeně, dřevěné žlutě, s čísly popisnými
-  (u části listů barvy a čísla chybí).
+  **Barvy čísel (originální mapa i císařský otisk):** pozemkové parcely červeně, stavební černě – od mapování, i nové
+  stavební z reambulace. **Červené číslo tedy reambulaci neznamená.** Z reambulace jsou zlomky (106/1), nová vysoká
+  čísla a přeškrtnutá čísla (zrušená parcela), rumělkové čáry a dvě čárky přes zrušenou hranici. Číslo stavební parcely
+  vyšší než ostatní ve vsi = zpravidla pozdější dům (čísla šla od nejstarších).
+  **Budovy:** růžová = nespalná (zpravidla zděná), žlutá = spalná (dřevo, došky), stav při mapování. Na originální mapě
+  jsou nespalné budovy i hustě červeně šrafované přes výplň – to **není** novostavba (Hlína: myslivna i kostel z roku
+  1794). **Řídké červené šrafy bez výplně = stavba přibyla při reambulaci** (Hlína: škola 1872); pak nepiš „dům tu stál
+  už v roce [mapování]“, ale „budova je do mapy dokreslená při opravě v roce [reambulace]“. **Vždy porovnej se stejným
+  výřezem císařského otisku** (`export stable <id> … x0,y0,x1,y1`): co je na otisku, stálo při mapování.
+- **Císařský otisk** (cio, barevný, 1824–43) = podoba vsi při mapování. Budovy nespalné růžově, spalné žlutě,
+  v budovách **čísla stavebních parcel, ne čísla popisná** (Lniště, Hlína, Nežetice). U části listů barvy a čísla chybí.
 - **Evidenční mapa** (sign. B2/a/14C, služba `nonstable`, vzor vypíše `listy`, když je naskenovaná) = pokračování
   originálu: od roku 1883 se změny kreslily sem, často až do 20.–30. let 20. století. Ukáže ves i za prvorepublikových
   majitelů (nové domy, dělení parcel). Doplňky mají data přímo na listu, poslední datum ověř tam. V některých
   k. ú. se pozdější změny kreslily i do originální mapy – i tam rozhoduje datum na listu, ne rok reambulace.
 - **Indikační skica** (služba `skici`, předpona S0X) = pracovní mapa se jmény držitelů a změnami. Je v aplikaci ČÚZK,
   ale **patří Národnímu archivu (Čechy) nebo MZA (Morava) – na snímcích je vodoznak „NA + ZA“**. **Barvy čísel jsou tu
-  jinak než na originální mapě: v budově je červeně číslo popisné a černě číslo stavební parcely** (originální mapa má
-  u budovy jen černé číslo parcely, červená čísla tam znamenají reambulaci). Při záměně čteš celou ves obráceně; ověř
+  jinak než na originální mapě: v budově je červeně číslo popisné („N. 1“) a černě číslo stavební parcely** (originální
+  mapa a otisk čísla popisná nemají). Pozemkové parcely jsou na původní skice červeně (rozliší je jen „N.“ a tvar plochy),
+  na nové skice z reambulace černě. Při záměně čteš celou ves obráceně; ověř
   přes `mapa pk` s adresními body (níže). Čti z ní (čísla domů, držitelé), ale výřez nepřikládej do e-mailu, PDF ani
   na web bez souhlasu archivu (`podminky.md`). Přikládej originální mapu nebo pozemkový katastr.
   **Držitel** bývá jménem i číslem („Brabetz … N 11“, Lniště 1827), na vsi i ve městě ale často **jen číslem:
   „N° 22“ = patří majiteli domu čp. 22** (Zruč nad Sázavou 1838 celé náměstí bez jmen). Jméno pak dá písemný operát
-  (parcelní protokol), nebo matriky a gruntovní kniha podle čp. **Číslo bez „N°“ (N., N) je číslo parcely**, ne čp.:
-  pozemková parcela 29 může ležet vedle „N° 29“ a zahrady 22–18 za domy čp. 76–80 (Zruč) vypadají jako „patří čp. 22“.
+  (parcelní protokol), nebo matriky a gruntovní kniha podle čp. **Číslo bez „N°“ (N., N) je zpravidla číslo parcely**,
+  ne čp.: pozemková parcela 29 může ležet vedle „N° 29“ a zahrady 22–18 za domy čp. 76–80 (Zruč) vypadají jako „patří
+  čp. 22“. Výjimka: na původní skice dokreslené při reambulaci jsou u polí holá **černá** jedno- a dvoumístná čísla
+  domů majitelů, kde pozemkové parcely mají čísla čtyřmístná (Lniště: „28“ u pole, čp. 28 roku 1827 ještě nebylo).
+  Číslo domu majitele z jiné obce mívá připsanou obec.
 - **Pozemkový katastr** (`mapa pk "Osada čp" výstup.jpg`) je georeferencovaný v S-JTSK: sedí na dnešní mapu, takže
   přes RÚIAN budovy jde ztotožnit starou parcelu s dnešním domem, zpravidla do pár metrů. (Posun 60–100 m k SV, který
   tu dřív stál, byl chybou nástroje: výřez se zadával ve WGS 84 a server ho do S-JTSK převedl bez transformace datumu.
