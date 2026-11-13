@@ -5,6 +5,7 @@ Použití:
   kramerius.py 'SOLR_QUERY' [rows]                       – Kramerius NK (API v5)
       např. kramerius.py 'text_ocr:"Jan Novák" AND datum_begin:[1860 TO 1920]'
       Sloupec přístupu: public = volně; private+DNNT = čitelné po přihlášení na ndk.cz (reference/portaly.md → DNNT);
+      private+onsite = jen na terminálu v knihovně (nečíst, nejde ani po přihlášení);
       private = jen v knihovně. Filtr datum_begin vyřadí část čísel periodik – při malém počtu nálezů hledej i bez něj.
   kramerius.py 'SOLR_QUERY' [rows] --knihovna vkol|mzk|cuni|…|vse
       totéž v Krameriu jiné knihovny přes Českou digitální knihovnu (ČDK; pole jako u NK, nástroj je přeloží).
@@ -53,7 +54,8 @@ def hledej_nk(q, rows):
     for x in d['response']['docs']:
         h = ' | '.join(hl.get(x['PID'], {}).get('text_ocr', []))[:400].replace('\n', ' ')
         pristup = x.get('dostupnost') or '?'
-        if pristup == 'private' and (x.get('dnnt') or 'dnnto' in (x.get('dnnt-labels') or [])):
+        stitky = x.get('dnnt-labels')   # dnnt=true platí i pro „covid“ (dnes jen terminál), čitelné je jen „dnnto“
+        if pristup == 'private' and ('dnnto' in stitky if stitky else x.get('dnnt')):
             pristup = 'private+DNNT'
         det = str(x['details'][0]).split()[0] if x.get('details') else ''
         print('-', x.get('datum_str'), '|', str(x.get('root_title'))[:60], '| s.', det, '|', x['PID'], '|', pristup)
@@ -65,12 +67,14 @@ def hledej_cdk(q, rows, knihovna):
     q = f"({cdk_dotaz(q)}) AND model:page"
     if knihovna != "vse":
         q += f" AND cdk.collection:{re.sub(r'[^a-z0-9_-]', '', knihovna.lower())}"
-    p = {"q": q, "fl": "pid,root.title,root.pid,date.str,page.number,accessibility,licenses,cdk.collection",
+    p = {"q": q, "fl": "pid,root.title,root.pid,date.str,page.number,licenses.facet,cdk.collection",
          "rows": rows}   # úryvky (hl) ČDK nevrací (HTTP 400) – okolí nálezu ukáže `text <pid> 'výraz'`
     d = json.loads(get(CDK + "search?" + urllib.parse.urlencode(p)))
     print("found", d["response"]["numFound"])
     for x in d["response"]["docs"]:
-        pristup = "+".join([x.get("accessibility") or "?"] + [l for l in x.get("licenses") or [] if l != "public"])
+        # pole accessibility v ČDK neplatí (VKOL „onsite“ hlásí public, 13. 11. 2026) – přístup podle licencí
+        lic = sorted(set(x.get("licenses.facet") or []))
+        pristup = "public" if "public" in lic else ("private+" + "+".join(lic) if lic else "private")
         print("-", x.get("date.str"), "|", str(x.get("root.title"))[:60], "| s.", x.get("page.number", ""), "|", x["pid"],
               "|", pristup, "|", ",".join(x.get("cdk.collection") or []))
     print("Odkaz: https://www.ceskadigitalniknihovna.cz/uuid/<pid>. „public“ = čitelné, ne volné dílo: "

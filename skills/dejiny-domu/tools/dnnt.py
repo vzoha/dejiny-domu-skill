@@ -73,9 +73,11 @@ def verejne_jinde(q, mx):
     """Veřejné stránky odpovídající dotazu v jiných knihovnách (CDK): {(titul, rok, strana): (pid, knihovny, titul)}."""
     out = {}
     try:
-        for d in po_strankach({"q": cdk_dotaz(q) + " AND accessibility:public",
-                               "fl": "pid,root.title,date.str,page.number,cdk.collection"}, mx, CDK):
-            for x in d["response"]["docs"]:
+        for d in po_strankach({"q": cdk_dotaz(q) + " AND licenses.facet:public",
+                               "fl": "pid,root.title,date.str,page.number,cdk.collection,licenses.facet"}, mx, CDK):
+            for x in d["response"]["docs"]:   # accessibility:public v ČDK lže (VKOL „onsite“ 13. 11. 2026), platí licence
+                if "public" not in (x.get("licenses.facet") or []):
+                    continue
                 out.setdefault(stranka_id(x.get("root.title"), x.get("date.str"), x.get("page.number")),
                                (x["pid"], ",".join(x.get("cdk.collection") or []), str(x.get("root.title"))[:80]))
     except urllib.error.HTTPError as e:   # dotaz, který NK zvládne, CDK někdy odmítne – výsledky NK nezahazovat
@@ -89,7 +91,8 @@ def stranka_id(titul, datum, strana):
 
 def pristup(x):
     d = x.get("dostupnost") or "?"
-    dn = x.get("dnnt") or "dnnto" in (x.get("dnnt-labels") or [])   # „dnnto“ = online po přihlášení
+    stitky = x.get("dnnt-labels")   # „dnnto“ = online po přihlášení; „covid“ jen z doby covidu, dnes terminál
+    dn = "dnnto" in stitky if stitky else x.get("dnnt")   # dnnt=true platí i pro „covid“ (13. 11. 2026)
     return "DNNT" if d == "private" and dn else ("jen knihovna" if d == "private" else d)
 
 

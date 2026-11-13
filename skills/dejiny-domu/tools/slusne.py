@@ -42,7 +42,11 @@ LIMITY = {
     "images.archives.cz": (2.0, 0.25),   # ZA Opava: 10. 11. 2026 HTTP 429/503 i po pár náhledech, když už jednou blokoval
     "digi.archives.cz": (4.0, 0.25),     # ZA Opava, badatelna: po desítkách rychlých dotazů blok 30 min, denní limit
     "kramerius.vkol.cz": (5.0, 0.5),     # Kramerius VKOL: 10. 11. 2026 HTTP 403 po 4 rychlých dotazech na OCR (nástroje jdou přes ČDK)
+    "api.ceskadigitalniknihovna.cz": (3.0, 0.25),   # ČDK: proxy na Krameria knihoven, šetřit (13. 11. 2026)
 }
+# Text, obrázek nebo datový proud jedné položky Krameria: 403 = položka není veřejná (licence „jen v knihovně“),
+# ne zátěž – skončit bez blokace webu (ČDK 13. 11. 2026: OCR neveřejné stránky VKOL → 403 zablokovalo celou ČDK).
+POLOZKA = re.compile(r"/items?/[^/]+/(ocr|image|streams|info)\b", re.I)
 BLOKACE = 30 * 60
 STOPKY = (BLOKACE, 2 * 3600, 8 * 3600)   # blok po 1., 2. a 3. (i každém dalším) odmítnutí webu během OKNO
 OKNO = 24 * 3600
@@ -291,14 +295,18 @@ def _byl_uspech(host):
         return False
 
 
-def posoudit(host, co, kod, retry_after=None):
+def posoudit(host, co, kod, retry_after=None, adresa=""):
     """Po odpovědi: 429/503 (a 403 na dotaz) → zablokovat web a skončit.
-    403 hned na první dotaz bývá špatný User-Agent nebo neveřejná stránka, ne zátěž – skončí bez blokace."""
+    403 hned na první dotaz bývá špatný User-Agent nebo neveřejná stránka, ne zátěž – skončí bez blokace.
+    403 na položku Krameria (POLOZKA) = neveřejná stránka – skončí bez blokace."""
     host = host.lower()
     if kod < 400:
         with open(_soubor(host, "ok"), "w"):
             pass
         return
+    if kod == 403 and POLOZKA.search(urllib.parse.urlsplit(adresa).path):
+        raise SystemExit(f"{host}: položka není veřejná (HTTP 403, licence nejspíš „jen v knihovně“) – {adresa}. "
+                         "Bez blokace webu; tuhle položku znovu nezkoušej, otevři ji v prohlížeči.")
     if kod == 403 and co == "dotaz" and not _byl_uspech(host):
         raise SystemExit(f"{host} odmítl dotaz (HTTP 403) – buď chybí prohlížečový User-Agent / stránka není veřejná, "
                          "nebo web zablokoval IP adresu (v prohlížeči „Sorry, you have been blocked“ → vypni VPN nebo "
@@ -360,7 +368,7 @@ def instaluj():
             self._slusne_ulozit = plna
         pockej(self.host, co, adresa=plna)
         zkontroluj_robots(self.host, urllib.parse.urlsplit(plna).path, https, self.port)
-        _lokalni.posledni = (self.host, co)
+        _lokalni.posledni = (self.host, co, plna)
         return put(self, method, url, *a, **k)
 
     def putheader(self, header, *values):
@@ -386,9 +394,9 @@ def instaluj():
         r = get(self, *a, **k)
         if getattr(_lokalni, "robots", False):
             return r
-        host, co = getattr(_lokalni, "posledni", (self.host, "dotaz"))
+        host, co, plna_adresa = getattr(_lokalni, "posledni", (self.host, "dotaz", ""))
         odpovedel(host, co)
-        posoudit(host, co, r.status, r.getheader("Retry-After"))
+        posoudit(host, co, r.status, r.getheader("Retry-After"), plna_adresa)
         if host.lower() in BAN_TEXT and r.status == 200 and "html" in (r.getheader("Content-Type") or ""):
             telo = r.read()   # přečíst a vrátit zpět, aby volající dostal celé tělo
             r.fp, r.length, r.chunked, r.will_close = io.BytesIO(telo), len(telo), False, True
@@ -516,7 +524,7 @@ def curl(args, **kw):
     if host and vysledky:
         kod, kde = vysledky[-1]
         zkontroluj_ochranu(kde)
-        posoudit(urllib.parse.urlsplit(kde).hostname or host, co, int(kod))
+        posoudit(urllib.parse.urlsplit(kde).hostname or host, co, int(kod), adresa=kde)
     return p
 
 
