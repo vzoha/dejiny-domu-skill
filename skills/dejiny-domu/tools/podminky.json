@@ -46,7 +46,12 @@
     "www.mza.cz": {
       "nazev": "MZA Brno (Acta publica)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
       "proc": "stránku knihy a snímky chrání ověření ALTCHA; zveřejnit a dál využívat jen s písemným souhlasem",
-      "jinak": "Knihy obce najdeš nástrojem (mza.py hledat / matriky). Stránku knihy otevře uživatel v prohlížeči, ověření vyřeší sám a snímek uloží do pracovni/ nebo pošle snímek obrazovky; ty ho přečteš."
+      "jinak": "Knihy obce najdeš nástrojem (mza.py hledat / matriky). Stránku knihy otevře uživatel v prohlížeči, ověření vyřeší sám a snímek uloží do pracovni/ nebo pošle snímek obrazovky; ty ho přečteš.",
+      "vyjimky": [
+        {"obsahuje": "/aron", "nazev": "MZA Brno (ARON: pozemkové knihy, katastry, mapy a plány)",
+         "proc": "Podmínky použití aplikace ARON (www.mza.cz/aplikace/podminky-pouziti-aplikace-aron/, 20. 5. 2024): stránky jen k prohlížení, digitalizáty nepublikovat jakýmkoli způsobem bez písemného souhlasu vlastníka archiválií (i volná díla, staré mapy); souhlas přes badatelna@mza.cz (13. 11. 2026)",
+         "jinak": "Do výstupu přepis, překlad, citace (archiv, fond, inv. č. nebo signatura) a odkaz na záznam v ARON, obrázek jen se souhlasem MZA."}
+      ]
     },
     "portal.nacr.cz": {
       "nazev": "Národní archivní portál (evidence fondů)", "dotazy": true, "obrazky": false, "vyrez": "neresi",
