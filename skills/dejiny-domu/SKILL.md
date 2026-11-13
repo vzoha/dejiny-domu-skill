@@ -279,6 +279,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `mza.py hledat / matriky / scitani` | MZA Brno (jižní Morava, Acta Publica): knihy obce, sčítací operáty obce. Stránku knihy a snímky chrání ALTCHA – otevře uživatel (`info`, `link`, `svazek`, `snimek` stojí) |
 | `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, Matricula (ZA Opava jen v prohlížeči) |
 | `valecne_hroby.py obec "Obec"` / `padli <Příjmení> [Jméno] --obec X` | pomníky padlých a válečné hroby obce se jmény (Evidence válečných hrobů MO) / padlí v 1. sv. válce s domovskou obcí, útvarem a prameny VÚA |
+| `obeti.py ulice "Ulice" --cislo N` / `hledat` / `detail` | oběti nacismu deportované z domu a ulice (Databáze obětí holocaust.cz): adresa v protektorátu, transporty, osud; adresy hlavně v Praze. Podmínky vstupu potvrdí uživatel sám (`obeti.py souhlas`) |
 | `hroby.py najdi / stahni / hledej` | hřbitovní pasporty obcí (GisOnline.cz): zemřelí 20. stol. se jménem a daty (`portaly.md` → Hroby) |
 | `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly; u 20. stol. ukáže DNNT → `portaly.md`); `kramerius.py … --knihovna vkol` jiná knihovna přes ČDK, `text <pid> 'výraz'`, `autori <uuid>` = autoři a konec ochrany díla („public“ ≠ volné dílo) |
 | `overit.py <snímek> x0,y0,x1,y1 <prefix>` | zápis na dvě čitelné poloviny – ověření čtení |

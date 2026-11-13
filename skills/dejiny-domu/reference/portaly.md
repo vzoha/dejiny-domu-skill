@@ -659,6 +659,20 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
   nejsou: k domu vede návaznost jmen (u nově osazeného stojí, čí pustku a kdy vzal) na gruntovní knihu.
   Starší odkazy z webu (aplikace v Silverlightu, inventář v PDF) nehledej, stačí ARON.
 
+## Databáze obětí (holocaust.cz, Institut Terezínské iniciativy) – `tools/obeti.py`
+- Židé deportovaní z českých zemí (a Romové z tábora v Letech): narození, transporty, osud a u mnoha
+  „Adresa/místo registrace v Protektorátu“ s číslem domu. **Přesné adresy jsou hlavně u Prahy**, jinde často jen obec.
+- **Souhlas:** databáze obsahuje citlivé údaje a při vstupu chce potvrzení podmínek. Potvrdí je uživatel sám v terminálu
+  (`python3 -I tools/obeti.py souhlas` v běžném terminálu, `!` v Claude Code nemá vstup; platí 30 dní), Claude ho nespouští ani nepotvrzuje. Bez něj nástroj skončí.
+- `obeti.py ulice "Dlouhá" --cislo 7 --cislo 612`: hledá podle názvu ulice (celá slova, bez čísla – s číslem
+  portál nenajde nic, část slova taky ne), pak čte detail každé oběti a seskupí je podle adresy. Hledej i **starý název
+  ulice a stará čísla** (rohový dům má dvě adresy, ulice se přejmenovávaly a přečíslovávaly). Bez `--cislo` vypíše celou
+  ulici: sousední domy se hodí jako kontext. Detail = 1 dotaz na osobu, dlouhá ulice → `--max`.
+- `hledat --prijmeni Nováková [--bydliste Obec]` a `detail <odkaz>` pro konkrétní osobu (obyvatel domu ze sčítání).
+- Do výstupu jen fakta (jméno, narození, adresa, transport, osud) s citací „Databáze obětí, Institut Terezínské
+  iniciativy (holocaust.cz)“ a odkazem na oběť. Dokumenty a fotky ne: patří Národnímu archivu nebo dárcům.
+  Prázdný výsledek neznamená, že v domě Židé nežili (databáze má jen oběti, adresa u části chybí).
+
 ## Pražské policejní přihlášky 1850–1914 (Národní archiv) – `tools/policie_prihlasky.py`
 - **Podmínky:** jen zákaz v robots.txt, podmínky užití ani ochrana nenalezeny (8. 11. 2026, `podminky.md`). Hledej jen
   konkrétní osoby a stahuj jen karty, které opravdu potřebuješ.
