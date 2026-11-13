@@ -93,7 +93,7 @@ Základní smyčka pro každý pramen:
    (kde v knize začíná rok či ves, kolik zápisů už někdo přečetl; jen vodítko, čte se vždy ze snímku;
    `reference/sdileni.md`, tam i jednorázový dotaz na sdílení zpět). Jinak:
    sčítání a matriky jsou na stejných portálech (ARON `aron_search.py`, Acta Publica `mza.py`,
-   AHMP, Litoměřice a Opava přes `soal_zoomify.py`…). Gruntovní knihy hledej ve fondu velkostatku.
+   AHMP a Litoměřice přes `soal_zoomify.py`, Opava jen v prohlížeči…). Gruntovní knihy hledej ve fondu velkostatku.
    **Než sáhneš na portál, podívej se do `reference/podminky.md`.** Kde nástroj nesmí (Třeboň, Porta fontium,
    Digitální badatelna NA, snímky MZA), snímek uloží uživatel do `pracovni/` a ty ho přečteš, nebo čte sám a ty radíš.
    Ověř lhůty (`matriky.md`): zápis smí vidět kdokoli 100/75/30 let od zápisu (narození/sňatek/úmrtí), do archivu
@@ -277,7 +277,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `ahmp_search.sh`, `ahmp_scan.py`, `policie_prihlasky.py` | Praha (matriky; policejní přihlášky 1850–1914 z Národního archivu) |
 | `sdileni.py najdi / kniha / prehled / souhlas / odeslat` | Mapa matrik a index matrik: kde v knize začíná rok či ves, co už někdo přečetl (jen vodítko); sdílení zpět jen se souhlasem (`reference/sdileni.md`) |
 | `mza.py hledat / matriky / scitani` | MZA Brno (jižní Morava, Acta Publica): knihy obce, sčítací operáty obce. Stránku knihy a snímky chrání ALTCHA – otevře uživatel (`info`, `link`, `svazek`, `snimek` stojí) |
-| `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, ZA Opava, Matricula |
+| `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, Matricula (ZA Opava jen v prohlížeči) |
 | `valecne_hroby.py obec "Obec"` / `padli <Příjmení> [Jméno] --obec X` | pomníky padlých a válečné hroby obce se jmény (Evidence válečných hrobů MO) / padlí v 1. sv. válce s domovskou obcí, útvarem a prameny VÚA |
 | `hroby.py najdi / stahni / hledej` | hřbitovní pasporty obcí (GisOnline.cz): zemřelí 20. stol. se jménem a daty (`portaly.md` → Hroby) |
 | `anno.py`, `anno_snap.py`, `kramerius.py` | noviny a knihy (Kramerius – vlastivědy, edice berní ruly; u 20. stol. ukáže DNNT → `portaly.md`); `kramerius.py … --knihovna vkol` jiná knihovna přes ČDK, `text <pid> 'výraz'`, `autori <uuid>` = autoři a konec ochrany díla („public“ ≠ volné dílo) |

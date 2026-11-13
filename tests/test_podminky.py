@@ -33,6 +33,12 @@ class PodminkyTest(unittest.TestCase):
             slusne.pockej("digi.ceskearchivy.cz", "dotaz")
         self.assertIn("PODMÍNKY", str(e.exception))
 
+    def test_za_opava_skriptum_nic(self):   # od 11/2026 obrázkový server skriptům 503, prohlížeči ne
+        for host in ("digi.archives.cz", "images.archives.cz"):
+            for co in ("dotaz", "obr"):
+                with self.assertRaises(podminky.Zakazano):
+                    slusne.pockej(host, co)
+
     def test_mza_dotazy_ano_snimky_ne(self):
         slusne.pockej("www.mza.cz", "dotaz")   # neskončí
         with self.assertRaises(podminky.Zakazano):

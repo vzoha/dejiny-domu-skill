@@ -13,7 +13,7 @@ Matriky jsou online u osmi státních archivů – podle toho, **kde dům stojí
 | AHMP | hl. m. Praha | katalog.ahmp.cz (Pragapublica) | **ano – `ahmp_search.sh`, `ahmp_scan.py`** |
 | MZA Brno | jižní Morava, Vysočina z části | Acta Publica – www.mza.cz/actapublica | **částečně – `mza.py`** hledá knihy, snímek uloží uživatel (ALTCHA) |
 | MZA Brno – gruntovní a pozemkové knihy | totéž | ARON MZA – www.mza.cz/aron | **prohlížeč** – katalog v `agent-browser --headed` tempem člověka nebo uživatel ručně; skriptu API vrací 403 |
-| ZA Opava | severní Morava a Slezsko, Olomoucko a Litovelsko | Digitální badatelna – digi.archives.cz/da/ | **částečně – `soal_zoomify.py`** (jen s prohlížečem, CAPTCHU řeší uživatel) |
+| ZA Opava | severní Morava a Slezsko, Olomoucko a Litovelsko | Digitální badatelna – digi.archives.cz/da/ | **jen prohlížeč** – knihu a čísla snímků najdeš v prohlížeči (CAPTCHU řeší uživatel), snímek uloží uživatel; skripty archiv od 11/2026 odmítá |
 | Národní archiv | židovské matriky (HBMa), soupisy; pražské policejní přihlášky 1850–1914 | digitalnibadatelna.nacr.cz; digi.nacr.cz/prihlasky2 | badatelna **ručně** (ověření „jste člověk“); přihlášky `policie_prihlasky.py` |
 
 Pro **20. století** (městské domy, adresáře, stavební povolení) jsou hlavní **IPR Praha** (staré plány a letecké snímky
@@ -554,11 +554,13 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
 - **POZOR: po zhruba 100 rychlých požadavcích na stránky aplikace (prohlížení snímků, detail výsledku) archiv zablokuje
   přístup na 30 minut.** V prohlížeči proto jen najdi knihu a cestu k obrázkům, pak už jen nástroj. Pomocníkům to napiš do zadání.
 
-## ZA Opava (severní Morava, Slezsko, Olomoucko, Litovelsko) – `tools/soal_zoomify.py`
+## ZA Opava (severní Morava, Slezsko, Olomoucko, Litovelsko) – jen v prohlížeči
 - Pozor na hranici: obce na Litovelsku a Olomoucku patří pod **ZA Opava**, ne pod MZA Brno.
 - **Bez prohlížeče to nejde.** Badatelna `https://digi.archives.cz/da/` (stará adresa matriky.archives.cz jen přesměruje)
-  má ochranu proti robotům – curl ani WebFetch se nedostanou ani na hledání. Potřebuješ připojený prohlížeč (Claude in
-  Chrome – uživatel ho připojí příkazem `/chrome` – nebo Playwright); jinak ať knihu najde a snímky uloží uživatel.
+  má ochranu proti robotům (Radware) a **od listopadu 2026 nepouští nástroje ani k obrázkům**: skriptu vrátí obrázkový
+  server HTTP 503 hned na první snímek, prohlížeč ze stejné adresy týž snímek načte (13. 11. 2026). `soal_zoomify.py`,
+  curl ani WebFetch nepoužívej, brzda je zastaví (`podminky.json`). Potřebuješ připojený prohlížeč (Claude in Chrome –
+  uživatel ho připojí příkazem `/chrome`); jinak ať knihu najde a snímky uloží uživatel.
   Úvodní ověření projde samo, ale hledání často skončí **CAPTCHou: tu vyřeší uživatel** v okně prohlížeče, ty nikdy.
 - Hledej obec a vyfiltruj Matriky (ikona, potom znovu lupa). Hledání vrací i civilní matriky (u obce stovky svazků) –
   filtr „Datum od – do“ (podle začátku svazku, např. 1680–1873) nechá jen církevní. Knihy bývají řazené po obcích
@@ -572,19 +574,21 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
   (u svazků uložených v jiném archivu nemá tvar UUID – nehledej ji regexem), ID snímků jsou hodnoty
   `select.getScanSelect option` (tvar „N%20uuid“). Snímek pak otevřeš kdykoli bez hledání:
   `/da/showZoomifySeparate?imageNumberSeparate=N&myEntityUuid=<entita>&myImageUuid=<uuid>`.
-- Adresa obrázku: `fetch('/da/showZoomify/<id svazku z URL>/<část option.value za „%20“>')` vrátí HTML s cestou
-  `…/images/<složka>/<uuid>.jpg`. Cesta se u svazků liší (`…/CZ-217000010/NAD-165/dao/images/…`, `…/zao/matriky/dao/images/…`)
-  a přípona bývá i `.JPG` – nástroji dej vždy **celou adresu z HTML**:
-  `python3 -I tools/soal_zoomify.py "<adresa>" 2 pracovni/x.jpg` (2 = čtvrtinové rozlišení na orientaci podle záhlaví
-  stránek, 0 = plné jen u nalezeného zápisu). Cookies nepotřebuje.
-- **Obrázkový server images.archives.cz omezuje** (10. 11. 2026: HTTP 429 po ~25 celých stránkách v plném rozlišení,
-  pak 503 i po jediném snímku). Celá stránka v plném rozlišení má stovky dlaždic, proto: náhled `2` (~20 dlaždic) →
-  v plném rozlišení jen výřez zápisu `--oblast x0,y0,x1,y1` (podíly stránky 0–1, ~20–50 dlaždic), mezi snímky pauza, žádné dávky naslepo. Po bloku server
-  toleruje málo (10. 11. 2026 znovu 503 po 6 náhledech): další pokus až další den, nejdřív jediný náhled. Omezovač
-  blokuje web po opakovaném odmítnutí déle (2 h, pak 8 h) – nečekej jen 30 min. Nástroj má pro tento server přísnější limit (`slusne.py`) a po 429/503 sám skončí.
-- **Pozemkové knihy** (gruntovní knihy měst): `ImageProperties.xml` vrací 404 → rozměr snímku z HTML
-  `/da/showZoomify/<svazek>/<snímek>` (atribut `zImageProperties` WIDTH a HEIGHT) a nástroji `--rozmer ŠxV`.
-  Na začátku svazku bývá rejstřík jmen s čísly zápisů (písmena po dvou snímcích) – najdi zápis v rejstříku, ne listováním.
+- **Snímek uloží uživatel** tlačítkem stažení v prohlížeči snímků (celý snímek v plném rozlišení, jeden soubor) do
+  `pracovni/`: ty mu řekni svazek (trvalý odkaz) a čísla snímků. Najdi je co nejméně snímky: náhledy, záhlaví
+  stránek, rejstřík. Druhá cesta: v Claude in Chrome přiblíž zápis a ulož snímek obrazovky. Dlaždice nestahuj ani
+  neskládej vlastním `fetch` nebo `new Image()` – to jsou dotazy navíc, které prohlížeč sám nedělá.
+- **Tempo snímků:** v prohlížeči blok po ~15–20 snímcích rychle za sebou (10. 11. 2026, „Server Exception“, náhledy
+  se nenačtou); denní limit asi 50 snímků (rodokmen-skill). Po prvním odmítnutí ten den skonči
+  (`python3 -I tools/slusne.py zablokuj digi.archives.cz "denní limit"`) – druhé odmítnutí blokaci prodlouží.
+  „Server Exception“ hned po CAPTCHA limit není: otevři znovu `https://digi.archives.cz/da/` nebo adresu snímku.
+- **Náhrada na FamilySearch:** matriky ZA Opava (sbírka „Czech Republic, Church Books“, signatury `217000010-…`)
+  a pozemkové a gruntovní knihy Opavy a Olomouce („Land Records, 1450–1889“) jsou tam v plném rozlišení bez CAPTCHY.
+  Svazek páruj přes „vol. NNNN“ v katalogu FS = inventární číslo ZA Opava (popisky let ve FS bývají chybné). Čísla
+  snímků se liší knihu od knihy (0, ±1, někde +7 až +8): před čtením porovnej stránku s archivem (folio, rok, aspoň
+  dvě jména), nikdy nepočítej s odhadnutým posunem. Do `odkaz` dej snímek, ze kterého jsi opravdu četl.
+- **Pozemkové knihy** (gruntovní knihy měst): na začátku svazku bývá rejstřík jmen s čísly zápisů (písmena po dvou
+  snímcích) – najdi zápis v rejstříku, ne listováním.
 - **Co dalšího tam je kromě matrik** (vlevo dlaždice druhu): **Mapy, atlasy, technické výkresy** (~41 tis. záznamů,
   ~30 tis. se snímky), **Pozemkové knihy** (gruntovnice, purkrechtní registra, knihy kupních smluv, urbáře; od 2012),
   **Sčítání** 1869–1921 (pole Číslo popisné, u části obcí vytěžená jména), **Kartotéky** (odsunové kartotéky,
@@ -598,7 +602,7 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
   číslo jako signatura ZAO Sl. 446). Číslo u záznamu = počet snímků, bez čísla jen popis. Staré názvy obcí: Místopisný
   rejstřík obcí českého Slezska a severní Moravy (Turek, ZAO 2004), odkaz na stránce archivu Digitální badatelna ›
   Informace.
-- **POZOR na blokování** (jen stránky aplikace, obrázky ne): rychlé dotazy → CAPTCHA, „operace vyhodnoceny jako
+- **POZOR na blokování** stránek aplikace: rychlé dotazy → CAPTCHA, „operace vyhodnoceny jako
   nestandardní“ nebo „Access blocked“ na 30 minut; po desítkách dotazů za den vrací showZoomify „Server Exception“
   (denní limit – pokračuj až další den). Pauza 3–6 s mezi stránkami, dávky do ~80 stránek, žádné rychlé `fetch` hned
   po hledání a stránky výsledků neprocházej za sebou. Delší smyčku pusť v prohlížeči na pozadí, výsledky ukládej do

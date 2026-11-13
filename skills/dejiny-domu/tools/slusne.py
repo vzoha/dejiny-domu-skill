@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Slušný přístup k webům archivů: společný limit rychlosti a zastavení, když server dá najevo, že ho zatěžujeme.
 
-Archivy (MZA Brno, SOA Litoměřice, ZA Opava…) banují IP adresu po sérii rychlých dotazů. Ban dopadne na uživatele
+Archivy (MZA Brno, SOA Litoměřice…) banují IP adresu po sérii rychlých dotazů. Ban dopadne na uživatele
 a archivy pak přitvrzují vůči všem. Proto:
 - limit platí pro každý web zvlášť a je SPOLEČNÝ všem procesům (pomocníci/subagenti, dva nástroje najednou),
 - dotazy (hledání, API, HTML) přísně – výchozí 1 za 2 s; obrázky a dlaždice volněji – 20 za s
@@ -39,8 +39,6 @@ LIMITY = {
     "nominatim.openstreetmap.org": (1.1, 1.1),                       # pravidla OSM: nejvýš 1 dotaz za s
     "gs-pub.praha.eu": (0.5, 0.05), "geoportal.cuzk.gov.cz": (0.5, 0.05),
     "commons.wikimedia.org": (0.5, 0.05), "www.wikidata.org": (0.5, 0.05),   # API pro roboty, sériové dotazy povoleny
-    "images.archives.cz": (2.0, 0.25),   # ZA Opava: 10. 11. 2026 HTTP 429/503 i po pár náhledech, když už jednou blokoval
-    "digi.archives.cz": (4.0, 0.25),     # ZA Opava, badatelna: po desítkách rychlých dotazů blok 30 min, denní limit
     "kramerius.vkol.cz": (5.0, 0.5),     # Kramerius VKOL: 10. 11. 2026 HTTP 403 po 4 rychlých dotazech na OCR (nástroje jdou přes ČDK)
     "api.ceskadigitalniknihovna.cz": (3.0, 0.25),   # ČDK: proxy na Krameria knihoven, šetřit (13. 11. 2026)
 }

@@ -23,7 +23,7 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | SOA Třeboň (DigiArchiv) | Jen číst | ano | jen prohlížet | souhlas | ano | Snímky jen k prohlížení online, kopírovat se nesmí. Nástroj skillu archiv blokuje |
 | SOA Plzeň (Porta fontium) | Ručně | ano | **ne** | souhlas | ano | Prohlížení i popisy z katalogu jen „vyjma výdělečných účelů“. Web blokuje skripty. Za peníze jen badatelna nebo objednané skeny (25 Kč) |
 | SOA Litoměřice | Ručně | ano | neřeší | souhlas | ano | Zveřejnit jen se souhlasem. Knihu najdete vy, snímky stáhne nástroj. Po ~100 rychlých kliknutích blok na 30 minut |
-| ZA Opava | Ručně | ano | neřeší | souhlas | ano | Stejný portál jako Litoměřice. Ověření „nejsem robot“ řešíte vy |
+| ZA Opava | Ručně | ano | neřeší | souhlas | ano | Od listopadu 2026 nepouští skripty ani k obrázkům, snímky ukládáte vy v prohlížeči. Ověření „nejsem robot“ řešíte vy |
 | MZA Brno (Acta publica) | Ručně | ano | neřeší | souhlas | ano | Snímky nezveřejňovat a dál nevyužívat bez písemného souhlasu. Ověření řešíte vy |
 | MZA Brno (ARON: pozemkové knihy, katastry, mapy a plány) | Nástroj | ano | neřeší | souhlas | ano | Podmínky použití aplikace ARON (www.mza.cz/aplikace/podminky-pouziti-aplikace-aron/, 20. 5. 2024): jen k prohlížení, digitalizáty nepublikovat jakýmkoli způsobem bez písemného souhlasu vlastníka archiválií, platí i pro volná díla (staré mapy). Souhlas přes badatelna@mza.cz. Přepis, zjištění a odkaz smí (13. 11. 2026) |
 | SOA Praha (eBadatelna) | Nástroj | ano | neřeší | neřeší | ano | robots.txt zakazuje ClaudeBota (trénink), ne Claude-User (8. 11. 2026). Stahujte jen snímky, které čtete. Po registraci jde i celá kniha jako ZIP. Poplatek za zveřejnění žádný |

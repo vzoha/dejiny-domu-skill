@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Snímek matriky ve formátu Zoomify (SOA Litoměřice, ZA Opava) v plném rozlišení – bez prohlížeče a bez cookies.
+"""Snímek matriky ve formátu Zoomify (SOA Litoměřice) v plném rozlišení – bez prohlížeče a bez cookies.
+
+ZA Opava (images.archives.cz) od listopadu 2026 nástroje nepouští (HTTP 503 hned na první snímek) – snímek odtud
+uloží uživatel tlačítkem portálu (reference/portaly.md, ZA Opava).
 
 Použití (z kořene projektu):
   soal_zoomify.py <cesta nebo adresa> <zmenseni> <vystup.jpg>
@@ -7,17 +10,16 @@ Použití (z kořene projektu):
                 z prohlížeče: v digitální badatelně otevři snímek a v síťovém provozu najdi požadavek na
                 https://images.soalitomerice.cz/ximage/matriky/zoomify/cz/archives/CZ-214000010/matriky/<cesta>/ImageProperties.xml
                 (další snímky téže knihy mají stejnou cestu, liší se jen číslem obrázku)
-    adresa    = celá adresa obrázku začínající https:// (s „/ImageProperties.xml“ na konci i bez), např. ZA Opava:
-                https://images.archives.cz/ximage/matriky/zoomify/cz/archives/CZ-217000010/NAD-165/dao/images/<složka>/<uuid>.jpg
+    adresa    = celá adresa obrázku začínající https:// (s „/ImageProperties.xml“ na konci i bez), např.
+                https://images.soalitomerice.cz/ximage/matriky/zoomify/cz/archives/CZ-214000010/matriky/<cesta>.jpg
     --oblast x0,y0,x1,y1  (za výstupem) jen dlaždice výřezu v podílech stránky (0–1): šetří server při plném rozlišení
-    --rozmer ŠxV  (za výstupem) když ImageProperties.xml vrací 404 (ZA Opava, pozemkové knihy): rozměr z HTML
-                stránky /da/showZoomify/<svazek>/<snímek>, atribut zImageProperties WIDTH a HEIGHT
+    --rozmer ŠxV  (za výstupem) když ImageProperties.xml vrací 404: rozměr z HTML stránky
+                /<badatelna>/showZoomify/<svazek>/<snímek>, atribut zImageProperties WIDTH a HEIGHT
     zmenseni  = 0 plné rozlišení (na čtení a výřez), 1 poloviční (na orientaci), 2 čtvrtinové
 ŠETŘIT SERVER: celá stránka v plném rozlišení = stovky dlaždic. Nejdřív náhled (zmenseni 2, ~20 dlaždic), podle něj
 zápis vyříznout v plném rozlišení přes --oblast (~20–50 dlaždic). Celou stránku v plném rozlišení jen výjimečně.
-POZOR: aplikace digi.soalitomerice.cz po ~100 rychlých požadavcích (digi.archives.cz v Opavě už po ~75) zablokuje
-přístup na 30 minut. Prohlížečem jen najdi knihu a cestu k obrázkům, snímky pak stahuj tímto nástrojem (obrázkový server
-neomezuje).
+POZOR: aplikace digi.soalitomerice.cz po ~100 rychlých požadavcích zablokuje přístup na 30 minut. Prohlížečem jen
+najdi knihu a cestu k obrázkům, snímky pak stahuj tímto nástrojem po jednom.
 """
 import glob, math, os, re, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.parse, urllib.request
 import concurrent.futures as cf
@@ -28,7 +30,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá 
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 
 BASE = "https://images.soalitomerice.cz/ximage/matriky/zoomify/cz/archives/CZ-214000010/matriky/"
-HOSTS = ("images.soalitomerice.cz", "images.archives.cz")   # jen obrázkové servery archivů (snímky zpracovává ImageMagick)
+HOSTS = ("images.soalitomerice.cz",)   # jen obrázkový server archivu (snímky zpracovává ImageMagick)
 
 
 def magick():
@@ -45,11 +47,9 @@ def get(url):
     err = None
     for _ in range(3):
         try:
-            # images.archives.cz vrací u pozemkových knih bez Refereru 404 (ZA Opava, 10. 11. 2026)
-            ref = {"Referer": "https://digi.archives.cz/"} if "images.archives.cz" in url else {}
-            return urllib.request.urlopen(urllib.request.Request(url, headers=ref), timeout=30).read()
+            return urllib.request.urlopen(url, timeout=30).read()
         except urllib.error.HTTPError as e:
-            if e.code in (403, 429, 503):   # odmítnutí archivu: další pokus by blokaci jen prodloužil (ZA Opava)
+            if e.code in (403, 429, 503):   # odmítnutí archivu: další pokus by blokaci jen prodloužil
                 host = urllib.parse.urlsplit(url).hostname
                 slusne.zablokuj(host, f"HTTP {e.code} na snímek")
                 sys.exit(f"{host} odmítl snímek (HTTP {e.code}) – stahování zastaveno a web v brzdě zablokován "
@@ -72,6 +72,7 @@ def main():
         sys.exit(__doc__)
     arg = sys.argv[1].strip().removesuffix("/ImageProperties.xml").strip("/")
     base = arg if arg.startswith("http") else BASE + arg
+    slusne.podminky.zkontroluj_stahovani(base, "obr")   # zakázaný portál (ZA Opava) s návodem dřív než obecná hláška níže
     if urllib.parse.urlsplit(base).scheme != "https" or urllib.parse.urlsplit(base).hostname not in HOSTS:
         sys.exit(f"Adresa musí být https:// na serveru archivu ({', '.join(HOSTS)}), ne {base[:80]}")
     red, out = int(sys.argv[2]), sys.argv[3]
@@ -105,8 +106,7 @@ def main():
             f = os.path.join(d, f"{y:03d}_{xx:03d}.jpg")
             with open(f, "wb") as fh:
                 fh.write(get(f"{base}/TileGroup{g}/{L}-{xx}-{y}.jpg"))
-        # 4 souběžně: několikrát rychlejší, server nezatěžuje víc než 4 prohlížeče; ZA Opava jen 2 (10. 11. 2026 HTTP 429)
-        vlaken = 2 if "images.archives.cz" in base else 4
+        vlaken = 4   # 4 souběžně: několikrát rychlejší, server nezatěžuje víc než 4 prohlížeče
         with cf.ThreadPoolExecutor(vlaken) as ex:
             list(ex.map(tile, [(y, xx) for y in ty for xx in tx]))
         # řádky dlaždic +append, pak řádky pod sebe -append (montage na ImageMagicku 7.1.2 padá bez písma);

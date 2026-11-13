@@ -36,12 +36,13 @@
     },
     "digi.archives.cz": {
       "nazev": "ZA Opava (Digitální badatelna)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
-      "proc": "ochrana proti robotům a CAPTCHA; zveřejnit jen se souhlasem",
-      "jinak": "Knihu najde uživatel v prohlížeči (CAPTCHU řeší on), snímky pak stáhne soal_zoomify.py."
+      "proc": "ochrana proti robotům a CAPTCHA, od listopadu 2026 nepouští skripty ani k obrázkům; zveřejnit jen se souhlasem",
+      "jinak": "Knihu a čísla snímků najdeš v prohlížeči (Claude in Chrome, CAPTCHU řeší uživatel), snímek uloží uživatel tlačítkem portálu do pracovni/, nebo pošle snímek obrazovky přiblíženého zápisu; ty ho přečteš (reference/portaly.md, ZA Opava)."
     },
     "images.archives.cz": {
-      "nazev": "ZA Opava (obrázkový server)", "dotazy": true, "obrazky": true, "vyrez": "souhlas",
-      "proc": "zveřejnit jen se souhlasem a s citací", "jinak": ""
+      "nazev": "ZA Opava (obrázkový server)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "od listopadu 2026 skriptům HTTP 503 hned na první snímek, prohlížeč ze stejné adresy ho načte (13. 11. 2026); zveřejnit jen se souhlasem a s citací",
+      "jinak": "Snímek uloží uživatel tlačítkem portálu do pracovni/ (nebo pošle snímek obrazovky přiblíženého zápisu), ty ho přečteš (reference/portaly.md, ZA Opava)."
     },
     "www.mza.cz": {
       "nazev": "MZA Brno (Acta publica)", "dotazy": true, "obrazky": false, "vyrez": "souhlas",
