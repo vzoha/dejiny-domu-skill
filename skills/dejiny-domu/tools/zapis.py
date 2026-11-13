@@ -3,13 +3,15 @@
 řádků LF), takže změna v historii je jen ta jedna položka.
 
 Použití (z kořene projektu):
-  zapis.py <soubor> <klíč> <vstup.json> [--sloucit]
+  zapis.py <soubor> <klíč> <vstup.json> [--sloucit | --prepsat]
     soubor     zaznamy | svazky | prepisy | zvyrazneni | mista | dokumenty | mapy | web   (= data/<soubor>.json)
     klíč       zaznamy: „klic“ zápisu; dokumenty, mapy: „img“; web: pole nastavení (uvod, pribeh, prihlaseni,
                zajimavosti_na_uvodu, nazev…); ostatní: klíč ve slovníku (id svazku, klíč zápisu, obec)
     vstup.json soubor s jedním objektem JSON (napiš ho nástrojem Write do pracovni/), „-“ = ze vstupu
     --sloucit  jen změní / doplní uvedená pole, ostatní pole položky nechá
-Položka se stejným klíčem se nahradí, jinak se přidá na konec. Python skripty ani `sed -i` na data nepoužívej.
+    --prepsat  nahradí položku celou, i když nový vstup některá dosavadní pole nemá (ta se ztratí)
+Položka se stejným klíčem se nahradí, jinak se přidá na konec. Chyběla-li by v náhradě pole, která položka měla,
+nástroj nic nezmění a vypíše je (pak --sloucit, nebo --prepsat). Python skripty ani `sed -i` na data nepoužívej.
   zapis.py denik "<zdroj>" "<rozsah>" "<hledáno>" "<výsledek>" "<citace>" [--datum "10. 11. 2026"]
     přidá řádek do deníku data/research_log.md; číslo # přidělí sám (nejvyšší + 1) až pod zámkem těsně před
     zápisem – dvě session na jedné zakázce si čísla nepřepíšou. Datum výchozí dnes. Řádky deníku piš jen takhle.
@@ -93,8 +95,9 @@ def zamek(nazev):
             odemkni()
 
 
-def zapis(nazev, klic, obj, sloucit=False):
-    """Přidá nebo nahradí položku `klic` v data/<nazev>.json; vrací True, když ji přidal."""
+def zapis(nazev, klic, obj, sloucit=False, chranit_pole=False):
+    """Přidá nebo nahradí položku `klic` v data/<nazev>.json; vrací True, když ji přidal.
+    chranit_pole: náhrada, které chybí pole dosavadní položky, skončí bez zápisu (zapis.py bez --prepsat)."""
     if not isinstance(obj, dict) and nazev not in LIBOVOLNE:
         sys.exit("Vstup musí být jeden objekt JSON ({…}).")
     if sloucit and not isinstance(obj, dict):
@@ -123,6 +126,10 @@ def zapis(nazev, klic, obj, sloucit=False):
             idx = next((n for n, (k, _, _) in enumerate(poz) if k == klic), None)
         stare = None if idx is None else (data[idx] if seznam else data[klic])
         nove = {**stare, **obj} if sloucit and isinstance(stare, dict) else obj
+        ztracena = sorted(set(stare) - set(nove)) if chranit_pole and isinstance(stare, dict) and isinstance(nove, dict) else []
+        if ztracena:   # tiché přepsání by smazalo pole, třeba podrobný seznam obcí svazku (rodokmen-skill 0.10.1)
+            sys.exit(f"data/{nazev}.json: „{klic}“ už existuje a náhrada nemá pole {', '.join(ztracena)} – nic jsem "
+                     "nezměnil. Změnit nebo doplnit jen uvedená pole: --sloucit; nahradit celé (pole se ztratí): --prepsat.")
         if not poz:   # prázdný nebo nový soubor
             text = json.dumps([nove] if seznam else {klic: nove}, ensure_ascii=False, indent=1) + "\n"
         elif idx is not None:   # nahradit jen text té jedné položky, zbytek souboru zůstane doslova
@@ -204,7 +211,10 @@ def main():
             sys.exit('Použití: zapis.py denik "<zdroj>" "<rozsah>" "<hledáno>" "<výsledek>" "<citace>" [--datum "10. 11. 2026"]')
         print(f"data/research_log.md: přidán řádek {zapis_denik(*a, datum=datum)}")
         return
-    args = [a for a in sys.argv[1:] if a != "--sloucit"]
+    args = [a for a in sys.argv[1:] if a not in ("--sloucit", "--prepsat")]
+    sloucit, prepsat = "--sloucit" in sys.argv, "--prepsat" in sys.argv
+    if sloucit and prepsat:
+        sys.exit("--sloucit a --prepsat nejdou spolu – vyber jedno.")
     if len(args) != 3 or args[0] not in {*SEZNAMY, *SLOVNIKY}:
         sys.exit(__doc__)
     nazev, klic, vstup = args
@@ -214,7 +224,7 @@ def main():
         sys.exit(f"Vstup {vstup} není platný JSON: {e}")
     if nazev == "prepisy" and (not isinstance(obj, dict) or set(obj) - {"orig", "cs"}):
         sys.exit("prepisy: povolené klíče jsou jen 'orig' (přepis) a 'cs' (překlad), viz reference/data.md")
-    pridano = zapis(nazev, klic, obj, sloucit="--sloucit" in sys.argv)
+    pridano = zapis(nazev, klic, obj, sloucit=sloucit, chranit_pole=not prepsat)
     print(f"data/{nazev}.json: {'přidáno' if pridano else 'změněno'} „{klic}“")
 
 

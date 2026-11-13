@@ -114,10 +114,21 @@ class TestZapis(Projekt):
         self.assertEqual(len(pred.splitlines()), len(po.splitlines()))
         self.assertEqual(len(zmenene), 1, zmenene)   # zbytek souboru doslova stejný
 
-    def test_bez_sloucit_nahradi_celou_polozku(self):
+    def test_nahrada_bez_pole_nic_nezmeni(self):
         self.zapis("zaznamy", "a_1", {"nazev": "x", "datum": "1890"})
-        self.zapis("zaznamy", "a_1", {"nazev": "y"})
-        self.assertNotIn("datum", self.data("zaznamy")[0])
+        p = self.zapis("zaznamy", "a_1", {"nazev": "y"})
+        self.assertNotEqual(p.returncode, 0)
+        self.assertIn("datum", p.stderr)
+        self.assertEqual(self.data("zaznamy")[0]["nazev"], "x")
+
+    def test_prepsat_nahradi_celou_polozku(self):
+        self.zapis("zaznamy", "a_1", {"nazev": "x", "datum": "1890"})
+        self.zapis("zaznamy", "a_1", {"nazev": "y"}, "--prepsat")
+        self.assertEqual(self.data("zaznamy")[0], {"nazev": "y", "klic": "a_1"})
+
+    def test_sloucit_a_prepsat_nejdou_spolu(self):
+        p = self.zapis("zaznamy", "a_1", {"nazev": "x"}, "--sloucit", "--prepsat")
+        self.assertNotEqual(p.returncode, 0)
 
     def test_sloucit_doplni_pole(self):
         self.zapis("zaznamy", "a_1", {"nazev": "x", "datum": "1890"})
@@ -428,7 +439,7 @@ class TestKontrola(Projekt):
         self.assertNotIn("Nejistý: 'od'", out)   # nejistou mez nechá být
 
     def test_odpoved_jen_z_jinych_pisem(self):
-        self.nastroj("zapis.py", "web", "prihlaseni", "-", vstup='{"otazka": "Heslo?", "odpoved": "漢字"}')
+        self.nastroj("zapis.py", "web", "prihlaseni", "-", "--sloucit", vstup='{"otazka": "Heslo?", "odpoved": "漢字"}')
         rc, out = self.kontrola()
         self.assertEqual(rc, 1)
         self.assertIn("nemá žádné písmeno a–z ani číslici", out)
@@ -584,7 +595,7 @@ class TestExport(Projekt):
         self.assertIn("data/mapy.json a: vyrez", out)
 
     def test_odpoved_jen_z_jinych_pisem_export_odmitne(self):
-        self.nastroj("zapis.py", "web", "prihlaseni", "-", vstup='{"otazka": "Heslo?", "odpoved": "漢字"}')
+        self.nastroj("zapis.py", "web", "prihlaseni", "-", "--sloucit", vstup='{"otazka": "Heslo?", "odpoved": "漢字"}')
         rc, out = self.export()
         self.assertNotEqual(rc, 0)
         self.assertIn("prihlaseni.odpoved", out)

@@ -290,7 +290,7 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `ortofota.py serie <místo> [polomer] [--zapsat skupina]` | letecké snímky domu po letech 1998–2023 (ČÚZK, CC BY) a starší či chybějící ročníky krajů (jen ke čtení), stejný výřez (rovnou do `mapy.json`) |
 | `ipr_praha.py serie <místo> [polomer] [--zapsat skupina]` | Praha: staré plány 1791–1944 a letecké snímky 1938–2002 se stejným výřezem (rovnou do `mapy.json`) |
 | `dnnt.py hledej / kontext / ocr / adresa` | tisk 20. století (adresáře, Stavitelské listy, noviny): úryvky z neveřejných stran, OCR veřejných (i veřejných jen v jiné knihovně), hledání adresy. Neveřejné (DNNT) čte uživatel sám podle čtecího listu |
-| `zapis.py <soubor> <klíč> <vstup.json> [--sloucit]` | přidá / změní položku v `zaznamy`, `svazky`, `prepisy`, `mapy`, `web` (pole nastavení webu)… beze změny formátu |
+| `zapis.py <soubor> <klíč> <vstup.json> [--sloucit \| --prepsat]` | přidá / změní položku v `zaznamy`, `svazky`, `prepisy`, `mapy`, `web` (pole nastavení webu)… beze změny formátu; náhradu, která by smazala pole, odmítne |
 | `zapis.py denik "<zdroj>" "<rozsah>" "<hledáno>" "<výsledek>" "<citace>"` | řádek deníku `research_log.md` s číslem a datem (pod zámkem, souběžné session) |
 | `kontrola.py` | kontrola dat, soukromí, kdy psát příběh |
 | `slusne.py <skript.py> …` / `curl …` / `stav` | společný limit rychlosti k archivům a kontrola podmínek; vlastní skripty a curl jen přes něj (hook `hlidac.py` hlídá) |
