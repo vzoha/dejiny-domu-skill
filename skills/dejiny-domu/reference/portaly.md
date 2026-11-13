@@ -589,7 +589,9 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
   ~30 tis. se snímky), **Pozemkové knihy** (gruntovnice, purkrechtní registra, knihy kupních smluv, urbáře; od 2012),
   **Sčítání** 1869–1921 (pole Číslo popisné, u části obcí vytěžená jména), **Kartotéky** (odsunové kartotéky,
   Volkskartei, domovské právo, **evidenční karty domů s majiteli a obyvateli**), **Kroniky**, **Veduty**, **Fotografie
-  a pohlednice**, **Spolkové spisy**. **Katastry Slezska** najde hledání obce bez filtru druhu (Štítina 9. 11.):
+  a pohlednice**, **Spolkové spisy**. **Kroniky s přepisem** (přes 1 500, strojový přepis i kurentu): dlaždice Kroniky
+  a typ přílohy OCR; na snímku tlačítko OCR otevře okno s textem a polem Prohledat OCR (hledá v celé knize – čp.,
+  jméno). Hlavní hledání text kronik neprohledává, kroniku najdi podle obce. **Katastry Slezska** najde hledání obce bez filtru druhu (Štítina 9. 11.):
   josefský katastr (parcelní protokol a kniha pozemnostních archů, protokol **se snímky**, 176), Matrika výnosu
   pozemků 1820–1842, Stabilní katastr slezský (protokol parcel, pozemnostní archy, popis hranic, **indikační skica**,
   ta jen v kartonu bez snímků → skicu i originální mapu stáhne `cuzk_archiv.py listy`, Štítina = skici „Sl446“, stejné
