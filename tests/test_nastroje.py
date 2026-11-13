@@ -691,9 +691,11 @@ class TestDnnt(Projekt):
           dict(PID="uuid:dnnt-jen-nk", root_title="Adresář Brna", datum_str="1933", details=["50 ##NormalPage"],
                dostupnost="private", dnnt=True)]
     CDK = [{"pid": "uuid:mzk-kopie", "root.title": "Adresář Brna", "date.str": "1932", "page.number": "48",
-            "cdk.collection": ["mzk"]},
+            "cdk.collection": ["mzk"], "licenses.facet": ["public"]},
            {"pid": "uuid:vkol-navic", "root.title": "Svoboda", "date.str": "1936", "page.number": "7",
-            "cdk.collection": ["vkol"]}]
+            "cdk.collection": ["vkol"], "licenses.facet": ["public"]},
+           {"pid": "uuid:vkol-onsite", "root.title": "Svoboda", "date.str": "1937", "page.number": "3",
+            "cdk.collection": ["vkol"], "licenses.facet": ["onsite"]}]   # accessibility v ČDK lže, platí licence
 
     def py(self, kod):
         p = subprocess.run([sys.executable, "-I", "-X", "utf8", "-c", "import sys; sys.path.insert(0, 'tools'); import dnnt\n" + kod],
@@ -705,7 +707,7 @@ class TestDnnt(Projekt):
         out = self.py(f"""
 def solr(params, api=dnnt.API):
     if api == dnnt.CDK:
-        assert "accessibility:public" in params["q"] and "model:page" in params["q"], params["q"]
+        assert "licenses.facet:public" in params["q"] and "model:page" in params["q"], params["q"]
         return {{"response": {{"numFound": 2, "docs": {self.CDK!r}}}}}
     return {{"response": {{"numFound": 2, "docs": {self.NK!r}}},
             "highlighting": {{"uuid:dnnt-jen-nk": {{"text_ocr": ["<script>x</script> <em>Dlouhá</em> 14"]}}}}}}
@@ -716,6 +718,7 @@ dnnt.hledej(['text_ocr:"Dlouhá 14"', "--ulozit", "dl14"])
         tsv = self.text("pracovni", "dnnt", "dl14.tsv")
         self.assertIn("uuid:dnnt-shoda\t1932\t48\tDNNT\tAdresář Brna\tuuid:mzk-kopie\tmzk", tsv)
         self.assertIn("uuid:vkol-navic\t1936\t7\tpublic\tSvoboda\tuuid:vkol-navic\tvkol", tsv)
+        self.assertNotIn("vkol-onsite", tsv)
         lst = self.text("pracovni", "dnnt", "dl14.html")
         self.assertIn('href="https://ndk.cz/uuid/uuid:dnnt-jen-nk"', lst)
         self.assertNotIn("dnnt-shoda", lst)   # veřejnou kopii přečte nástroj, uživatel ji číst nemusí
