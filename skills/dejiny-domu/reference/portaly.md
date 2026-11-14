@@ -854,12 +854,15 @@ Nástroje pro ně hotové nejsou. Postupuj takto a výsledek zapiš do `STAV.md`
   a u pozemků jméno majitele („N. 13“ = patří k domu čp. 13). Dům bez pozemků mimo ves = domkář bez polí.
   Jméno majitele samotného domu bývá jen v písemném operátu (v Čechách v archivu, na Moravě online, viz níže).
   Parcela vedle domu na mapě k němu nemusí patřit: příslušnost ověř v protokolu. Výřezy map patří na web k domu (`mapy.json`).
-  **Morava a Slezsko:** indikační skici MZA (www.mza.cz/indikacniskici, databáze D9) – hledání podle katastru, skica
-  ~1825 i pozdější (1870–1911), prohlížeč pod ikonou „web MZA“. Bývají tu i skici, které Archiv ČÚZK nenajde. Jen
-  v prohlížeči uživatele (skriptům 403), tempem člověka; obrázky do výstupu jen se souhlasem MZA, přepis jmen ano.
-  Jméno majitele domu na Moravě dá **písemný operát** v ARON MZA (fond D 10 Stabilní katastr – písemné operáty, hledej obec,
-  digitalizovaný bývá duplikát): protokol pozemkových parcel (u parcely čp. a majitel), za podpisy protokol stavebních
-  parcel (st. parcela, majitel, čp., „Wohnung und Hofraum“).
+  **Morava:** indikační skici MZA (www.mza.cz/indikacniskici, databáze D9) – hledání podle katastru (u měst i podle
+  německého názvu a signatury), skica ~1825 i pozdější (1870–1911), prohlížeč pod ikonou „web MZA“. Bývají tu i skici,
+  které `cuzk_archiv.py` hlásí jako nedostupné; u velkých měst skica chybět může. Jen v prohlížeči uživatele (skriptům
+  403), tempem člověka; obrázky do výstupu jen se souhlasem MZA, přepis jmen ano.
+  Jméno majitele domu na Moravě dá **písemný operát** v ARON MZA (fond D 10 Stabilní katastr – písemné operáty; obec
+  hledej i německy, ve stromu fondu je „Obec (Německý název), okres“). Digitalizovaný bývá **duplikát**, originál ne.
+  Kniha: protokol pozemkových parcel (u parcely čp. a majitel), souhrn a podpisy, pak protokol stavebních parcel
+  (st. parcela, majitel, čp., „Wohnung und Hofraum“). Duplikát někdy stavební parcely nemá celé, jen pozdější vložené
+  listy se změnami – úplný protokol je pak v originálu (archiv).
 - **Dnešní adresa domu** podle čísla popisného: RÚIAN (`mista.py ruian "Osada čp"`: adresa, parcela, k. ú.). Pozor, staré centrum mívá od 19. století
   stejná čp., ale předměstí a vesnice čísla přečíslovávaly. Hodí se na procházku po místech, kde lidé z domu žili a pracovali.
   Stavbu podle obce a čísla popisného najde i nahlizenidokn.cuzk.gov.cz (ověření adresy z dokladu); vlastník je za
