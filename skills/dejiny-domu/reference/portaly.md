@@ -856,6 +856,9 @@ Nástroje pro ně hotové nejsou. Postupuj takto a výsledek zapiš do `STAV.md`
   **Morava a Slezsko:** indikační skici MZA (www.mza.cz/indikacniskici, databáze D9) – hledání podle katastru, skica
   ~1825 i pozdější (1870–1911), prohlížeč pod ikonou „web MZA“. Bývají tu i skici, které Archiv ČÚZK nenajde. Jen
   v prohlížeči uživatele (skriptům 403), tempem člověka; obrázky do výstupu jen se souhlasem MZA, přepis jmen ano.
+  Jméno majitele domu na Moravě dá **písemný operát** v ARON MZA (fond D 10 Stabilní katastr – písemné operáty, hledej obec,
+  digitalizovaný bývá duplikát): protokol pozemkových parcel (u parcely čp. a majitel), za podpisy protokol stavebních
+  parcel (st. parcela, majitel, čp., „Wohnung und Hofraum“).
 - **Dnešní adresa domu** podle čísla popisného: RÚIAN (`mista.py ruian "Osada čp"`: adresa, parcela, k. ú.). Pozor, staré centrum mívá od 19. století
   stejná čp., ale předměstí a vesnice čísla přečíslovávaly. Hodí se na procházku po místech, kde lidé z domu žili a pracovali.
   Stavbu podle obce a čísla popisného najde i nahlizenidokn.cuzk.gov.cz (ověření adresy z dokladu); vlastník je za
