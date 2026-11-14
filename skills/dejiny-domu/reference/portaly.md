@@ -852,7 +852,8 @@ Nástroje pro ně hotové nejsou. Postupuj takto a výsledek zapiš do `STAV.md`
   nástroj `cuzk_archiv.py`, postup v `prameny.md`).
   Na **císařských otiscích** chybí u části listů barvy a čísla domů. Lepší jsou **indikační skici**: mají čísla domů
   a u pozemků jméno majitele („N. 13“ = patří k domu čp. 13). Dům bez pozemků mimo ves = domkář bez polí.
-  Jméno majitele samotného domu bývá jen v písemném operátu (archiv, ne online). Výřezy map patří na web k domu (`mapy.json`).
+  Jméno majitele samotného domu bývá jen v písemném operátu (v Čechách v archivu, na Moravě online, viz níže).
+  Parcela vedle domu na mapě k němu nemusí patřit: příslušnost ověř v protokolu. Výřezy map patří na web k domu (`mapy.json`).
   **Morava a Slezsko:** indikační skici MZA (www.mza.cz/indikacniskici, databáze D9) – hledání podle katastru, skica
   ~1825 i pozdější (1870–1911), prohlížeč pod ikonou „web MZA“. Bývají tu i skici, které Archiv ČÚZK nenajde. Jen
   v prohlížeči uživatele (skriptům 403), tempem člověka; obrázky do výstupu jen se souhlasem MZA, přepis jmen ano.
