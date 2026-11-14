@@ -11,7 +11,7 @@ Použití:
       parcela pod domem a katastrální území. Patří do Fáze 0/1 – dnešní obec a k. ú. se často liší od toho,
       co uživatel čeká (osada patří k jiné obci, k. ú. má jméno sousední vsi). Dotaz = "Osada čp", "Ulice čp",
       "Ulice čp/čo" nebo ve městě i "Ulice čo" (číslo orientační, jak je na domě); obec za čárkou zúží výběr
-      ("Husova 66, Beroun", "Na Kopečku 4, Praha"). Vypíše i odkaz do Street View a Mapy.com Panorama (prochází
+      ("Dlouhá 12, Beroun", "Na Kopečku 4, Praha"). Vypíše i odkaz do Street View a Mapy.com Panorama (prochází
       uživatel, snímky do výstupu ne).
   mista.py okoli <"Ulice čp/čo" | lat,lon> [polomer_m=80]
       všechny dnešní adresy v okolí (RÚIAN) seřazené podle čp., do poloměru; adresy jedné budovy (roh) označí; podklad pro tabulku
@@ -86,11 +86,11 @@ def adresni_mista(dotaz, pole, obec=""):
     vzory = [f"{d},%"]
     if ulice and cislo.isdigit():
         vzory += [f"{ulice} %/{cislo},%",   # „Ulice čo“ – v RÚIAN je „Ulice čp/čo, Část obce, …“
-                  # obec bez ulic: „č.p. 29, 39301 Pavlov“; osada pod jinou obcí: „Švihov 47, 53825 Miřetice“
+                  # obec bez ulic: „č.p. 12, 39301 Pavlov“; osada pod jinou obcí: „Švihov 47, 53825 Miřetice“
                   f"č.p. {cislo}, % {ulice}", f"č.p. {cislo}, % {ulice},%"]
     for podminka in ("adresa LIKE '{}'", "UPPER(adresa) LIKE UPPER('{}')"):
         adr, videno = [], set()
-        for vzor in vzory:   # všechny tvary, ne jen první: „Hlína 1, Horka“ i „č.p. 1, 66491 Hlína“ jsou různé vsi
+        for vzor in vzory:   # všechny tvary, ne jen první: „Hlína 5, Horka“ i „č.p. 5, 66491 Hlína“ jsou různé vsi
             for a in ruian_q(1, podminka.format(vzor), pole, True):
                 if a["attributes"].get("adresa", id(a)) not in videno:
                     videno.add(a["attributes"].get("adresa", id(a)))

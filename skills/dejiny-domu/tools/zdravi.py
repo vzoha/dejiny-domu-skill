@@ -79,8 +79,8 @@ KONTROLY = [
     ("veduty", "mapy podle polohy", ["veduty.py", "mapy", "48.80", "14.62"], r"^Mapy, které místo zakreslují .*: [1-9]", None),
     ("translokace", "seznam plánů", ["translokace.py", "Bečov nad Teplou"], r"^  1 \| Bečov nad Teplou", None),
     ("translokace", "detail plánu", ["translokace.py", "detail", "1"], r"^archiv: Národní archiv", None),
-    ("ares", "firmy v domě", ["rejstrik.py", "Holešovice", "1425"], r"^  26480808 \|", None),
-    ("ares", "veřejný rejstřík", ["rejstrik.py", "detail", "26480808"], r"^Stav: AKTIVNI", None),
+    ("ares", "firmy v domě", ["rejstrik.py", "Nové Město", "1700"], r"^  00023272 \|", None),
+    ("ares", "veřejný rejstřík", ["rejstrik.py", "detail", "18629733"], r"^Stav: AKTIVNI", None),
     ("brno", "sčítání Brna", ["brno_scitani.py", "dum", "Kröna", "75", "1880"], r"^1880 \| Kröna 75 \| osob 32", None),
 ]
 # Portály bez pevného svazku (cestu k obrázku dává jen prohlížeč): jen „server odpovídá“

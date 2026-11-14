@@ -2,7 +2,7 @@
 """Dům na mapě označený tmavě modrou elipsou s bílou září – do PDF a na web, aby čtenář dům našel na každé mapě.
 
 Použití (z kořene projektu):
-  elipsa.py <mapa.jpg> <klic> cx,cy,a,b[,uhel] [--popisek "čp. 183"] [--text x,y] [--pismo px]
+  elipsa.py <mapa.jpg> <klic> cx,cy,a,b[,uhel] [--popisek "čp. 12"] [--text x,y] [--pismo px]
       cx,cy = střed elipsy, a,b = poloosy (vodorovná, svislá) v pixelech obrázku <mapa.jpg>; uhel = natočení
       ve stupních po směru hodinových ručiček (dům šikmo k ose mapy). Rozměr obrázku vypíše nástroj, když chybí čísla.
       --text x,y = levý horní roh popisku (výchozí vpravo nad elipsou); popisek spojí s elipsou vodicí čára.

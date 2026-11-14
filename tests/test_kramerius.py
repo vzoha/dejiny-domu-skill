@@ -34,8 +34,8 @@ class AutoriTest(unittest.TestCase):
         self.assertEqual(kramerius.konec_ochrany([], "1890")[0], 1961)   # anonymní: od zveřejnění
 
     def test_cdk_dotaz(self):
-        self.assertEqual(kramerius.cdk_dotaz('text_ocr:"Panská 11" AND datum_begin:[1900 TO 1940] AND dostupnost:public'),
-                         'text_ocr:"Panská 11" AND date_range_start.year:[1900 TO 1940] AND accessibility:public')
+        self.assertEqual(kramerius.cdk_dotaz('text_ocr:"Ostružnická 7" AND datum_begin:[1900 TO 1940] AND dostupnost:public'),
+                         'text_ocr:"Ostružnická 7" AND date_range_start.year:[1900 TO 1940] AND accessibility:public')
 
 
 if __name__ == "__main__":

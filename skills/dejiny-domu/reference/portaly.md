@@ -26,7 +26,7 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
 ## Památkový katalog NPÚ (pamatkovykatalog.cz) – `tools/pamatky.py`
 Kulturní památky a objekty, které památkáři jen evidují (návesní kaple, boží muka, mlýny, domy bez ochrany).
 - `python3 -I tools/pamatky.py "Lniště"` → objekty v obci, části obce nebo ulici: id | název | adresa | ochrana | anotace.
-  Druhý argument zúží na číslo v adrese (`pamatky.py "Na Maninách" 27`). Hledá se fulltextem, objekty jen se zmínkou
+  Druhý argument zúží na číslo v adrese (`pamatky.py "Dlouhá" 12`). Hledá se fulltextem, objekty jen se zmínkou
   jinde vypíše zvlášť. Víc než 250 výsledků katalog nevrátí – zúžit na část obce nebo ulici.
 - `python3 -I tools/pamatky.py detail <id>` → vznik, autor, stavební vývoj, popis, **literatura o objektu**, fotky v MIS
   (popis + odkaz), odkaz do Carmen (plány, průzkumy), trvalý odkaz a citace.
@@ -108,12 +108,12 @@ i indikační skicu a dnešní letecký snímek.
 ## Veřejný rejstřík a ARES (ares.gov.cz, or.justice.cz) – `tools/rejstrik.py`
 ARES (Ministerstvo financí) má veřejné API: najde subjekty se sídlem na adrese. Veřejný rejstřík (or.justice.cz)
 hledá jen podle názvu, IČO nebo spisové značky, proto nástroj jde přes ARES a na or.justice.cz jen odkáže.
-- `python3 -I tools/rejstrik.py "Holešovice" 1425` → všechny adresy domu (rohový dům má dvě) a subjekty se sídlem
+- `python3 -I tools/rejstrik.py "Nové Město" 1700` → všechny adresy domu (rohový dům má dvě) a subjekty se sídlem
   v kterékoli z nich: IČO | název | právní forma | zápis | adresa | odkaz na výpis a sbírku listin. Část obce
   jako v adrese (Holešovice, ne Praha 7), číslo popisné, ne orientační. Stejnojmenné části obce vypíše zvlášť,
   rozliší je PSČ. Evidenční čísla (č. ev., chaty) vynechá.
 - **Podnikající fyzické osoby jen spočítá**, jména nevypíše: jsou to žijící lidé, často jen bydliště.
-- `python3 -I tools/rejstrik.py detail 26480808` → názvy a sídla s daty, předmět činnosti, ostatní skutečnosti
+- `python3 -I tools/rejstrik.py detail 00023272` → názvy a sídla s daty, předmět činnosti, ostatní skutečnosti
   (u SVJ „Datum vzniku společenství: 1.7.2000.“), spisová značka. Členy statutárního orgánu nevypíše.
 - ARES podle adresy najde **jen dnes zapsané** subjekty. Zaniklé (družstvo, firma z 90. let) hledej na or.justice.cz
   ručně: název (ulice, obec, „SVJ <ulice>“) a „Platné i neplatné“. Sbírka listin (stanovy, prohlášení vlastníka,
@@ -344,10 +344,10 @@ placeného výstupu (Public domain a CC0 se zdrojem, CC BY a CC BY-SA s autorem 
   "Slavče (Vrábče)"`. Bez kategorie na Wikidatech najdi kategorii na webu a zadej ji stejně.
 - Větší města mají stovky kategorií: nástroj projde 60 (asi minuta, Rumburk 76 souborů), víc `--kategorii 120`.
 - **Dům ve městě:** v kategorii města je ulice hluboko a 60 kategorií na ni nedojde (Olomouc: „nic“, přitom
-  kategorie Panská a Školní mají fotky domu i Wellnerovu Školní 1926). Zadej adresu, i víc ulic u nárožního domu:
-  `commons.py "Olomouc" --adresa "Panská 11" --adresa "Školní" --adresa "Žerotínovo nám." --cp 183` → projde napřed
-  kategorie „Panská 11 (Olomouc)“ a „Panská (Olomouc)“ (jiný tvar názvu dohledá) a zvlášť vypíše soubory s domem
-  v názvu („Panská 11“, „č.p. 183“) z let všech.
+  kategorie ulic fotky domu mají). Zadej adresu, i víc ulic u nárožního domu:
+  `commons.py "Olomouc" --adresa "Ostružnická 7" --adresa "Pekařská" --adresa "Dolní nám." --cp 412` → projde napřed
+  kategorie „Ostružnická 7 (Olomouc)“ a „Ostružnická (Olomouc)“ (jiný tvar názvu dohledá) a zvlášť vypíše soubory s domem
+  v názvu („Ostružnická 7“, „č.p. 412“) z let všech.
   Vesnice bývá hotová za pár sekund a často nemá nic starého (Lniště, Nežetice, Dobrovítov 0).
 - Kategorie u souboru říká, co na něm je: v kategorii obce bývají i obrazy z muzea, portréty a hrad za vsí
   (Blíževedly = Ronov). Rok je datum vzniku podle Commons („before 1882“ = nejpozději).

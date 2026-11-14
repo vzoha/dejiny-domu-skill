@@ -118,28 +118,28 @@ class MetadataTest(unittest.TestCase):
 class AdresaTest(unittest.TestCase):
 
     def test_adresa_z(self):
-        self.assertEqual(commons.adresa_z("Panská 11"), ("Panská", "11"))
-        self.assertEqual(commons.adresa_z("Žerotínovo nám."), ("Žerotínovo náměstí", None))
-        self.assertEqual(commons.adresa_z("Panská 183/11"), ("Panská", "183"))
+        self.assertEqual(commons.adresa_z("Ostružnická 7"), ("Ostružnická", "7"))
+        self.assertEqual(commons.adresa_z("Dolní nám."), ("Dolní náměstí", None))
+        self.assertEqual(commons.adresa_z("Ostružnická 412/7"), ("Ostružnická", "412"))
 
     def test_kategorie_adres(self):
         def odpoved(adresa, **p):   # Olomouc 10. 11. 2026: ulice ano, dům ne
             if p.get("list") == "search":
-                return {"query": {"search": [{"title": "Category:Školní ulice (Olomouc)"}, {"title": "Category:Jiná"}]}}
-            return {"query": {"pages": [{"title": "Category:Panská 11 (Olomouc)", "missing": True},
-                                        {"title": "Category:Panská (Olomouc)"},
-                                        {"title": "Category:Školní (Olomouc)", "missing": True}]}}
+                return {"query": {"search": [{"title": "Category:Pekařská ulice (Olomouc)"}, {"title": "Category:Jiná"}]}}
+            return {"query": {"pages": [{"title": "Category:Ostružnická 7 (Olomouc)", "missing": True},
+                                        {"title": "Category:Ostružnická (Olomouc)"},
+                                        {"title": "Category:Pekařská (Olomouc)", "missing": True}]}}
         with mock.patch.object(commons, "api", side_effect=odpoved):
-            self.assertEqual(commons.kategorie_adres("Olomouc", [("Panská", "11"), ("Školní", None)]),
-                             [("Category:Panská (Olomouc)", "ulice"), ("Category:Školní ulice (Olomouc)", "ulice?")])
+            self.assertEqual(commons.kategorie_adres("Olomouc", [("Ostružnická", "7"), ("Pekařská", None)]),
+                             [("Category:Ostružnická (Olomouc)", "ulice"), ("Category:Pekařská ulice (Olomouc)", "ulice?")])
 
     def test_soubory_domu(self):
-        nalez = {"File:Olomouc, Panská 11.JPG": ("Category:Panská (Olomouc)", info("2014")),
-                 "File:Olomouc, Panská 110.jpg": ("Category:Panská (Olomouc)", info("2014")),
-                 "File:Měšťanský dům (Olomouc), č.p.183.JPG": ("Category:Panská (Olomouc)", info("")),
-                 "File:Olomouc, Panská 2.jpg": ("Category:Panská (Olomouc)", info("1900"))}
-        self.assertEqual([x[1] for x in commons.soubory_domu(nalez, [("Panská", "11")], "183")],
-                         ["File:Olomouc, Panská 11.JPG", "File:Měšťanský dům (Olomouc), č.p.183.JPG"])
+        nalez = {"File:Olomouc, Ostružnická 7.JPG": ("Category:Ostružnická (Olomouc)", info("2014")),
+                 "File:Olomouc, Ostružnická 70.jpg": ("Category:Ostružnická (Olomouc)", info("2014")),
+                 "File:Měšťanský dům (Olomouc), č.p.412.JPG": ("Category:Ostružnická (Olomouc)", info("")),
+                 "File:Olomouc, Ostružnická 2.jpg": ("Category:Ostružnická (Olomouc)", info("1900"))}
+        self.assertEqual([x[1] for x in commons.soubory_domu(nalez, [("Ostružnická", "7")], "412")],
+                         ["File:Olomouc, Ostružnická 7.JPG", "File:Měšťanský dům (Olomouc), č.p.412.JPG"])
 
 
 if __name__ == "__main__":

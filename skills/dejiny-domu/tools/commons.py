@@ -8,9 +8,9 @@ z historických kategorií (pohlednice bývají bez data).
 
 Použití:
   commons.py "<obec>" [od-do] [--kategorie "Název"] [--kategorii 60]   – rok | soubor | kategorie | licence | odkaz
-  commons.py "<obec>" --adresa "Panská 11" [--adresa "Školní"] [--cp 183]
-      ve městě: projde i kategorie domu a ulic („Panská 11 (Olomouc)“, „Panská (Olomouc)“, „Žerotínovo náměstí
-      (Olomouc)“) a vypíše soubory s domem (podle čísla v názvu, „čp. 183“) bez ohledu na rok – v kategorii obce
+  commons.py "<obec>" --adresa "Ostružnická 7" [--adresa "Pekařská"] [--cp 412]
+      ve městě: projde i kategorie domu a ulic („Ostružnická 7 (Olomouc)“, „Ostružnická (Olomouc)“, „Dolní náměstí
+      (Olomouc)“) a vypíše soubory s domem (podle čísla v názvu, „čp. 412“) bez ohledu na rok – v kategorii obce
       je ulice hluboko a 60 kategorií na ni nedojde.
   commons.py detail "<soubor>"                                  – popis, datum, autor, licence, obrázek, citace
 Commons přijímá jen volné licence: obrázek smí i do placeného výstupu, u CC BY a CC BY-SA s autorem a licencí.
@@ -48,7 +48,7 @@ ZKRATKY = ((re.compile(r"\bnám\.?(?=\s|$)", re.I), "náměstí"), (re.compile(r
 
 
 def adresa_z(text):
-    """„Panská 11“ → („Panská“, „11“); „Žerotínovo nám.“ → („Žerotínovo náměstí“, None)."""
+    """„Ostružnická 7“ → („Ostružnická“, „11“); „Dolní nám.“ → („Dolní náměstí“, None)."""
     text = re.sub(r"\s+", " ", text).strip().strip(",")
     for vzor, cele in ZKRATKY:
         text = vzor.sub(cele, text)
@@ -68,7 +68,7 @@ def kategorie_adres(obec, adresy):
     existuji = {p["title"] for p in stranky if not p.get("missing")}
     nalez = [(k, d) for k, d in kandidati if k in existuji]
     for ulice, _ in adresy:
-        if not any(k.startswith(f"Category:{ulice} ") for k, _ in nalez):   # jiný tvar názvu („Panská ulice, Olomouc“)
+        if not any(k.startswith(f"Category:{ulice} ") for k, _ in nalez):   # jiný tvar názvu („Ostružnická ulice, Olomouc“)
             r = api(f"{COMMONS}/w/api.php", action="query", list="search", srnamespace=14, srlimit=10,
                     srsearch=f'intitle:"{ulice}" intitle:"{obec}"')
             nalez += [(x["title"], "ulice?") for x in r["query"]["search"]
@@ -77,7 +77,7 @@ def kategorie_adres(obec, adresy):
 
 
 def soubory_domu(nalez, adresy, cp=None):
-    """Soubory, v jejichž názvu je dům: „Panská 11“ nebo „čp. 183“, „č.p.183“."""
+    """Soubory, v jejichž názvu je dům: „Ostružnická 7“ nebo „čp. 412“, „č.p.412“."""
     vzory = [rf"\b{re.escape(u)}\W+{c}(?!\d)" for u, c in adresy if c]
     if cp:
         vzory.append(rf"\bč\.?\s*p\.?\s*{cp}(?!\d)")

@@ -12,8 +12,8 @@ KAPLE = {"id": "25529919", "name": "návesní kaple sv. Jana Nepomuckého", "add
          "description": "Lidově barokní\nštítová kaple."}
 MUKA = {"id": "680990", "name": "boží muka", "address": "Slavče, Lniště", "municipality": "Slavče",
         "district": "Lniště", "legalStates": [KP, KP], "description": "Kamenná boží muka."}
-DOM = {"id": "13760842", "name": "dům Domovina", "address": "Praha, Holešovice, Na Maninách č.p. 1149/32",
-       "streetHouseNumber": "Na Maninách č.p. 1149/32", "municipality": "Praha", "district": "Holešovice",
+DOM = {"id": "10000001", "name": "dům U Zlatého klíče", "address": "Praha, Holešovice, Dlouhá č.p. 1149/32",
+       "streetHouseNumber": "Dlouhá č.p. 1149/32", "municipality": "Praha", "district": "Holešovice",
        "legalStates": [KP], "description": "Nájemní dům."}
 JINDE = {"id": "18870837", "name": "návesní kaple sv. Víta", "address": "Jankov, Jankov", "municipality": "Jankov",
          "district": "Jankov", "legalStates": [], "description": "Kaple, zmínka o Lništi."}
@@ -30,15 +30,15 @@ class PamatkyTest(unittest.TestCase):
         self.assertEqual(radky[3], "\nJinde (hledané slovo jen v textu): 1")
 
     def test_ulice_bez_zdvojene_adresy(self):
-        radky = pamatky.vypis([DOM], "Na Maninách")
+        radky = pamatky.vypis([DOM], "Dlouhá")
         self.assertTrue(radky[0].startswith("\nV místě"))
-        self.assertIn("| Praha, Holešovice, Na Maninách č.p. 1149/32 |", radky[1])
+        self.assertIn("| Praha, Holešovice, Dlouhá č.p. 1149/32 |", radky[1])
 
     def test_cislo_domu(self):
         self.assertTrue(pamatky.ma_cislo(DOM, "1149"))
         self.assertTrue(pamatky.ma_cislo(DOM, "32"))
         self.assertFalse(pamatky.ma_cislo(DOM, "114"))
-        self.assertEqual(pamatky.vypis([DOM], "Na Maninách", "27"), [])
+        self.assertEqual(pamatky.vypis([DOM], "Dlouhá", "12"), [])
 
     def test_odkaz_bez_diakritiky(self):
         self.assertEqual(pamatky.odkaz(KAPLE), "https://www.pamatkovykatalog.cz/navesni-kaple-sv-jana-nepomuckeho-25529919")

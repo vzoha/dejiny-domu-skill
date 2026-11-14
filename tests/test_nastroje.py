@@ -1146,7 +1146,7 @@ class TestMista(Projekt):
     def test_osada_bez_ulic_patri_k_obci_podle_nazvu_pred_cislem(self):
         p = self.spust("import mista\n"
                        "print(mista.v_obci('Levín 19, 26701 Králův Dvůr', 'Levín'), mista.v_obci('č.p. 1, 29501 Bílá Hlína', 'Hlína'),"
-                       " mista.v_obci('Husova 66, Beroun-Zavadilka, 26601 Beroun', 'Beroun'))")
+                       " mista.v_obci('Dlouhá 12, Beroun-Zavadilka, 26601 Beroun', 'Beroun'))")
         self.assertEqual(p.stdout.split(), ["True", "False", "True"], p.stderr)
 
     def test_neznama_adresa_s_cislem_neni_obec(self):

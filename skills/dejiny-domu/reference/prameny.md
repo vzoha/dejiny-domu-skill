@@ -109,11 +109,11 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
   - Židovské domy měly do 70. let 19. stol. vlastní řadu římskými čísly (Turnov do 1875, místy déle):
     „II“ není čp. 2.
   - Evidenční čísla (od 1961, chaty a dočasné stavby) jsou samostatná řada: čp. 5 a ev. č. 5 jsou dva domy.
-  - **Číslo v hlavičce gruntovní knihy** bývá dopsané později, někdy staré i nové naráz (Olomouc 1755 „N. 431“
-    i „N. 183“). Nedokládá, že dům to číslo měl v roce zápisu; číslo k roku ber z matriky nebo soupisu té doby.
+  - **Číslo v hlavičce gruntovní knihy** bývá dopsané později, někdy staré i nové naráz (ve městě 1755 staré
+    „N. 520“ i nové „N. 412“). Nedokládá, že dům to číslo měl v roce zápisu; číslo k roku ber z matriky nebo soupisu té doby.
   - **Římská číslice u čp.** = část obce nebo předměstí („288-IV“). Změní se i bez změny domu a písaři ji pletli:
-    Beroun čp. 288 v matrikách 1900–1931 střídavě „IV“ a „II“ (IV převažuje do 1922, II od 1925), pak při vzniku
-    části Zavadilka 1980 nové čp. 66. Stejné číslo s jinou číslicí ztotožni přes osoby a dobu, jiné číslo se
+    jedno čp. v matrikách 1900–1931 střídavě „IV“ a „II“ (IV převažuje do 1922, II od 1925), pak při vzniku
+    nové části obce 1980 úplně jiné čp. Stejné číslo s jinou číslicí ztotožni přes osoby a dobu, jiné číslo se
     stejnou číslicí je jiný dům.
 - **Orientační čísla** (podle ulic, patent z 23. 3. 1857; Brno 1867, Praha 60. léta, České Budějovice 1875)
   **nejsou přečíslování**: čp. platí dál a v matrikách i pozemkové knize se dům hledá podle čp. Adresa „ulice
@@ -232,7 +232,7 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   **Budovy:** růžová = nespalná (zpravidla zděná), žlutá = spalná (dřevo, došky), stav při mapování; tmavě karmínová =
   kostel a významné (veřejné, panské) budovy. Červené šrafy na originální mapě = zděná budova zakreslená nebo ověřená
   při reambulaci. **Hustota šraf ani výplň stáří neurčí** – husté šrafy přes výplň mají budovy stojící už při mapování
-  (Hlína: myslivna, kostel 1794) i novostavby (Lniště 74, 75 na zahradě z roku 1827); šrafy přes budovu, která byla
+  (myslivna, kostel) i novostavby (Lniště 74, 75 na zahradě z roku 1827); šrafy přes budovu, která byla
   na otisku žlutá, = nejspíš dřevěná stavba nahrazená zděnou. **Rozhoduje jen srovnání se stejným výřezem císařského
   otisku** (`export stable <id> … x0,y0,x1,y1`): co je na otisku, stálo při mapování; co tam není, nepiš „dům tu stál
   už v roce [mapování]“, ale „budova je do mapy dokreslená při opravě v roce [reambulace]“.

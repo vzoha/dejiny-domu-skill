@@ -70,7 +70,7 @@ class Ulice(unittest.TestCase):
         self.assertTrue(obeti.v_ulici(a, "dlouha", ["745"], "Praha I"))
         self.assertFalse(obeti.v_ulici(a, "Dlouhá", ["27"]))
         self.assertFalse(obeti.v_ulici(a, "Dlouhá", obec="Praha XIII"))
-        self.assertFalse(obeti.v_ulici("Praha XIII, Kolínská 1425", "Dlouhá", ["1425"]))
+        self.assertFalse(obeti.v_ulici("Praha XIII, Kolínská 2205", "Dlouhá", ["2205"]))
 
     def test_ulice_bez_cisla_a_vypis(self):
         stranky = {obeti.BASE: HLEDANI, "https://www.holocaust.cz/databaze-obeti/obet/10001-jan-novak/":

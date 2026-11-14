@@ -143,7 +143,7 @@ def listy(m):
         s0x = a.get("S0X", "").split("|")[-1]
         if not s0x:
             print("  indikační skica: není v kladu")
-        elif s0x.startswith("MOR"):   # služba skici moravské skici nemá (Hlína MOR067318731, 5. 11. 2026)
+        elif s0x.startswith("MOR"):   # služba skici moravské skici nemá (ověřeno 5. 11. 2026)
             print(f"  indikační skica: {s0x} – ve službě skici Morava není, najít ručně v aplikaci Archiv ČÚZK")
         else:
             print(f"  indikační skica: → rastry skici \"{s0x}\"")
