@@ -86,7 +86,6 @@ KONTROLY = [
 # Portály bez pevného svazku (cestu k obrázku dává jen prohlížeč): jen „server odpovídá“
 DOSTUPNOST = [
     ("soal", "obrázkový server SOA Litoměřice", "https://images.soalitomerice.cz/ximage/matriky/zoomify/"),
-    ("opava", "obrázkový server ZA Opava", "https://images.archives.cz/ximage/matriky/zoomify/"),
     ("matricula", "Matricula", "https://data.matricula-online.eu/"),
 ]
 
