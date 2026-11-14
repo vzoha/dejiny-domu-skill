@@ -1,7 +1,8 @@
 # Dějiny domu – skill pro Claude Code
 
 Claude vás provede **dějinami vašeho domu, chalupy nebo statku a celé vsi**: od toho, co o domě víte, přes digitalizované
-archivy (sčítání lidu, matriky podle čísla domu, stabilní katastr, gruntovní knihy, staré mapy, noviny, literatura) až
+archivy (sčítání lidu, matriky podle čísla domu, stabilní katastr se jmény majitelů, gruntovní knihy, staré mapy,
+noviny, literatura) až
 k webu s časovou osou domu, držiteli, obyvateli, výřezy původních zápisů s přepisem a překladem a porovnáním starých map.
 Je určený pro lidi, kteří v archivu nikdy nebádali a neprogramují – technickou práci dělá Claude, vy dodáváte znalost
 místa a rozhodujete.
@@ -12,7 +13,7 @@ Nástroje na archivy, čtení snímků, výřezy, deník hledání a web jsou sp
 rodokmenu za skvělý základ.
 
 **Aktuální verze: 0.12.0 (listopad 2026), rané vydání.** Skill vznikl při zjišťování dějin jednoho domu a zatím byl
-vyzkoušený na několika domech v Čechách i na Moravě (Linux). Počítejte s chybami a dejte mi o nich vědět.
+vyzkoušený na řadě domů na vsi i ve městě, v Čechách i na Moravě (Linux). Počítejte s chybami a dejte mi o nich vědět.
 
 ## Dějiny domu na zakázku
 
@@ -106,6 +107,8 @@ Bez vašeho souhlasu nic neodešle. Nástroj převzatý ze skillu Rodokmen (dík
 Projekt zůstává na vašem počítači. Claude má pokyn nedávat na web údaje o žijících lidech a dnešních majitelích bez
 souhlasu a před zveřejněním s vámi projít, co web říká – rozhodnutí je ale na vás. Pokud projekt zálohujete na GitHub,
 použijte **soukromý** repozitář.
+Databáze obětí nacismu obsahuje citlivé údaje a chce při vstupu souhlas s podmínkami. Ten potvrzujete vy sami
+v terminálu, Claude ho za vás nepotvrdí.
 
 ## Bezpečnost
 Skill je text (návod pro Clauda) a skripty v Pythonu, které si můžete před instalací prohlédnout. Plugin nemá hooky ani
@@ -113,15 +116,16 @@ MCP servery; skripty spouští jen Claude, když je potřebuje, a Claude Code se
 projektu, jen společný limit rychlosti k archivům si drží stav ve `~/.cache/dejiny-domu/`. Do projektu skill zapíše
 hook (`.claude/settings.json` → `tools/hlidac.py`), který Claudovi nedovolí posílat na weby dotazy mimo ten limit –
 archivy po sérii rychlých dotazů blokují IP adresu. Chodí na:
-- archivní portály, které to dovolují (ARON, AHMP, eBadatelna SOA Praha, MZA Brno – jen hledání, SOA Litoměřice
-  a ZA Opava – obrázkový server, Matricula, policejní přihlášky Národního archivu, sčítání Brna, Národní archivní portál),
+- archivní portály, které to dovolují (ARON, AHMP, eBadatelna SOA Praha a MZA Brno – jen hledání, SOA Litoměřice
+  – obrázkový server, Matricula, policejní přihlášky Národního archivu, sčítání Brna, Národní archivní portál);
+  kde archiv nástroje nepouští (ZA Opava, snímky eBadatelny), otevřete snímek v prohlížeči vy,
 - mapy a úřední data (Archiv ČÚZK, ortofota ČÚZK a krajů, RÚIAN, CENIA, Geolab, IPR Praha, OpenStreetMap, ARES
   a obchodní rejstřík),
 - noviny a knihy (ANNO, Kramerius, Česká digitální knihovna),
 - památky a sbírky (Památkový katalog a MIS NPÚ, eSbírky, Fotobanka Seidel, Industriální topografie,
   translokační plány ČVUT, Wikimedia Commons, Europeana, Deutsche Digitale Bibliothek, pohlednice AKON
   Rakouské národní knihovny, zanikleobce.cz),
-- evidence válečných hrobů MO a hřbitovní pasporty obcí na GisOnline.cz,
+- evidence válečných hrobů MO, hřbitovní pasporty obcí na GisOnline.cz a Databáze obětí nacismu (holocaust.cz),
 - při instalaci webu do registru npm; na Netlify jen tehdy, když web sami zveřejníte.
 
 Instalujte skilly jen od lidí, kterým věříte.
