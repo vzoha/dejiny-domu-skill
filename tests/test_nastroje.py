@@ -699,6 +699,24 @@ class TestExport(Projekt):
         pribeh = self.text("web", "src", "generated", "pribehy", "mlyn.md")
         self.assertNotIn("jen pro Clauda", pribeh)
 
+    def test_pojmy_a_popisky_menu_projdou_exportem_i_aktualizaci(self):
+        pojmy = {"misto": "osada", "misto_2": "osady", "stred": "kapličky"}
+        menu = {"popisky": {"/obec/": "Osada Horní Lhota", "/zapisy/": "Zápisy"}}
+        for klic, obj in (("pojmy", pojmy), ("menu", menu)):
+            p = self.nastroj("zapis.py", "web", klic, "-", vstup=json.dumps(obj, ensure_ascii=False))
+            self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        rc, out = self.export()
+        self.assertEqual(rc, 0, out)
+        self.assertEqual((self.site()["config"]["pojmy"], self.site()["config"]["menu"]), (pojmy, menu))
+        pred = self.text("data", "web.json")
+        p = subprocess.run([sys.executable, "-I", os.path.join(SKILL, "tools", "novy_projekt.py"), self.root],
+                           capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertEqual(self.text("data", "web.json"), pred)   # aktualizace šablony nastavení nepřepíše
+        rc, out = self.export()
+        self.assertEqual(rc, 0, out)
+        self.assertEqual(self.site()["config"]["pojmy"], pojmy)
+
 
 class TestDnnt(Projekt):
     """dnnt.py bez sítě: Kramerius NK i Česká digitální knihovna (CDK) jsou nahrazené."""
