@@ -62,7 +62,11 @@ skutečnou adresu vyčti z výstupu (`Preview server running at …`) a před od
 - **Vlastní doplňky webu** (tlačítko, odkaz v patičce, skript): soubor `web/src/doplnky/<název>.astro`. Vykreslí se
   na místech `uvod`, `uvod-dum`, `dum` (prop `dum`), `pribeh` (prop `slug`), `paticka` a `konec` a podle propu
   `misto` sám rozhodne, kde něco ukáže (`{Astro.props.misto === 'paticka' && <> · <a href="…">…</a></>}`).
-  Aktualizace skillu složku `doplnky/` nepřepíše, úpravy šablon webu ano (stará verze jde do zálohy).
+  Aktualizace skillu nepřepíše soubory navíc ve `web/src/` – vlastní stránky (`web/src/pages/<název>.astro`) ani
+  složku `doplnky/`; úpravy šablon webu ano (stará verze jde do zálohy).
+- **Vlastní stránka v menu:** `menu.navic` ve `web.json`, např. `[{"url": "/sousede/", "nazev": "Sousedé",
+  "skupina": 1}]` (skupina 1–3 zleva, položka jde na konec skupiny). Data si stránka načte sama, např.
+  z `web/src/doplnky/<název>.json`.
 - Šablona `web.json` je prázdná – název nastav hned na začátku.
 ## Zveřejnění na Netlify (výchozí, zdarma)
 1. Uživatel si založí účet na netlify.com (stačí přihlášení přes Google/GitHub) – udělá sám.
