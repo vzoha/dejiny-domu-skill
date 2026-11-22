@@ -1,3 +1,5 @@
+import { pojmy } from './data.js';
+
 // Druhy bodů na mapě (pole „druh“ v data/mista.json): název do legendy a barva.
 // Pořadí = pořadí v legendě a v seznamu míst pod mapou.
 export const PLACE_KINDS = {
@@ -11,10 +13,10 @@ export const PLACE_KINDS = {
   jine: { name: 'Další místa', color: '#86B8E8' },
 };
 
-// Od čeho se počítá vzdálenost v textu „… od návsi“ (2. pád; u města třeba 'náměstí' nebo 'středu obce').
-export const STRED = 'návsi';
+// Od čeho se počítá vzdálenost v textu „… od návsi“ (2. pád; web.json → pojmy.stred, bez něj 'návsi').
+export const STRED = pojmy.stred;
 
-// Vzdálenost od středu obce (OBEC lat/lon) jako text („600 m od návsi“, „1,4 km od návsi“); blíž než 300 m = prázdné.
+// Vzdálenost od středu místa (OBEC lat/lon) jako text („600 m od <STRED>“, „1,4 km od <STRED>“); blíž než 300 m = prázdné.
 export function distText(village, p) {
   if (village?.lat == null || p?.lat == null) return '';
   const r = Math.PI / 180, dLat = (p.lat - village.lat) * r, dLon = (p.lon - village.lon) * r;

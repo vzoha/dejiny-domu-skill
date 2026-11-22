@@ -2,7 +2,7 @@
 import { Font } from 'astro:assets';
 import '../styles/global.css';
 import '../styles/modern.css';
-import { config } from '../lib/data.js';
+import { config, popiskyMenu } from '../lib/data.js';
 import Doplnky from '../components/Doplnky.astro';
 const siteName = config.nazev || 'Dějiny domu';
 const { title, description = config.popis || siteName, wide = false, narrow = false } = Astro.props;
@@ -33,7 +33,7 @@ const current = (url) => ((url === '/' ? path === '/' : path.startsWith(url)) ? 
       <nav id="site-nav">
         {groups.map((g, i) => (
           <div class={`nav-group nav-group-${i + 1}`}>
-            {g.map(([url, label]) => <a href={url} aria-current={current(url)}>{label}</a>)}
+            {g.map(([url, label]) => <a href={url} aria-current={current(url)}>{popiskyMenu[url] || label}</a>)}
           </div>
         ))}
       </nav>

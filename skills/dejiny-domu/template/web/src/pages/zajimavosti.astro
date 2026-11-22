@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import { pojmy, velke } from '../lib/data.js';
 import { Content } from '../generated/zajimavosti.md';
 ---
 <Base title="Zajímavosti">
@@ -8,7 +9,7 @@ import { Content } from '../generated/zajimavosti.md';
   <div class="prose prose-story prose-groups"><Content /></div>
 
   <div class="next-step">
-    <p><strong>Ponořte se hlouběji:</strong> projděte dějiny obce, jednotlivé domy nebo staré mapy.</p>
-    <p><a class="btn" href="/obec/">Obec →</a> <a class="btn btn-ghost" href="/domy/">Domy →</a> <a class="btn btn-ghost" href="/mapy/">Staré mapy →</a></p>
+    <p><strong>Ponořte se hlouběji:</strong> projděte dějiny {pojmy.misto_2}, jednotlivé domy nebo staré mapy.</p>
+    <p><a class="btn" href="/obec/">{velke(pojmy.misto)} →</a> <a class="btn btn-ghost" href="/domy/">Domy →</a> <a class="btn btn-ghost" href="/mapy/">Staré mapy →</a></p>
   </div>
 </Base>

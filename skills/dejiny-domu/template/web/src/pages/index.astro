@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import HouseMap from '../components/HouseMap.astro';
 import Doplnky from '../components/Doplnky.astro';
 import Timeline from '../components/Timeline.astro';
-import { stats, config, village, mainHouse, houseList, href, houseAddress, houseFullTitle } from '../lib/data.js';
+import { stats, config, village, mainHouse, houseList, href, houseAddress, houseFullTitle, pojmy, velke } from '../lib/data.js';
 import { frontmatter as pribeh } from '../generated/pribeh.md';
 const uvod = config.uvod ?? {};
 const cards = config.zajimavosti_na_uvodu ?? [];
@@ -73,12 +73,12 @@ const heroParagraphs = uvod.odstavce ?? (config.maPribeh && pribeh.lead ? [pribe
     <>
       <div class="section-head">
         <div>
-          <p class="eyebrow">Obec</p>
+          <p class="eyebrow">{velke(pojmy.misto)}</p>
           <h2><a href="/obec/">{village.name}</a></h2>
         </div>
       </div>
       {village.desc && <p class="lead">{village.desc}</p>}
-      <p><a class="btn" href="/obec/">Dějiny obce →</a></p>
+      <p><a class="btn" href="/obec/">Dějiny {pojmy.misto_2} →</a></p>
     </>
   )}
 
@@ -86,7 +86,7 @@ const heroParagraphs = uvod.odstavce ?? (config.maPribeh && pribeh.lead ? [pribe
     <div class="map-card">
       <HouseMap height="420px" compact />
       <div class="map-card-bar">
-        <span class="muted small">Domy a místa z dějin obce</span>
+        <span class="muted small">Domy a místa z dějin {pojmy.misto_2}</span>
         <span class="map-card-links">
           <a href="/mapa/">Velká mapa <span class="arr" aria-hidden="true"></span></a>
           <a href="/mapy/">Staré mapy a letecké snímky <span class="arr" aria-hidden="true"></span></a>

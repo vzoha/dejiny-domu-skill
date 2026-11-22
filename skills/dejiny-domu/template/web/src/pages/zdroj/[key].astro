@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import HouseLink from '../../components/HouseLink.astro';
-import { records, recordList } from '../../lib/data.js';
+import { records, recordList, pojmy } from '../../lib/data.js';
 
 export function getStaticPaths() {
   return recordList.map((r) => ({ params: { key: r.key } }));
@@ -19,7 +19,7 @@ const r = records[Astro.params.key];
       <tr><th>Svazek</th><td>{r.volume}</td></tr>
       <tr><th>Snímek / strana</th><td>{r.scan}{r.url && <> – <a href={r.url} target="_blank" rel="noopener">otevřít na portálu {r.portal}</a></>}</td></tr>
       {r.licence && <tr><th>Licence</th><td>{r.licenceUrl ? <a href={r.licenceUrl} target="_blank" rel="noopener">{r.licence}</a> : r.licence}</td></tr>}
-      {(r.houses.length > 0 || r.village) && <tr><th>Týká se</th><td>{r.houses.map((s, i) => <>{i > 0 && ', '}<HouseLink slug={s} /></>)}{r.village && <>{r.houses.length ? ', ' : ''}<a href="/obec/">obec</a></>}</td></tr>}
+      {(r.houses.length > 0 || r.village) && <tr><th>Týká se</th><td>{r.houses.map((s, i) => <>{i > 0 && ', '}<HouseLink slug={s} /></>)}{r.village && <>{r.houses.length ? ', ' : ''}<a href="/obec/">{pojmy.misto}</a></>}</td></tr>}
     </tbody>
   </table></div>
   {r.img && (

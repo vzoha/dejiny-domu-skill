@@ -1,11 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
-import { houseList, href, village } from '../lib/data.js';
+import { houseList, href, village, pojmy } from '../lib/data.js';
 // rok převzetí; když chybí (v datech „?“), aspoň „do <rok>“
 const takeoverYear = (o) => (/\d/.test(o.since) ? o.since : /\d/.test(o.until) ? `do ${o.until}` : '?');
 ---
 <Base title="Domy">
-  <h1>Domy{village.name && ` v obci ${village.name}`}</h1>
+  <h1>Domy{village.name && (pojmy.vlastni ? ` ${pojmy.misto_2} ${village.name}` : ` v obci ${village.name}`)}</h1>
   <p class="lead">Domy podle čísla popisného. Čísla se zaváděla v letech 1770–1771 a během 19. století se často měnila – u domu je uvedeno, pod jakými čísly ho v pramenech najdete.</p>
   <div class="house-grid">
     {houseList.map((h) => (

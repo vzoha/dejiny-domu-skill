@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { maps, mapGroups } from '../lib/data.js';
+import { maps, mapGroups, pojmy } from '../lib/data.js';
 // Prolínat jen mapy s ověřeně stejným výřezem (export_web.py → mapGroups), ostatní skupiny vedle sebe.
 const groups = Object.entries(Object.groupBy ? Object.groupBy(maps.filter((m) => m.group), (m) => m.group)
   : maps.filter((m) => m.group).reduce((a, m) => ((a[m.group] ??= []).push(m), a), {})).filter(([, l]) => l.length > 1)
@@ -8,7 +8,7 @@ const groups = Object.entries(Object.groupBy ? Object.groupBy(maps.filter((m) =>
 ---
 <Base title="Staré mapy" wide>
   <h1>Staré mapy a letecké snímky</h1>
-  <p class="lead">Jak se ves a okolí měnily – od vojenských mapování 18. století přes stabilní katastr po letecké snímky. Kliknutím mapu zvětšíte.</p>
+  <p class="lead">{pojmy.vlastni ? `Proměny ${pojmy.misto_2} a okolí` : 'Jak se ves a okolí měnily'} – od vojenských mapování 18. století přes stabilní katastr po letecké snímky. Kliknutím mapu zvětšíte.</p>
 
   {groups.map(([g, list, overlay]) => (
     <section class="cmp" data-cmp>

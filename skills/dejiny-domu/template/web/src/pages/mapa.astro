@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import HouseMap from '../components/HouseMap.astro';
-import { houseList, places, village, href, houseTitle, mainHouse } from '../lib/data.js';
+import { houseList, places, village, href, houseTitle, mainHouse, pojmy, velke } from '../lib/data.js';
 import { PLACE_KINDS, distText } from '../lib/places.js';
 // Seznam pod mapou: domy a místa po skupinách (stejné pořadí a barvy jako legenda v mapě).
 const items = [
@@ -24,11 +24,11 @@ const groups = Object.entries(PLACE_KINDS)
 ---
 <Base title="Mapa" wide>
   <h1>Mapa</h1>
-  <p class="lead">Domy a místa z dějin obce. Klikněte na bod a dozvíte se, co se tam stalo. Vlevo nahoře přepnete mezi vsí a okolím, vlevo dole jsou vysvětlivky barev a vpravo nahoře letecký snímek a dnešní katastr.</p>
+  <p class="lead">Domy a místa z dějin {pojmy.misto_2}. Klikněte na bod a dozvíte se, co se tam stalo. Vlevo nahoře přepnete {pojmy.vlastni ? `výřez tlačítky ${velke(pojmy.misto)} a okolí` : 'mezi vsí a okolím'}, vlevo dole jsou vysvětlivky barev a vpravo nahoře letecký snímek a dnešní katastr.</p>
   <HouseMap height="calc(100vh - 260px)" />
 
   <h2 class="places-h">Místa na mapě</h2>
-  <p class="places-intro">Co kde stojí a proč to patří k dějinám obce. Tlačítkem „Na mapě“ místo ukážete nahoře.</p>
+  <p class="places-intro">Co kde stojí a proč to patří k dějinám {pojmy.misto_2}. Tlačítkem „Na mapě“ místo ukážete nahoře.</p>
   {groups.map((g) => (
     <section class="pl-group" style={`--c:${g.color}`}>
       <h3 class="pl-group-h"><span class="pl-dot"></span>{g.name}<span class="pl-count">{g.items.length}</span></h3>

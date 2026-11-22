@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Gallery from '../../components/Gallery.astro';
-import { docs, config } from '../../lib/data.js';
+import { docs, config, pojmy } from '../../lib/data.js';
 import { Content, frontmatter } from '../../generated/pribeh.md';
 
 // Rozcestník příběhů. Starší projekty mají jen data/pribeh.md – ten se ukáže tady celý.
@@ -18,7 +18,7 @@ const jenJeden = pribehy.length === 0;
   ) : (
     <>
       <h1>Příběhy</h1>
-      <p class="lead">Co jsme o domech a vsi vyčetli ze starých map, gruntovních knih, matrik a novin – vyprávěné od začátku do dneška.</p>
+      <p class="lead">Co jsme o {pojmy.vlastni ? `domech a dějinách ${pojmy.misto_2}` : 'domech a vsi'} vyčetli ze starých map, gruntovních knih, matrik a novin – vyprávěné od začátku do dneška.</p>
       <div class="story-cards">
         {pribehy.map((p) => (
           <a class="story-card" href={`/pribehy/${p.slug}/`}>

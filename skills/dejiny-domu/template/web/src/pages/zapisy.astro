@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import HouseLink from '../components/HouseLink.astro';
-import { recordList, dateKey, href } from '../lib/data.js';
+import { recordList, dateKey, href, pojmy } from '../lib/data.js';
 const list = [...recordList].sort((a, b) => dateKey(a.date) - dateKey(b.date));
 const kinds = [...new Set(list.map((r) => r.kindName))];
 ---
@@ -27,7 +27,7 @@ const kinds = [...new Set(list.map((r) => r.kindName))];
               </details>
             )}
           </td>
-          <td class="small">{r.houses.map((s, i) => <>{i > 0 && ', '}<HouseLink slug={s} /></>)}{r.village && <>{r.houses.length ? ', ' : ''}<a href="/obec/">obec</a></>}</td>
+          <td class="small">{r.houses.map((s, i) => <>{i > 0 && ', '}<HouseLink slug={s} /></>)}{r.village && <>{r.houses.length ? ', ' : ''}<a href="/obec/">{pojmy.misto}</a></>}</td>
         </tr>
       ))}
     </tbody>

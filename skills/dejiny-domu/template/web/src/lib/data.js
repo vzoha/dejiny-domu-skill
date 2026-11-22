@@ -4,6 +4,24 @@ import site from '../data/site.json';
 export const { village, houses, stats, issues, docs, config, maps, places } = site;
 export const mapGroups = site.mapGroups ?? {};
 export const mainHouse = site.mainHouse ? houses[site.mainHouse] : null;
+// Jak se říká místu webu (web.json → pojmy): misto = 1. pád, misto_2 = 2. pád, stred = 2. pád za „… od“ ve vzdálenosti
+// v bublině mapy. Bez nastavení obec / obce / návsi; vlastni = projekt pojem nastavil (pak se přeformulují věty,
+// kde výchozí text říká „ves“ nebo potřebuje jiný pád). Jiný typ než neprázdný text = výchozí hodnota.
+const pojem = (v, vychozi) => (typeof v === 'string' && v.trim() ? v.trim() : vychozi);
+const p = config.pojmy ?? {};
+const vlastni = !!pojem(p.misto, '');
+const misto_2 = pojem(p.misto_2, 'obce');
+export const pojmy = {
+  misto: pojem(p.misto, 'obec'), misto_2, stred: pojem(p.stred, vlastni ? `středu ${misto_2}` : 'návsi'), vlastni,
+};
+export const velke = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+// Popisky menu podle adresy (web.json → menu.popisky) mají přednost; /obec/ jinak z pojmy.misto.
+const popisky = config.menu?.popisky;
+export const popiskyMenu = {
+  ...(vlastni ? { '/obec/': velke(pojmy.misto) } : {}),
+  ...Object.fromEntries(Object.entries(popisky && typeof popisky === 'object' ? popisky : {})
+    .filter(([, v]) => pojem(v, '')).map(([k, v]) => [k, v.trim()])),
+};
 export const records = Object.fromEntries(site.records.map((r) => [r.key, r]));
 export const recordList = site.records;
 export const houseList = Object.values(houses).sort((a, b) => a.order - b.order);
