@@ -173,6 +173,23 @@ def main():
         warn.append("web.json: není nastavená odpověď na přihlašovací otázku – nasazení webu skončí chybou")
     if cfg.get("hlavni_dum") and str(cfg["hlavni_dum"]) not in D:
         err.append(f"web.json: hlavni_dum '{cfg['hlavni_dum']}' není v domy.py")
+    menu = cfg.get("menu") or {}
+    navic = menu.get("navic", []) if isinstance(menu, dict) else []
+    if not isinstance(menu, dict):
+        err.append("web.json: menu musí být objekt, např. {\"navic\": [...]}")
+    elif not isinstance(navic, list):
+        err.append("web.json: menu.navic musí být seznam položek {url, nazev, skupina}")
+        navic = []
+    for p in navic:
+        if not isinstance(p, dict):
+            err.append(f"web.json: menu.navic {p!r}: položka musí být objekt {{url, nazev, skupina}}")
+            continue
+        if not str(p.get("nazev") or "").strip():
+            err.append(f"web.json: menu.navic {p.get('url')}: chybí nazev")
+        if isinstance(p.get("skupina"), bool) or p.get("skupina") not in (1, 2, 3):   # True == 1 v Pythonu, ne v JS
+            err.append(f"web.json: menu.navic {p.get('url')}: skupina musí být 1, 2 nebo 3 (je {p.get('skupina')!r})")
+        if not str(p.get("url") or "").startswith("/"):
+            err.append(f"web.json: menu.navic {p.get('nazev')}: adresa musí začínat / (stránka tohoto webu)")
 
     # Obyvatelé posledních ~100 let jsou možná žijící nebo jejich děti ano – soukromí (reference/soukromi.md).
     hranice = datetime.date.today().year - 100
