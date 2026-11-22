@@ -32,6 +32,8 @@ skutečnou adresu vyčti z výstupu (`Preview server running at …`) a před od
  "uvod": {"nadpis": "Lákavý nadpis", "odstavce": ["2–3 věty, které chytí"], "foto": "klic_obrazku_ve_vyrezech", "foto_popis": "…"},
  "hlavni_dum": "12",
  "pribeh": {"menu": "Příběh domu", "tlacitko": "Přečíst příběh čp. 12", "hlavni": "cp12"},
+ "pojmy": {"misto": "osada", "misto_2": "osady", "stred": "kapličky"},
+ "menu": {"popisky": {"/zapisy/": "Zápisy"}},
  "galerie": {"skupiny": [{"id": "tehdy", "nazev": "Tehdy a dnes", "uvod": "Stará fotka a dnešní ze stejného místa."}]},
  "zajimavosti_na_uvodu": [{"nadpis": "Nejstarší zmínka", "text": "1351 – …"}],
  "verejny": false
@@ -55,6 +57,12 @@ skutečnou adresu vyčti z výstupu (`Preview server running at …`) a před od
   (`pribeh.hlavni` = slug příběhu, kam vede tlačítko na úvodu; bez něj vede na rozcestník `/pribehy/`).
 - `galerie.skupiny`: názvy, úvodní věta a pořadí skupin fotek na stránce příběhů (`skupina` v `dokumenty.json`).
   Fotky bez skupiny jdou na konec („Další fotografie“).
+- `pojmy`: jak se říká místu webu, když to není obec – `misto` (1. pád: osada, enkláva, čtvrť) a `misto_2` (2. pád),
+  vyplňte oba. Převezmou je menu, nadpisy, tlačítko mapy a věty o místě (velké písmeno doplní šablona); adresa
+  `/obec/` i druh místa „Sousední vsi“ zůstanou. `stred` = 2. pád za „… od“ ve vzdálenosti v bublině mapy (náměstí,
+  kapličky); bez něj „středu <misto_2>“. Bez `pojmy` obec / obce / návsi.
+- `menu.popisky`: jiný popisek stávající položky menu podle adresy stránky. Má přednost před popiskem odvozeným
+  z `pojmy.misto` i před `pribeh.menu`.
 - `indexovat`: `true` = vyhledávače smí web najít. Bez něj má každá stránka `noindex` (výchozí, chrání soukromí
   lidí z domu). Zapni jen u otevřeného webu, který uživatel výslovně chce mít ve vyhledávání.
 - **Otevřený web a podmínky archivů:** obrázek, který archiv bez souhlasu nedovoluje zveřejnit (`podminky.md`),
