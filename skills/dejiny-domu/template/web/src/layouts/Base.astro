@@ -7,11 +7,12 @@ import Doplnky from '../components/Doplnky.astro';
 const siteName = config.nazev || 'Dějiny domu';
 const { title, description = config.popis || siteName, wide = false, narrow = false } = Astro.props;
 const path = Astro.url.pathname;
+const navic = Array.isArray(config.menu?.navic) ? config.menu.navic : [];
 const groups = [
   [['/', 'Úvod'], ...(config.maPribeh ? [['/pribehy/', config.pribeh?.menu || 'Příběh domu']] : []), ['/zajimavosti/', 'Zajímavosti']],
   [['/obec/', 'Obec'], ['/domy/', 'Domy'], ['/mapy/', 'Staré mapy'], ['/mapa/', 'Mapa'], ['/zapisy/', 'Prameny'], ['/hledame/', 'Co hledáme']],
   [['/hledat/', 'Hledat']],
-];
+].map((g, i) => [...g, ...navic.filter((p) => p?.skupina === i + 1 && p.nazev).map((p) => [p.url, p.nazev])]);
 const current = (url) => ((url === '/' ? path === '/' : path.startsWith(url)) ? 'page' : undefined);
 ---
 <!doctype html>
