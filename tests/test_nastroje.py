@@ -292,6 +292,26 @@ class TestKontrola(Projekt):
         self.assertIn("1 zápisů", out)
         self.assertNotIn(f"zápis {ZAZNAM['klic']}:", out)   # zápis má všechno (výřez, rámeček, přepis, citaci)
 
+    def test_menu_navic_skupina_a_adresa(self):
+        navic = [{"url": "/sousede/", "nazev": "Sousedé", "skupina": 1}, {"url": "/kaple/", "nazev": "Kaple", "skupina": 3},
+                 {"url": "/mlyn/", "nazev": "Mlýn", "skupina": 0}, {"url": "/pole/", "nazev": "Pole", "skupina": 4},
+                 {"url": "/les/", "nazev": "Les", "skupina": "1"}, {"url": "sousede/", "nazev": "Bez lomítka", "skupina": 2},
+                 {"url": "/luh/", "skupina": 2}, {"url": "/haj/", "nazev": "Háj", "skupina": True}, None]
+        p = self.nastroj("zapis.py", "web", "menu", "-", vstup=json.dumps({"navic": navic}))
+        self.assertEqual(p.returncode, 0, p.stderr)
+        rc, out = self.kontrola()
+        self.assertEqual(rc, 1, out)
+        for h in ("menu.navic /mlyn/: skupina", "menu.navic /pole/: skupina", "menu.navic /les/: skupina", "menu.navic /haj/: skupina",
+                  "menu.navic Bez lomítka: adresa", "menu.navic /luh/: chybí nazev", "menu.navic None: položka musí být objekt"):
+            self.assertIn(h, out)
+        self.assertNotIn("menu.navic /sousede/", out)
+        self.assertNotIn("menu.navic /kaple/", out)
+        p = self.nastroj("zapis.py", "web", "menu", "-", vstup='{"navic": {}}')
+        self.assertEqual(p.returncode, 0, p.stderr)
+        rc, out = self.kontrola()
+        self.assertEqual(rc, 1, out)
+        self.assertIn("menu.navic musí být seznam", out)
+
     def test_citace_neexistujiciho_zapisu(self):
         self.napln()
         with open(self.path("data", "domy.py"), "a", encoding="utf-8") as f:
@@ -1204,6 +1224,33 @@ class TestNovyProjekt(Projekt):
         zalohy = [d for d in os.listdir(self.path("pracovni")) if d.startswith("zaloha_web_")]
         self.assertTrue(os.path.isfile(self.path("pracovni", zalohy[0], "package.json")))
         self.assertEqual(self.text("web", "package.json"), open(sablona, encoding="utf-8", newline="").read())
+
+    def test_aktualizace_neprepise_vlastni_stranku_doplnek_ani_menu(self):
+        vlastni = {("web", "src", "pages", "sousede.astro"): "---\nimport Base from '../layouts/Base.astro';\n---\n<Base title=\"Sousedé\"><h1>Sousedé</h1></Base>\n",
+                   ("web", "src", "doplnky", "tlacitko.astro"): "{Astro.props.misto === 'paticka' && <> · <a href=\"/sousede/\">Sousedé</a></>}\n",
+                   ("web", "src", "doplnky", "sousede.json"): '[{"cp": "12", "rok": 1850}]\n'}
+        for cesta, obsah in vlastni.items():
+            os.makedirs(self.path(*cesta[:-1]), exist_ok=True)
+            with open(self.path(*cesta), "w", encoding="utf-8", newline="") as f:
+                f.write(obsah)
+        p = self.nastroj("zapis.py", "web", "menu", "-", vstup='{"navic": [{"url": "/sousede/", "nazev": "Sousedé", "skupina": 1}]}')
+        self.assertEqual(p.returncode, 0, p.stderr)
+        web = self.text("data", "web.json")
+        with open(self.path("web", "src", "layouts", "Base.astro"), "a", encoding="utf-8") as f:
+            f.write("<!-- starší verze -->\n")   # starší projekt: šablona se od skillu liší
+        p = self.aktualizuj()
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertIn("Web aktualizován na novou šablonu (1 souborů)", p.stdout)
+        for cesta, obsah in vlastni.items():
+            self.assertEqual(self.text(*cesta), obsah)
+        self.assertEqual(self.text("data", "web.json"), web)
+        sablona = os.path.join(SKILL, "template", "web", "src", "layouts", "Base.astro")
+        with open(sablona, encoding="utf-8", newline="") as f:
+            self.assertEqual(self.text("web", "src", "layouts", "Base.astro"), f.read())
+        zaloha = [d for d in os.listdir(self.path("pracovni")) if d.startswith("zaloha_web_")]
+        zalohovano = [os.path.relpath(os.path.join(k, f), self.path("pracovni", zaloha[0]))
+                      for k, _, soubory in os.walk(self.path("pracovni", zaloha[0])) for f in soubory]
+        self.assertEqual(zalohovano, [os.path.join("src", "layouts", "Base.astro")])
 
     def test_aktualizace_beze_zmen_nezalohuje(self):
         p = self.aktualizuj()
