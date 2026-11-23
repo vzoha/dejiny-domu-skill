@@ -2,8 +2,8 @@
 
 Web je statický (Astro + vyhledávání Pagefind), data bere z `data/` přes `tools/export_web.py`.
 Stránky: úvod (lákadlo, hlavní dům s časovou osou, zajímavosti, mapa), příběhy (jeden, nebo rozcestník s kartami
-+ galerie fotek po skupinách), zajímavosti, obec (údaje a časová
-osa), domy (seznam), stránka domu (čísla v čase, časová osa, držitelé, obyvatelé, mapa, fotky, prameny), staré mapy
++ galerie fotek po skupinách), zajímavosti, obec (údaje, časová
+osa a fotky bez domu), domy (seznam), stránka domu (čísla v čase, časová osa, držitelé, obyvatelé, mapa, fotky, prameny), staré mapy
 (galerie, mapy stejné `skupiny` vedle sebe, se stejným `vyrez` prolínání), mapa (OpenStreetMap, letecký snímek a katastr ČÚZK), prameny (s výřezem,
 rámečkem, přepisem a překladem), „Co hledáme“, výzkumný deník, hledání.
 
@@ -55,7 +55,8 @@ skutečnou adresu vyčti z výstupu (`Preview server running at …`) a před od
 - `uvod.foto` = klíč obrázku ve `vyrezy/` (ulož přes `vyrez.py`).
 - `hlavni_dum`: čp. hlavního domu (úvodní stránka ho ukáže s časovou osou). `pribeh` viz `pribehy.md`
   (`pribeh.hlavni` = slug příběhu, kam vede tlačítko na úvodu; bez něj vede na rozcestník `/pribehy/`).
-- `galerie.skupiny`: názvy, úvodní věta a pořadí skupin fotek na stránce příběhů (`skupina` v `dokumenty.json`).
+- `galerie.skupiny`: názvy, úvodní věta a pořadí skupin fotek (`skupina` v `dokumenty.json`) na stránce příběhů,
+  na stránce domu (jeho fotky, `domy`) a na stránce obce (fotky bez `domy`).
   Fotky bez skupiny jdou na konec („Další fotografie“).
 - `pojmy`: jak se říká místu webu, když to není obec – `misto` (1. pád: osada, enkláva, čtvrť) a `misto_2` (2. pád),
   vyplňte oba. Převezmou je menu, nadpisy, tlačítko mapy a věty o místě (velké písmeno doplní šablona); adresa

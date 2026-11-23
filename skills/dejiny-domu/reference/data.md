@@ -131,7 +131,7 @@ Bod přidá `mista.py pridej` (poloha z OSM), další pole `zapis.py mista "<ná
 ## `dokumenty.json` – fotky a dokumenty
 `[{"img": "foto_cp12_1935", "popis": "Čp. 12 kolem 1935 (fotka od paní X).", "domy": ["12"]}]`
 Obrázek přes `vyrez.py dokumenty/<sken>.jpg foto_cp12_1935 0,0,1,1`.
-Volitelně (galerie na stránce příběhů):
+Volitelně (galerie na stránkách příběhů, domu a obce):
 - `skupina` – id skupiny z `web.json` → `galerie.skupiny` (např. `tehdy`, `dnes`, `rekonstrukce`); `poradi` – číslo v rámci galerie.
 - `par` – `img` druhé fotky do dvojice „tehdy – dnes“ (stará kresba/fotka + dnešní foto ze stejného místa); ukáží se
   vedle sebe. `"format": "sirka"` u dvojice na šířku (jinak na výšku).
