@@ -135,6 +135,11 @@ Volitelně (galerie na stránkách příběhů, domu a obce):
 - `skupina` – id skupiny z `web.json` → `galerie.skupiny` (např. `tehdy`, `dnes`, `rekonstrukce`); `poradi` – číslo v rámci galerie.
 - `par` – `img` druhé fotky do dvojice „tehdy – dnes“ (stará kresba/fotka + dnešní foto ze stejného místa); ukáží se
   vedle sebe. `"format": "sirka"` u dvojice na šířku (jinak na výšku).
+- Údaje pod snímkem (galerie je ukáže, prázdné vynechá): `autor` – kdo snímek pořídil nebo nakreslil; `rok` – kdy,
+  i přibližně („1935“, „asi 1925“, „před 1945“); `zdroj` – odkud je („album rodiny Novákových“, „pohlednice, sbírka
+  obce“); `url` – odkaz na původní zdroj; `licence` – za jakých podmínek smí na web („CC BY 4.0“, „volné dílo“,
+  „se souhlasem rodiny Novákových“); `licence_url` – odkaz na znění licence. Odkaz jen `http(s)://…` (jinak ho export
+  vynechá a `kontrola.py` ho vypíše).
 - `skryt: true` – na web nedávat (fotka zůstane v datech). Export ji smaže i z `web/public/{img,zdroje}`; Netlify a Docker
   nahrají web celý znovu, na hostingu, kam se jen nahrávají soubory (scp, FTP), ji smaž ručně.
 
