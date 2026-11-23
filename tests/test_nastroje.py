@@ -708,6 +708,54 @@ class TestExport(Projekt):
         self.assertFalse(os.path.exists(self.path("web", "public", "zdroje", ZAZNAM["klic"] + ".jpg")))
         self.assertTrue(os.path.exists(self.path("web", "public", "img", ZAZNAM["klic"] + ".jpg")))
 
+    def dokumenty(self, *dok):
+        for d in dok:
+            with open(self.path("vyrezy", d["img"] + ".jpg"), "wb") as f:
+                f.write(JPEG)
+        with open(self.path("data", "dokumenty.json"), "w", encoding="utf-8") as f:
+            json.dump(list(dok), f, ensure_ascii=False)
+
+    def test_udaje_snimku_v_site_json(self):
+        self.napln()
+        self.dokumenty(
+            {"img": "lhota_foto", "popis": "Chalupa", "domy": ["12"], "autor": " Jan Smyšlený ", "rok": 1935,
+             "zdroj": "Rodinné album", "url": "https://example.org/foto/1", "licence": "CC BY 4.0",
+             "licence_url": "https://creativecommons.org/licenses/by/4.0/"},
+            {"img": "lhota_bez", "popis": "Bez údajů", "domy": ["12"]},
+            {"img": "lhota_prazdne", "popis": "Prázdné", "autor": "", "rok": "  ", "url": "", "licence": " "})
+        rc, out = self.export()
+        self.assertEqual(rc, 0, out)
+        docs = {d["img"]: d for d in self.site()["docs"]}
+        self.assertEqual({k: docs["lhota_foto"].get(k) for k in ("author", "year", "source", "url", "licence", "licenceUrl")},
+                         dict(author="Jan Smyšlený", year="1935", source="Rodinné album", url="https://example.org/foto/1",
+                              licence="CC BY 4.0", licenceUrl="https://creativecommons.org/licenses/by/4.0/"))
+        zaklad = {"img", "caption", "houses", "group", "order", "pair", "wide", "full"}
+        self.assertEqual(set(docs["lhota_bez"]), zaklad)
+        self.assertEqual(set(docs["lhota_prazdne"]), zaklad)
+        for d in self.site()["houses"]["12"]["docs"]:
+            self.assertEqual(set(d), {"img", "caption"})   # údaje jen v docs[]
+
+    def test_nebezpecny_odkaz_snimku_vynecha(self):
+        for pole, klic in (("url", "url"), ("licence_url", "licenceUrl")):
+            with self.subTest(pole=pole):
+                self.napln()
+                self.dokumenty({"img": "lhota_foto", "popis": "Chalupa", "autor": "Jan Smyšlený", pole: "javascript:alert(1)"})
+                rc, out = self.export()
+                self.assertEqual(rc, 0, out)
+                self.assertIn(f"POZOR: data/dokumenty.json lhota_foto: {pole}", out)
+                d = self.site()["docs"][0]
+                self.assertNotIn(klic, d)
+                self.assertEqual(d["author"], "Jan Smyšlený")
+                self.assertNotIn("javascript:", self.text("web", "src", "data", "site.json"))
+                self.assertIn(f"dokument lhota_foto: {pole}:", self.nastroj("kontrola.py").stdout)
+                dok = self.data("dokumenty")
+                dok[0]["skryt"] = True
+                with open(self.path("data", "dokumenty.json"), "w", encoding="utf-8") as f:
+                    json.dump(dok, f, ensure_ascii=False)
+                rc, out = self.export()
+                self.assertEqual(rc, 0, out)
+                self.assertNotIn("POZOR: data/dokumenty.json", out)
+
     def test_odpoved_prihlaseni_neni_na_webu(self):
         self.nastroj("zapis.py", "web", "prihlaseni", "-",
                      vstup='{"uvod": "Jen pro známé.", "otazka": "Jak se říká chalupě?", "odpoved": "U Nováků"}')
