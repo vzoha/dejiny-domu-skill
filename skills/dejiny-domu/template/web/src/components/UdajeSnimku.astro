@@ -1,0 +1,13 @@
+---
+// Údaje o snímku pod popiskem (data/dokumenty.json: rok, autor, zdroj, url, licence, licence_url).
+// Bez údajů nevykreslí nic. Odkazy kontroluje export (jen http(s) a /…).
+const { d } = Astro.props;
+const zdroj = d.url ? { href: d.url, text: d.source || 'zdroj' } : d.source ? { text: d.source } : null;
+const licence = d.licenceUrl ? { href: d.licenceUrl, text: d.licence || 'licence' } : d.licence ? { text: d.licence } : null;
+const casti = [d.year && { text: d.year }, d.author && { text: d.author }, zdroj, licence].filter(Boolean);
+---
+{casti.length > 0 && (
+  <><br /><span class="muted">{casti.map((c, i) => (
+    <>{i > 0 && ' · '}{c.href ? <a href={c.href} target="_blank" rel="noopener">{c.text}</a> : c.text}</>
+  ))}</span></>
+)}

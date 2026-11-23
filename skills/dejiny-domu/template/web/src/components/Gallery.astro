@@ -3,6 +3,7 @@
 // format: "sirka". Názvy, úvody a pořadí skupin: web.json → galerie.skupiny. Fotky bez skupiny jdou na konec.
 // items: jen některé fotky (stránka domu, obce); bez něj všechny.
 import { docs, config } from '../lib/data.js';
+import UdajeSnimku from './UdajeSnimku.astro';
 
 const { items = docs } = Astro.props;
 const skupiny = config.galerie?.skupiny ?? [];   // [{ "id": "tehdy", "nazev": "Tehdy a dnes", "uvod": "…" }]
@@ -44,7 +45,7 @@ const full = (d) => `/${d.full ? 'zdroje' : 'img'}/${d.img}.jpg`;   // proklik n
                   </a>
                 ))}
               </div>
-              <figcaption>{d.caption}{d.pairDoc && <><br /><span class="muted">{d.pairDoc.caption}</span></>}</figcaption>
+              <figcaption>{d.caption}<UdajeSnimku d={d} />{d.pairDoc && <><br /><span class="muted">{d.pairDoc.caption}</span><UdajeSnimku d={d.pairDoc} /></>}</figcaption>
             </figure>
           ))}
         </div>
@@ -53,7 +54,7 @@ const full = (d) => `/${d.full ? 'zdroje' : 'img'}/${d.img}.jpg`;   // proklik n
           {g.items.map((d) => (
             <figure>
               <a href={full(d)} target="_blank" rel="noopener" class="ph"><img src={`/img/${d.img}.jpg`} alt={d.caption} loading="lazy" /></a>
-              <figcaption>{d.caption}</figcaption>
+              <figcaption>{d.caption}<UdajeSnimku d={d} /></figcaption>
             </figure>
           ))}
         </div>
