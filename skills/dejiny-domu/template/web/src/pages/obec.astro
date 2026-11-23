@@ -1,5 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
+import Gallery from '../components/Gallery.astro';
+import { docs } from '../lib/data.js';
 import Timeline from '../components/Timeline.astro';
 import { village, config, pojmy, velke } from '../lib/data.js';
 ---
@@ -16,4 +18,5 @@ import { village, config, pojmy, velke } from '../lib/data.js';
   <h2>Časová osa</h2>
   {village.events.length ? <Timeline events={village.events} /> : <p class="muted">Zatím nic.</p>}
   <p class="small muted">U každé události je, odkud ji víme: „doloženo pramenem“ = čteno přímo v archivním dokumentu, „z literatury“ = převzato z knihy nebo článku.</p>
+  {docs.some((d) => d.houses.length === 0) && <Gallery items={docs.filter((d) => d.houses.length === 0)} />}
 </Base>
