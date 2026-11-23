@@ -181,6 +181,9 @@ def main():
         for c in d.get("domy", []):
             if str(c) not in D:
                 err.append(f"dokument {d.get('img')}: dům '{c}' není v domy.py")
+        for pole in ("url", "licence_url"):
+            if not d.get("skryt") and (c := chyba_odkazu(str(d.get(pole) or "").strip() or None)):
+                err.append(f"dokument {d.get('img')}: {pole}: {c}")
     for name, e in jload("mista.json", {}).items():
         if e.get("lat") is None and e.get("lon") is None:
             warn.append(f"místo {name}: nemá souřadnice (spusťte tools/mista.py)")

@@ -203,6 +203,23 @@ def cited(x, recs):
     return [r for r in x.get("r", []) if r in recs]
 
 
+# Údaje o snímku z dokumenty.json → site.json docs[] (klíč jen u neprázdné hodnoty, takže bez nich je export stejný).
+UDAJE_SNIMKU = (("autor", "author"), ("rok", "year"), ("zdroj", "source"), ("url", "url"), ("licence", "licence"),
+                ("licence_url", "licenceUrl"))
+
+
+def udaje_snimku(d):
+    """Autor, rok, zdroj, odkaz a licence snímku jako oříznutý text. Odkaz mimo http(s) a /… vynechá s upozorněním."""
+    udaje = {}
+    for pole, klic in UDAJE_SNIMKU:
+        s = str(d[pole]).strip() if d.get(pole) is not None else ""
+        if s and pole in ("url", "licence_url") and (c := chyba_odkazu(s)):
+            print(f"POZOR: data/dokumenty.json {d.get('img')}: {pole}: {c} – vynecháno (python3 -I tools/kontrola.py)")
+        elif s:
+            udaje[klic] = s
+    return udaje
+
+
 def owner_year(o):
     """Rok držitele pro řazení: „od“, a když je neznámé („?“), aspoň „do“."""
     return o["since"] if re.search(r"\d", o["since"]) else o["until"]
@@ -334,7 +351,7 @@ def main():
                 issues=[dict(title=i, text="") if isinstance(i, str) else dict(title=i[0], text=i[1]) for i in ISSUES],
                 docs=[dict(img=d["img"], caption=d["popis"], houses=[slugify(c) for c in d.get("domy", []) if slugify(c) in houses],
                            group=d.get("skupina", ""), order=d.get("poradi", 99), pair=d.get("par", ""), wide=d.get("format") == "sirka",
-                           full=os.path.exists(os.path.join(ZDROJE, d["img"] + ".jpg")))
+                           full=os.path.exists(os.path.join(ZDROJE, d["img"] + ".jpg")), **udaje_snimku(d))
                       for d in docs_cfg if os.path.exists(os.path.join(VYREZY, d["img"] + ".jpg"))])
 
     write(os.path.join(WEB, "src", "data", "site.json"), json.dumps(site, ensure_ascii=False, indent=1))
