@@ -6,7 +6,8 @@ import RecLinks from '../../components/RecLinks.astro';
 import Vyhrady from '../../components/Vyhrady.astro';
 import HouseMap from '../../components/HouseMap.astro';
 import Doplnky from '../../components/Doplnky.astro';
-import { houses, records, dateKey, village, houseAddress, houseFullTitle, statusClass, config, mainHouse } from '../../lib/data.js';
+import Gallery from '../../components/Gallery.astro';
+import { docs, houses, records, dateKey, village, houseAddress, houseFullTitle, statusClass, config, mainHouse } from '../../lib/data.js';
 
 export function getStaticPaths() {
   return Object.keys(houses).map((slug) => ({ params: { slug } }));
@@ -84,12 +85,7 @@ const recs = h.records.filter((r) => records[r]).sort((a, b) => dateKey(records[
 
   {h.lat != null && (<><h2>Kde dům stojí</h2><HouseMap height="380px" compact focus={h.slug} /></>)}
 
-  {h.docs.length > 0 && (
-    <>
-      <h2>Fotografie a dokumenty</h2>
-      <div class="docs">{h.docs.map((d) => <figure><a href={`/img/${d.img}.jpg`} target="_blank" rel="noopener"><img src={`/img/${d.img}.jpg`} alt={d.caption} loading="lazy" /></a><figcaption>{d.caption}</figcaption></figure>)}</div>
-    </>
-  )}
+  {docs.some((d) => d.houses.includes(h.slug)) && <Gallery items={docs.filter((d) => d.houses.includes(h.slug))} />}
 
   <h2>Prameny</h2>
   {recs.length ? <div class="recs">{recs.map((r) => <Record id={r} showHouses exclude={h.slug} />)}</div>

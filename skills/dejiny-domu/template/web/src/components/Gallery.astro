@@ -1,15 +1,17 @@
 ---
 // Galerie fotek a dokumentů (data/dokumenty.json). Volitelná pole: skupina, poradi, par (img dvojice „tehdy – dnes“),
 // format: "sirka". Názvy, úvody a pořadí skupin: web.json → galerie.skupiny. Fotky bez skupiny jdou na konec.
+// items: jen některé fotky (stránka domu, obce); bez něj všechny.
 import { docs, config } from '../lib/data.js';
 
+const { items = docs } = Astro.props;
 const skupiny = config.galerie?.skupiny ?? [];   // [{ "id": "tehdy", "nazev": "Tehdy a dnes", "uvod": "…" }]
 
 const byImg = Object.fromEntries(docs.map((d) => [d.img, d]));
 // Fotka z dvojice se zvlášť ukáže jen tehdy, když má vlastní (jinou) skupinu.
-const paired = new Set(docs.filter((d) => d.pair && byImg[d.pair] && (byImg[d.pair].group || d.group) === d.group).map((d) => d.pair));
+const paired = new Set(items.filter((d) => d.pair && byImg[d.pair] && (byImg[d.pair].group || d.group) === d.group).map((d) => d.pair));
 const groups = [];
-for (const d of [...docs].sort((a, b) => (a.order ?? 99) - (b.order ?? 99))) {
+for (const d of [...items].sort((a, b) => (a.order ?? 99) - (b.order ?? 99))) {
   if (paired.has(d.img)) continue;
   const key = d.group || 'dalsi';
   let g = groups.find((x) => x.key === key);
