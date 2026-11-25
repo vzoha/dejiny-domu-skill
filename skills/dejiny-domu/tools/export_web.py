@@ -348,7 +348,11 @@ def main():
     over_jmena_obrazku("data/pribeh_*.md obrazek", [st["obrazek"] for st in extra_stories if st["obrazek"]])
     extra_stories.sort(key=lambda st: (st["poradi"], st["slug"]))
     public_cfg["maPribeh"] = has_story or bool(extra_stories)
-    public_cfg["dalsiPribehy"] = [{k: v for k, v in st.items() if k != "text"} for st in extra_stories]
+    # obrázek, který se nezkopíruje (skryte), web nemá ukázat ani jako úvodní foto nebo náhled příběhu
+    public_cfg["dalsiPribehy"] = [{k: "" if k == "obrazek" and v.casefold() in skryte else v for k, v in st.items() if k != "text"}
+                                  for st in extra_stories]
+    if isinstance(cfg.get("uvod"), dict) and str(cfg["uvod"].get("foto", "")).casefold() in skryte:
+        public_cfg["uvod"] = {k: v for k, v in cfg["uvod"].items() if k not in ("foto", "foto_popis")}
     main_house = slugify(cfg.get("hlavni_dum", "")) or next(iter(houses), "")
     site = dict(config=public_cfg, village=village, houses=houses, mainHouse=main_house if main_house in houses else None,
                 records=records, maps=maps, mapGroups=map_groups, places=places, stats=stats,

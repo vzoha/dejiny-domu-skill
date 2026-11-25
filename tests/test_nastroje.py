@@ -767,6 +767,8 @@ class TestExport(Projekt):
                        {"img": "lhota_nerozhodnuta", "popis": "Chalupa", "domy": ["12"]})
         with open(self.path("zdroje", "lhota_soukroma.jpg"), "wb") as f:
             f.write(JPEG)
+        with open(self.path("data", "pribeh_mlyn.md"), "w", encoding="utf-8") as f:
+            f.write("---\ntitle: Mlýn\nobrazek: lhota_soukroma\n---\nText.\n")
         # za přihlášením je; pak otevřený a bez odpovědi zmizí všude – i soubor z předchozího exportu a úvodní foto
         for prihlaseni, videt in (({"odpoved": "lipa"}, True), ({"otevreny": True}, False), ({}, False)):
             with self.subTest(prihlaseni=prihlaseni):
@@ -780,6 +782,8 @@ class TestExport(Projekt):
                     self.assertEqual(os.path.exists(self.path("web", "public", sub, "lhota_soukroma.jpg")), videt)
                 self.assertEqual({d["img"] for d in s["docs"]} >= {"lhota_verejna", "lhota_nerozhodnuta"}, True)
                 self.assertEqual("verejne: false se nezveřejní" in out, not videt)
+                self.assertEqual(s["config"]["uvod"].get("foto"), "lhota_soukroma" if videt else None)
+                self.assertEqual(s["config"]["dalsiPribehy"][0]["obrazek"], "lhota_soukroma" if videt else "")
 
     def test_verejne_false_i_pri_jine_velikosti_pismen(self):
         self.napln()
@@ -838,7 +842,10 @@ class TestExport(Projekt):
         self.assertNotIn("fotek bez verejne", out)
         self.assertIn("dokument lhota_spatne: verejne = 'ne'", out)
         rc, vystup = self.export()
+        self.assertEqual(rc, 0, vystup)
         self.assertEqual({d["img"] for d in self.site()["docs"]}, {"lhota_ano", "lhota_ne", "lhota_nevim", "lhota_spatne"})
+        self.web()   # bez přihlášení vůbec = web bez brány
+        self.assertIn("Web bez přihlášení: 1 fotek bez verejne (lhota_nevim)", self.nastroj("kontrola.py").stdout)
 
     def test_odpoved_prihlaseni_neni_na_webu(self):
         self.nastroj("zapis.py", "web", "prihlaseni", "-",
