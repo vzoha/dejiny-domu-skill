@@ -140,6 +140,11 @@ Volitelně (galerie na stránkách příběhů, domu a obce):
   obce“); `url` – odkaz na původní zdroj; `licence` – za jakých podmínek smí na web („CC BY 4.0“, „volné dílo“,
   „se souhlasem rodiny Novákových“); `licence_url` – odkaz na znění licence. Odkaz jen `http(s)://…` (jinak ho export
   vynechá a `kontrola.py` ho vypíše).
+- `verejne` – smí fotka na web bez přihlášení (`prihlaseni.otevreny`, nebo prázdná `prihlaseni.odpoved`)?
+  `true` ano, `false` ne: na webu za přihlášením zůstane, na otevřený web ji export nedá – ani jako úvodní foto,
+  obrázek příběhu nebo u zápisu či mapy se stejným klíčem (velikost písmen klíče nerozhoduje). Bez pole se fotka
+  ukáže jako dosud; `kontrola.py` u webu bez přihlášení vypíše fotky bez `verejne`, ať u každé rozhodnete. Licence
+  (`licence`) o tom nerozhoduje – je to jen text pro čtenáře.
 - `skryt: true` – na web nedávat (fotka zůstane v datech). Export ji smaže i z `web/public/{img,zdroje}`; Netlify a Docker
   nahrají web celý znovu, na hostingu, kam se jen nahrávají soubory (scp, FTP), ji smaž ručně.
 
