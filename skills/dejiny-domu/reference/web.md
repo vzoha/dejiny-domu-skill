@@ -69,7 +69,8 @@ skutečnou adresu vyčti z výstupu (`Preview server running at …`) a před od
 - **Otevřený web a podmínky archivů:** obrázek, který archiv bez souhlasu nedovoluje zveřejnit (`podminky.md`),
   export na otevřený web nedá. U zápisu zůstane přepis, překlad a odkaz na snímek v archivu. Kontrola je vypíše.
   Stejně tak fotku s `"verejne": false` v `dokumenty.json` (pamětník souhlasil jen s webem pro rodinu); fotky bez
-  `verejne` jsou na webu a kontrola je vypíše k rozhodnutí. Web bez odpovědi na přihlašovací otázku je otevřený.
+  `verejne` jsou na webu a kontrola je vypíše k rozhodnutí. Fotky s `verejne: false` skryje i web bez odpovědi na
+  přihlašovací otázku (export pak bránu vypne).
 - **Vlastní doplňky webu** (tlačítko, odkaz v patičce, skript): soubor `web/src/doplnky/<název>.astro`. Vykreslí se
   na místech `uvod`, `uvod-dum`, `dum` (prop `dum`), `pribeh` (prop `slug`), `paticka` a `konec` a podle propu
   `misto` sám rozhodne, kde něco ukáže (`{Astro.props.misto === 'paticka' && <> · <a href="…">…</a></>}`).
