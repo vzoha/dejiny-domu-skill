@@ -756,6 +756,90 @@ class TestExport(Projekt):
                 self.assertEqual(rc, 0, out)
                 self.assertNotIn("POZOR: data/dokumenty.json", out)
 
+    def web(self, **cfg):
+        with open(self.path("data", "web.json"), "w", encoding="utf-8") as f:
+            json.dump(cfg, f, ensure_ascii=False)
+
+    def test_verejne_false_jen_za_prihlasenim(self):
+        self.napln()
+        self.dokumenty({"img": "lhota_soukroma", "popis": "Od pamětnice", "domy": ["12"], "verejne": False},
+                       {"img": "lhota_verejna", "popis": "Pohlednice", "domy": ["12"], "verejne": True},
+                       {"img": "lhota_nerozhodnuta", "popis": "Chalupa", "domy": ["12"]})
+        with open(self.path("zdroje", "lhota_soukroma.jpg"), "wb") as f:
+            f.write(JPEG)
+        # za přihlášením je; pak otevřený a bez odpovědi zmizí všude – i soubor z předchozího exportu a úvodní foto
+        for prihlaseni, videt in (({"odpoved": "lipa"}, True), ({"otevreny": True}, False), ({}, False)):
+            with self.subTest(prihlaseni=prihlaseni):
+                self.web(prihlaseni=prihlaseni, uvod={"foto": "lhota_soukroma"})
+                rc, out = self.export()
+                self.assertEqual(rc, 0, out)
+                s = self.site()
+                self.assertEqual("lhota_soukroma" in {d["img"] for d in s["docs"]}, videt)
+                self.assertEqual("lhota_soukroma" in {d["img"] for d in s["houses"]["12"]["docs"]}, videt)
+                for sub in ("img", "zdroje"):
+                    self.assertEqual(os.path.exists(self.path("web", "public", sub, "lhota_soukroma.jpg")), videt)
+                self.assertEqual({d["img"] for d in s["docs"]} >= {"lhota_verejna", "lhota_nerozhodnuta"}, True)
+                self.assertEqual("verejne: false se nezveřejní" in out, not videt)
+
+    def test_verejne_false_i_pri_jine_velikosti_pismen(self):
+        self.napln()
+        # klíč dokumentu a úvodní foto liší jen velikost písmen – na macOS a Windows je to týž soubor
+        for dok, foto in (("Lhota_Foto", "lhota_foto"), ("lhota_foto", "Lhota_Foto")):
+            for verejne, videt in ((True, True), (False, False)):   # True = kontrola, že se jinak zveřejní
+                with self.subTest(dok=dok, verejne=verejne):
+                    shutil.rmtree(self.path("web", "public", "img"), ignore_errors=True)
+                    self.dokumenty({"img": dok, "popis": "Od pamětnice", "verejne": verejne})
+                    with open(self.path("vyrezy", foto + ".jpg"), "wb") as f:
+                        f.write(JPEG)
+                    self.web(prihlaseni={"otevreny": True}, uvod={"foto": foto})
+                    rc, out = self.export()
+                    self.assertEqual(rc, 0, out)
+                    img = [f.casefold() for f in os.listdir(self.path("web", "public", "img"))]
+                    self.assertEqual("lhota_foto.jpg" in img, videt)
+                    self.assertEqual(any(d["img"].casefold() == "lhota_foto" for d in self.site()["docs"]), videt)
+                    for f in os.listdir(self.path("vyrezy")):
+                        if f.casefold() == "lhota_foto.jpg":
+                            os.remove(self.path("vyrezy", f))
+
+    def test_verejne_false_skryje_i_zapis_a_mapu_se_stejnym_klicem(self):
+        for verejne, videt in ((True, True), (False, False)):   # True = kontrola, že zápis obrázek jinak má
+            with self.subTest(verejne=verejne):
+                with open(self.path("data", "zaznamy.json"), "w", encoding="utf-8") as f:
+                    json.dump([{"klic": "Lhota_Zapis", "nazev": "Zápis"}], f)
+                with open(self.path("data", "mapy.json"), "w", encoding="utf-8") as f:
+                    json.dump([{"img": "Lhota_Mapa", "rok": "1840", "zdroj": "smyšlený archiv"}], f)
+                for d, k in (("vyrezy", "Lhota_Zapis"), ("vyrezy", "Lhota_Mapa"), ("zdroje", "Lhota_Zapis")):
+                    with open(self.path(d, k + ".jpg"), "wb") as f:
+                        f.write(JPEG)
+                self.dokumenty({"img": "lhota_zapis", "popis": "Fotka listiny", "verejne": verejne},
+                               {"img": "lhota_mapa", "popis": "Fotka mapy", "verejne": verejne})
+                self.web(prihlaseni={"otevreny": True})
+                rc, out = self.export()
+                self.assertEqual(rc, 0, out)
+                self.assertEqual((self.site()["records"][0]["img"], self.site()["records"][0]["full"]), (videt, videt))
+                self.assertEqual(len(self.site()["maps"]), 1 if videt else 0)
+
+    def test_kontrola_verejne_u_otevreneho_webu(self):
+        self.napln()
+        self.dokumenty({"img": "lhota_ano", "popis": "a", "verejne": True},
+                       {"img": "lhota_ne", "popis": "b", "verejne": False},
+                       {"img": "lhota_nevim", "popis": "c"},
+                       {"img": "lhota_skryta", "popis": "d", "skryt": True},
+                       {"img": "lhota_spatne", "popis": "e", "verejne": "ne"})
+        self.web(prihlaseni={"otevreny": True})
+        out = self.nastroj("kontrola.py").stdout
+        self.assertIn("Web bez přihlášení: 1 fotek bez verejne (lhota_nevim)", out)
+        self.assertIn("dokument lhota_spatne: verejne = 'ne' – má být true nebo false", out)
+        rc, vystup = self.export()
+        self.assertEqual(rc, 0, vystup)
+        self.assertEqual({d["img"] for d in self.site()["docs"]}, {"lhota_ano", "lhota_nevim"})
+        self.web(prihlaseni={"odpoved": "lipa"})
+        out = self.nastroj("kontrola.py").stdout
+        self.assertNotIn("fotek bez verejne", out)
+        self.assertIn("dokument lhota_spatne: verejne = 'ne'", out)
+        rc, vystup = self.export()
+        self.assertEqual({d["img"] for d in self.site()["docs"]}, {"lhota_ano", "lhota_ne", "lhota_nevim", "lhota_spatne"})
+
     def test_odpoved_prihlaseni_neni_na_webu(self):
         self.nastroj("zapis.py", "web", "prihlaseni", "-",
                      vstup='{"uvod": "Jen pro známé.", "otazka": "Jak se říká chalupě?", "odpoved": "U Nováků"}')
