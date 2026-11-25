@@ -15,7 +15,7 @@ if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze 
              f"Spusť projektovou kopii z kořene projektu: python3 -I tools/{os.path.basename(__file__)} …")
 DATA = os.path.join(ROOT, "data")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from platnost import chyba_odkazu, chyba_odpovedi, chyby_vyhrad, chyba_polohy, chyba_vyrezu, chyby_adres_domu, chyby_cisel_domu, cislo_domu, nemozna_data, obracene_rozpeti, obraceny_interval, proc_neprolinat, skupiny_map  # noqa: E402
+from platnost import bez_brany, chyba_odkazu, chyba_odpovedi, chyby_vyhrad, chyba_polohy, chyba_vyrezu, chyby_adres_domu, chyby_cisel_domu, cislo_domu, nemozna_data, obracene_rozpeti, obraceny_interval, proc_neprolinat, skupiny_map  # noqa: E402
 STAVY = ("doc", "lit", "prob", "fam", "unk")
 DRUHY = set("NOZISGKMCLJ")
 
@@ -181,6 +181,9 @@ def main():
         for c in d.get("domy", []):
             if str(c) not in D:
                 err.append(f"dokument {d.get('img')}: dům '{c}' není v domy.py")
+        if "verejne" in d and not isinstance(d["verejne"], bool):
+            err.append(f"dokument {d.get('img')}: verejne = {d['verejne']!r} – má být true nebo false "
+                       f"(na web bez přihlášení teď nepůjde)")
         for pole in ("url", "licence_url"):
             if not d.get("skryt") and (c := chyba_odkazu(str(d.get(pole) or "").strip() or None)):
                 err.append(f"dokument {d.get('img')}: {pole}: {c}")
@@ -261,6 +264,12 @@ def main():
             bez_souhlasu.setdefault(zprava, []).append(fn[:-4])
         elif stav == "pozor" and "nevýdělečně" in zprava:
             warn.append(f"PODMÍNKY ({fn[:-4]}): {zprava}")
+    if bez_brany(cfg.get("prihlaseni")):
+        nerozhodnute = [str(d.get("img")) for d in jload("dokumenty.json", []) if "verejne" not in d and not d.get("skryt")]
+        if nerozhodnute:
+            warn.append(f"Web bez přihlášení: {len(nerozhodnute)} fotek bez verejne ({', '.join(nerozhodnute[:5])}"
+                        f"{', …' if len(nerozhodnute) > 5 else ''}) – jsou na webu; u každé rozhodni verejne: true, "
+                        f"nebo false (reference/data.md)")
     for zprava, klice in bez_souhlasu.items():
         warn.append(f"PODMÍNKY ({len(klice)} obrázků: {', '.join(klice[:5])}{', …' if len(klice) > 5 else ''}): {zprava}"
                     + (" Na otevřeném webu je u nich jen přepis a odkaz." if otevreny else " Až web otevřeš, bude u nich jen přepis a odkaz."))

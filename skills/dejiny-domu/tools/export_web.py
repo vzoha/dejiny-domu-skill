@@ -14,7 +14,7 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
 
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, TOOLS)
-from platnost import chyba_odkazu, chyba_odpovedi, chyba_polohy, chyba_vyrezu, chyby_adres_domu, cislo_domu, norm_answer, proc_neprolinat, skupiny_map, slugify, vyhrady  # noqa: E402
+from platnost import bez_brany, chyba_odkazu, chyba_odpovedi, chyba_polohy, chyba_vyrezu, chyby_adres_domu, cislo_domu, neverejne_fotky, norm_answer, proc_neprolinat, skupiny_map, slugify, vyhrady  # noqa: E402
 ROOT = os.path.dirname(TOOLS)
 if not os.path.exists(os.path.join(ROOT, "data", "STAV.md")):   # spuštěno ze složky skillu: data projektu tam nejsou, zápis by šel do skillu
     sys.exit(f"{os.path.basename(__file__)}: {ROOT} není složka projektu (chybí data/STAV.md). "
@@ -100,8 +100,8 @@ def record_rows(skryte):
             archive=sv.get("archiv", ""), volume=sv.get("svazek", ""), vdesc=sv.get("popis", ""),
             portal=sv.get("portal", "archivu"), url=z.get("odkaz") or sv.get("url", ""),
             licence=sv.get("licence", ""), licenceUrl=sv.get("licence_url", ""),
-            img=key not in skryte and os.path.exists(os.path.join(VYREZY, key + ".jpg")),
-            full=key not in skryte and os.path.exists(os.path.join(ZDROJE, key + ".jpg")),
+            img=key.casefold() not in skryte and os.path.exists(os.path.join(VYREZY, key + ".jpg")),
+            full=key.casefold() not in skryte and os.path.exists(os.path.join(ZDROJE, key + ".jpg")),
         ))
     return rows
 
@@ -246,8 +246,12 @@ def main():
     if skryte:
         print(f"Otevřený web: {len(skryte)} obrázků archiv bez souhlasu nedovoluje zveřejnit, na webu bude jen přepis "
               "a odkaz (seznam: python3 -I tools/kontrola.py, reference/podminky.md)")
-    docs_cfg = [d for d in jload("dokumenty.json", []) if not d.get("skryt") and d.get("img") not in skryte]   # "skryt": true = na web nedávat
-    maps_cfg = [m for m in jload("mapy.json", []) if m.get("img") not in skryte]
+    fotky = neverejne_fotky(jload("dokumenty.json", [])) if bez_brany(login) else set()
+    if fotky:
+        print(f"Web bez přihlášení: {len(fotky)} fotek s verejne: false se nezveřejní (data/dokumenty.json)")
+    skryte = {k.casefold() for k in skryte | fotky}   # porovnává se bez velikosti písmen: Foto a foto je na macOS týž soubor
+    docs_cfg = [d for d in jload("dokumenty.json", []) if not d.get("skryt") and str(d.get("img")).casefold() not in skryte]   # "skryt": true = na web nedávat
+    maps_cfg = [m for m in jload("mapy.json", []) if str(m.get("img")).casefold() not in skryte]
     over_jmena_obrazku("data/zaznamy.json", [z.get("klic", "") for z in jload("zaznamy.json", [])])
     over_jmena_obrazku("data/dokumenty.json", [d.get("img", "") for d in docs_cfg])
     over_jmena_obrazku("data/mapy.json", [m.get("img", "") for m in maps_cfg])
@@ -379,7 +383,7 @@ def main():
     images = list(recs) + [d["img"] for d in docs_cfg] + [m["img"] for m in maps_cfg] + \
         ([cfg["uvod"]["foto"]] if cfg.get("uvod", {}).get("foto") else []) + \
         [st["obrazek"] for st in extra_stories if st.get("obrazek")]
-    images = [k for k in images if k not in skryte]
+    images = [k for k in images if str(k).casefold() not in skryte]
     for sub, src_dir in (("img", VYREZY), ("zdroje", ZDROJE)):
         dst_dir = os.path.join(WEB, "public", sub)
         os.makedirs(dst_dir, exist_ok=True)

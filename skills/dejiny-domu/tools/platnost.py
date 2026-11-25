@@ -20,6 +20,18 @@ def norm_answer(text):
     return re.sub(r"[^a-z0-9]", "", t)
 
 
+def bez_brany(prihlaseni):
+    """Web bez přihlašovací brány: výslovně otevřený, nebo bez odpovědi (export pak bránu vypne)."""
+    p = prihlaseni if isinstance(prihlaseni, dict) else {}
+    return bool(p.get("otevreny")) or not norm_answer(p.get("odpoved", ""))
+
+
+def neverejne_fotky(dokumenty):
+    """Klíče fotek (dokumenty.json), které na web bez brány nesmí: verejne uvedené a jiné než true.
+    Chybějící verejne = fotka je vidět (výchozí)."""
+    return {str(d.get("img")) for d in dokumenty if "verejne" in d and d["verejne"] is not True}
+
+
 def chyba_odpovedi(login):
     """Odpověď, ze které normalizace nic nenechá („漢字“, „???“): přihlásit by se nešlo a web by vypadal otevřený."""
     odpoved = (login or {}).get("odpoved")
