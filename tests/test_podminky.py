@@ -56,6 +56,12 @@ class PodminkyTest(unittest.TestCase):
         self.assertEqual(slusne.druh("/x/snimek.jpg"), "obr")
         self.assertEqual(slusne.druh("/fcgi-bin/iipsrv.fcgi?IIIF=a.jp2/full/full/0/default.jpg"), "obr")
 
+    def test_archive_org_stahovat_ano_zverejnit_se_souhlasem(self):   # podmínky 31. 12. 2014, robots.txt 25. 11. 2026
+        for host in ("archive.org", "https://www.archive.org/details/x"):
+            slusne.pockej(host, "dotaz")   # neskončí
+            slusne.pockej(host, "obr")
+            self.assertEqual(podminky.pravidlo(host)["vyrez"], "souhlas")
+
     def test_neznamy_portal_projde(self):
         slusne.pockej("example.org", "dotaz")
 
@@ -83,10 +89,10 @@ class PodminkyTest(unittest.TestCase):
         podminky.PROJEKT, podminky._doplnky = os.path.join(self.tmp, "data", "podminky_projekt.json"), None
 
     def test_doplnek_projektu_plati_pro_neznamy_portal(self):
-        self.doplnek({"archive.org": {"nazev": "Internet Archive", "dotazy": False, "obrazky": False, "vyrez": "neresi"}})
-        self.assertEqual(podminky.pravidlo("https://www.archive.org/details/x")["nazev"], "Internet Archive")
+        self.doplnek({"archiv.example": {"nazev": "Smyšlený archiv", "dotazy": False, "obrazky": False, "vyrez": "neresi"}})
+        self.assertEqual(podminky.pravidlo("https://www.archiv.example/details/x")["nazev"], "Smyšlený archiv")
         with self.assertRaises(podminky.Zakazano):
-            slusne.pockej("archive.org", "dotaz")
+            slusne.pockej("archiv.example", "dotaz")
 
     def test_doplnek_neuvolni_pravidlo_skillu(self):   # projekt nesmí povolit, co archiv zakazuje
         self.doplnek({"www.digi.ceskearchivy.cz": {"nazev": "x", "dotazy": True, "obrazky": True, "vyrez": "ano"},

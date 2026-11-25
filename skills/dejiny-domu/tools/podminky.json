@@ -20,6 +20,11 @@
         {"obsahuje": "ebadatelna.soapraha.cz/a/", "dotazy": false}
       ]
     },
+    "archive.org": {
+      "nazev": "Internet Archive (archive.org)", "dotazy": true, "obrazky": true, "vyrez": "souhlas",
+      "proc": "podmínky užití (archive.org/about/terms, 31. 12. 2014): přístup jen ke studiu a bádání, užití jen nezasahující do práv nebo fair use, licenci u položky uvádí nahrávající a Archiv za ni neručí (help.archive.org/help/rights/); výpůjční knihy jen v prohlížeči nebo s DRM; robots.txt zakazuje jen /control/ a /report/, Claude-User nejmenuje (25. 11. 2026)",
+      "jinak": "Výpůjční knihy (Borrow) čte uživatel v prohlížeči, do výstupu jen citace a odkaz. Obrázek z volně přístupné položky jen podle licence nebo prohlášení u položky (Public Domain Mark, CC) – zapiš ji k výřezu jako souhlas; Archiv práva neručí."
+    },
     "digi.nacr.cz": {
       "nazev": "Národní archiv (konskripce, policejní přihlášky)", "dotazy": true, "obrazky": true, "vyrez": "neresi",
       "proc": "jen robots.txt (Disallow pro všechny, AI nejmenuje); podmínky ani ochrana nenalezeny (8. 11. 2026) – na žádost badatele smí, jen hledané přihlášky"
