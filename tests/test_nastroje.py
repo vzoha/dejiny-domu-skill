@@ -722,7 +722,8 @@ class TestExport(Projekt):
              "zdroj": "Rodinné album", "url": "https://example.org/foto/1", "licence": "CC BY 4.0",
              "licence_url": "https://creativecommons.org/licenses/by/4.0/"},
             {"img": "lhota_bez", "popis": "Bez údajů", "domy": ["12"]},
-            {"img": "lhota_prazdne", "popis": "Prázdné", "autor": "", "rok": "  ", "url": "", "licence": " "})
+            {"img": "lhota_prazdne", "popis": "Prázdné", "autor": "", "rok": "  ", "url": "", "licence": " ",
+             "licence_url": "  "})
         rc, out = self.export()
         self.assertEqual(rc, 0, out)
         docs = {d["img"]: d for d in self.site()["docs"]}
@@ -732,8 +733,7 @@ class TestExport(Projekt):
         zaklad = {"img", "caption", "houses", "group", "order", "pair", "wide", "full"}
         self.assertEqual(set(docs["lhota_bez"]), zaklad)
         self.assertEqual(set(docs["lhota_prazdne"]), zaklad)
-        for d in self.site()["houses"]["12"]["docs"]:
-            self.assertEqual(set(d), {"img", "caption"})   # údaje jen v docs[]
+        self.assertNotIn("dokument lhota_prazdne", self.nastroj("kontrola.py").stdout)   # prázdný odkaz není chyba
 
     def test_nebezpecny_odkaz_snimku_vynecha(self):
         for pole, klic in (("url", "url"), ("licence_url", "licenceUrl")):
@@ -777,7 +777,6 @@ class TestExport(Projekt):
                 self.assertEqual(rc, 0, out)
                 s = self.site()
                 self.assertEqual("lhota_soukroma" in {d["img"] for d in s["docs"]}, videt)
-                self.assertEqual("lhota_soukroma" in {d["img"] for d in s["houses"]["12"]["docs"]}, videt)
                 for sub in ("img", "zdroje"):
                     self.assertEqual(os.path.exists(self.path("web", "public", sub, "lhota_soukroma.jpg")), videt)
                 self.assertEqual({d["img"] for d in s["docs"]} >= {"lhota_verejna", "lhota_nerozhodnuta"}, True)

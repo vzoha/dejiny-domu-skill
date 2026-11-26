@@ -246,11 +246,12 @@ def main():
     if skryte:
         print(f"Otevřený web: {len(skryte)} obrázků archiv bez souhlasu nedovoluje zveřejnit, na webu bude jen přepis "
               "a odkaz (seznam: python3 -I tools/kontrola.py, reference/podminky.md)")
-    fotky = neverejne_fotky(jload("dokumenty.json", [])) if bez_brany(login) else set()
+    dokumenty = jload("dokumenty.json", [])
+    fotky = neverejne_fotky(dokumenty) if bez_brany(login) else set()
     if fotky:
         print(f"Web bez přihlášení: {len(fotky)} fotek s verejne: false se nezveřejní (data/dokumenty.json)")
     skryte = {k.casefold() for k in skryte | fotky}   # porovnává se bez velikosti písmen: Foto a foto je na macOS týž soubor
-    docs_cfg = [d for d in jload("dokumenty.json", []) if not d.get("skryt") and str(d.get("img")).casefold() not in skryte]   # "skryt": true = na web nedávat
+    docs_cfg = [d for d in dokumenty if not d.get("skryt") and str(d.get("img")).casefold() not in skryte]   # "skryt": true = na web nedávat
     maps_cfg = [m for m in jload("mapy.json", []) if str(m.get("img")).casefold() not in skryte]
     over_jmena_obrazku("data/zaznamy.json", [z.get("klic", "") for z in jload("zaznamy.json", [])])
     over_jmena_obrazku("data/dokumenty.json", [d.get("img", "") for d in docs_cfg])
@@ -278,8 +279,6 @@ def main():
             lat=d.get("lat"), lon=d.get("lon"), numbers=[dict(when=a, num=b) for a, b in d.get("cisla", [])],
             events=events, owners=owners, people=people, records=list(dict.fromkeys(refs)),
             story=dict(title=d.get("pribeh_nadpis", ""), paras=list(d["pribeh"])) if d.get("pribeh") else None,
-            docs=[dict(img=x["img"], caption=x["popis"]) for x in docs_cfg if str(cp) in [str(c) for c in x.get("domy", [])]
-                  and os.path.exists(os.path.join(VYREZY, x["img"] + ".jpg"))],
         )
     # `poradi` u domu (menší dřív, bez něj 0), hlavní část obce (bez `cast`) první, pak části podle abecedy, v nich podle čísla
     houses = dict(sorted(houses.items(), key=lambda kv: (D[kv[1]["key"]].get("poradi", 0), kv[1]["part"],
