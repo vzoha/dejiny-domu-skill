@@ -185,7 +185,7 @@ def main():
             err.append(f"dokument {d.get('img')}: verejne = {d['verejne']!r} – má být true nebo false "
                        f"(na web bez přihlášení teď nepůjde)")
         for pole in ("url", "licence_url"):
-            if not d.get("skryt") and (c := chyba_odkazu(str(d.get(pole) or "").strip() or None)):
+            if not d.get("skryt") and (c := chyba_odkazu(d.get(pole))):
                 err.append(f"dokument {d.get('img')}: {pole}: {c}")
     for name, e in jload("mista.json", {}).items():
         if e.get("lat") is None and e.get("lon") is None:

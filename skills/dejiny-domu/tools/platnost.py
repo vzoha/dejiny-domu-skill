@@ -61,8 +61,9 @@ def chyby_vyhrad(x):
 
 def chyba_odkazu(url):
     """Odkaz na webu smí vést jen na http(s) nebo na stránku webu. javascript:, data: ap. by se po kliknutí spustily."""
-    if url and not BEZPECNY_ODKAZ.match(str(url).strip()):
-        return f"odkaz {str(url)[:60]!r} nevede na http(s):// ani na stránku webu (/…)"
+    url = str(url or "").strip()   # prázdný odkaz (i jen mezery) web nevykreslí
+    if url and not BEZPECNY_ODKAZ.match(url):
+        return f"odkaz {url[:60]!r} nevede na http(s):// ani na stránku webu (/…)"
     return None
 
 
