@@ -37,6 +37,13 @@ class AutoriTest(unittest.TestCase):
         self.assertEqual(kramerius.cdk_dotaz('text_ocr:"Ostružnická 7" AND datum_begin:[1900 TO 1940] AND dostupnost:public'),
                          'text_ocr:"Ostružnická 7" AND date_range_start.year:[1900 TO 1940] AND accessibility:public')
 
+    def test_adresa_textu(self):   # stránka i v NK → z NK přímo, ČDK by řídila přístup kopií MZK (403)
+        pid = "uuid:46a59f60-b54f-4e45-a437-1e97a96ee41b"
+        self.assertEqual(kramerius.adresa_textu(pid, ["mzk", "nkp"]),
+                         f"https://kramerius5.nkp.cz/search/api/v5.0/item/{pid}/streams/TEXT_OCR")
+        self.assertEqual(kramerius.adresa_textu(pid, ["vkol"]),
+                         f"https://api.ceskadigitalniknihovna.cz/search/api/client/v7.0/items/{pid}/ocr/text")
+
 
 if __name__ == "__main__":
     unittest.main()

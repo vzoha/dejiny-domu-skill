@@ -11,7 +11,7 @@ Použití:
       Přímo na kramerius.vkol.cz, kramerius.cuni.cz… nástroje nesmí (podminky.json) – VKOL dal 403 po 4 dotazech.
       Kód knihovny je ve sloupci „knihovna“ výpisu s --knihovna vse.
   kramerius.py text <pid> ['regulární výraz']
-      OCR text veřejné stránky přes ČDK (z kterékoli knihovny); s výrazem jen okolí nálezů (±300 znaků).
+      OCR text veřejné stránky (z kterékoli knihovny; má-li ji NK, z NK přímo); s výrazem jen okolí nálezů (±300 znaků).
   kramerius.py autori <uuid>
       autoři díla z katalogu (MODS přes ČDK) s roky narození a úmrtí a konec ochrany: 1. 1. roku úmrtí
       posledního autora + 71. Licence „public“ v ČDK NEZNAMENÁ volné dílo (plán Olomouce 1946: „public“,
@@ -25,7 +25,8 @@ for _s in (sys.stdout, sys.stderr):   # UTF-8 výstup i na Windows bez -X utf8 (
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá složku skriptu sama
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 
-NK = "https://kramerius5.nkp.cz/search/api/v5.0/search"
+NK_API = "https://kramerius5.nkp.cz/search/api/v5.0/"
+NK = NK_API + "search"
 CDK = "https://api.ceskadigitalniknihovna.cz/search/api/client/v7.0/"   # Krameria všech knihoven
 CDK_POLE = {"fedora.model": "model", "root_title": "root.title", "datum_begin": "date_range_start.year",
             "datum_str": "date.str", "dostupnost": "accessibility", "PID": "pid"}   # pole NK (K5) → ČDK (K7)
@@ -80,8 +81,18 @@ def hledej_cdk(q, rows, knihovna):
           "před použitím obrázku kramerius.py autori <pid>.")
 
 
+def adresa_textu(pid, knihovny):
+    """Odkud číst OCR stránky. Má-li ji NK, tak přímo z NK: ČDK u díla ve víc knihovnách řídí přístup přísnější kopií
+    (Chytilův adresář 1915: NK public, MZK jen po přihlášení → ČDK 403, NK text vydá; 26. 11. 2026)."""
+    if "nkp" in knihovny:
+        return f"{NK_API}item/{pid}/streams/TEXT_OCR"
+    return f"{CDK}items/{pid}/ocr/text"
+
+
 def text(pid, vzor=None):
-    t = re.sub(r"\s+", " ", get(f"{CDK}items/{pid}/ocr/text").decode("utf-8", "replace"))
+    d = json.loads(get(CDK + "search?" + urllib.parse.urlencode({"q": f'pid:"{pid}"', "fl": "cdk.collection"})))
+    knihovny = next(iter(d["response"]["docs"]), {}).get("cdk.collection") or []
+    t = re.sub(r"\s+", " ", get(adresa_textu(pid, knihovny)).decode("utf-8", "replace"))
     if not vzor:
         print(t)
         return
