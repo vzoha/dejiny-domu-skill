@@ -64,7 +64,8 @@ Osvědčené pořadí:
    1920, 1938 s čísly popisnými, 1944, ortofota 1938–2006: `ipr_praha.py serie … --zapsat`); jinde `cuzk_archiv.py mapa pk`.
 3. **Adresní kniha čp. → ulice a č. or.** (Praha: Orientační kniha Velké Prahy 1936/1937) – jaká orientační čísla dům
    tehdy měl. Bez toho nejde hledat v adresářích.
-4. **Adresáře živností** (Adresář Republiky československé 1927–1938, Adresář Prahy 1936, Adressbuch des Protektorates 1939,
+4. **Adresáře živností** (Obchodní a průmyslový adresář Čech, Moravy a Slezska 1905 – volně v Krameriu NK, hlavně
+   firmy ve městech; Adresář Republiky československé 1927–1938, Adresář Prahy 1936, Adressbuch des Protektorates 1939,
    telefonní seznamy 1950; Brno: adresáře města 1779–1946 v PDF, `portaly.md` → Archiv města Brna) – obchody v přízemí, řemeslníci, lékaři. Řazené podle oborů – hlavička stránky řekne obor.
 5. **Stavební povolení a soutěže:** Stavitelské listy (rubrika „Kde se bude stavěti?“ – stavebník, pozemek, počet pater),
    inzeráty „zadá práce na stavbu…“ v denících (Právo lidu, Národní listy). Stavebníkem bývá družstvo, stavitel nebo firma.
