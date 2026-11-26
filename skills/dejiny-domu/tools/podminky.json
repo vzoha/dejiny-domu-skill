@@ -181,6 +181,10 @@
       "nazev": "Archiv hl. m. Prahy (obrázkový server)", "dotazy": true, "obrazky": true, "vyrez": "souhlas",
       "proc": "obrázky jen na objednávku s účelem, na web nejvýš 500 px s vodoznakem", "jinak": ""
     },
+    "www.digitale-sammlungen.de": {
+      "nazev": "Digitale Sammlungen Bayerische Staatsbibliothek (BSB)", "dotazy": true, "obrazky": true, "vyrez": "nekomercne",
+      "proc": "staré tisky (Schaller, Sommer) s licencí NoC-NC: bez autorských práv, ale jen nevýdělečně; IIIF API api.digitale-sammlungen.de (26. 11. 2026)", "jinak": ""
+    },
     "data.matricula-online.eu": {
       "nazev": "Matricula", "dotazy": true, "obrazky": true, "vyrez": "nekomercne",
       "proc": "licence CC BY-NC-ND: jen nevýdělečně, beze změn, se zdrojem", "jinak": ""

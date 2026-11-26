@@ -850,6 +850,14 @@ A když osoba „chybí“ v očekávaných matrikách (stěhovala se se službo
 - **edice listin a urbářů** (Archiv český aj.) – nejstarší zmínky, vrchnosti, poddaní;
 - **topografie**: Sommer, *Das Königreich Böhmen* (1833–49, po krajích; počet domů a obyvatel, fara, škola, mlýn,
   vrchnost), Palacký, *Popis království českého* (1848); **Seznamy míst** (1878–1913: obec, fara, pošta, škola);
+- **Sedláček, *Místopisný slovník historický království Českého*** (1908, volně v NK): u vsi, komu patřily její
+  díly od středověku (`root_title:"Místopisný slovník historický" AND text_ocr:"Obec"`);
+- **Schaller, *Topographie des Königreichs Böhmen*** (1785–1791, po krajích a panstvích; počet čísel domů, komu
+  patří díly vsi). V Krameriu není, všech 16 krajů má Bavorská státní knihovna: díly 1–8 = `bsb10801643`–`650`,
+  díly 9–16 = `bsb10801652`–`659` (kraj je v názvu manifestu), rejstřík `bsb10801660`. Manifest
+  `https://api.digitale-sammlungen.de/iiif/presentation/v2/<bsb>/manifest` (popisek snímku = číslo strany, snímek
+  ≠ strana), text stránky `https://api.digitale-sammlungen.de/ocr/<bsb>/<snímek>` (hOCR), odkaz
+  `https://www.digitale-sammlungen.de/view/<bsb>?page=<snímek>`; obrázek jen nevýdělečně (`podminky.json`).
 - okresní vlastivědy a čítanky.
 
 Hledej **všechny podoby názvu**: česky i německy, staré pravopisy, a přes sousední nebo katastrální obec – prameny

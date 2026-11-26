@@ -133,6 +133,8 @@ Bez přihlášení vidíš jen úryvky ve vyhledávání.
     stejného pravidla (o konstantu, jeden konec vsi) přečíslování potvrdí.
   - **Počet domů proti nejvyššímu čp.:** počty domů ze sčítání (ČSÚ od 1869, Sommer 1833–49, Schaller 1785–91)
     proti nejvyššímu čp. v matrice; skok bez výstavby nebo čp. vysoko nad počtem domů = podezření. Jen vodítko.
+    Topografie jsou řazené po panstvích: ves rozdělená mezi dvě vrchnosti bývá pod jedním panstvím s poznámkou
+    „davon N nach …“, nebo pod každým jen se svým dílem. Než počet použiješ, projdi celý svazek (OCR v BSB).
   - **Kotva na mapě:** čp. z indikační skicy (držitel jménem nebo „N° X“) → stavební parcela → dnešní parcela
     (`mapa pk`, RÚIAN). Dvě kotvy se stejným posunem převod potvrdí.
   - **Sčítání po domech** (1869 × 1880 …): posun celé řady čp.; pražské sčítání 1869 má čp. i orientační číslo.
