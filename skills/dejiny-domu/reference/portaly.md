@@ -25,6 +25,10 @@ Adresy u nevyzkoušených portálů ověř při prvním použití (portály se m
 
 ## Památkový katalog NPÚ (pamatkovykatalog.cz) – `tools/pamatky.py`
 Kulturní památky a objekty, které památkáři jen evidují (návesní kaple, boží muka, mlýny, domy bez ochrany).
+- **Katalog stojí:** robots.txt zakazuje Claude-User i ostatní AI agenty (26. 11. 2026), `pamatky.py "Obec"` ani
+  `detail` nepoběží a WebFetch tam nesmí. Uživatel hledá v prohlížeči na pamatkovykatalog.cz (obec, čp.) a pošle ti
+  název, katalogové číslo, popis a literaturu. Popis obou příkazů níže platí, až to katalog zase dovolí.
+  `pamatky.py uan` jde na geoportal.npu.cz a běží dál.
 - `python3 -I tools/pamatky.py "Lniště"` → objekty v obci, části obce nebo ulici: id | název | adresa | ochrana | anotace.
   Druhý argument zúží na číslo v adrese (`pamatky.py "Dlouhá" 12`). Hledá se fulltextem, objekty jen se zmínkou
   jinde vypíše zvlášť. Víc než 250 výsledků katalog nevrátí – zúžit na část obce nebo ulici.
@@ -40,7 +44,7 @@ Kulturní památky a objekty, které památkáři jen evidují (návesní kaple,
   (obec, zpřesnit slovem „kaple“, „čp. 12“) a pošle ti, co našel. Staré evidenční listy a fotky (60.–90. léta)
   ukážou dřívější podobu.
 - **Carmen** (plány, stavebněhistorické průzkumy, restaurátorské zprávy; sbírka plánů NPÚ v Praze): stejně jako MIS
-  hledá uživatel v prohlížeči. Odkaz na všechno k objektu dá `pamatky.py detail`
+  hledá uživatel v prohlížeči. Odkaz na všechno k objektu je v katalogu u objektu
   („veškerá literatura a dokumentace“). Průzkum (SHP) domu je nejlepší popis, co je z které doby – kopii objedná
   uživatel u NPÚ (gnr.sbirkaplanu@npu.cz, k neveřejnému užití; badatelna byla 8. 11. 2026 dočasně zavřená).
 

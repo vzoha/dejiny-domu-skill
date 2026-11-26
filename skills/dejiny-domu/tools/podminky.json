@@ -152,8 +152,9 @@
       "jinak": "Viz industrialnitopografie.cz: jen zjištění s citací a odkaz."
     },
     "pamatkovykatalog.cz": {
-      "nazev": "Památkový katalog NPÚ", "dotazy": true, "obrazky": false, "vyrez": "neresi",
-      "proc": "seznam památek je otevřená data CC BY 4.0, web bez robots.txt a bez ověření (8. 11. 2026); fotky jsou na iispp.npu.cz", "jinak": ""
+      "nazev": "Památkový katalog NPÚ", "dotazy": false, "obrazky": false, "vyrez": "neresi",
+      "proc": "robots.txt zakazuje Claude-User i ostatní AI agenty celý web (26. 11. 2026); seznam památek je otevřená data CC BY 4.0, fotky jsou na iispp.npu.cz",
+      "jinak": "Katalog (pamatkovykatalog.cz) prohledá uživatel v prohlížeči podle obce nebo čísla domu a pošle ti, co našel (název, katalogové číslo, popis, literaturu). Do PDF nebo na web zjištění s citací „NPÚ, Památkový katalog, katalogové číslo …“ a odkaz."
     },
     "geoportal.npu.cz": {
       "nazev": "Geoportál NPÚ (území s archeologickými nálezy)", "dotazy": true, "obrazky": false, "vyrez": "ano",

@@ -2,6 +2,7 @@
 
 Soupis obsahuje kulturní památky i objekty, které památkáři jen evidují (kaple, mlýny, domy bez ochrany).
 Když dům v katalogu není, neznamená to, že nemá historickou hodnotu.
+Katalog robots.txt zakazuje AI agenty (podminky.json): hledání a detail skončí hláškou PODMÍNKY, uan běží.
 
 Použití:
   pamatky.py "<obec, část obce nebo ulice>" [číslo]  – objekty (číslo = čp. nebo č. or. v adrese): id | název | adresa | ochrana | anotace
