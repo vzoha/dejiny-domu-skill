@@ -359,7 +359,7 @@ class HlidacTest(unittest.TestCase):
         os.makedirs(os.path.join(self.tmp, "tools"))
         os.makedirs(os.path.join(self.tmp, "pracovni"))
         for jmeno, text in (("pracovni/sit.py", "import urllib.request\n"), ("pracovni/bez.py", "print(1)\n"),
-                            ("pracovni/x.sh", "curl -s https://www.mza.cz/\n"), ("tools/ahmp_search.sh", "curl x\n")):
+                            ("pracovni/x.sh", "curl -s https://www.mza.cz/\n"), ("tools/hledej.sh", "curl x\n")):
             with open(os.path.join(self.tmp, jmeno), "w") as f:
                 f.write(text)
 
@@ -402,7 +402,7 @@ class HlidacTest(unittest.TestCase):
                     "python3 -I tools/slusne.py pracovni/sit.py",
                     "python3 pracovni/bez.py",
                     "curl -s http://localhost:4321/",
-                    "bash tools/ahmp_search.sh Smíchov",
+                    "bash tools/hledej.sh Smíchov",
                     "python3 -m unittest discover tests",
                     "git status && npm run build",
                     "python3 - <<'E'\nimport json\nprint(json.dumps({}))\nE",

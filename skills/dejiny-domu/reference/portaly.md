@@ -10,7 +10,7 @@ Matriky jsou online u osmi státních archivů – podle toho, **kde dům stojí
 | SOA Plzeň | západní Čechy | Porta fontium – portafontium.eu | **ručně** – snímek uloží uživatel (firewall proti skriptům, jen nevýdělečně) |
 | SOA Třeboň | jižní Čechy | digi.ceskearchivy.cz | **jen číst** – snímky jen k prohlížení online, čte uživatel |
 | SOA Litoměřice | severní Čechy | Digitální badatelna – digi.soalitomerice.cz | **částečně – `soal_zoomify.py`** (knihu najdi v prohlížeči) |
-| AHMP | hl. m. Praha | katalog.ahmp.cz (Pragapublica) | **ano – `ahmp_search.sh`, `ahmp_scan.py`** |
+| AHMP | hl. m. Praha | Archivní katalog – digi.ahmp.cz | **částečně – `soal_zoomify.py`** (svazek a snímek najdi v prohlížeči) |
 | MZA Brno | jižní Morava, Vysočina z části | Acta Publica – www.mza.cz/actapublica | **částečně – `mza.py`** hledá knihy, snímek uloží uživatel (ALTCHA) |
 | MZA Brno – gruntovní a pozemkové knihy | totéž | ARON MZA – www.mza.cz/aron | **prohlížeč** – katalog v `agent-browser --headed` tempem člověka nebo uživatel ručně; skriptu API vrací 403 |
 | ZA Opava | severní Morava a Slezsko, Olomoucko a Litovelsko | Digitální badatelna – digi.archives.cz/da/ | **jen prohlížeč** – knihu a čísla snímků najdeš v prohlížeči (CAPTCHU řeší uživatel), snímek uloží uživatel; skripty archiv od 11/2026 odmítá |
@@ -555,11 +555,18 @@ Databáze míst, kde se točily filmy a seriály, často až na adresu s čísle
   `python3 -I tools/zesil_snimek.py x.jpg [x0,y0,x1,y1]` (výřez pro web pak dělej z originálu).
 - Denní údržba kolem 4:44 (asi 2 minuty).
 
-## AHMP Praha – `tools/ahmp_search.sh`, `tools/ahmp_scan.py`
-- `bash tools/ahmp_search.sh "Smíchov"` → svazky Sbírky matrik: popis | farnost | (XID, id, počet snímků).
-- `python3 -I tools/ahmp_scan.py <XID> <snímek> pracovni/x.jpg [1] [x0,y0,x1,y1]` → snímek (1 = poloviční rozlišení).
-- Trvalý odkaz `https://katalog.ahmp.cz/pragapublica/permalink?xid=<XID>&scan=<N>`.
-- Nový portál digi.ahmp.cz má ochranu proti robotům – nepoužívat. Pražské matriky 1890–1940 většinou **nemají rejstříky**
+## AHMP Praha – Archivní katalog digi.ahmp.cz, snímky `tools/soal_zoomify.py`
+- Od 30. 11. 2026 jediný katalog (starý katalog.ahmp.cz se přesměrovává). Na vstupu automatické ověření „jste člověk“
+  (prohlížeč ho spočítá sám za pár sekund, skript ho neprojde – neobcházej ho) → svazek (Sbírka matrik, sčítání,
+  soupis obyvatel) a snímek najdi v prohlížeči.
+- Každý snímek má na obrázkovém serveru jiný název: na stránce snímku ho dá obrázek náhledu
+  (`document.querySelector('#navigatorImage').src` bez `/TileGroup0/0-0-0.jpg`), tvar
+  `https://digi-images.ahmp.cz/ximage/ahmp/zoomify/cz/archives/CZ-321100010/<fond>/dao/images/<…>.jpg`.
+  Snímek pak stáhni nástrojem: `python3 -I tools/soal_zoomify.py <adresa> 0 pracovni/x.jpg [--oblast x0,y0,x1,y1]`
+  (2 = čtvrtinové rozlišení na orientaci). Obrázkový server skript pustí (26. 11. 2026).
+- Trvalý odkaz na snímek: ikona odkazu u snímku, tvar `https://digi.ahmp.cz/pragapublica/permalink/<XID>/<id snímku>`.
+  Staré odkazy `…/pragapublica/permalink?xid=<XID>&scan=<N>` zatím otevřou správný snímek s upozorněním, že jsou zastaralé.
+- Pražské matriky 1890–1940 většinou **nemají rejstříky**
   a farností je mnoho – bez přesného data a farnosti (z úmrtí/sňatku nebo od rodiny) je hledání velmi drahé.
 - **Stavební dokumentace domu** (ahmp.cz › Hledám předky › Stavební dokumentace, 9. 11. 2026): spisy domů
   stojících dnes předal magistrát koncem 40. a začátkem 50. let **odborům výstavby městských částí** – tam jsou jako

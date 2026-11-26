@@ -61,6 +61,8 @@ class SdileniTest(unittest.TestCase):
             ("https://aron.vychodoceskearchivy.cz/apu/1b2c3d4e-0000-4a5b-8c9d-0123456789ab",
              ("soa-zamrsk", None, "1b2c3d4e-0000-4a5b-8c9d-0123456789ab")),
             ("https://katalog.ahmp.cz/pragapublica/permalink?xid=168D806EE15440A2BA47401D7F3EAA53&scan=1", ("ahmp", "ahmp", "168D806EE15440A2BA47401D7F3EAA53")),
+            ("https://digi.ahmp.cz/pragapublica/permalink/168D806EE15440A2BA47401D7F3EAA53/ebb6aac847754e21b6d49b68b20ee5f7",   # nový katalog 11/2026
+             ("ahmp", "ahmp", "168D806EE15440A2BA47401D7F3EAA53")),
         ]:
             self.assertEqual(sdileni.kniha_z_url(url), cekam, url)
 

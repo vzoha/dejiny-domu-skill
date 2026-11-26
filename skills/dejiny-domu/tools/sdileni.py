@@ -98,7 +98,7 @@ ARCHIVY = {k: Archiv(*v) for k, v in {
     "soa-litomerice": ("digi-soalitomerice", None, (r"digi\.soalitomerice\.cz/.*?[?&]xid=([0-9a-fA-F]{8}-?(?:[0-9a-fA-F]{4}-?){3}[0-9a-fA-F]{12})",)),
     "za-opava": ("digi-archives", None, (r"digi\.archives\.cz/.*?[?&]xid=([0-9a-fA-F]{8}-?(?:[0-9a-fA-F]{4}-?){3}[0-9a-fA-F]{12})",)),
     "mza-brno": ("actapublica", None, (r"mza\.cz/actapublica/matrika/detail/(\d+)",)),
-    "ahmp": ("pragapublica", "ahmp", (r"ahmp\.cz/.*?xid=([0-9a-fA-F]{32})",)),
+    "ahmp": ("pragapublica", "ahmp", (r"ahmp\.cz/.*?(?:xid=|permalink/)([0-9a-fA-F]{32})",)),
 }.items()}
 
 

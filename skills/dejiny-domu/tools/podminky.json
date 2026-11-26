@@ -164,7 +164,16 @@
       "proc": "stahovat se smí; archiv si stěžuje na AI boty – málo a pomalu", "jinak": ""
     },
     "katalog.ahmp.cz": {
-      "nazev": "Archiv hl. m. Prahy", "dotazy": true, "obrazky": true, "vyrez": "souhlas",
+      "nazev": "Archiv hl. m. Prahy (starý katalog, od 30. 11. 2026 přesměrovaný na digi.ahmp.cz)", "dotazy": true, "obrazky": true, "vyrez": "souhlas",
+      "proc": "obrázky jen na objednávku s účelem, na web nejvýš 500 px s vodoznakem", "jinak": ""
+    },
+    "digi.ahmp.cz": {
+      "nazev": "Archiv hl. m. Prahy (Archivní katalog)", "dotazy": false, "obrazky": false, "vyrez": "souhlas",
+      "proc": "vstupní ověření „jste člověk“ (počítá prohlížeč sám); obrázky jen na objednávku s účelem, na web nejvýš 500 px s vodoznakem",
+      "jinak": "Svazek a snímek najdeš v prohlížeči (Claude in Chrome nebo uživatel), snímky pak stáhne soal_zoomify.py z obrázkového serveru (reference/portaly.md, AHMP)."
+    },
+    "digi-images.ahmp.cz": {
+      "nazev": "Archiv hl. m. Prahy (obrázkový server)", "dotazy": true, "obrazky": true, "vyrez": "souhlas",
       "proc": "obrázky jen na objednávku s účelem, na web nejvýš 500 px s vodoznakem", "jinak": ""
     },
     "data.matricula-online.eu": {

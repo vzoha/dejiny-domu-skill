@@ -1,4 +1,4 @@
-"""Snímek matriky ve formátu Zoomify (SOA Litoměřice) v plném rozlišení – bez prohlížeče a bez cookies.
+"""Snímek matriky ve formátu Zoomify (SOA Litoměřice, AHMP Praha) v plném rozlišení – bez prohlížeče a bez cookies.
 
 ZA Opava (images.archives.cz) od listopadu 2026 nástroje nepouští (HTTP 503 hned na první snímek) – snímek odtud
 uloží uživatel tlačítkem portálu (reference/portaly.md, ZA Opava).
@@ -11,6 +11,8 @@ Použití (z kořene projektu):
                 (další snímky téže knihy mají stejnou cestu, liší se jen číslem obrázku)
     adresa    = celá adresa obrázku začínající https:// (s „/ImageProperties.xml“ na konci i bez), např.
                 https://images.soalitomerice.cz/ximage/matriky/zoomify/cz/archives/CZ-214000010/matriky/<cesta>.jpg
+                AHMP: https://digi-images.ahmp.cz/ximage/ahmp/zoomify/cz/archives/CZ-321100010/<fond>/dao/images/<…>.jpg
+                (každý snímek má jiný název, adresu dá jen stránka snímku na digi.ahmp.cz – reference/portaly.md, AHMP)
     --oblast x0,y0,x1,y1  (za výstupem) jen dlaždice výřezu v podílech stránky (0–1): šetří server při plném rozlišení
     --rozmer ŠxV  (za výstupem) když ImageProperties.xml vrací 404: rozměr z HTML stránky
                 /<badatelna>/showZoomify/<svazek>/<snímek>, atribut zImageProperties WIDTH a HEIGHT
@@ -29,7 +31,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I nepřidá 
 import slusne; slusne.instaluj()   # společný limit rychlosti k webům archivů (slusne.py)
 
 BASE = "https://images.soalitomerice.cz/ximage/matriky/zoomify/cz/archives/CZ-214000010/matriky/"
-HOSTS = ("images.soalitomerice.cz",)   # jen obrázkový server archivu (snímky zpracovává ImageMagick)
+HOSTS = ("images.soalitomerice.cz", "digi-images.ahmp.cz")   # jen obrázkové servery archivů (snímky zpracovává ImageMagick)
 
 
 def magick():

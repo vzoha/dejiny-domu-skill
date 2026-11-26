@@ -65,7 +65,7 @@ Vždy uveďte archiv, fond, signaturu, číslo snímku a trvalý odkaz. Zjiště
 | Území s archeologickými nálezy (NPÚ, `pamatky.py uan`) | Nástroj | ano | ano | ano | ano | Data CC BY-SA 4.0, uveďte „NPÚ, Státní archeologický seznam ČR“ |
 | NPÚ MIS a Carmen (fotky, plány, průzkumy) | Ručně | ne | souhlas | souhlas | ano | robots.txt zakazuje Claude-User celý web (20. 11. 2026), Carmen navíc chrání ověření proti robotům. Fotky a plány jsou dílo NPÚ. Zveřejnit jen se smlouvou, na web nejvýš 200×300 px nebo s vodoznakem, v tisku licence od 1 500 Kč. Kopie k neveřejnému užití se objednává |
 | Národní archiv (Digitální badatelna) | Ručně | ano | neřeší | souhlas | ano | Ověření „nejsem robot“ řešíte vy. Zveřejnit jen se souhlasem |
-| Archiv hl. m. Prahy | Nástroj | ano | souhlas | souhlas | ano | Objednávka s účelem, užití zdarma. Na web nejvýš 500 px s vodoznakem |
+| Archiv hl. m. Prahy | Ručně | ano | souhlas | souhlas | ano | Objednávka s účelem, užití zdarma. Na web nejvýš 500 px s vodoznakem. Od 30. 11. 2026 nový katalog s ověřením „jste člověk“: svazek a snímek najdete v prohlížeči, snímky stáhne nástroj |
 | FamilySearch | Ručně | ano | ano, pro klienta | souhlas | ano | Genealog smí bádat pro klienta a předat mu výsledek. Stahovat jen ručně, roboti zakázáni |
 | Matricula | Ručně | ano | ne | nevýdělečně, beze změn | ano | České matriky tam nejsou |
 | Kramerius NDK (knihy nedostupné na trhu) | Jen číst | ano | **ne**, ani číst | ne | ano | Jen pro osobní potřebu registrovaných čtenářů z ČR. Za peníze si knihu půjčte v knihovně, fakta s citací pak smíte |

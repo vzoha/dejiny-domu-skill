@@ -35,8 +35,8 @@ KONTROLY = [
     ("portafontium", "snímek", ["portafontium.py", "snimek", "dolni-bela-17", "5", "{out}", "nahled"], r"odkaz:", "pf.jpg"),
     ("ebadatelna", "matriky lokality", ["ebadatelna.py", "matriky", "Kounice - obec Kounice - okres Nymburk"], r"^4293 \|", None),
     ("ebadatelna", "snímek", ["ebadatelna.py", "snimek", "4293", "5", "{out}", "nahled"], r"soapraha\.cz/d/4293/5", "eb.jpg"),
-    ("ahmp", "hledání svazků", ["bash", "ahmp_search.sh", "Smíchov"], r"9A79C81088C94C9DBEA2FC6758FD08E7", None),
-    ("ahmp", "snímek", ["ahmp_scan.py", "9A79C81088C94C9DBEA2FC6758FD08E7", "5", "{out}", "1"], r"permalink", "ah.jpg"),
+    ("ahmp", "snímek (katalog jen v prohlížeči)", ["soal_zoomify.py", "https://digi-images.ahmp.cz/ximage/ahmp/zoomify/cz/archives/"
+     "CZ-321100010/NAD-156/dao/images/0293/f88b926d7f49c402adc28ae5ccd4d3e6.jpg", "3", "{out}"], r" 750 500$", "ah.jpg"),
     ("mza", "knihy obce", ["mza.py", "matriky", "1269"], r"^3090 \| 3212 \|", None),
     ("mza", "info knihy", ["mza.py", "info", "3090"], r"snímků: 270", None),
     ("mza", "snímek", ["mza.py", "snimek", "3090", "50", "{out}", "nahled"], r"detail/3090\?image=", "mz.jpg"),

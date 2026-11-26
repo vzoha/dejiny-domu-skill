@@ -290,10 +290,10 @@ Vždy **projektovou kopii** `tools/`, nikdy `SKILL_DIR/tools/` (zapisovala by do
 | `aron_search.py "Obec" ["fond"]`, `aron_search.py scitani "Obec"`, `aron_img.py …` | ARON (SOA Zámrsk): matriky, sčítání, gruntovní knihy, kroniky |
 | `ebadatelna.py …` | SOA Praha: hledá matriky a obsah knih; snímky teď uloží uživatel v prohlížeči (celá kniha: ZIP po registraci) |
 | `portafontium.py …` | SOA Plzeň. **Stojí:** firewall; snímky uloží uživatel |
-| `ahmp_search.sh`, `ahmp_scan.py`, `policie_prihlasky.py` | Praha (matriky; policejní přihlášky 1850–1914 z Národního archivu) |
+| `policie_prihlasky.py` | Praha: policejní přihlášky 1850–1914 z Národního archivu |
 | `sdileni.py najdi / kniha / prehled / souhlas / odeslat` | Mapa matrik a index matrik: kde v knize začíná rok či ves, co už někdo přečetl (jen vodítko); sdílení zpět jen se souhlasem (`reference/sdileni.md`) |
 | `mza.py hledat / matriky / scitani` | MZA Brno (jižní Morava, Acta Publica): knihy obce, sčítací operáty obce. Stránku knihy a snímky chrání ALTCHA – otevře uživatel (`info`, `link`, `svazek`, `snimek` stojí) |
-| `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, Matricula (ZA Opava jen v prohlížeči) |
+| `soal_zoomify.py`, `matricula_*.sh` | SOA Litoměřice, AHMP Praha (svazek a snímek najdi v prohlížeči), Matricula (ZA Opava jen v prohlížeči) |
 | `valecne_hroby.py obec "Obec"` / `padli <Příjmení> [Jméno] --obec X` | pomníky padlých a válečné hroby obce se jmény (Evidence válečných hrobů MO) / padlí v 1. sv. válce s domovskou obcí, útvarem a prameny VÚA |
 | `obeti.py ulice "Ulice" --cislo N` / `hledat` / `detail` | oběti nacismu deportované z domu a ulice (Databáze obětí holocaust.cz): adresa v protektorátu, transporty, osud; adresy hlavně v Praze. Podmínky vstupu potvrdí uživatel sám (`obeti.py souhlas`) |
 | `hroby.py najdi / stahni / hledej` | hřbitovní pasporty obcí (GisOnline.cz): zemřelí 20. stol. se jménem a daty (`portaly.md` → Hroby) |
