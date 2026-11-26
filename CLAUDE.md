@@ -52,3 +52,5 @@ Nejnižší Node = nejvyšší `engines.node` v locku (teď undici ≥ 22.19): o
 2. Tag `vX.Y.Z` a push (větev i tag).
 3. GitHub release se shrnutím pro uživatele (novinky, opravy, jak aktualizovat projekt), česky, bez interních
    detailů: `gh release create vX.Y.Z --title "X.Y.Z – …" --notes-file poznamky.md`.
+   Sekce Poděkování: přispěvatelé od minulé verze jménem a GitHub účtem, s tím, co udělali (`git log --format=%an`,
+   autoři issues). **Proč:** v PR a issues jim to slibujeme („zmíním v poznámkách k vydání“), u 0.15.0 se na to zapomnělo.
