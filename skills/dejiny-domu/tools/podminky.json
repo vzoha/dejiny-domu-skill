@@ -442,6 +442,7 @@
         {"obsahuje": "vojenske_mapovani", "vyrez": "souhlas", "proc": "u vojenských mapování na geoportálu CENIA si podmínky odporují – stejnou mapu vezmi z Geolabu"}
       ]
     },
+    "services.cuzk.cz": {"nazev": "ČÚZK, služby katastru (WMS, INSPIRE WFS)", "dotazy": true, "obrazky": true, "vyrez": "ano", "proc": "katastrální mapa a parcely INSPIRE jsou otevřená data ČÚZK pod CC BY 4.0, uvést „ČÚZK“", "jinak": ""},
     "geoportal.cuzk.gov.cz": {"nazev": "ČÚZK, archivní ortofoto ČR", "dotazy": true, "obrazky": true, "vyrez": "ano", "proc": "ortofoto ČR je od 7/2023 otevřená data pod CC BY 4.0, uvést „ČÚZK, <rok snímku>“", "jinak": ""},
     "gis.kraj-jihocesky.cz": {"nazev": "Jihočeský kraj, mapové služby", "dotazy": true, "obrazky": true, "vyrez": "souhlas", "proc": "licence ortofot kraje není zveřejněná (výdej dat podle licenčních podmínek se schválením kraje) – ke čtení ano, do výstupu se souhlasem kraje", "jinak": "ortofota.py vezme stejný rok z ČÚZK, když ho má"},
     "mapy.kr-plzensky.cz": {"nazev": "Plzeňský kraj, mapové služby", "dotazy": true, "obrazky": true, "vyrez": "souhlas", "proc": "licence ortofot kraje není zveřejněná – ke čtení ano, do výstupu se souhlasem kraje (gis@plzensky-kraj.cz)", "jinak": "ortofota.py vezme stejný rok z ČÚZK, když ho má"},

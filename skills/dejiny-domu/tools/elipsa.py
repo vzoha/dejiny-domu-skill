@@ -10,9 +10,16 @@ Použití (z kořene projektu):
       Uloží zdroje/<klic>.jpg (plné rozlišení) a vyrezy/<klic>.jpg (max. 1800 px pro web) jako vyrez.py.
       --uvnitr/--venku = elipsu spočítá sám: rohy budov a parcely domu (uvnitr) a rohy sousedních budov (venku)
       v pixelech mapy; najde elipsu, která sousedy zasáhne co nejméně, a vypíše její čísla.
+  elipsa.py <mapa.jpg> <klic> --parcela "st. 12" [--bbox x0,y0,x1,y1] […]
+      body spočítá z dnešní parcely katastru (WFS ČÚZK, otevřená data): parcela = uvnitr, lomy sousedních parcel
+      = venku. Jen u mapy v S-JTSK (ortofota.py, cuzk_archiv.py mapa, ipr_praha.py): obdélník mapy vezme z pole
+      „vyrez“ v data/mapy.json u <klic>, jinak --bbox v metrech S-JTSK. Označení jako v katastru (nahlizenidokn):
+      stavební „st. 12“, pozemková „345/2“. Hranice jsou dnešní: na staré mapě zkontroluj, že sedí (dvůr
+      rozdělený nebo přikoupený od té doby zadej ručně přes --uvnitr).
 Elipsa obepíná celou parcelu domu, ne jen číslo. Co k parcele patří, rozhodují čáry hranic (stavení i dvůr až
-po hranici), ne poloha čísla. Šikmou nebo protáhlou parcelu nelaď od oka, spočítej ji z --uvnitr/--venku
-(od oka se elipsa točí dokola a stejně zasáhne souseda). Výsledek si VŽDY prohlédni ve zvětšení. Označ dům na všech mapách projektu
+po hranici), ne poloha čísla. U map v S-JTSK vezmi parcelu z katastru (--parcela), jinak šikmou nebo protáhlou
+parcelu nelaď od oka, spočítej ji z --uvnitr/--venku (od oka se elipsa točí dokola, zasáhne souseda nebo skončí
+ve dvoře místo na domě). Výsledek si VŽDY prohlédni ve zvětšení. Označ dům na všech mapách projektu
 stejně (ne jen na některých) a do popisu mapy napiš „Dům je v modré elipse.“ Popisek jen výjimečně: zakrývá mapu
 a číslo domu se v čase mění. Zdroj <mapa.jpg> musí být čistý (bez elipsy), ne zdroje/<klic>.jpg – ten se přepíše.
 Do data/mapy.json k mapě zapiš do „poznamka“ příkaz s čísly, ať jde označení zopakovat (např. po exportu mapy ve větším rozlišení).
@@ -142,6 +149,82 @@ def oznac(im, cx, cy, a, b, uhel=0.0, popisek="", text=None, velikost=None, cara
     return im
 
 
+WFS_PARCELY = "https://services.cuzk.cz/wfs/inspire-cp-wfs.asp"
+OD_HRANICE_M = 1.0   # lom souseda blíž hranici domu je společný bod hranice, ne soused
+OKOLI = 2.0          # sousedy brát jen do 2× poloměru parcely domu (vzdálené lomy elipsu neovlivní, jen zdrží výpočet)
+
+
+def parcely_z_xml(xml):
+    """GML z WFS katastru → [(označení, katastrální území, [(x, y), …] vnější hranice v metrech S-JTSK)]."""
+    vys = []
+    for f in re.findall(r"<cp:CadastralParcel\b.*?</cp:CadastralParcel>", xml, re.S):
+        oznaceni = re.search(r"<cp:label>([^<]*)", f)
+        hranice = re.search(r"<gml:exterior>.*?<gml:posList[^>]*>([^<]*)", f, re.S)
+        ku = re.search(r'<cp:zoning\b[^>]*xlink:title="([^"]*)"', f)
+        if oznaceni and hranice:
+            v = [float(c) for c in hranice.group(1).split()]
+            vys.append((oznaceni.group(1).strip(), ku.group(1) if ku else "", list(zip(v[0::2], v[1::2]))))
+    return vys
+
+
+def parcely_kn(bbox):
+    """Parcely v obdélníku S-JTSK z INSPIRE WFS ČÚZK (jeden dotaz přes omezovač slusne.py)."""
+    import urllib.parse, urllib.request
+    import slusne
+    slusne.instaluj()
+    crs = "urn:ogc:def:crs:EPSG::5514"
+    q = {"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": "CP:CadastralParcel",
+         "srsName": crs, "bbox": ",".join(f"{v:.1f}" for v in bbox) + "," + crs}
+    req = urllib.request.Request(WFS_PARCELY + "?" + urllib.parse.urlencode(q), headers={"User-Agent": slusne.UA})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return parcely_z_xml(r.read().decode("utf-8"))
+
+
+def k_hranici(p, mnohouhelnik):
+    """Vzdálenost bodu od obvodu mnohoúhelníku (v jednotkách souřadnic)."""
+    nej = math.inf
+    for (x0, y0), (x1, y1) in zip(mnohouhelnik, mnohouhelnik[1:] + mnohouhelnik[:1]):
+        dx, dy = x1 - x0, y1 - y0
+        t = max(0.0, min(1.0, ((p[0] - x0) * dx + (p[1] - y0) * dy) / (dx * dx + dy * dy or 1)))
+        nej = min(nej, math.hypot(p[0] - x0 - t * dx, p[1] - y0 - t * dy))
+    return nej
+
+
+def body_parcely(parcely, oznaceni):
+    """(lomy parcely domu, lomy sousedů v okolí bez společných bodů hranice), obojí v metrech."""
+    nase = [p for p in parcely if p[0] == oznaceni]
+    if not nase:
+        sys.exit(f"Parcela „{oznaceni}“ na mapě není. Označení jako v katastru („st. 12“ stavební, „345/2“ pozemková). "
+                 f"Na mapě: {', '.join(sorted({p[0] for p in parcely})[:60])}")
+    if len(nase) > 1:
+        sys.exit(f"„{oznaceni}“ je na mapě víckrát (katastrální území {', '.join(p[1] for p in nase)}) – "
+                 "zadej body ručně přes --uvnitr/--venku")
+    dum = nase[0][2]
+    sx, sy = sum(x for x, _ in dum) / len(dum), sum(y for _, y in dum) / len(dum)
+    r = max(math.hypot(x - sx, y - sy) for x, y in dum)
+    venku = [b for o, _, hr in parcely if o != oznaceni for b in hr
+             if math.hypot(b[0] - sx, b[1] - sy) < OKOLI * r and k_hranici(b, dum) > OD_HRANICE_M]
+    return dum, venku
+
+
+def na_pixely(body_m, bbox, sirka, vyska):
+    """Body v metrech S-JTSK → pixely mapy s obdélníkem bbox (x0, y0, x1, y1; y roste k severu, pixely k jihu)."""
+    x0, y0, x1, y1 = bbox
+    return [((x - x0) / (x1 - x0) * sirka, (y1 - y) / (y1 - y0) * vyska) for x, y in body_m]
+
+
+def bbox_mapy(klic):
+    """Obdélník mapy z pole „vyrez“ v data/mapy.json, nebo None."""
+    import json
+    try:
+        with open(os.path.join(ROOT, "data", "mapy.json"), encoding="utf-8-sig") as f:
+            mapy = json.load(f)
+    except (OSError, ValueError):
+        return None
+    v = next((m.get("vyrez") for m in mapy if isinstance(m, dict) and m.get("img") == klic), None)
+    return v["bbox"] if isinstance(v, dict) and v.get("crs") == "EPSG:5514" and len(v.get("bbox", [])) == 4 else None
+
+
 def cisla(text, kolik, co):
     try:
         v = [float(x) for x in text.split(",")]
@@ -181,6 +264,7 @@ def main(a):
     a = list(a)
     popisek, text, velikost = volba(a, "--popisek") or "", volba(a, "--text"), volba(a, "--pismo")
     uvnitr, venku = volba(a, "--uvnitr"), volba(a, "--venku")
+    parcela, ramec = volba(a, "--parcela"), volba(a, "--bbox")
     src, klic = a[0], a[1]
     if not re.fullmatch(r"[\w.-]+", klic):
         sys.exit(f"Klíč „{klic}“: jen písmena, číslice, _ - . (z něj je název souboru)")
@@ -188,11 +272,23 @@ def main(a):
     if os.path.abspath(src) in (os.path.abspath(full), os.path.abspath(small)):
         sys.exit(f"{src}: tohle je výstup, kreslil bys elipsu přes elipsu. Čistou mapu dej nejdřív jinam (např. pracovni/mapy/)")
     im = Image.open(src)
-    if uvnitr:
-        cx, cy, osa_a, osa_b, uhel, rezerva = spocitej(body(uvnitr), body(venku or ""))
-        print(f"elipsa {cx},{cy},{osa_a},{osa_b},{uhel}" + (f" – zasáhne souseda (rezerva {rezerva})" if rezerva < 1 else ""))
+    if parcela:
+        bbox = cisla(ramec, (4,), "--bbox") if ramec else bbox_mapy(klic)
+        if not bbox:
+            sys.exit(f"{klic}: mapa nemá v data/mapy.json „vyrez“ v S-JTSK – zadej --bbox x0,y0,x1,y1 (metry S-JTSK), "
+                     "nebo body ručně přes --uvnitr. Na neověřené mapě (list bez georeference) --parcela nejde.")
+        dum, sousede = body_parcely(parcely_kn(bbox), parcela)
+        uvnitr_px = na_pixely(dum, bbox, im.width, im.height)
+        venku_px = na_pixely(sousede, bbox, im.width, im.height)
+        print(f"parcela {parcela}: {len(dum)} lomů, sousedé {len(sousede)} lomů (dnešní katastr – na staré mapě "
+              "zkontroluj, že hranice sedí)")
+    elif uvnitr:
+        uvnitr_px, venku_px = body(uvnitr), body(venku or "")
     elif len(a) < 3:
         sys.exit(f"{src}: {im.width}×{im.height} px – zadej cx,cy,a,b[,uhel] nebo --uvnitr v pixelech tohoto obrázku")
+    if parcela or uvnitr:
+        cx, cy, osa_a, osa_b, uhel, rezerva = spocitej(uvnitr_px, venku_px)
+        print(f"elipsa {cx},{cy},{osa_a},{osa_b},{uhel}" + (f" – zasáhne souseda (rezerva {rezerva})" if rezerva < 1 else ""))
     else:
         cx, cy, osa_a, osa_b, *uhel = cisla(a[2], (4, 5), "elipsa")
         uhel = uhel[0] if uhel else 0.0

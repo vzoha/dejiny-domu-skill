@@ -42,6 +42,28 @@ class ElipsaTest(unittest.TestCase):
         silna = elipsa.oznac(Image.new("RGBA", (600, 400), (128, 128, 128, 255)), 300, 200, 150, 80, cara=10)
         self.assertGreater(modre(silna), 2 * modre(tenka))
 
+    XML = """<FeatureCollection><member><cp:CadastralParcel gml:id="CP.1"><cp:geometry><gml:Polygon>
+      <gml:exterior><gml:LinearRing><gml:posList>0 0 10 0 10 -20 0 -20</gml:posList></gml:LinearRing></gml:exterior>
+      </gml:Polygon></cp:geometry><cp:label>st. 12</cp:label>
+      <cp:zoning xlink:type="simple" xlink:title="Horní Lhota" /></cp:CadastralParcel></member>
+      <member><cp:CadastralParcel gml:id="CP.2"><cp:geometry><gml:Polygon>
+      <gml:exterior><gml:LinearRing><gml:posList>10 0 20 0 20 -20 10 -20</gml:posList></gml:LinearRing></gml:exterior>
+      </gml:Polygon></cp:geometry><cp:label>13</cp:label></cp:CadastralParcel></member></FeatureCollection>"""
+
+    def test_parcely_z_xml(self):
+        parcely = elipsa.parcely_z_xml(self.XML)
+        self.assertEqual([(o, ku) for o, ku, _ in parcely], [("st. 12", "Horní Lhota"), ("13", "")])
+        self.assertEqual(parcely[0][2], [(0, 0), (10, 0), (10, -20), (0, -20)])
+
+    def test_soused_bez_spolecne_hranice(self):
+        dum, sousede = elipsa.body_parcely(elipsa.parcely_z_xml(self.XML), "st. 12")
+        self.assertEqual(len(dum), 4)
+        self.assertEqual(sorted(sousede), [(20, -20), (20, 0)])   # lomy na společné hranici x = 10 nepočítá
+
+    def test_na_pixely_sever_nahore(self):
+        px = elipsa.na_pixely([(0, 0), (10, -20)], (0, -20, 20, 0), 200, 400)
+        self.assertEqual(px, [(0, 0), (100, 400)])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -273,8 +273,10 @@ Archiv ČÚZK je na https://ags.cuzk.gov.cz/archiv/ (staré archivnimapy.cuzk.cz
   vrstvy `originalni_mapy` a `cisarske_otisky` malé obce ani města (Olomouc) často nepokrývají: bílý obrázek nástroj
   neuloží, vypíše listy a postup `rastry` → `prehled` → `export`.
   Dům na mapě pro čtenáře označ elipsou, a to na všech mapách stejně: `elipsa.py <čistá mapa.jpg> <klíč> cx,cy,a,b,úhel`
-  (pixely mapy, elipsa přes celou parcelu, čistou mapu nech v `pracovni/mapy/`), příkaz s čísly do `poznamka` v `mapy.json`,
-  do popisu mapy „Dům je v modré elipse.“
+  (pixely mapy, elipsa přes celou parcelu, čistou mapu nech v `pracovni/mapy/`), příkaz s čísly do `poznamka` v `mapy.json`.
+  U map z `mapa` a `ortofota.py` (S-JTSK, `vyrez` v `mapy.json`) místo čísel `--parcela "st. 12"`: tvar dnešní parcely
+  vezme z katastru (WFS ČÚZK), od oka odhadnutá elipsa končí ve dvoře nebo zasáhne souseda. Do popisu mapy
+  „Dům je v modré elipse.“
 - **Ortofoto z 50. let** (CENIA, většinou 1952–54): `mapa cenia50 "Osada čp" výstup.jpg` – stejný výřez a čísla domů
   jako u PK, rok snímku a citaci vypíše. Pod CC BY, **smí do PDF i na web** s celou citací. Porovnání PK × ortofoto
   ukáže, co z dvora stálo po válce.
